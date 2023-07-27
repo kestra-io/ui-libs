@@ -1,0 +1,41 @@
+{
+  "name": "kestra-topology",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": ".index.js",
+  "module": ".index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/kestra-topology.es.js",
+      "require": "./dist/kestra-topology.umd.cjs"
+    },
+    "./scss/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "debug": "vite --debug",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@vue-flow/background": "^1.2.0",
+    "@vue-flow/controls": "^1.1.0",
+    "@vue-flow/core": "^1.14.3",
+    "bootstrap": "^5.3.0",
+    "dagre": "^0.8.5",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "vue": "^3.3.4",
+    "vue-material-design-icons": "^5.2.0",
+    "yaml": "^2.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "sass": "^1.64.0",
+    "vite": "^4.4.0"
+  }
+}

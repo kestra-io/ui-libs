@@ -1,0 +1,116 @@
+{
+  "nodes": [
+    {
+      "uid": "7RoOiBBth7mAw9Fvy4btKc_root",
+      "type": "io.kestra.core.models.hierarchies.GraphClusterRoot"
+    },
+    {
+      "uid": "dEa1sN43DW6MoLB3VJ7Xl_end",
+      "type": "io.kestra.core.models.hierarchies.GraphClusterEnd"
+    },
+    {
+      "uid": "readSheets",
+      "type": "io.kestra.core.models.hierarchies.GraphTask",
+      "task": {
+        "id": "readSheets",
+        "type": "io.kestra.plugin.googleworkspace.sheets.Read",
+        "description": "# super tache de la mort \n",
+        "spreadsheetId": "16xx8cURpKEa5LFYAtgaRH6cxxzG3xNbuR_SYZSBe_b8",
+        "valueRender": "FORMATTED_VALUE",
+        "fetch": true
+      },
+      "relationType": "SEQUENTIAL"
+    },
+    {
+      "uid": "1zpHMNxV8vnFkdTgYVDXQk_root",
+      "type": "io.kestra.core.models.hierarchies.GraphClusterRoot"
+    },
+    {
+      "uid": "ib7sKEA1uvB5eMvcL4OfT_end",
+      "type": "io.kestra.core.models.hierarchies.GraphClusterEnd"
+    },
+    {
+      "uid": "each",
+      "type": "io.kestra.core.models.hierarchies.GraphTask",
+      "task": {
+        "id": "each",
+        "type": "io.kestra.core.tasks.flows.EachParallel",
+        "tasks": [
+          {
+            "id": "return",
+            "type": "io.kestra.core.tasks.debugs.Return",
+            "format": "12"
+          }
+        ],
+        "value": "{{ outputs.readSheets.rows.Sheet1 }}"
+      },
+      "relationType": "DYNAMIC"
+    },
+    {
+      "uid": "return",
+      "type": "io.kestra.core.models.hierarchies.GraphTask",
+      "task": {
+        "id": "return",
+        "type": "io.kestra.core.tasks.debugs.Return",
+        "format": "12"
+      },
+      "relationType": "PARALLEL"
+    }
+  ],
+  "edges": [
+    {
+      "source": "readSheets",
+      "target": "1zpHMNxV8vnFkdTgYVDXQk_root",
+      "relation": {
+        "relationType": "SEQUENTIAL"
+      }
+    },
+    {
+      "source": "ib7sKEA1uvB5eMvcL4OfT_end",
+      "target": "dEa1sN43DW6MoLB3VJ7Xl_end",
+      "relation": {}
+    },
+    {
+      "source": "7RoOiBBth7mAw9Fvy4btKc_root",
+      "target": "readSheets",
+      "relation": {}
+    },
+    {
+      "source": "each",
+      "target": "return",
+      "relation": {
+        "relationType": "DYNAMIC"
+      }
+    },
+    {
+      "source": "return",
+      "target": "ib7sKEA1uvB5eMvcL4OfT_end",
+      "relation": {}
+    },
+    {
+      "source": "1zpHMNxV8vnFkdTgYVDXQk_root",
+      "target": "each",
+      "relation": {}
+    }
+  ],
+  "clusters": [
+    {
+      "cluster": {
+        "uid": "cluster_each",
+        "type": "io.kestra.core.models.hierarchies.GraphCluster",
+        "relationType": "DYNAMIC"
+      },
+      "nodes": [
+        "1zpHMNxV8vnFkdTgYVDXQk_root",
+        "ib7sKEA1uvB5eMvcL4OfT_end",
+        "each",
+        "return"
+      ],
+      "start": "1zpHMNxV8vnFkdTgYVDXQk_root",
+      "end": "ib7sKEA1uvB5eMvcL4OfT_end"
+    }
+  ],
+  "flowables": [
+    "each"
+  ]
+}
