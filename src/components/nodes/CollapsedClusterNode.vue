@@ -1,0 +1,94 @@
+<template>
+    <Handle type="source" :position="sourcePosition" />
+    <div class="collapsed-cluster-node">
+        <span>{{ id }}</span>
+        <div class="position-absolute top-0 start-100 translate-middle text-white d-flex top-button-div">
+            <slot name="badge-button-before" />
+            <span
+                v-if="expandable"
+                class="rounded-button"
+                :class="[`bg-${data.color}`]"
+                @click="$emit(EVENTS.EXPAND, id)"
+            >
+                <ArrowExpand class="button-icon" alt="Expand task" />
+            </span>
+            <slot name="badge-button-after" />
+        </div>
+    </div>
+    <Handle type="target" :position="targetPosition" />
+</template>
+
+<script>
+    import {EVENTS} from "../../utils/constants.js";
+    import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
+    import {Handle} from "@vue-flow/core";
+
+    export default {
+        components: {
+            Handle,
+            ArrowExpand
+        },
+        inheritAttrs: false,
+        props: {
+            id: {
+                type: String,
+                default: undefined
+            },
+            sourcePosition: {
+                type: String,
+                required: true
+            },
+            targetPosition: {
+                type: String,
+                required: true
+            },
+            data: {
+                type: Object,
+                required: true
+            }
+        },
+        data() {
+            return {
+                filter: undefined,
+                isOpen: false,
+            };
+        },
+        computed: {
+            EVENTS() {
+                return EVENTS
+            },
+            expandable() {
+                return this.data?.expandable || false
+            },
+            description() {
+                const node = this.data.node.task ?? this.data.node.trigger ?? null
+                if (node) {
+                    return node.description ?? null
+                }
+                return null
+            }
+        },
+    }
+</script>
+
+<style lang="scss" scoped>
+    .collapsed-cluster-node {
+        width: 150px;
+        height: 44px;
+    }
+
+    .rounded-button {
+        border-radius: 1rem;
+        width: 1rem;
+        height: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button-icon {
+        font-size: 0.75rem;
+    }
+
+
+</style>

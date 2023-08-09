@@ -6,8 +6,13 @@ export const SECTIONS = {
 export const EVENTS = {
     "EDIT": "edit",
     "DELETE": "delete",
-    "GET_DESCRIPTION": "getDescription",
+    "SHOW_DESCRIPTION": "showDescription",
     "COLLAPSE": "collapse",
     "EXPAND": "expand",
     "OPEN_LINK": "openLink",
+    "ADD_TASK": "addTask",
+    "SHOW_LOGS": "showLogs",
+    "MOUSE_OVER": "mouseover",
+    "MOUSE_LEAVE": "mouseleave",
+    "ADD_ERROR": "addError",
 }

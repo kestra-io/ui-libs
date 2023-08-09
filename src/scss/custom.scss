@@ -1,0 +1,21 @@
+@import "bootstrap";
+@import "bootstrap-dark";
+
+@import "variables";
+
+.material-design-icon > .material-design-icon__svg {
+  bottom: 0;
+}
+
+.vue-flow__node-cluster {
+  pointer-events: none !important;
+}
+
+marker[id*='id=marker-custom&type=arrowclosed'] polyline {
+  stroke: $gray-700;
+  fill: $gray-700;
+}
+
+.vue-flow__handle-right {
+  opacity: 0 !important;
+}

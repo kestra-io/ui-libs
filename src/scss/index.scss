@@ -1,5 +1,3 @@
-@use "variables" as global-var;
-
 /* icons */
 @use "vue-material-design-icons/styles.css";
 
@@ -7,4 +5,4 @@
 @use '@vue-flow/core/dist/style.css';
 @use '@vue-flow/core/dist/theme-default.css';
 
-@use "bootstrap-custom";
+@import "custom.scss";

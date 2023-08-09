@@ -1,30 +1,46 @@
 <template>
-    <div class="node-wrapper rounded-4 border" :class="[`border-${color}`]">
-        <div class="node-wrapper-header">
-            <TaskIcon/>
-            <div class="task-title">
-                <span> {{ id }} </span>
-            </div>
-            <InformationOutline @click="$emit(EVENTS.GET_DESCRIPTION)" class="description-button"/>
+    <div
+        :class="[`border-${!expandable ? data.color : 'blue'}`]"
+        class="node-wrapper rounded-3 border"
+        @mouseover="mouseover"
+        @mouseleave="mouseleave"
+    >
+        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
+        <div>
+            <TaskIcon :icon="data.icon" :class="taskIconBg" />
         </div>
         <div class="node-content">
-            <slot name="content"/>
+            <div class="d-flex justify-content-around">
+                <div class="text-truncate task-title">
+                    <span> {{ id }} </span>
+                </div>
+                <InformationOutline
+                    v-if="description"
+                    @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
+                    class="description-button mx-2"
+                />
+            </div>
+            <slot name="content" />
         </div>
-        <div class="position-absolute top-0 start-100 translate-middle text-white d-flex top-button-div">
+        <div class="position-absolute top-0 text-white d-flex top-button-div">
+            <slot name="badge-button-before" />
             <span
-                v-if="data.expandable"
+                v-if="link"
                 class="rounded-button"
-                :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.OPEN_LINK)">
-                <img src="/open-in-new.svg" class="button-icon" alt="Open in new tab"/>
+                :class="[`bg-${data.color}`]"
+                @click="$emit(EVENTS.OPEN_LINK, data.link)"
+            >
+                <OpenInNew class="button-icon" alt="Open in new tab" />
             </span>
             <span
-                v-if="data.expandable"
+                v-if="expandable"
                 class="rounded-button"
-                :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.EXPAND)">
-                <img src="/arrow-expand.svg" class="button-icon" alt="Expand task"/>
+                :class="[`bg-${data.color}`]"
+                @click="$emit(EVENTS.EXPAND)"
+            >
+                <ArrowExpand class="button-icon" alt="Expand task" />
             </span>
+            <slot name="badge-button-after" />
         </div>
     </div>
 </template>
@@ -32,7 +48,7 @@
 <script>
     import TaskIcon from "../misc/TaskIcon.vue";
     import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
-    import {EVENTS} from "../../functions/constants.js";
+    import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
 
@@ -43,6 +59,17 @@
             InformationOutline,
             OpenInNew
         },
+        emits: [
+            EVENTS.EXPAND,
+            EVENTS.OPEN_LINK,
+            EVENTS.SHOW_LOGS,
+            EVENTS.MOUSE_OVER,
+            EVENTS.MOUSE_LEAVE,
+            EVENTS.ADD_ERROR,
+            EVENTS.EDIT,
+            EVENTS.DELETE,
+            EVENTS.ADD_TASK
+        ],
         inheritAttrs: false,
         props: {
             id: {
@@ -61,16 +88,24 @@
                 type: String,
                 default: undefined
             },
-            color: {
-                type: String,
-                default: 'primary'
-            },
             data: {
                 type: Object,
                 required: true
+            },
+            style: {
+                type: Object,
+                required: false,
+                default: undefined
             }
         },
-        methods: {},
+        methods: {
+            mouseover() {
+                this.$emit(EVENTS.MOUSE_OVER, this.data.node);
+            },
+            mouseleave() {
+                this.$emit(EVENTS.MOUSE_LEAVE);
+            },
+        },
         data() {
             return {
                 filter: undefined,
@@ -80,38 +115,71 @@
         computed: {
             EVENTS() {
                 return EVENTS
+            },
+            expandable() {
+                return this.data?.expandable || false
+            },
+            link() {
+                return this.data?.link || false
+            },
+            description() {
+                const node = this.data.node.task ?? this.data.node.trigger ?? null
+                if (node) {
+                    return node.description ?? null
+                }
+                return null
+            },
+            taskIconBg() {
+                return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
+            },
+            stateColor() {
+                switch (this.state) {
+                case "RUNNING":
+                    return "primary"
+                case "SUCCESS":
+                    return "success"
+                case "WARNING":
+                    return "warning"
+                case "FAILED":
+                    return "danger"
+                default:
+                    return null;
+                }
             }
         },
     }
 </script>
 
 <style lang="scss" scoped>
-    .node-wrapper {
-        width: 9rem;
-        margin: 0;
-        padding: 0.6rem;
-        background-color: white;
-    }
+    @import "../../scss/variables";
 
-    .node-wrapper-header {
+    .node-wrapper {
+        background-color: var(--bs-white);
+
+        html.dark & {
+            background-color: var(--card-bg);
+        }
+
+        width: 184px;
+        height: 44px;
+        margin: 0;
+        padding: 8px;
         display: flex;
-        max-width: 10rem;
-        justify-content: space-between;
+        z-index: 150000;
         align-items: center;
-        margin-bottom: 0.5rem;
     }
 
     .node-content {
         display: flex;
         flex-direction: column;
-    }
-
-    .node-content > * {
-        margin-bottom: 0.25rem;
+        justify-content: center;
+        margin-left: 0.7rem;
     }
 
     .description-button {
+        color: $gray-600;
         cursor: pointer;
+        width: 25px;
     }
 
     .material-design-icon.icon-rounded {
@@ -126,13 +194,37 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-right: 2px;
-
+        margin-left: 0.25rem;
     }
 
     .button-icon {
-        width: 0.75rem;
-        height: 0.75rem;
+        font-size: 0.75rem;
     }
 
+    .task-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.5rem;
+        color: var(--bs-black);
+
+        html.dark & {
+            color: var(--bs-white);
+        }
+
+        width: 6rem;
+    }
+
+    .top-button-div {
+        width: 100%;
+        justify-content: end;
+        transform: translate(-5%, -50%) !important;
+    }
+
+    .status-div {
+        width: 8px;
+        height: 100%;
+        position: absolute;
+        left: -0.04438rem;
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
 </style>

@@ -207,10 +207,10 @@ export default class YamlUtils {
 
         yaml.visit(yamlDoc, {
             Pair(_, pair) {
-                if (pair.key.value === 'dependsOn' && pair.value.items.map(e => e.value).includes(taskId2)) {
+                if (pair.key.value === "dependsOn" && pair.value.items.map(e => e.value).includes(taskId2)) {
                     throw {
-                        message: 'dependency task',
-                        messageOptions: { taskId: taskId2 }
+                        message: "dependency task",
+                        messageOptions: {taskId: taskId2}
                     };
                 }
             }

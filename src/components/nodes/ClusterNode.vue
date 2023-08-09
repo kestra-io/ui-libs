@@ -1,27 +1,22 @@
 <template>
-    <Handle type="source" :position="sourcePosition"/>
-    <span class="badge rounded-pill" :class="[`bg-${data.color}`]">{{ label }}</span>
+    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id }}</span>
     <div class="position-absolute top-0 start-100 translate-middle text-white d-flex top-button-div">
         <span
-            v-if="data.expandable"
+            v-if="data.collapsable"
             class="rounded-button"
             :class="[`bg-${data.color}`]"
-            @click="collapse()">
-                <img src="/arrow-collapse.svg" class="button-icon" alt="Expand task"/>
-            </span>
+            @click="collapse()"
+        >
+            <ArrowCollapse class="button-icon" alt="Collapse task" />
+        </span>
     </div>
-    <Handle type="target" :position="targetPosition"/>
 </template>
 <script setup>
-    import {Handle, useVueFlow} from "@vue-flow/core";
-    import {EVENTS} from "../../functions/constants.js";
+    import ArrowCollapse from "vue-material-design-icons/ArrowCollapse.vue"
+    import {EVENTS} from "../../utils/constants.js";
 
     const props = defineProps(["data", "sourcePosition", "targetPosition", "label", "id"]);
     const emit = defineEmits([EVENTS.COLLAPSE])
-
-    onMounted(() => {
-        console.log("cluster setup")
-    })
 
     const collapse = () => {
         emit(EVENTS.COLLAPSE, props.id)
@@ -34,12 +29,6 @@
     }
 </script>
 <style scoped lang="scss">
-    .button-size {
-        width: 1rem;
-        height: 1rem;
-
-    }
-
     .rounded-button {
         border-radius: 1rem;
         width: 1rem;
@@ -47,12 +36,18 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-right: 2px;
-
+        pointer-events: auto !important;
     }
 
     .button-icon {
-        width: 0.75rem;
-        height: 0.75rem;
+        font-size: 0.75rem;
     }
+
+    .text-color {
+        color: var(--bs-white);
+        font-size: 0.625rem;
+        font-weight: 700;
+        padding: 0.25rem 0.5rem;
+    }
+
 </style>

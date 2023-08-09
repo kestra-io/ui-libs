@@ -1,18 +1,18 @@
 <template>
-    <Handle type="source" class="custom-handle" :position="sourcePosition"/>
+    <Handle type="source" class="custom-handle" :position="sourcePosition" />
     <div class="dot">
-        <img src="/circle.svg" class="circle" alt="circle"/>
-        <span>{{ id }}</span>
+        <Circle class="circle" alt="circle" />
     </div>
-    <Handle type="target" class="custom-handle" :position="targetPosition"/>
+    <Handle type="target" class="custom-handle" :position="targetPosition" />
 </template>
 
 <script>
     import {Handle} from "@vue-flow/core";
+    import Circle from "vue-material-design-icons/Circle.vue"
 
     export default {
         name: "Dot",
-        components: {Handle},
+        components: {Handle, Circle},
         inheritAttrs: false,
         props: {
             data: {
@@ -27,7 +27,7 @@
                 type: String,
                 required: true
             },
-            id: {
+            label: {
                 type: String
             }
         },
@@ -37,14 +37,10 @@
     .custom-handle {
         visibility: hidden
     }
-    .circle {
-        max-width: 0.55rem;
-        max-height: 0.55rem;
-    }
     .dot {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-top: 1.5rem;
+        font-size: 5px;
     }
 </style>

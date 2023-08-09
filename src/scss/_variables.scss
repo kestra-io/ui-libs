@@ -68,6 +68,31 @@ $box-shadow-lg: 0 1rem 3rem rgba($black, .175);
 // boostrap flags
 $enable-reduced-motion: false;
 
+// element-plus
+$types: primary, success, warning, danger, error, info !default;
+$element-colors: (
+        'white': $white,
+        'black': $black,
+        'primary': (
+                'base': $primary,
+        ),
+        'success': (
+                'base': $green,
+        ),
+        'warning': (
+                'base': $orange,
+        ),
+        'danger': (
+                'base': $red,
+        ),
+        'error': (
+                'base': $red,
+        ),
+        'info': (
+                'base': $cyan,
+        ),
+);
+
 // bootstrap
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/mixins";

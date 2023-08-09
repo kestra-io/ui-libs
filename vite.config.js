@@ -1,24 +1,49 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
+import {resolve} from "path"
+import {defineConfig} from "vite";
+import vue from "@vitejs/plugin-vue";
+import {viteStaticCopy} from "vite-plugin-static-copy"
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.js'),
-      name: "KestraTopology",
-      fileName: (format) => `kestra-topology.${format}.js`,
-    },
-    rollupOptions: {
-        external: ['vue'],
-        output: {
-            globals: {
-                vue: 'Vue'
+    build: {
+        lib: {
+            entry: resolve(__dirname, "src/index.js"),
+            name: "KestraUI",
+            fileName: "kestra-ui",
+        },
+        rollupOptions: {
+            external: ["vue",
+                "humanize-duration",
+                "moment",
+                "lodash",
+                "buffer",
+                "bootstrap",
+                "@vue-flow/core",
+                "@vue-flow/background",
+                "@vue-flow/controls",
+                "yaml",
+                "vue-material-design-icons",
+                "vite-plugin-static-copy",
+                "vite",
+                "sass",
+                "@popperjs/core"
+            ],
+            output: {
+                // Provide global variables to use in the UMD build
+                // Add external deps here
+                globals: {
+                    vue: "Vue",
+                },
             },
-            cssCode: true,
-        }
-    }
-  },
-  plugins: [vue()],
+            plugins: []
+        },
+    },
+    plugins: [
+        vue(),
+        viteStaticCopy({
+            targets: [
+                {src: "src/scss/_variables.scss", dest: ""},
+                {src: "src/scss/_theme-dark.scss", dest: ""},
+            ],
+        }),
+    ]
 })
