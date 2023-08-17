@@ -6,7 +6,7 @@
         :state="state"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, id)"
-        @open-link="forwardEvent(EVENTS.OPEN_LINK)"
+        @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
         @mouseover="forwardEvent(EVENTS.MOUSE_OVER, $event)"
         @mouseleave="forwardEvent(EVENTS.MOUSE_LEAVE)"
     >
@@ -164,17 +164,5 @@
     }
 </script>
 <style scoped lang="scss">
-    .rounded-button {
-        border-radius: 1rem;
-        width: 1rem;
-        height: 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 0.25rem;
-    }
-
-    .button-icon {
-        font-size: 0.75rem;
-    }
+    @import "../../scss/custom";
 </style>

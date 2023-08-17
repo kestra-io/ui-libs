@@ -1,5 +1,8 @@
 <template>
-    <div class="div-icon rounded d-flex justify-content-center">
+    <div
+        :class="[color ? `bg-${color}`: '']"
+        class="div-icon rounded d-flex justify-content-center"
+    >
         <img :src="backgroundImage" alt="task icon">
     </div>
 </template>
@@ -11,6 +14,10 @@
         props: {
             icon: {
                 type: Object,
+                default: undefined
+            },
+            color: {
+                type: String,
                 default: undefined
             }
         },

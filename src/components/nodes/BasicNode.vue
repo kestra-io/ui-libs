@@ -28,7 +28,7 @@
                 v-if="link"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, data.link)"
+                @click="$emit(EVENTS.OPEN_LINK, data)"
             >
                 <OpenInNew class="button-icon" alt="Open in new tab" />
             </span>
@@ -151,7 +151,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/variables";
+    @import "../../scss/custom";
 
     .node-wrapper {
         background-color: var(--bs-white);
@@ -167,6 +167,7 @@
         display: flex;
         z-index: 150000;
         align-items: center;
+        box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
     }
 
     .node-content {
@@ -214,11 +215,6 @@
         width: 6rem;
     }
 
-    .top-button-div {
-        width: 100%;
-        justify-content: end;
-        transform: translate(-5%, -50%) !important;
-    }
 
     .status-div {
         width: 8px;
