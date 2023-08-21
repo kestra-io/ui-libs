@@ -1,6 +1,6 @@
 <template>
     <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id }}</span>
-    <div class="position-absolute top-0 start-100 translate-middle text-white d-flex top-button-div">
+    <div class="position-absolute top-0 start-100 translate-middle text-white d-flex">
         <span
             v-if="data.collapsable"
             class="rounded-button"

@@ -6,6 +6,7 @@ import TaskNode from "./nodes/TaskNode.vue";
 import TriggerNode from "./nodes/TriggerNode.vue"
 import BasicNode from "./nodes/BasicNode.vue";
 import CollapsedClusterNode from "./nodes/CollapsedClusterNode.vue";
+import DependenciesNode from "./nodes/DependenciesNode.vue"
 
 // misc
 import ExecutionInformations from "./misc/ExecutionInformations.vue";
@@ -15,6 +16,6 @@ import TaskIcon from "./misc/TaskIcon.vue";
 // buttons
 import AddTaskButton from "./buttons/AddTaskButton.vue";
 
-export {ClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode, BasicNode, CollapsedClusterNode};
+export {ClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode, BasicNode, CollapsedClusterNode, DependenciesNode};
 export {ExecutionInformations, State, TaskIcon};
 export {AddTaskButton};

@@ -16,6 +16,27 @@ marker[id*='id=marker-custom&type=arrowclosed'] polyline {
   fill: $gray-700;
 }
 
-.vue-flow__handle-right {
+.vue-flow__handle {
   opacity: 0 !important;
+}
+
+
+.top-button-div {
+  width: 100%;
+  justify-content: end;
+  transform: translate(-5%, -50%) !important;
+}
+
+.rounded-button {
+  border-radius: 1rem;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+
+.button-icon {
+  font-size: 0.75rem;
 }

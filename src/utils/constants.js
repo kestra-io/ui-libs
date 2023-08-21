@@ -15,4 +15,5 @@ export const EVENTS = {
     "MOUSE_OVER": "mouseover",
     "MOUSE_LEAVE": "mouseleave",
     "ADD_ERROR": "addError",
+    "EXPAND_DEPENDENCIES": "expandDependencies",
 }

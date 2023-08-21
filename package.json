@@ -1,31 +1,15 @@
 {
-  "name": "@kestra/ui",
-  "version": "0.0.1",
+  "name": "@kestra-io/ui-libs",
+  "version": "0.0.2",
   "type": "module",
   "files": [
-    "dist",
+    "src",
     "package.json"
   ],
-  "main": "./dist/kestra-ui.umd.cjs",
-  "module": "./dist/kestra-ui.js",
-  "exports": {
-    ".": {
-      "import": "./dist/kestra-ui.js",
-      "require": "./dist/kestra-ui.umd.cjs"
-    },
-    "./dist/*.css": {
-      "import": "./dist/*.css",
-      "require": "./dist/*.css"
-    },
-    "./dist/*.scss": {
-      "import": "./dist/*.css",
-      "require": "./dist/*.css"
-    }
-  },
+  "main": "./src/index.js",
+  "module": "./src/index.js",
   "scripts": {
-    "prepublishOnly": "vite build",
     "dev": "vite",
-    "build": "vite build",
     "debug": "vite --debug",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path ./.gitignore"
