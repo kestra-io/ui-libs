@@ -163,6 +163,4 @@
         }
     }
 </script>
-<style scoped lang="scss">
-    @import "../../scss/custom";
-</style>
+

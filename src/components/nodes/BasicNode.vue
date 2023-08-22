@@ -151,8 +151,6 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/custom";
-
     .node-wrapper {
         background-color: var(--bs-white);
 
@@ -178,7 +176,7 @@
     }
 
     .description-button {
-        color: $gray-600;
+        color: var(--bs-gray-600);
         cursor: pointer;
         width: 25px;
     }

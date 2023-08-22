@@ -87,7 +87,6 @@
 </script>
 
 <style scoped lang="scss">
-
     .dependency-node-wrapper {
         background-color: var(--bs-white);
         color: var(--bs-black);

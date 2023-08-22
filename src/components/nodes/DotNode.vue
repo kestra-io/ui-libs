@@ -37,6 +37,7 @@
     .custom-handle {
         visibility: hidden
     }
+
     .dot {
         display: flex;
         flex-direction: column;

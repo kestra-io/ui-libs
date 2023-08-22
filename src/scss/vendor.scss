@@ -1,0 +1,12 @@
+/* bootstrap */
+@use "bootstrap";
+@use "bootstrap-dark";
+
+/* icons */
+@use "vue-material-design-icons/styles.css" as vue-material-design-icons;
+
+/* vue flow */
+@use "vue-material-design-icons/styles.css" as material-design-icons;
+@use "@vue-flow/core/dist/style.css" as vue-flow-core;
+@use "@vue-flow/core/dist/theme-default.css" as vue-flow-theme;
+@use "@vue-flow/controls/dist/style.css" as vue-flow-controls;
