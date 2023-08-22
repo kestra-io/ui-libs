@@ -7,14 +7,15 @@
     </div>
 </template>
 <script>
+    import {mapState} from "vuex";
     import {Buffer} from "buffer";
 
     export default {
         name: "TaskIcon",
         props: {
-            icon: {
-                type: Object,
-                default: undefined
+            cls: {
+                type: String,
+                required: true
             },
             color: {
                 type: String,
@@ -22,6 +23,7 @@
             }
         },
         computed: {
+            ...mapState("plugin", ["icons"]),
             backgroundImage() {
                 return `data:image/svg+xml;base64,${this.imageBase64}`
             },
@@ -35,6 +37,9 @@
                     "<path d=\"M288 32H0v448h384V128l-96-96zm64 416H32V64h224l96 96v288z\" fill=\"#0D1523FF\"/>" +
                     "</svg>", "utf8").toString("base64");
             },
+            icon() {
+                return (this.icons || {})[this.cls]
+            }
         }
     }
 </script>

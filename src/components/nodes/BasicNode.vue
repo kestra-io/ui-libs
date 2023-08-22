@@ -7,7 +7,7 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div>
-            <TaskIcon :icon="data.icon" :class="taskIconBg" />
+            <TaskIcon :icon="data.icon" :cls="data.cls" :class="taskIconBg" />
         </div>
         <div class="node-content">
             <div class="d-flex justify-content-around">
