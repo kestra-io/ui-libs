@@ -1,7 +1,7 @@
 import JsYaml from "js-yaml";
 import yaml, {Document, YAMLMap, isSeq, isMap, Pair, Scalar, YAMLSeq, LineCounter} from "yaml";
 import _cloneDeep from "lodash/cloneDeep"
-import {SECTIONS} from "./constants";
+import {SECTIONS} from "./constants.js";
 
 const TOSTRING_OPTIONS = {lineWidth: 0};
 
@@ -428,6 +428,66 @@ export default class YamlUtils {
         return children;
     }
 
+    static getParentTask(source, taskId) {
+        const yamlDoc = yaml.parseDocument(source);
+        let parentTask = null;
+        yaml.visit(yamlDoc, {
+            Map(_, map) {
+                if (map.get("id") !== taskId) {
+                    yaml.visit(map, {
+                        Map(_, childMap) {
+                            if (childMap.get("id") === taskId) {
+                                parentTask = map.get("id");
+                                return yaml.visit.BREAK;
+                            }
+                        }
+                    })
+                }
+            }
+        })
+        return parentTask;
+    }
+
+    static isTaskError(source, taskId) {
+        const yamlDoc = yaml.parseDocument(source);
+        let isTaskError = false;
+        yaml.visit(yamlDoc, {
+            Pair(_, pair) {
+                if (pair.key.value === "errors") {
+                    yaml.visit(pair, {
+                        Map(_, map) {
+                            if (map.get("id") === taskId) {
+                                isTaskError = true;
+                                return yaml.visit.BREAK;
+                            }
+                        }
+                    })
+                }
+            }
+        })
+        return isTaskError;
+    }
+
+    static isTrigger(source, taskId) {
+        const yamlDoc = yaml.parseDocument(source);
+        let isTrigger = false;
+        yaml.visit(yamlDoc, {
+            Pair(_, pair) {
+                if (pair.key.value === "triggers") {
+                    yaml.visit(pair, {
+                        Map(_, map) {
+                            if (map.get("id") === taskId) {
+                                isTrigger = true;
+                                return yaml.visit.BREAK;
+                            }
+                        }
+                    })
+                }
+            }
+        })
+        return isTrigger;
+    }
+
     static replaceIdAndNamespace(source, id, namespace) {
         return source.replace(/^(id\s*:\s*(["']?))\S*/m, "$1"+id+"$2").replace(/^(namespace\s*:\s*(["']?))\S*/m, "$1"+namespace+"$2")
     }
@@ -474,5 +534,22 @@ export default class YamlUtils {
     static flowHaveTasks(source) {
         const tasks = yaml.parseDocument(source).contents.items.find(item => item.key.value === "tasks");
         return tasks && tasks.value.items && tasks.value.items.length >= 1;
+    }
+
+    static getNextTaskId (target, flowSource, flowGraph) {
+        while (YamlUtils.extractTask(flowSource, target) === undefined) {
+            const edge = flowGraph.edges.find(e => e.source === target)
+            if (!edge) {
+                return null
+            }
+            target = edge.target
+        }
+        return target
+    }
+
+    static isTaskParallel (taskId, flowSource) {
+        const clusterTask = YamlUtils.parse(YamlUtils.extractTask(flowSource, taskId));
+        return clusterTask?.type === "io.kestra.core.tasks.flows.EachParallel" ||
+        clusterTask?.type === "io.kestra.core.tasks.flows.Parallel" ? clusterTask : undefined;
     }
 }

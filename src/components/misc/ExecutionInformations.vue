@@ -5,8 +5,6 @@
     </div>
 </template>
 <script>
-    import Delete from "vue-material-design-icons/Delete.vue";
-    import Pencil from "vue-material-design-icons/Pencil.vue";
     import {EVENTS} from "../../utils/constants"
     import moment from "moment";
     import Duration from "./Duration.vue";

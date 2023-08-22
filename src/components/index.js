@@ -8,6 +8,9 @@ import BasicNode from "./nodes/BasicNode.vue";
 import CollapsedClusterNode from "./nodes/CollapsedClusterNode.vue";
 import DependenciesNode from "./nodes/DependenciesNode.vue"
 
+// Topology Component
+import Topology from "./topology/Topology.vue";
+
 // misc
 import ExecutionInformations from "./misc/ExecutionInformations.vue";
 import State from "./misc/State.vue";
@@ -17,5 +20,6 @@ import TaskIcon from "./misc/TaskIcon.vue";
 import AddTaskButton from "./buttons/AddTaskButton.vue";
 
 export {ClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode, BasicNode, CollapsedClusterNode, DependenciesNode};
+export {Topology}
 export {ExecutionInformations, State, TaskIcon};
 export {AddTaskButton};

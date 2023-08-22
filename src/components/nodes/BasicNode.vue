@@ -7,7 +7,7 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div>
-            <TaskIcon :icon="data.icon" :cls="data.cls" :class="taskIconBg" />
+            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" />
         </div>
         <div class="node-content">
             <div class="d-flex justify-content-around">
@@ -145,6 +145,10 @@
                 default:
                     return null;
                 }
+            },
+            cls() {
+                console.log("CLS",this.data?.task ? this.data.task.type : this.data?.trigger ? this.data.trigger.type : null)
+                return this.data?.task ? this.data.task.type : this.data?.trigger ? this.data.trigger.type : null
             }
         },
     }

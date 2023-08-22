@@ -17,3 +17,5 @@ export const EVENTS = {
     "ADD_ERROR": "addError",
     "EXPAND_DEPENDENCIES": "expandDependencies",
 }
+
+export const CLUSTER_UID_SEPARATOR = "cluster_";

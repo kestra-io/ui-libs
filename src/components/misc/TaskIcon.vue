@@ -22,6 +22,9 @@
                 default: undefined
             }
         },
+        created() {
+            console.log(this.icons)
+        },
         computed: {
             ...mapState("plugin", ["icons"]),
             backgroundImage() {
@@ -38,7 +41,8 @@
                     "</svg>", "utf8").toString("base64");
             },
             icon() {
-                return (this.icons || {})[this.cls]
+                // return (this.icons || {})[this.cls]
+                return null
             }
         }
     }

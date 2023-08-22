@@ -18,14 +18,16 @@ export default defineConfig({
                 "buffer",
                 "bootstrap",
                 "@vue-flow/core",
-                "@vue-flow/background",
                 "@vue-flow/controls",
                 "yaml",
                 "vue-material-design-icons",
                 "vite-plugin-static-copy",
                 "vite",
                 "sass",
-                "@popperjs/core"
+                "@popperjs/core",
+                "yaml",
+                "js-yaml"
+
             ],
             output: {
                 // Provide global variables to use in the UMD build
