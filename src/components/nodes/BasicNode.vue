@@ -147,8 +147,7 @@
                 }
             },
             cls() {
-                console.log("CLS",this.data?.task ? this.data.task.type : this.data?.trigger ? this.data.trigger.type : null)
-                return this.data?.task ? this.data.task.type : this.data?.trigger ? this.data.trigger.type : null
+                return this.data.node?.task ? this.data.node.task.type : this.data.node?.trigger ? this.data.node.trigger.type : null
             }
         },
     }
