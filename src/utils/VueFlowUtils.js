@@ -2,6 +2,7 @@ import {MarkerType, Position, useVueFlow} from "@vue-flow/core"
 import dagre from "dagre";
 import {YamlUtils} from "../index.js";
 import Utils from "./Utils.js";
+import {CLUSTER_UID_SEPARATOR, NODE_SIZES} from "./constants.js";
 
 export default class VueFlowUtils {
 
@@ -151,11 +152,11 @@ export default class VueFlowUtils {
     }
 
     static getNodeWidth(node) {
-        return this.isTaskNode(node) || this.isTriggerNode(node) ? 184 : this.isCollapsedCluster(node) ? 150 : 5;
+        return this.isTaskNode(node) || this.isTriggerNode(node) ? NODE_SIZES.TASK_WIDTH : this.isCollapsedCluster(node) ? NODE_SIZES.COLLAPSED_CLUSTER_WIDTH : NODE_SIZES.DOT_WIDTH;
     }
 
     static getNodeHeight(node) {
-        return this.isTaskNode(node) || this.isTriggerNode(node) ? 44 : this.isCollapsedCluster(node) ? 44 : 5;
+        return this.isTaskNode(node) || this.isTriggerNode(node) ? NODE_SIZES.TASK_HEIGHT : this.isCollapsedCluster(node) ?  NODE_SIZES.COLLAPSED_CLUSTER_HEIGHT : NODE_SIZES.DOT_HEIGHT;
     }
 
     static isTaskNode(node) {
@@ -229,7 +230,7 @@ export default class VueFlowUtils {
     static getClusterTaskIdWithEndNodeUid (nodeUid, flowGraph) {
         const cluster = flowGraph.clusters.find(cluster => cluster.end === nodeUid);
         if (cluster) {
-            return Utils.splitFirst(cluster.cluster.uid, "cluster_");
+            return Utils.splitFirst(cluster.cluster.uid, CLUSTER_UID_SEPARATOR);
         }
         return undefined;
     }
@@ -347,8 +348,8 @@ export default class VueFlowUtils {
                     parentNode: parentNode,
                     position: this.getNodePosition(dagreNode, parentNode ? dagreGraph.node(parentNode) : undefined),
                     style: {
-                        width: clusterUid === "Triggers" && isHorizontal ? "350px" : dagreNode.width + "px",
-                        height: clusterUid === "Triggers" && !isHorizontal ? "180px" : dagreNode.height + "px"
+                        width: clusterUid === "Triggers" && isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_WIDTH + "px" : dagreNode.width + "px",
+                        height: clusterUid === "Triggers" && !isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_HEIGHT + "px" : dagreNode.height + "px"
                     },
                     data: {
                         collapsable: true,
@@ -404,7 +405,7 @@ export default class VueFlowUtils {
                         flowId: flowId,
                         isFlowable: this.isTaskNode(node) ? flowables.includes(taskId) : false,
                         color: nodeType != "dot" ? this.nodeColor(node, collapsed, flowSource) : null,
-                        expandable: taskId ? flowables.includes(taskId) && edgeReplacer["cluster_" + taskId] !== undefined : this.isCollapsedCluster(node),
+                        expandable: taskId ? flowables.includes(taskId) && edgeReplacer[CLUSTER_UID_SEPARATOR + taskId] !== undefined : this.isCollapsedCluster(node),
                         isReadOnly: isReadOnly,
                         link: node.task?.type === "io.kestra.core.tasks.flows.Flow" ? this.linkDatas(node.task) : false
                     },

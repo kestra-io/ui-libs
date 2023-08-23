@@ -21,6 +21,7 @@
     import {VueFlowUtils, YamlUtils} from "../../index.js";
     import Utils from "../../utils/Utils.js";
     import VueflowUtils from "../../utils/VueFlowUtils.js";
+    import {CLUSTER_UID_SEPARATOR} from "../../utils/constants.js";
 
     const props = defineProps({
         id: {
@@ -228,7 +229,7 @@
     const collapseCluster = (clusterUid, regenerate, recursive) => {
 
         const cluster = props.flowGraph.clusters.find(cluster => cluster.cluster.uid === clusterUid)
-        const nodeId = clusterUid === "Triggers" ? "Triggers" : Utils.splitFirst(clusterUid, "cluster_");
+        const nodeId = clusterUid === "Triggers" ? "Triggers" : Utils.splitFirst(clusterUid, CLUSTER_UID_SEPARATOR);
         collapsed.value = collapsed.value.concat([nodeId])
 
         hiddenNodes.value = hiddenNodes.value.concat(cluster.nodes.filter(e => e !== nodeId || recursive));
@@ -265,7 +266,7 @@
         clusterToNode.value = []
         collapsed.value = collapsed.value.filter(n => n != taskId)
 
-        collapsed.value.forEach(n => collapseCluster("cluster_" + n, false, false))
+        collapsed.value.forEach(n => collapseCluster(CLUSTER_UID_SEPARATOR + n, false, false))
 
         generateGraph();
     }

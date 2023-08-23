@@ -19,16 +19,18 @@
                 >
                     <span> {{ id }} </span>
                 </div>
-                <div
+                <span
+                    class="d-flex"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    :title="$t('show description')">
+                    :title="$t('show description')"
+                >
                     <InformationOutline
                         v-if="description"
                         @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
                         class="description-button mx-2"
                     />
-                </div>
+                </span>
             </div>
             <slot name="content"/>
         </div>
