@@ -1,6 +1,6 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "type": "module",
   "files": [
     "src",
@@ -28,7 +28,8 @@
     "vue": "^3.3.4",
     "vue-material-design-icons": "^5.2.0",
     "vuex": "^4.1.0",
-    "yaml": "^2.3.1"
+    "yaml": "^2.3.1",
+    "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
@@ -38,8 +39,5 @@
     "sass": "^1.64.0",
     "vite": "^4.4.9",
     "vite-plugin-static-copy": "^0.17.0"
-  },
-  "dependencies": {
-    "vue3-popper": "^1.5.0"
   }
 }

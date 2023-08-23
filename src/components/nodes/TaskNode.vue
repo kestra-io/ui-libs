@@ -62,9 +62,10 @@
     </basic-node>
     <Handle type="target" :position="targetPosition"/>
 </template>
-
-<script>
+<script setup>
     import BasicNode from "./BasicNode.vue";
+</script>
+<script>
     import {Handle} from "@vue-flow/core";
     import State from "../../utils/state.js";
     import {EVENTS, SECTIONS} from "../../utils/constants.js";
@@ -78,6 +79,14 @@
 
     export default {
         name: "Task",
+        components: {
+            Pencil,
+            Delete,
+            ExecutionInformations,
+            Handle,
+            TextBoxSearch,
+            AlertOutline,
+        },
         inheritAttrs: false,
         mounted(){
             const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
@@ -155,15 +164,6 @@
             EVENTS.DELETE,
             EVENTS.ADD_TASK
         ],
-        components: {
-            Pencil,
-            Delete,
-            ExecutionInformations,
-            Handle,
-            BasicNode,
-            TextBoxSearch,
-            AlertOutline,
-        },
         props: {
             data: {
                 type: Object,

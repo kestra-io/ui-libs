@@ -34,7 +34,9 @@
     </basic-node>
     <Handle type="target" :position="targetPosition" />
 </template>
-
+<script setup>
+    import BasicNode from "./BasicNode.vue";
+</script>
 <script>
     import BasicNode from "./BasicNode.vue";
     import {Handle} from "@vue-flow/core";
@@ -82,7 +84,6 @@
         components: {
             Delete, Pencil,
             Handle,
-            BasicNode,
         },
         props: {
             data: {
