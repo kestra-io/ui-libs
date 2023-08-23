@@ -6,8 +6,11 @@
             class="rounded-button"
             :class="[`bg-${data.color}`]"
             @click="collapse()"
+            data-bs-toggle="tooltip"
+            data-bs-trigger="hover"
+            :title="$t('collapse')"
         >
-            <ArrowCollapse class="button-icon" alt="Collapse task" />
+            <ArrowCollapse class="button-icon" alt="Collapse task"/>
         </span>
     </div>
 </template>
@@ -24,8 +27,31 @@
 
 </script>
 <script>
+    import {Tooltip} from "bootstrap";
+
     export default {
         inheritAttrs: false,
+        data() {
+            return {
+                tooltips: [],
+            }
+        },
+        mounted() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl, {
+                    placement: "top"
+                })
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
+        }
     }
 </script>
 <style scoped lang="scss">

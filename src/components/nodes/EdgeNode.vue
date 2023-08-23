@@ -3,8 +3,14 @@
     import {EdgeLabelRenderer, getSmoothStepPath} from "@vue-flow/core";
     import AddTaskButton from "../buttons/AddTaskButton.vue";
     import {EVENTS} from "../../utils/constants.js";
+    import {Tooltip} from "bootstrap";
 
     export default {
+        data() {
+            return {
+                tooltips: [],
+            }
+        },
         props: {
             id: String,
             data: Object,
@@ -31,6 +37,22 @@
             return {
                 path,
             };
+        },
+        mounted(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl, {
+                    trigger : "hover"
+                })
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
         },
         inheritAttrs: false,
     };
@@ -61,6 +83,9 @@
                 v-if="!data.disabled && data.haveAdd != undefined"
                 :add-task="true"
                 @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('add task')"
             />
         </div>
     </EdgeLabelRenderer>

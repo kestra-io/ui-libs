@@ -5,42 +5,53 @@
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
+        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]"/>
         <div>
-            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" />
+            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg"/>
         </div>
         <div class="node-content">
             <div class="d-flex justify-content-around">
                 <div class="text-truncate task-title">
                     <span> {{ id }} </span>
                 </div>
-                <InformationOutline
-                    v-if="description"
-                    @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
-                    class="description-button mx-2"
-                />
+                <div
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    :title="$t('show description')">
+                    <InformationOutline
+                        v-if="description"
+                        @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
+                        class="description-button mx-2"
+                    />
+                </div>
             </div>
-            <slot name="content" />
+            <slot name="content"/>
         </div>
         <div class="position-absolute top-0 text-white d-flex top-button-div">
-            <slot name="badge-button-before" />
+            <slot name="badge-button-before"/>
             <span
                 v-if="link"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, data)"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('open')"
             >
-                <OpenInNew class="button-icon" alt="Open in new tab" />
+                <OpenInNew class="button-icon" alt="Open in new tab"/>
             </span>
             <span
                 v-if="expandable"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND)"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('expand')"
             >
-                <ArrowExpand class="button-icon" alt="Expand task" />
+                <ArrowExpand class="button-icon" alt="Expand task"/>
             </span>
-            <slot name="badge-button-after" />
+            <slot name="badge-button-after"/>
         </div>
     </div>
 </template>
@@ -51,6 +62,7 @@
     import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
+    import {Tooltip} from "bootstrap";
 
     export default {
         components: {
@@ -58,6 +70,22 @@
             TaskIcon,
             InformationOutline,
             OpenInNew
+        },
+        mounted(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl, {
+                    trigger : "hover"
+                })
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
         },
         emits: [
             EVENTS.EXPAND,
@@ -134,16 +162,16 @@
             },
             stateColor() {
                 switch (this.state) {
-                case "RUNNING":
-                    return "primary"
-                case "SUCCESS":
-                    return "success"
-                case "WARNING":
-                    return "warning"
-                case "FAILED":
-                    return "danger"
-                default:
-                    return null;
+                    case "RUNNING":
+                        return "primary"
+                    case "SUCCESS":
+                        return "success"
+                    case "WARNING":
+                        return "warning"
+                    case "FAILED":
+                        return "danger"
+                    default:
+                        return null;
                 }
             },
             cls() {

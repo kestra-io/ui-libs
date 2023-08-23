@@ -21,6 +21,9 @@
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, data)"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('open')"
             >
                 <OpenInNew class="button-icon" alt="Open in new tab" />
             </span>
@@ -28,6 +31,9 @@
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND_DEPENDENCIES, data)"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('expand')"
             >
                 <ArrowExpandAll class="button-icon" alt="Expand task" />
             </span>
@@ -44,6 +50,7 @@
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import ArrowExpandAll from "vue-material-design-icons/ArrowExpandAll.vue";
     import {EVENTS} from "../../utils/constants.js";
+    import {Tooltip} from "bootstrap";
 
     export default {
         name: "Dependencies",
@@ -55,6 +62,22 @@
             EVENTS.MOUSE_OVER,
             EVENTS.MOUSE_LEAVE,
         ],
+        mounted(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl, {
+                    trigger : "hover"
+                })
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
+        },
         computed: {
             EVENTS() {
                 return EVENTS

@@ -19,22 +19,31 @@
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id, taskRuns})"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('show task logs')"
             >
                 <TextBoxSearch class="button-icon" alt="Show logs"/>
             </span>
-                <span
-                    v-if="!execution && !data.isReadOnly && data.isFlowable"
-                    class="rounded-button"
-                    :class="[`bg-${color}`]"
-                    @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
-                >
-                    <AlertOutline class="button-icon" alt="Edit task"/>
-                </span>
+            <span
+                v-if="!execution && !data.isReadOnly && data.isFlowable"
+                class="rounded-button"
+                :class="[`bg-${color}`]"
+                @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('add error handler')"
+            >
+                <AlertOutline class="button-icon" alt="Edit task"/>
+            </span>
             <span
                 v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('edit')"
             >
                 <Pencil class="button-icon" alt="Edit task"/>
             </span>
@@ -43,6 +52,9 @@
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TASKS})"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="$t('delete')"
             >
                 <Delete class="button-icon" alt="Delete task"/>
             </span>
@@ -62,10 +74,25 @@
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
     import {mapState} from "vuex";
+    import {Tooltip} from "bootstrap"
 
     export default {
         name: "Task",
         inheritAttrs: false,
+        mounted(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl)
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
+        },
         computed: {
             ...mapState("execution", ["execution"]),
             SECTIONS() {

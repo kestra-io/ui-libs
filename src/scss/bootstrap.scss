@@ -66,6 +66,16 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 }
 
 
+.tooltip {
+  color: $black;
+  background-color: $card-bg;
+  border-radius: $border-radius-lg;
+  padding: calc($spacer/3);
+  font-size: $font-size-xs;
+  border: 1px solid $border-color;
+}
+
+
 // overload
 .font-monospace {
   font-size: $font-size-base * 0.7;
