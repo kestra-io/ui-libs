@@ -38,7 +38,7 @@
                 v-if="link"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, data)"
+                @click="$emit(EVENTS.OPEN_LINK, linkData)"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 :title="$t('open')"
@@ -68,6 +68,8 @@
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import {Tooltip} from "bootstrap";
+    import {VueFlowUtils} from "../../index.js";
+    import {mapState} from "vuex";
 
     export default {
         components: {
@@ -146,6 +148,7 @@
             };
         },
         computed: {
+            ...mapState("execution", ["execution"]),
             EVENTS() {
                 return EVENTS
             },
@@ -178,6 +181,12 @@
                     default:
                         return null;
                 }
+            },
+            linkData() {
+                if(this.data.node.task) {
+                    return {link: VueFlowUtils.linkDatas(this.data.node.task, this.execution)}
+                }
+                return null
             },
             cls() {
                 return this.data.node?.task ? this.data.node.task.type : this.data.node?.trigger ? this.data.node.trigger.type : null
@@ -246,7 +255,7 @@
             color: var(--bs-white);
         }
 
-        max-width: 6rem;
+        width: 6rem;
     }
 
 

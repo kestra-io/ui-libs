@@ -201,9 +201,9 @@ export default class VueFlowUtils {
     static linkDatas(task, execution) {
         const data = {id: task.flowId, namespace: task.namespace}
         if (execution) {
-            const taskrun = execution.taskRunList.find(r => r.taskId == task.id && r.outputs.executionId)
+            const taskrun = execution.taskRunList.find(r => r.taskId === task.id && r.outputs.executionId)
             if (taskrun) {
-                data.executionId = taskrun.outputs.executionId
+                data.executionId = taskrun?.outputs.executionId
             }
         }
         return data
