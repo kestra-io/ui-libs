@@ -11,7 +11,12 @@
         </div>
         <div class="node-content">
             <div class="d-flex justify-content-around">
-                <div class="text-truncate task-title">
+                <div
+                    class="text-truncate task-title"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    :title="id"
+                >
                     <span> {{ id }} </span>
                 </div>
                 <div
@@ -71,11 +76,11 @@
             InformationOutline,
             OpenInNew
         },
-        mounted(){
+        mounted() {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
             this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new Tooltip(tooltipTriggerEl, {
-                    trigger : "hover"
+                    trigger: "hover"
                 })
             })
         },
@@ -241,7 +246,7 @@
             color: var(--bs-white);
         }
 
-        width: 6rem;
+        max-width: 6rem;
     }
 
 

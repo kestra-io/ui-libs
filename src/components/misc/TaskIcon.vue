@@ -2,6 +2,9 @@
     <div
         :class="[color ? `bg-${color}`: '']"
         class="div-icon rounded d-flex justify-content-center"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        :title="cls"
     >
         <img :src="backgroundImage" alt="task icon">
     </div>
@@ -9,18 +12,39 @@
 <script>
     import {mapState} from "vuex";
     import {Buffer} from "buffer";
+    import {Tooltip} from "bootstrap";
 
     export default {
         name: "TaskIcon",
         props: {
+            customIcon: {
+                type: String,
+                default: undefined
+            },
             cls: {
                 type: String,
-                required: true
+                default: undefined
             },
             color: {
                 type: String,
                 default: undefined
             }
+        },
+        mounted(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
+            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new Tooltip(tooltipTriggerEl, {
+                    trigger : "hover"
+                })
+            })
+        },
+        beforeUnmount() {
+            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
+                const tooltip = Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.dispose();
+                }
+            });
         },
         computed: {
             ...mapState("plugin", ["icons"]),
@@ -38,7 +62,7 @@
                     "</svg>", "utf8").toString("base64");
             },
             icon() {
-                return (this.icons || {})[this.cls]
+                return this.cls ? (this.icons || {})[this.cls] : this.customIcon;
             }
         }
     }

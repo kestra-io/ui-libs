@@ -4,12 +4,22 @@
         :class="[`border-${data.color}`]"
         class="dependency-node-wrapper rounded-3 border"
     >
-        <TaskIcon color="pink" :icon="{icon: icon}" />
+        <TaskIcon color="pink" :custom-icon="{icon: icon}" />
         <div class="dependency-text d-flex flex-column">
-            <div class="dependency-flow-text">
+            <div 
+                class="dependency-flow-text text-truncate"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="data.flowId"
+            >
                 {{ data.flowId }}
             </div>
-            <div class="dependency-namespace-text">
+            <div 
+                class="dependency-namespace-text text-truncate"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="data.namespace"
+            >
                 {{ data.namespace }}
             </div>
         </div>
@@ -62,11 +72,11 @@
             EVENTS.MOUSE_OVER,
             EVENTS.MOUSE_LEAVE,
         ],
-        mounted(){
+        mounted() {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
             this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new Tooltip(tooltipTriggerEl, {
-                    trigger : "hover"
+                    trigger: "hover"
                 })
             })
         },
@@ -135,12 +145,14 @@
     .dependency-flow-text {
         font-size: 0.85rem;
         font-weight: 700;
+        max-width: 121px;
     }
 
     .dependency-namespace-text {
         font-size: 0.625rem;
         font-weight: 400;
         color: #564A75;
+        max-width: 121px;
 
         html.dark & {
             color: #E3DBFF;
