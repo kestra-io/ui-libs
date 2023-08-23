@@ -89,7 +89,7 @@ export default class VueFlowUtils {
     static generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clusterCollapseToNode, edgeReplacer, collapsed, clusterToNode) {
         const dagreGraph = new dagre.graphlib.Graph({compound: true})
         dagreGraph.setDefaultEdgeLabel(() => ({}))
-        dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", edgesep: 5, ranksep: 40})
+        dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB"})
 
         for (const node of flowGraph.nodes) {
             if (!hiddenNodes.includes(node.uid)) {

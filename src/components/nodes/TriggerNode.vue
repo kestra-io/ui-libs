@@ -9,7 +9,7 @@
     >
         <template #badge-button-before>
             <span
-                v-if="!data.execution && !data.isReadOnly"
+                v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.trigger, section: SECTIONS.TRIGGERS})"
@@ -17,7 +17,7 @@
                 <Pencil class="button-icon" alt="Edit task" />
             </span>
             <span
-                v-if="!data.execution && !data.isReadOnly"
+                v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TRIGGERS})"
@@ -32,6 +32,7 @@
 <script>
     import BasicNode from "./BasicNode.vue";
     import {Handle} from "@vue-flow/core";
+    import {mapState} from "vuex";
     import {EVENTS, SECTIONS} from "../../utils/constants.js";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
@@ -40,6 +41,7 @@
         name: "Task",
         inheritAttrs: false,
         computed: {
+            ...mapState("execution", ["execution"]),
             SECTIONS() {
                 return SECTIONS
             },

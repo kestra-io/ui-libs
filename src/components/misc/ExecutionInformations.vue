@@ -83,6 +83,10 @@
             execution: {
                 type: Object,
                 default: null
+            },
+            task: {
+                type: Object,
+                default: null
             }
         }
 
@@ -98,7 +102,6 @@
             left: 0;
             top: 50%;
             height: 50%;
-            border-left: 1px solid var(--bs-gray-100);
             transform: translateY(-50%);
             z-index: 500;
         }

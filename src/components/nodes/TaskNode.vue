@@ -1,5 +1,5 @@
 <template>
-    <Handle type="source" :position="sourcePosition" />
+    <Handle type="source" :position="sourcePosition"/>
     <basic-node
         :id="id"
         :data="data"
@@ -11,7 +11,7 @@
         @mouseleave="forwardEvent(EVENTS.MOUSE_LEAVE)"
     >
         <template #content>
-            <execution-informations v-if="data.execution" :color="color" />
+            <execution-informations v-if="execution" :execution="execution" :task="data.node.task" :color="color"/>
         </template>
         <template #badge-button-before>
             <span
@@ -20,35 +20,35 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id, taskRuns})"
             >
-                <TextBoxSearch class="button-icon" alt="Show logs" />
+                <TextBoxSearch class="button-icon" alt="Show logs"/>
             </span>
+                <span
+                    v-if="!execution && !data.isReadOnly && data.isFlowable"
+                    class="rounded-button"
+                    :class="[`bg-${color}`]"
+                    @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
+                >
+                    <AlertOutline class="button-icon" alt="Edit task"/>
+                </span>
             <span
-                v-if="!data.execution && !data.isReadOnly && data.isFlowable"
-                class="rounded-button"
-                :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
-            >
-                <InformationOutline class="button-icon" alt="Edit task" />
-            </span>
-            <span
-                v-if="!data.execution && !data.isReadOnly"
+                v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <Pencil class="button-icon" alt="Edit task" />
+                <Pencil class="button-icon" alt="Edit task"/>
             </span>
             <span
-                v-if="!data.execution && !data.isReadOnly"
+                v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TASKS})"
             >
-                <Delete class="button-icon" alt="Delete task" />
+                <Delete class="button-icon" alt="Delete task"/>
             </span>
         </template>
     </basic-node>
-    <Handle type="target" :position="targetPosition" />
+    <Handle type="target" :position="targetPosition"/>
 </template>
 
 <script>
@@ -60,12 +60,14 @@
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
-    import InformationOutline from "vue-material-design-icons/InformationOutline.vue"
+    import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
+    import {mapState} from "vuex";
 
     export default {
         name: "Task",
         inheritAttrs: false,
         computed: {
+            ...mapState("execution", ["execution"]),
             SECTIONS() {
                 return SECTIONS
             },
@@ -74,9 +76,6 @@
             },
             color() {
                 return this.data.color ?? "primary"
-            },
-            execution() {
-                return this.data.execution
             },
             taskRunList() {
                 return this.execution && this.execution.taskRunList ? this.execution.taskRunList : []
@@ -136,7 +135,7 @@
             Handle,
             BasicNode,
             TextBoxSearch,
-            InformationOutline
+            AlertOutline,
         },
         props: {
             data: {
