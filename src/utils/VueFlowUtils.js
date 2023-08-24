@@ -212,11 +212,11 @@ export default class VueFlowUtils {
 
     static nodeColor(node, collapsed, flowSource) {
         if (this.isTaskNode(node)) {
-            if (collapsed.includes(node.uid)) {
-                return "blue";
-            }
             if (YamlUtils.isTaskError(flowSource, node.task.id)) {
                 return "danger"
+            }
+            if (collapsed.includes(node.uid)) {
+                return "blue";
             }
             if (node.task.type === "io.kestra.core.tasks.flows.Flow") {
                 return "primary"
@@ -230,8 +230,10 @@ export default class VueFlowUtils {
     static getClusterTaskIdWithEndNodeUid (nodeUid, flowGraph) {
         const cluster = flowGraph.clusters.find(cluster => cluster.end === nodeUid);
         if (cluster) {
+
             return Utils.splitFirst(cluster.cluster.uid, CLUSTER_UID_SEPARATOR);
         }
+
         return undefined;
     }
 
@@ -272,6 +274,9 @@ export default class VueFlowUtils {
 
     static getEdgeColor(edge, flowSource) {
         if (YamlUtils.isTaskError(flowSource, edge.source) || YamlUtils.isTaskError(flowSource, edge.target)) {
+            return "danger"
+        }
+        if (this.isClusterError(flowSource, edge.source) || this.isClusterError(flowSource, edge.target)) {
             return "danger"
         }
         return null;
@@ -339,6 +344,7 @@ export default class VueFlowUtils {
                 }
 
                 const clusterUid = cluster.cluster.uid;
+                const isClusterError = YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid, CLUSTER_UID_SEPARATOR))
                 const dagreNode = dagreGraph.node(clusterUid)
                 const parentNode = cluster.parents ? cluster.parents[cluster.parents.length - 1] : undefined;
 
@@ -353,9 +359,9 @@ export default class VueFlowUtils {
                     },
                     data: {
                         collapsable: true,
-                        color: clusterUid === "Triggers" ? "success" : "blue"
+                        color: clusterUid === "Triggers" ? "success" : isClusterError ? "danger" : "blue"
                     },
-                    class: `bg-light-${clusterUid === "Triggers" ? "success" : "blue"}-border rounded p-2`,
+                    class: `bg-light-${clusterUid === "Triggers" ? "success" : isClusterError ? "danger" : "blue"}-border rounded p-2`,
                 })
             }
         }
@@ -405,11 +411,12 @@ export default class VueFlowUtils {
                         flowId: flowId,
                         isFlowable: this.isTaskNode(node) ? flowables.includes(taskId) : false,
                         color: nodeType != "dot" ? this.nodeColor(node, collapsed, flowSource) : null,
-                        expandable: taskId ? flowables.includes(taskId) && edgeReplacer[CLUSTER_UID_SEPARATOR + taskId] !== undefined : this.isCollapsedCluster(node),
+                        expandable: taskId ? edgeReplacer[CLUSTER_UID_SEPARATOR + taskId] !== undefined : this.isCollapsedCluster(node),
                         isReadOnly: isReadOnly,
-                        link: node.task?.type === "io.kestra.core.tasks.flows.Flow" ? this.linkDatas(node.task) : false
+                        link: node.task?.type === "io.kestra.core.tasks.flows.Flow" ? this.linkDatas(node.task) : false,
+                        iconComponent: this.isCollapsedCluster(node) ? "webhook" : null
                     },
-                    class: node.type === "collapsedcluster" ? `bg-light-${node.uid === "Triggers" ? "success" : "blue"}-border rounded p-2` : "",
+                    class: node.type === "collapsedcluster" ? `bg-light-${node.uid === "Triggers" ? "success" : YamlUtils.isTaskError(flowSource, taskId) ? "danger" : "blue"}-border rounded` : "",
                 })
             }
         }
@@ -422,7 +429,7 @@ export default class VueFlowUtils {
                     target: newEdge.target,
                     type: "edge",
                     markerEnd: YamlUtils.extractTask(flowSource, newEdge.target) ? {
-                        id: "marker-custom",
+                        id: YamlUtils.isTaskError(flowSource, newEdge.target) ? "marker-danger" : "marker-custom",
                         type: MarkerType.ArrowClosed,
                     } : "",
                     data: {
@@ -440,6 +447,21 @@ export default class VueFlowUtils {
             }
         }
         return elements;
+    }
+
+    static isClusterError(flowSource, clusterUid) {
+        if(clusterUid.startsWith(CLUSTER_UID_SEPARATOR)) {
+            if(clusterUid.endsWith("_end")) {
+
+                return YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid.substring(0, clusterUid.length - 4), CLUSTER_UID_SEPARATOR));
+            }
+            if(clusterUid.endsWith("_start")) {
+
+                return YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid.substring(0, clusterUid.length - 6), CLUSTER_UID_SEPARATOR));
+            }
+        }
+
+        return false
     }
 
 }

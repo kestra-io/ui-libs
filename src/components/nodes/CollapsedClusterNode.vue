@@ -1,32 +1,40 @@
 <template>
-    <Handle type="source" :position="sourcePosition" />
+    <Handle type="source" :position="sourcePosition"/>
     <div class="collapsed-cluster-node">
-        <span>{{ id }}</span>
-        <div class="position-absolute top-0 start-100 translate-middle text-white d-flex top-button-div">
-            <slot name="badge-button-before" />
+        <span class="node-text">
+            <component v-if="data.iconComponent" :is="data.iconComponent" :class="`text-${data.color} me-2`" />
+            {{ id }}
+        </span>
+        <div class="position-absolute top-0 text-white d-flex top-button-div">
+            <slot name="badge-button-before"/>
             <span
                 v-if="expandable"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND, id)"
             >
-                <ArrowExpand class="button-icon" alt="Expand task" />
+                <ArrowExpand class="button-icon" alt="Expand task"/>
             </span>
-            <slot name="badge-button-after" />
+            <slot name="badge-button-after"/>
         </div>
     </div>
-    <Handle type="target" :position="targetPosition" />
+    <Handle type="target" :position="targetPosition"/>
 </template>
 
 <script>
     import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
+    import Webhook from "vue-material-design-icons/Webhook.vue";
     import {Handle} from "@vue-flow/core";
 
     export default {
         components: {
             Handle,
-            ArrowExpand
+            ArrowExpand,
+            Webhook
+        },
+        created(){
+            console.log(this.data)
         },
         inheritAttrs: false,
         props: {
@@ -45,7 +53,7 @@
             data: {
                 type: Object,
                 required: true
-            }
+            },
         },
         data() {
             return {
@@ -75,6 +83,16 @@
     .collapsed-cluster-node {
         width: 150px;
         height: 44px;
+        padding: 8px;
+    }
+
+    .node-text {
+        color: black;
+        font-size: 0.90rem;
+        display: flex;
+        html.dark & {
+            color: white;
+        }
     }
 
     .rounded-button {

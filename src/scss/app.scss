@@ -13,8 +13,17 @@ marker[id*='id=marker-custom&type=arrowclosed'] polyline {
   fill: $gray-700;
 }
 
+marker[id*='id=marker-danger&type=arrowclosed'] polyline {
+  stroke: $danger;
+  fill: $danger;
+}
+
 .vue-flow__handle {
   opacity: 0 !important;
+}
+
+.vue-flow__edge-path {
+  stroke: $gray-700;
 }
 
 
@@ -32,10 +41,11 @@ marker[id*='id=marker-custom&type=arrowclosed'] polyline {
   justify-content: center;
   align-items: center;
   margin-left: 0.25rem;
+  z-index: 2000;
 }
 
 .button-icon {
-  font-size: 0.75rem;
+  font-size: 0.66rem;
 }
 
 

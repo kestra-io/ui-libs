@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="[color ? `bg-${color}`: '']"
+        :class="[color ? `bg-${color}`: 'bg-white']"
         class="div-icon rounded d-flex justify-content-center"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
@@ -18,7 +18,7 @@
         name: "TaskIcon",
         props: {
             customIcon: {
-                type: String,
+                type: Object,
                 default: undefined
             },
             cls: {
@@ -73,7 +73,9 @@
         margin: 0.2rem;
         width: 25px;
         height: 25px;
-        background-color: var(--bs-white);
         border: 0.4px solid var(--bs-border-color);
+    }
+    .bg-white {
+        background-color: var(--bs-white);
     }
 </style>

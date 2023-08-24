@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="[`border-${!expandable ? data.color : 'blue'}`]"
+        :class="[`border-${borderColor}`]"
         class="node-wrapper rounded-3 border"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
@@ -151,6 +151,10 @@
         },
         computed: {
             ...mapState("execution", ["execution"]),
+            borderColor() {
+                const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
+                return color ? color : this.expandable ? "blue" : null
+            },
             EVENTS() {
                 return EVENTS
             },
@@ -223,7 +227,7 @@
     }
 
     .description-button {
-        color: var(--bs-gray-600);
+        color: var(--bs-gray-700);
         cursor: pointer;
         width: 25px;
     }

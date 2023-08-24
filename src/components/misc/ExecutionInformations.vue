@@ -1,6 +1,7 @@
 <template>
     <div class="btn-group content rounded-1 content-children">
-        <span v-if="taskRuns.length > 0">{{ taskRuns.length }} task runs</span>
+        <span v-if="taskRuns.length > 0" class="taskRunCount">{{ taskRuns.length }} task runs</span>
+        <span v-if="taskRuns.length > 0">|</span>
         <span><duration :histories="histories" /></span>
     </div>
 </template>
@@ -115,6 +116,6 @@
         align-self: stretch;
         pointer-events: none;
         cursor: default;
-        font-size: 0.75rem;
+        font-size: 0.70rem;
     }
 </style>

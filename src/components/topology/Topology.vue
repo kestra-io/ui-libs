@@ -22,6 +22,7 @@
     import Utils from "../../utils/Utils.js";
     import VueflowUtils from "../../utils/VueFlowUtils.js";
     import {CLUSTER_UID_SEPARATOR} from "../../utils/constants.js";
+    import {Background} from "@vue-flow/background";
 
     const props = defineProps({
         id: {
@@ -98,6 +99,10 @@
     })
 
     watch(() => props.flowGraph, () => {
+        generateGraph();
+    })
+
+    watch(() => props.isHorizontal, () => {
         generateGraph();
     })
 
@@ -285,6 +290,7 @@
         :elevate-nodes-on-select="false"
         :elevate-edges-on-select="false"
     >
+        <Background />
         <template #node-cluster="clusterProps">
             <ClusterNode
                 v-bind="clusterProps"

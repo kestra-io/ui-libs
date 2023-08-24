@@ -38,7 +38,6 @@
     import BasicNode from "./BasicNode.vue";
 </script>
 <script>
-    import BasicNode from "./BasicNode.vue";
     import {Handle} from "@vue-flow/core";
     import {mapState} from "vuex";
     import {EVENTS, SECTIONS} from "../../utils/constants.js";
@@ -110,18 +109,3 @@
         }
     }
 </script>
-<style scoped lang="scss">
-    .rounded-button {
-        border-radius: 1rem;
-        width: 1rem;
-        height: 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 0.25rem;
-    }
-
-    .button-icon {
-        font-size: 0.75rem;
-    }
-</style>

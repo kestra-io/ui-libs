@@ -4,7 +4,7 @@
             <template #content>
                 <span v-for="(history, index) in histories" :key="'tt-' + index">
                     <span class="square" :class="squareClass(history.state)" />
-                    <strong>{{ history.state }}:</strong> {{ $filters.date(history.date, 'iso') }} <br>
+                    <strong>{{ history.state }}:</strong>{{ $filters.date(history.date, 'iso') }} <br>
                 </span>
             </template>
 
