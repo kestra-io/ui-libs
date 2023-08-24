@@ -1,6 +1,6 @@
 import JsYaml from "js-yaml";
 import yaml, {Document, YAMLMap, isSeq, isMap, Pair, Scalar, YAMLSeq, LineCounter} from "yaml";
-import _cloneDeep from "lodash/cloneDeep.js"
+import {cloneDeep} from "lodash/cloneDeep"
 import {SECTIONS} from "./constants.js";
 
 const TOSTRING_OPTIONS = {lineWidth: 0};
@@ -15,7 +15,7 @@ export default class YamlUtils {
             delete value.deleted
         }
 
-        return JsYaml.dump(YamlUtils._transform(_cloneDeep(value)), {
+        return JsYaml.dump(YamlUtils._transform(cloneDeep(value)), {
             lineWidth: -1,
             noCompatMode: true,
             quotingType: "\"",
