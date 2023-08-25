@@ -1,5 +1,5 @@
 <template>
-    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id }}</span>
+    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id.replace("cluster_", "") }}</span>
     <div class="position-absolute top-0 start-100 translate-middle text-white d-flex">
         <span
             v-if="data.collapsable"
@@ -69,9 +69,15 @@
         font-size: 0.75rem;
     }
 
+    .badge {
+        top: -10px;
+        position: relative;
+        left: -3px;
+    }
+
     .text-color {
         color: var(--bs-white);
-        font-size: 0.625rem;
+        font-size: 0.5rem;
         font-weight: 700;
         padding: 0.25rem 0.5rem;
     }
