@@ -96,6 +96,7 @@
 <style scoped>
     .content {
         display: flex;
+        color: var(--bs-gray-700);
 
         *:not(:first-child)::before {
             content: "";

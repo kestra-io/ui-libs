@@ -4,6 +4,7 @@
         :id="id"
         :data="data"
         :state="state"
+        :class="classes"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, id)"
         @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
@@ -151,6 +152,11 @@
                     .sort()
                     .map((j) => j[1])
                 return result[0];
+            },
+            classes() {
+                return {
+                    "execution-no-taskrun": this.taskRuns && this.taskRuns.length === 0,
+                }
             },
         },
         emits: [

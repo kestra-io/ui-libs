@@ -1,23 +1,23 @@
 <template>
     <div
-        :class="[`border-${borderColor}`]"
+        :class="classes"
         class="node-wrapper rounded-3 border"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]"/>
+        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div>
-            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg"/>
+            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" />
         </div>
         <div class="node-content">
-            <div class="d-flex justify-content-around">
+            <div class="d-flex node-title">
                 <div
                     class="text-truncate task-title"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     :title="id"
                 >
-                    <span> {{ id }} </span>
+                    <span>{{ id }}</span>
                 </div>
                 <span
                     class="d-flex"
@@ -28,14 +28,14 @@
                 >
                     <InformationOutline
                         @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
-                        class="description-button mx-2"
+                        class="description-button ms-2"
                     />
                 </span>
             </div>
-            <slot name="content"/>
+            <slot name="content" />
         </div>
         <div class="position-absolute top-0 text-white d-flex top-button-div">
-            <slot name="badge-button-before"/>
+            <slot name="badge-button-before" />
             <span
                 v-if="link"
                 class="rounded-button"
@@ -45,7 +45,7 @@
                 data-bs-placement="top"
                 :title="$t('open')"
             >
-                <OpenInNew class="button-icon" alt="Open in new tab"/>
+                <OpenInNew class="button-icon" alt="Open in new tab" />
             </span>
             <span
                 v-if="expandable"
@@ -56,9 +56,9 @@
                 data-bs-placement="top"
                 :title="$t('expand')"
             >
-                <ArrowExpand class="button-icon" alt="Expand task"/>
+                <ArrowExpand class="button-icon" alt="Expand task" />
             </span>
-            <slot name="badge-button-after"/>
+            <slot name="badge-button-after" />
         </div>
     </div>
 </template>
@@ -189,6 +189,13 @@
                         return null;
                 }
             },
+            classes() {
+                return {
+                    [`border-${this.borderColor}`]: this.borderColor,
+                    "disabled": this.data.node.task?.disabled,
+                    [this.$attrs.class]: true
+                }
+            },
             linkData() {
                 if(this.data.node.task) {
                     return {link: VueFlowUtils.linkDatas(this.data.node.task, this.execution)}
@@ -218,6 +225,23 @@
         z-index: 150000;
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
+
+        &.execution-no-taskrun {
+            opacity: 0.6;
+        }
+
+        &.disabled {
+            .task-title {
+                color: var(--bs-gray-500);
+                text-decoration: line-through;
+
+                html.dark & {
+                    color: var(--bs-gray-600);
+                }
+            }
+
+            opacity: 0.4;
+        }
     }
 
     .node-content {
@@ -225,12 +249,15 @@
         flex-direction: column;
         justify-content: center;
         margin-left: 0.7rem;
+
+        > .node-title {
+            width: 125px;
+        }
     }
 
     .description-button {
         color: var(--bs-gray-700);
         cursor: pointer;
-        width: 25px;
     }
 
     .material-design-icon.icon-rounded {
@@ -255,14 +282,11 @@
     .task-title {
         font-size: 0.75rem;
         font-weight: 700;
-        line-height: 1.5rem;
         color: var(--bs-black);
 
         html.dark & {
             color: var(--bs-white);
         }
-
-        width: 6rem;
     }
 
 
