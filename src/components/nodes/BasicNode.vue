@@ -21,12 +21,12 @@
                 </div>
                 <span
                     class="d-flex"
+                    v-if="description"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     :title="$t('show description')"
                 >
                     <InformationOutline
-                        v-if="description"
                         @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
                         class="description-button mx-2"
                     />
@@ -105,7 +105,8 @@
             EVENTS.ADD_ERROR,
             EVENTS.EDIT,
             EVENTS.DELETE,
-            EVENTS.ADD_TASK
+            EVENTS.ADD_TASK,
+            EVENTS.SHOW_DESCRIPTION
         ],
         inheritAttrs: false,
         props: {

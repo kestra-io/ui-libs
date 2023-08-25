@@ -75,7 +75,4 @@
         height: 25px;
         border: 0.4px solid var(--bs-border-color);
     }
-    .bg-white {
-        background-color: var(--bs-white);
-    }
 </style>

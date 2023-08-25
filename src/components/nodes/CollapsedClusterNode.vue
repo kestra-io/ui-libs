@@ -33,9 +33,6 @@
             ArrowExpand,
             Webhook
         },
-        created(){
-            console.log(this.data)
-        },
         inheritAttrs: false,
         props: {
             id: {

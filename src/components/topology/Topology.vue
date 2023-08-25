@@ -21,7 +21,7 @@
     import {VueFlowUtils, YamlUtils} from "../../index.js";
     import Utils from "../../utils/Utils.js";
     import VueflowUtils from "../../utils/VueFlowUtils.js";
-    import {CLUSTER_UID_SEPARATOR} from "../../utils/constants.js";
+    import {CLUSTER_UID_SEPARATOR, EVENTS} from "../../utils/constants.js";
     import {Background} from "@vue-flow/background";
 
     const props = defineProps({
@@ -80,13 +80,13 @@
 
     const emit = defineEmits(
         [
-            "edit",
-            "delete",
-            "open-link",
-            "show-logs",
-            "show-description",
+            EVENTS.EDIT,
+            EVENTS.DELETE,
+            EVENTS.OPEN_LINK,
+            EVENTS.SHOW_LOGS,
+            EVENTS.SHOW_DESCRIPTION,
             "on-add-flowable-error",
-            "add-task",
+            EVENTS.ADD_TASK,
             "toggle-orientation",
             "loading",
             "swapped-task",
@@ -326,6 +326,7 @@
                 :is-allowed-edit="isAllowedEdit"
                 @delete="forwardEvent('delete', $event)"
                 @edit="forwardEvent('edit', $event)"
+                @show-description="forwardEvent('show-description', $event)"
             />
         </template>
 

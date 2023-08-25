@@ -4,7 +4,7 @@
         :id="id"
         :data="data"
         :color="color"
-        @showDescription="forwardEvent(EVENTS.SHOW_DESCRIPTION, id)"
+        @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, id)"
     >
         <template #badge-button-before>
@@ -78,7 +78,8 @@
         },
         emits: [
             EVENTS.DELETE,
-            EVENTS.EDIT
+            EVENTS.EDIT,
+            EVENTS.SHOW_DESCRIPTION
         ],
         components: {
             Delete, Pencil,
