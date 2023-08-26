@@ -214,7 +214,7 @@
         background-color: var(--bs-white);
 
         html.dark & {
-            background-color: var(--card-bg);
+            background-color: var(--bs-gray-300);
         }
 
         width: 184px;
@@ -289,6 +289,11 @@
         }
     }
 
+    .top-button-div {
+        width: 100%;
+        justify-content: end;
+        transform: translate(-5%, -50%) !important;
+    }
 
     .status-div {
         width: 8px;

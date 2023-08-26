@@ -16,18 +16,17 @@ $green: #03DABA !default;
 $teal: #03D87F !default;
 $cyan: #60C5FE !default;
 
-
 // gray
 $white: #FFF !default;
 $gray-100: #F5F5FF !default;
-$gray-200: #F0F0FF !default;
+$gray-200: #f1f5fa !default;
 $gray-300: #E5E4F7 !default;
-$gray-400: #D1CFE9 !default;
-$gray-500: #B8B6D9 !default;
-$gray-600: #A6A4CA !default;
-$gray-700: #9A8EB4 !default;
-$gray-800: #7E719F !default;
-$gray-900: #564A75 !default;
+$gray-400: #b6c2e4 !default;
+$gray-500: #8997bd !default;
+$gray-600: #7081b9 !default;
+$gray-700: #303e67 !default;
+$gray-800: #2c3652 !default;
+$gray-900: #1d2c48 !default;
 $black: #26282D !default;
 
 $light: $gray-200 !default;
@@ -35,20 +34,9 @@ $dark: $gray-900 !default;
 
 // fonts
 $font-size-base: 1rem !default;
-$font-size-xs: $font-size-base * .75;
-$font-size-sm: $font-size-base * .875;
-$font-size-lg: $font-size-base * 1.25;
-$font-size-xl: $font-size-base * 1.375;
 $font-family-sans-serif: "Public Sans", sans-serif;
 $font-family-monospace: "Source Code Pro", monospace;
 $font-size-xs: $font-size-base * 0.75 !default;
-
-$h1-font-size: $font-size-base * 3.375;
-$h2-font-size: $font-size-base * 2.5;
-$h3-font-size: $font-size-base * 2;
-$h4-font-size: $font-size-base * 1.375;
-$h5-font-size: $font-size-base * 1.25;
-$h6-font-size: $font-size-base * 1.125;
 
 // border radius
 $border-radius: 0.25rem !default;
@@ -80,45 +68,6 @@ $border-radius-sm: .15rem !default;
 $box-shadow-sm: 0 .125rem .25rem rgba($black, .075);
 $box-shadow: 0 .5rem 1rem rgba($black, .15);
 $box-shadow-lg: 0 1rem 3rem rgba($black, .175);
-
-// button
-$btn-font-size-lg: 18px;
-
-// grid
-$grid-gutter-width: 1.75rem;
-
-// nav
-$nav-pills-border-radius: 50rem;
-
-// accordion
-$accordion-icon-color: $white;
-$accordion-icon-active-color: $white;
-
-// purples
-$purple-1: #382369;
-$purple-2: #FBC7F4;
-$purple-3: #9580EE;
-$purple-4: linear-gradient(160.34deg, rgba(130, 0, 255, 0.12) 5.3%, rgba(130, 0, 255, 0) 75.43%), #201838;
-$purple-5: #362762;
-$purple-6: #6113BC;
-$purple-7: #1A1223;
-$purple-8: #EEEDFF;
-$purple-9: 0px 12.972px 39.7269px rgba(90, 0, 176, 0.1);
-$purple-10: #150E1C;
-$purple-11: #332C3B;
-$purple-12: #432A71;
-$purple-16: #281A35;
-$purple-19: conic-gradient(from 90deg at 50% 50%, #BE79FF 0deg, #7136F6 360deg);
-$purple-20: #291E39;
-$purple-21: #A42DCD;
-$purple-22: #FCF7FE;
-$purple-23: #EDE8F3;
-$purple-24: #15023F;
-$purple-26: #DCCDEB;
-$purple-27: #8200FF;
-$purple-28: #2D313E;
-$purple-29: #F1F5FF;
-$purple-30: rgba(255, 255, 255, 0.1);
 
 // boostrap flags
 $enable-reduced-motion: false;

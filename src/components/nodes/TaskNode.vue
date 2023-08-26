@@ -155,7 +155,7 @@
             },
             classes() {
                 return {
-                    "execution-no-taskrun": this.taskRuns && this.taskRuns.length === 0,
+                    "execution-no-taskrun": this.execution && this.taskRuns && this.taskRuns.length === 0,
                 }
             },
         },
