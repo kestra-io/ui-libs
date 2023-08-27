@@ -1,0 +1,50 @@
+name: Main
+
+on:
+  push:
+    tags:
+      - v*
+
+  workflow_dispatch:
+
+jobs:
+  npm:
+    name: Publish to Npm
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Change version
+        id: vars
+        run: |
+          VERSION=${GITHUB_REF#refs/*/}
+          sed -i  's/"version": "0.0.0",/"version": "'$VERSION'",/' package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Slack
+      - name: Slack notification
+        uses: 8398a7/action-slack@v3
+        if: ${{ always() && env.SLACK_WEBHOOK_URL != 0 }}
+        with:
+          status: ${{ job.status }}
+          job_name: Check & Publish
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          username: GitHub Actions
+          icon_emoji: ':github-actions:'
+          channel: 'C02DQ1A7JLR'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

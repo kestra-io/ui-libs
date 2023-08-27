@@ -1,6 +1,6 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.9",
+  "version": "0.0.0",
   "type": "module",
   "files": [
     "src",
