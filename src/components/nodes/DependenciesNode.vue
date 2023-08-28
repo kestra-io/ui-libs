@@ -159,4 +159,11 @@
         }
     }
 
+    .top-button-div {
+        width: 100%;
+        justify-content: end;
+        transform: translate(-5%, -50%) !important;
+    }
+
+
 </style>
