@@ -1,7 +1,7 @@
 <template>
-    <div class="btn-group content rounded-1 content-children">
+    <div class="btn-group content rounded-1 content-children text-truncate">
         <span v-if="taskRuns.length > 0" class="taskRunCount">{{ taskRuns.length }} task runs</span>
-        <span v-if="taskRuns.length > 0">|</span>
+        <span v-if="taskRuns.length > 0"> | </span>
         <span><duration :histories="histories" /></span>
     </div>
 </template>
@@ -95,28 +95,10 @@
 </script>
 <style scoped>
     .content {
-        display: flex;
         color: var(--bs-gray-700);
-
-        *:not(:first-child)::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            height: 50%;
-            transform: translateY(-50%);
-            z-index: 500;
-        }
     }
 
     .content-children {
-        flex-grow: 1;
-        display: flex;
-        height: 1.25rem;
-        gap: 0.5rem;
-        align-self: stretch;
-        pointer-events: none;
-        cursor: default;
         font-size: 0.70rem;
     }
 </style>
