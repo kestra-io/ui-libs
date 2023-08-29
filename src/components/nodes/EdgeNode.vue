@@ -30,6 +30,12 @@
             EVENTS() {
                 return EVENTS
             },
+            classes() {
+                return {
+                    "vue-flow__edge-path": true,
+                    ["stroke-" + this.data.color]: this.data.color,
+                }
+            },
         },
         setup(props) {
             const path = computed(() => getSmoothStepPath(props));

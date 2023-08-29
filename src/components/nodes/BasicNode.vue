@@ -226,8 +226,12 @@
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
 
-        &.execution-no-taskrun {
-            opacity: 0.6;
+        &.execution-no-taskrun, &.disabled {
+            background-color: var(--bs-gray-200);
+
+            html.dark & {
+                background-color: var(--bs-gray-500);
+            }
         }
 
         &.disabled {
@@ -239,8 +243,6 @@
                     color: var(--bs-gray-600);
                 }
             }
-
-            opacity: 0.4;
         }
     }
 
