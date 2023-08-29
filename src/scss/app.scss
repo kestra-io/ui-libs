@@ -4,27 +4,6 @@
     bottom: 0;
 }
 
-.vue-flow__node-cluster {
-    pointer-events: none !important;
-}
-
-marker[id*='id=marker-custom&type=arrowclosed'] polyline {
-    stroke: $gray-700;
-    fill: $gray-700;
-}
-
-marker[id*='id=marker-danger&type=arrowclosed'] polyline {
-    stroke: $danger;
-    fill: $danger;
-}
-
-.vue-flow__handle {
-    opacity: 0 !important;
-}
-
-.vue-flow__edge-path {
-    stroke: #9A8EB4;
-}
 
 .rounded-button {
     border-radius: 1rem;
@@ -50,5 +29,27 @@ marker[id*='id=marker-danger&type=arrowclosed'] polyline {
         display: flex;
         right: -16px;
         transform: translate(-5%, -50%) !important;
+    }
+
+    .vue-flow__node-cluster {
+        pointer-events: none !important;
+    }
+
+    marker[id*='id=marker-custom&type=arrowclosed'] polyline {
+        stroke: #9A8EB4;
+        fill: #9A8EB4;
+    }
+
+    marker[id*='id=marker-danger&type=arrowclosed'] polyline {
+        stroke: #9A8EB4;
+        fill: #9A8EB4;
+    }
+
+    .vue-flow__handle {
+        opacity: 0 !important;
+    }
+
+    .vue-flow__edge-path {
+        stroke: #9A8EB4;
     }
 }
