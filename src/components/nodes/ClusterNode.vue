@@ -1,6 +1,6 @@
 <template>
     <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id.replace("cluster_", "") }}</span>
-    <div class="position-absolute top-0 start-100 translate-middle text-white d-flex">
+    <div class="top-button-div text-white d-flex">
         <span
             v-if="data.collapsable"
             class="rounded-button"
@@ -80,6 +80,13 @@
         font-size: 0.5rem;
         font-weight: 700;
         padding: 0.25rem 0.5rem;
+    }
+
+    .top-button-div {
+        transform: translate(-50%, -50%) !important;
+        left: 100% !important;
+        justify-content: center;
+        padding-right: 3px;
     }
 
 </style>

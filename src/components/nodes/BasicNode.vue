@@ -34,7 +34,7 @@
             </div>
             <slot name="content" />
         </div>
-        <div class="position-absolute top-0 text-white d-flex top-button-div">
+        <div class="text-white top-button-div">
             <slot name="badge-button-before" />
             <span
                 v-if="link"
@@ -287,12 +287,6 @@
         html.dark & {
             color: var(--bs-white);
         }
-    }
-
-    .top-button-div {
-        width: 100%;
-        justify-content: end;
-        transform: translate(-5%, -50%) !important;
     }
 
     .status-div {

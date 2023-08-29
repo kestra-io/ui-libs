@@ -5,7 +5,7 @@
             <component v-if="data.iconComponent" :is="data.iconComponent" :class="`text-${data.color} me-2`" />
             {{ id }}
         </span>
-        <div class="position-absolute top-0 text-white d-flex top-button-div">
+        <div class="text-white top-button-div">
             <slot name="badge-button-before"/>
             <span
                 v-if="expandable"
@@ -103,12 +103,6 @@
 
     .button-icon {
         font-size: 0.75rem;
-    }
-
-    .top-button-div {
-        width: 100%;
-        justify-content: end;
-        transform: translate(-5%, -50%) !important;
     }
 
 </style>

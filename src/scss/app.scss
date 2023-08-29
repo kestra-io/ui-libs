@@ -41,4 +41,14 @@ marker[id*='id=marker-danger&type=arrowclosed'] polyline {
     font-size: 0.66rem;
 }
 
-
+.vueflow {
+    .top-button-div {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        justify-content: end;
+        display: flex;
+        right: -16px;
+        transform: translate(-5%, -50%) !important;
+    }
+}
