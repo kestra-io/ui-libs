@@ -7,29 +7,27 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div>
-            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" />
+            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" theme="light" />
         </div>
         <div class="node-content">
             <div class="d-flex node-title">
                 <div
                     class="text-truncate task-title"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    :title="id"
                 >
-                    <span>{{ id }}</span>
+                    <tooltip :title="id">
+                        {{ id }}
+                    </tooltip>
                 </div>
                 <span
                     class="d-flex"
                     v-if="description"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    :title="$t('show description')"
                 >
-                    <InformationOutline
-                        @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
-                        class="description-button ms-2"
-                    />
+                    <tooltip :title="$t('show description')">
+                        <InformationOutline
+                            @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
+                            class="description-button ms-2"
+                        />
+                    </tooltip>
                 </span>
             </div>
             <slot name="content" />
@@ -41,22 +39,20 @@
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, linkData)"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('open')"
             >
-                <OpenInNew class="button-icon" alt="Open in new tab" />
+                <tooltip :title="$t('open')">
+                    <OpenInNew class="button-icon" alt="Open in new tab" />
+                </tooltip>
             </span>
             <span
                 v-if="expandable"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND)"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('expand')"
             >
-                <ArrowExpand class="button-icon" alt="Expand task" />
+                <tooltip :title="$t('expand')">
+                    <ArrowExpand class="button-icon" alt="Expand task" />
+                </tooltip>
             </span>
             <slot name="badge-button-after" />
         </div>
@@ -69,7 +65,7 @@
     import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
-    import {Tooltip} from "bootstrap";
+    import Tooltip from "../misc/Tooltip.vue";
     import {VueFlowUtils} from "../../index.js";
     import {mapState} from "vuex";
 
@@ -78,24 +74,10 @@
             ArrowExpand,
             TaskIcon,
             InformationOutline,
-            OpenInNew
+            OpenInNew,
+            Tooltip
         },
-        mounted() {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
-            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new Tooltip(tooltipTriggerEl, {
-                    trigger: "hover"
-                })
-            })
-        },
-        beforeUnmount() {
-            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
-                const tooltip = Tooltip.getInstance(el);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            });
-        },
+
         emits: [
             EVENTS.EXPAND,
             EVENTS.OPEN_LINK,

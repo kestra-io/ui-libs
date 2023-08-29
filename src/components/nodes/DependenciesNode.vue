@@ -4,23 +4,17 @@
         :class="[`border-${data.color}`]"
         class="dependency-node-wrapper rounded-3 border"
     >
-        <TaskIcon color="pink" :custom-icon="{icon: icon}" />
+        <TaskIcon color="pink" :custom-icon="{icon: icon}" theme="light" />
         <div class="dependency-text d-flex flex-column">
-            <div 
-                class="dependency-flow-text text-truncate"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="data.flowId"
-            >
-                {{ data.flowId }}
+            <div class="dependency-flow-text text-truncate">
+                <tooltip :title="data.flowId">
+                    {{ data.flowId }}
+                </tooltip>
             </div>
-            <div 
-                class="dependency-namespace-text text-truncate"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="data.namespace"
-            >
-                {{ data.namespace }}
+            <div class="dependency-namespace-text text-truncate">
+                <tooltip :title="data.namespace">
+                    {{ data.namespace }}
+                </tooltip>
             </div>
         </div>
 
@@ -31,21 +25,19 @@
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, data)"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('open')"
             >
-                <OpenInNew class="button-icon" alt="Open in new tab" />
+                <tooltip :title="$t('open')">
+                    <OpenInNew class="button-icon" alt="Open in new tab" />
+                </tooltip>
             </span>
             <span
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND_DEPENDENCIES, data)"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('expand')"
             >
-                <ArrowExpandAll class="button-icon" alt="Expand task" />
+                <tooltip :title="$t('expand')">
+                    <ArrowExpandAll class="button-icon" alt="Expand task" />
+                </tooltip>
             </span>
             <slot name="badge-button-after" />
         </div>
@@ -60,11 +52,11 @@
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import ArrowExpandAll from "vue-material-design-icons/ArrowExpandAll.vue";
     import {EVENTS} from "../../utils/constants.js";
-    import {Tooltip} from "bootstrap";
+    import Tooltip from "../misc/Tooltip.vue";
 
     export default {
         name: "Dependencies",
-        components: {ArrowExpandAll, OpenInNew, TaskIcon, Handle},
+        components: {ArrowExpandAll, OpenInNew, TaskIcon, Handle, Tooltip},
         inheritAttrs: false,
         emits: [
             EVENTS.EXPAND_DEPENDENCIES,
@@ -72,22 +64,6 @@
             EVENTS.MOUSE_OVER,
             EVENTS.MOUSE_LEAVE,
         ],
-        mounted() {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
-            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new Tooltip(tooltipTriggerEl, {
-                    trigger: "hover"
-                })
-            })
-        },
-        beforeUnmount() {
-            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
-                const tooltip = Tooltip.getInstance(el);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            });
-        },
         computed: {
             EVENTS() {
                 return EVENTS

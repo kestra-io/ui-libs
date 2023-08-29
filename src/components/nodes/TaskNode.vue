@@ -1,5 +1,5 @@
 <template>
-    <Handle type="source" :position="sourcePosition"/>
+    <Handle type="source" :position="sourcePosition" />
     <basic-node
         :id="id"
         :data="data"
@@ -12,7 +12,7 @@
         @mouseleave="forwardEvent(EVENTS.MOUSE_LEAVE)"
     >
         <template #content>
-            <execution-informations v-if="execution" :execution="execution" :task="data.node.task" :color="color"/>
+            <execution-informations v-if="execution" :execution="execution" :task="data.node.task" :color="color" />
         </template>
         <template #badge-button-before>
             <span
@@ -20,48 +20,44 @@
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id, taskRuns})"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('show task logs')"
             >
-                <TextBoxSearch class="button-icon" alt="Show logs"/>
+                <tooltip :title="$t('show task logs')">
+                    <TextBoxSearch class="button-icon" alt="Show logs" />
+                </tooltip>
             </span>
             <span
                 v-if="!execution && !data.isReadOnly && data.isFlowable"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('add error handler')"
             >
-                <AlertOutline class="button-icon" alt="Edit task"/>
+                <tooltip :title="$t('add error handler')">
+                    <AlertOutline class="button-icon" alt="Edit task" />
+                </tooltip>
             </span>
             <span
                 v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('edit')"
             >
-                <Pencil class="button-icon" alt="Edit task"/>
+                <tooltip :title="$t('edit')">
+                    <Pencil class="button-icon" alt="Edit task" />
+                </tooltip>
             </span>
             <span
                 v-if="!execution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TASKS})"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('delete')"
             >
-                <Delete class="button-icon" alt="Delete task"/>
+                <tooltip :title="$t('delete')">
+                    <Delete class="button-icon" alt="Delete task" />
+                </tooltip>
             </span>
         </template>
     </basic-node>
-    <Handle type="target" :position="targetPosition"/>
+    <Handle type="target" :position="targetPosition" />
 </template>
 <script setup>
     import BasicNode from "./BasicNode.vue";
@@ -76,7 +72,7 @@
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
     import {mapState} from "vuex";
-    import {Tooltip} from "bootstrap"
+    import Tooltip from "../misc/Tooltip.vue"
 
     export default {
         name: "Task",
@@ -87,22 +83,9 @@
             Handle,
             TextBoxSearch,
             AlertOutline,
+            Tooltip
         },
         inheritAttrs: false,
-        mounted(){
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new Tooltip(tooltipTriggerEl)
-            })
-        },
-        beforeUnmount() {
-            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
-                const tooltip = Tooltip.getInstance(el);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            });
-        },
         computed: {
             ...mapState("execution", ["execution"]),
             SECTIONS() {

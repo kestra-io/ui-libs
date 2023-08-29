@@ -1,25 +1,27 @@
 <template>
-    <span>
-        <el-tooltip v-if="histories" popper-class="duration-tt" :persistent="false" transition="" :hide-after="0">
-            <template #content>
-                <span v-for="(history, index) in histories" :key="'tt-' + index">
-                    <span class="square" :class="squareClass(history.state)" />
-                    <strong>{{ history.state }}:</strong>{{ $filters.date(history.date, 'iso') }} <br>
-                </span>
-            </template>
+    <tooltip>
+        <template #content>
+            <span v-for="(history, index) in filteredHistories" :key="'tt-' + index" class="duration-tt">
+                <span class="square" :class="squareClass(history.state)" />
+                <strong>{{ history.state }}: </strong>{{ $filters.date(history.date, 'iso') }} <br>
+            </span>
+        </template>
 
-            <span>{{ duration }}</span>
-        </el-tooltip>
-    </span>
+        <template #default>
+            <span v-html="duration" />
+        </template>
+    </tooltip>
 </template>
 
 <script>
     import State from "../../utils/state";
     import Utils from "../../utils/Utils";
+    import Tooltip from "../misc/Tooltip.vue";
 
     const ts = date => new Date(date).getTime();
 
     export default {
+        components: {Tooltip},
         props: {
             histories: {
                 type: Array,
@@ -46,9 +48,11 @@
             start() {
                 return this.histories && this.histories.length && ts(this.histories[0].date);
             },
-
             lastStep() {
                 return this.histories[this.histories.length - 1]
+            },
+            filteredHistories() {
+                return this.histories.filter(h => h.date && h.date.isValid() && h.state)
             }
         },
         methods: {
@@ -78,7 +82,7 @@
                 return ts(this.lastStep.date)
             },
             computeDuration() {
-                this.duration = Utils.humanDuration(this.delta() / 1000)
+                this.duration = this.filteredHistories.length === 0 ? "&nbsp;" : Utils.humanDuration(this.delta() / 1000)
             },
             squareClass(state) {
                 return [
@@ -93,18 +97,16 @@
 </script>
 
 <style lang="scss">
-.duration-tt {
-    .tooltip-inner {
+    .duration-tt {
         text-align: left;
         white-space: nowrap;
         max-width: none;
-    }
 
-    .square {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        margin-right: 5px;
+        .square {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+        }
     }
-}
 </style>

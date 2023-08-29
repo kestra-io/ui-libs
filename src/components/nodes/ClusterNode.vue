@@ -6,11 +6,11 @@
             class="rounded-button"
             :class="[`bg-${data.color}`]"
             @click="collapse()"
-            data-bs-toggle="tooltip"
-            data-bs-trigger="hover"
-            :title="$t('collapse')"
+
         >
-            <ArrowCollapse class="button-icon" alt="Collapse task"/>
+            <tooltip :title="$t('collapse')">
+                <ArrowCollapse class="button-icon" alt="Collapse task" />
+            </tooltip>
         </span>
     </div>
 </template>
@@ -27,31 +27,16 @@
 
 </script>
 <script>
-    import {Tooltip} from "bootstrap";
+    import Tooltip from "../misc/Tooltip.vue";
 
     export default {
         inheritAttrs: false,
+        components: {Tooltip},
         data() {
             return {
                 tooltips: [],
             }
         },
-        mounted() {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
-            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new Tooltip(tooltipTriggerEl, {
-                    placement: "top"
-                })
-            })
-        },
-        beforeUnmount() {
-            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
-                const tooltip = Tooltip.getInstance(el);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            });
-        }
     }
 </script>
 <style scoped lang="scss">

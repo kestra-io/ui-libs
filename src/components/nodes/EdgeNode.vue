@@ -3,7 +3,7 @@
     import {EdgeLabelRenderer, getSmoothStepPath} from "@vue-flow/core";
     import AddTaskButton from "../buttons/AddTaskButton.vue";
     import {EVENTS} from "../../utils/constants.js";
-    import {Tooltip} from "bootstrap";
+    import Tooltip from "../misc/Tooltip.vue";
 
     export default {
         data() {
@@ -24,7 +24,8 @@
         },
         components: {
             AddTaskButton,
-            EdgeLabelRenderer
+            EdgeLabelRenderer,
+            Tooltip
         },
         computed: {
             EVENTS() {
@@ -43,22 +44,6 @@
             return {
                 path,
             };
-        },
-        mounted(){
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
-            this.tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new Tooltip(tooltipTriggerEl, {
-                    trigger : "hover"
-                })
-            })
-        },
-        beforeUnmount() {
-            document.querySelectorAll("[data-bs-toggle=\"tooltip\"]").forEach((el) => {
-                const tooltip = Tooltip.getInstance(el);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            });
         },
         inheritAttrs: false,
     };
@@ -85,14 +70,14 @@
                 transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
             }"
         >
-            <AddTaskButton
-                v-if="!data.disabled && data.haveAdd != undefined"
-                :add-task="true"
-                @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="$t('add task')"
-            />
+            <tooltip :title="$t('add task')">
+                <AddTaskButton
+                    v-if="!data.disabled && data.haveAdd != undefined"
+                    :add-task="true"
+                    @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
+                />
+            </tooltip>
+
         </div>
     </EdgeLabelRenderer>
 </template>
