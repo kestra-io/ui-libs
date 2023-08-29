@@ -279,6 +279,9 @@
     const flowables = () => {
         return props.flowGraph && props.flowGraph.flowables ? props.flowGraph.flowables : [];
     }
+
+    const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
+
 </script>
 <template>
     <VueFlow
@@ -290,7 +293,8 @@
         :elevate-nodes-on-select="false"
         :elevate-edges-on-select="false"
     >
-        <Background />
+        <Background :pattern-color="darkTheme ? cssVariable('--bs-grey-500') : cssVariable('--bs-grey-300')" />
+
         <template #node-cluster="clusterProps">
             <ClusterNode
                 v-bind="clusterProps"
