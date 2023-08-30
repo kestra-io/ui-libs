@@ -6,8 +6,8 @@
         @mouseleave="mouseleave"
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
-        <div>
-            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" theme="light" />
+        <div class="icon rounded">
+            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" />
         </div>
         <div class="node-content">
             <div class="d-flex node-title">
@@ -226,6 +226,13 @@
                 }
             }
         }
+
+        .icon {
+            margin: 0.2rem;
+            width: 25px;
+            height: 25px;
+            border: 0.4px solid var(--bs-border-color);
+        }
     }
 
     .node-content {
@@ -267,6 +274,7 @@
         font-size: 0.75rem;
         font-weight: 700;
         color: var(--bs-black);
+        flex-grow: 1;
 
         html.dark & {
             color: var(--bs-white);

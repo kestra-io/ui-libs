@@ -1,8 +1,8 @@
 <script setup>
     import {
         ref,
-        defineProps,
-        defineEmits, watch, nextTick,
+        watch,
+        nextTick,
         onMounted
     } from "vue";
     import {

@@ -4,7 +4,7 @@
         :class="[`border-${data.color}`]"
         class="dependency-node-wrapper rounded-3 border"
     >
-        <TaskIcon color="pink" :custom-icon="{icon: icon}" theme="light" />
+        <TaskIcon :custom-icon="{icon: icon}" class="bg-pink rounded" theme="light" />
         <div class="dependency-text d-flex flex-column">
             <div class="dependency-flow-text text-truncate">
                 <tooltip :title="data.flowId">

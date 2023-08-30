@@ -1,10 +1,10 @@
 <template>
     <div
-        :class="[color ? `bg-${color}`: 'bg-white']"
-        class="div-icon rounded"
+        :class="classes"
+        class="wrapper"
     >
         <Tooltip :title="cls">
-            <img :src="backgroundImage" :alt="cls">
+            <div class="icon" :style="styles" />
         </Tooltip>
     </div>
 </template>
@@ -26,10 +26,6 @@
                 type: String,
                 default: undefined
             },
-            color: {
-                type: String,
-                default: undefined
-            },
             theme: {
                 type: String,
                 default: undefined,
@@ -42,6 +38,16 @@
             ...mapState("plugin", ["icons"]),
             backgroundImage() {
                 return `data:image/svg+xml;base64,${this.imageBase64}`
+            },
+            classes() {
+                return {
+                    "flowable": this.icon ? this.icon.flowable : false,
+                }
+            },
+            styles() {
+                return {
+                    backgroundImage: `url(data:image/svg+xml;base64,${this.imageBase64})`
+                }
             },
             imageBase64() {
                 let icon = this.icon && this.icon.icon ? Buffer.from(this.icon.icon, "base64").toString("utf8") : undefined;
@@ -75,24 +81,28 @@
 </script>
 
 <style lang="scss" scoped>
-    .div-icon {
-        padding: 0.1rem;
-        margin: 0.2rem;
-        width: 25px;
-        height: 25px;
-        border: 0.4px solid var(--bs-border-color);
+    .wrapper {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
         position: relative;
 
         :deep(span) {
             position: absolute;
-            top: -2px;
+            padding: 1px;
             left: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
-        :deep(img) {
-            max-width: 100%;
+        :deep(.icon) {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
         }
     }
-
-
 </style>
