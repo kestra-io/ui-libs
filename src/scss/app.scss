@@ -20,6 +20,10 @@
     font-size: 0.66rem;
 }
 
+.vue-flow__controls-button {
+    color: black;
+}
+
 .vue-flow__container {
     .top-button-div {
         position: absolute;
@@ -34,6 +38,7 @@
     .vue-flow__node-cluster {
         pointer-events: none !important;
     }
+
 
     marker[id*='id=marker-custom&type=arrowclosed'] polyline {
         stroke: #9A8EB4;
