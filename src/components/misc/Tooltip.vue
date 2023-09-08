@@ -1,5 +1,5 @@
 <template>
-    <span ref="tooltip">
+    <span ref="tooltip" v-bind="$attrs">
         <slot name="default" />
     </span>
     <span class="d-none" ref="tooltipContent">

@@ -6,27 +6,27 @@
         :state="state"
         :class="classes"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
-        @expand="forwardEvent(EVENTS.EXPAND, id)"
+        @expand="forwardEvent(EVENTS.EXPAND, expandData)"
         @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
         @mouseover="forwardEvent(EVENTS.MOUSE_OVER, $event)"
         @mouseleave="forwardEvent(EVENTS.MOUSE_LEAVE)"
     >
         <template #content>
-            <execution-informations v-if="execution" :execution="execution" :task="data.node.task" :color="color" />
+            <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" />
         </template>
         <template #badge-button-before>
             <span
-                v-if="execution"
+                v-if="taskExecution"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.SHOW_LOGS, {id, taskRuns})"
+                @click="$emit(EVENTS.SHOW_LOGS, {id: taskId, execution: taskExecution, taskRuns})"
             >
                 <tooltip :title="$t('show task logs')">
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
             <span
-                v-if="!execution && !data.isReadOnly && data.isFlowable"
+                v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
@@ -36,7 +36,7 @@
                 </tooltip>
             </span>
             <span
-                v-if="!execution && !data.isReadOnly"
+                v-if="!taskExecution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
@@ -46,10 +46,10 @@
                 </tooltip>
             </span>
             <span
-                v-if="!execution && !data.isReadOnly"
+                v-if="!taskExecution && !data.isReadOnly"
                 class="rounded-button"
                 :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TASKS})"
+                @click="$emit(EVENTS.DELETE, {id: taskId, section: SECTIONS.TASKS})"
             >
                 <tooltip :title="$t('delete')">
                     <Delete class="button-icon" alt="Delete task" />
@@ -71,8 +71,9 @@
     import Delete from "vue-material-design-icons/Delete.vue";
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
-    import {mapState} from "vuex";
+    import {mapGetters, mapState} from "vuex";
     import Tooltip from "../misc/Tooltip.vue"
+    import Utils from "../../utils/Utils.js";
 
     export default {
         name: "Task",
@@ -88,6 +89,7 @@
         inheritAttrs: false,
         computed: {
             ...mapState("execution", ["execution"]),
+            ...mapGetters("execution", ["subflowsExecutions"]),
             SECTIONS() {
                 return SECTIONS
             },
@@ -97,11 +99,23 @@
             color() {
                 return this.data.color ?? "primary"
             },
+            taskId() {
+                return Utils.afterLastDot(this.id);
+            },
             taskRunList() {
-                return this.execution && this.execution.taskRunList ? this.execution.taskRunList : []
+                return this.taskExecution && this.taskExecution.taskRunList ? this.taskExecution.taskRunList : []
+            },
+            taskExecution() {
+                const executionId = this.data.executionId;
+                if(executionId) {
+                    return executionId === this.execution?.id ? this.execution
+                        : Object.values(this.subflowsExecutions).filter(execution => execution.id === this.data.executionId)?.[0];
+                }
+
+                return undefined;
             },
             taskRuns() {
-                return this.taskRunList.filter(t => t.taskId === this.data.node.task.id)
+                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.data.node.task.id))
             },
             state() {
                 if (!this.taskRuns) {
@@ -138,9 +152,15 @@
             },
             classes() {
                 return {
-                    "execution-no-taskrun": this.execution && this.taskRuns && this.taskRuns.length === 0,
+                    "execution-no-taskrun": this.taskExecution && this.taskRuns && this.taskRuns.length === 0,
                 }
             },
+            expandData() {
+                return {
+                    id: this.id,
+                    type: this.data.node.task.type
+                }
+            }
         },
         emits: [
             EVENTS.EXPAND,

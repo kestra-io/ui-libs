@@ -1,4 +1,5 @@
 import humanizeDuration from "humanize-duration";
+import moment from "moment";
 
 const humanizeDurationLanguages = {
     "en" : {
@@ -43,5 +44,9 @@ export default class Utils {
         }
 
         return humanizeDuration(value * 1000, options).replace(/\.([0-9])s$/i, ".$10s")
+    }
+
+    static afterLastDot(str) {
+        return str.split(".").pop() ?? str;
     }
 }

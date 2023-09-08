@@ -18,7 +18,7 @@ export const EVENTS = {
     "EXPAND_DEPENDENCIES": "expandDependencies",
 }
 
-export const CLUSTER_UID_SEPARATOR = "cluster_";
+export const CLUSTER_PREFIX = "cluster_";
 
 export const NODE_SIZES = {
     TASK_WIDTH: 184,

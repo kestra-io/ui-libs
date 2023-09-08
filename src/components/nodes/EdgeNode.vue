@@ -75,6 +75,7 @@
                     v-if="!data.disabled && data.haveAdd != undefined"
                     :add-task="true"
                     @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
+                    :class="{'text-danger': data.color}"
                 />
             </tooltip>
 

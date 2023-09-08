@@ -1,18 +1,18 @@
 <template>
     <Handle type="source" class="custom-handle" :position="sourcePosition" />
     <div class="dot">
-        <Circle class="circle" alt="circle" />
+        <CircleIcon :class="{'text-danger': data.node.error}" class="circle" alt="circle" />
     </div>
     <Handle type="target" class="custom-handle" :position="targetPosition" />
 </template>
 
 <script>
     import {Handle} from "@vue-flow/core";
-    import Circle from "vue-material-design-icons/Circle.vue"
+    import CircleIcon from "vue-material-design-icons/Circle.vue"
 
     export default {
         name: "Dot",
-        components: {Handle, Circle},
+        components: {Handle, CircleIcon},
         inheritAttrs: false,
         props: {
             data: {

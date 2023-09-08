@@ -1,12 +1,11 @@
 <template>
-    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ id.replace("cluster_", "") }}</span>
+    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
     <div class="top-button-div text-white d-flex">
         <span
             v-if="data.collapsable"
             class="rounded-button"
             :class="[`bg-${data.color}`]"
             @click="collapse()"
-
         >
             <tooltip :title="$t('collapse')">
                 <ArrowCollapse class="button-icon" alt="Collapse task" />
@@ -17,17 +16,35 @@
 <script setup>
     import ArrowCollapse from "vue-material-design-icons/ArrowCollapse.vue"
     import {EVENTS} from "../../utils/constants.js";
+    import {Position} from "@vue-flow/core";
 
-    const props = defineProps(["data", "sourcePosition", "targetPosition", "label", "id"]);
+    const props = defineProps({
+        "data": {
+            type: Object,
+            default: undefined
+        },
+        "sourcePosition": {
+            type: Position,
+            default: undefined
+        },
+        "targetPosition": {
+            type: Position,
+            default: undefined
+        },
+        "id": {
+            type: String,
+            default: undefined
+        }
+    });
     const emit = defineEmits([EVENTS.COLLAPSE])
 
     const collapse = () => {
         emit(EVENTS.COLLAPSE, props.id)
     };
-
 </script>
 <script>
     import Tooltip from "../misc/Tooltip.vue";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         inheritAttrs: false,
@@ -37,6 +54,16 @@
                 tooltips: [],
             }
         },
+        computed: {
+            clusterName() {
+                const taskNode = this.data.taskNode;
+                if (taskNode?.type?.endsWith("SubflowGraphTask")) {
+                    return taskNode.task.namespace + " " + taskNode.task.flowId;
+                }
+
+                return Utils.afterLastDot(this.id);
+            }
+        }
     }
 </script>
 <style scoped lang="scss">

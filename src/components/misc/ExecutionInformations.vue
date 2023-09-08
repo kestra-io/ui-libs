@@ -10,6 +10,7 @@
     import moment from "moment";
     import Duration from "./Duration.vue";
     import State from "../../utils/state.js";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         name: "ExecutionInformations",
@@ -21,7 +22,7 @@
                 return this.execution && this.execution.taskRunList ? this.execution.taskRunList : []
             },
             taskRuns() {
-                return this.taskRunList.filter(t => t.taskId === this.task.id)
+                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.task.id))
             },
             state() {
                 if (!this.taskRuns) {
@@ -90,7 +91,6 @@
                 default: null
             }
         }
-
     }
 </script>
 <style scoped>

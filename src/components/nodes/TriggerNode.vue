@@ -5,7 +5,7 @@
         :data="data"
         :color="color"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
-        @expand="forwardEvent(EVENTS.EXPAND, id)"
+        @expand="forwardEvent(EVENTS.EXPAND, {id})"
     >
         <template #badge-button-before>
             <span

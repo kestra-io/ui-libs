@@ -46,8 +46,8 @@
     }
 
     marker[id*='id=marker-danger&type=arrowclosed'] polyline {
-        stroke: #9A8EB4;
-        fill: #9A8EB4;
+        stroke: $red;
+        fill: $red;
     }
 
     .vue-flow__handle {
