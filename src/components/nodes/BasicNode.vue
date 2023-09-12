@@ -35,10 +35,10 @@
         <div class="text-white top-button-div">
             <slot name="badge-button-before" />
             <span
-                v-if="linkData"
+                v-if="data.link"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, linkData)"
+                @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
             >
                 <tooltip :title="$t('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
@@ -66,7 +66,6 @@
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import {VueFlowUtils} from "../../index.js";
     import {mapState} from "vuex";
     import Utils from "../../utils/Utils.js";
 
@@ -178,10 +177,6 @@
                     "disabled": this.data.node.task?.disabled,
                     [this.$attrs.class]: true
                 }
-            },
-            linkData() {
-                const link = VueFlowUtils.linkDatas(this.data.node, this.execution);
-                return link ? {link} : undefined;
             },
             cls() {
                 if (this.data.node.trigger) {

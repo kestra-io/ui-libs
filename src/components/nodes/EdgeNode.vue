@@ -72,7 +72,7 @@
         >
             <tooltip :title="$t('add task')">
                 <AddTaskButton
-                    v-if="!data.disabled && data.haveAdd != undefined"
+                    v-if="data.haveAdd"
                     :add-task="true"
                     @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
                     :class="{'text-danger': data.color}"

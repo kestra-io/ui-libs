@@ -2,7 +2,7 @@
     <Handle type="source" :position="sourcePosition" />
     <basic-node
         :id="id"
-        :data="data"
+        :data="dataWithLink"
         :state="state"
         :class="classes"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
@@ -160,6 +160,22 @@
                     id: this.id,
                     type: this.data.node.task.type
                 }
+            },
+            dataWithLink() {
+                if(this.data.node.type.endsWith("SubflowGraphTask")){
+                    return {
+                        ...this.data,
+                        link: {
+                            namespace: this.data.node.task.namespace,
+                            id: this.data.node.task.flowId,
+                            executionId: this.taskExecution?.taskRunList
+                                .filter(taskRun => taskRun.taskId === this.data.node.task.id && taskRun.outputs?.executionId)
+                                ?.[0]?.outputs?.executionId
+                        }
+                    }
+                }
+
+                return this.data;
             }
         },
         emits: [

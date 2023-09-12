@@ -287,7 +287,7 @@ export default class VueFlowUtils {
             return "danger"
         }
 
-        if (targetNode.type.endsWith("GraphClusterEnd") && sourceNode.error) {
+        if (sourceNode.error && targetNode.type.endsWith("GraphClusterEnd")) {
             return "danger"
         }
 
@@ -349,17 +349,18 @@ export default class VueFlowUtils {
         const dagreGraph = this.generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clustersWithoutRootNode, edgeReplacer, collapsed, clusterToNode);
 
         const clusterByNodeUid = {};
-        const disabledLowCode = [];
 
         const clusters = flowGraph.clusters || [];
+        const rawClusters = clusters.map(c => c.cluster);
+        const readOnlyUidPrefixes = rawClusters.filter(c => c.type.endsWith("SubflowGraphCluster")).map(c => c.taskNode.uid);
         for (let cluster of clusters) {
             if (!edgeReplacer[cluster.cluster.uid] && !collapsed.has(cluster.cluster.uid)) {
+                if (cluster.cluster.taskNode?.task?.type === "io.kestra.core.tasks.flows.Dag") {
+                    readOnlyUidPrefixes.push(cluster.cluster.taskNode.uid);
+                }
+
                 for (let nodeUid of cluster.nodes) {
                     clusterByNodeUid[nodeUid] = cluster.cluster;
-
-                    if (cluster.cluster.taskNode?.task?.type === "io.kestra.core.tasks.flows.Dag") {
-                        disabledLowCode.push(nodeUid);
-                    }
                 }
 
                 const clusterUid = cluster.cluster.uid;
@@ -402,8 +403,8 @@ export default class VueFlowUtils {
                     nodeType = "collapsedcluster";
                 }
 
-                const taskId = node?.task?.id;
                 const color = this.nodeColor(node, collapsed, flowSource);
+                const isReadOnlyTask = isReadOnly || readOnlyUidPrefixes.some(prefix => node.uid.startsWith(prefix + "."));
                 elements.push({
                     id: node.uid,
                     type: nodeType,
@@ -415,15 +416,15 @@ export default class VueFlowUtils {
                     sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
                     targetPosition: isHorizontal ? Position.Left : Position.Top,
                     parentNode: clusterByNodeUid[node.uid] ? clusterByNodeUid[node.uid].uid : undefined,
-                    draggable: nodeType === "task" && !isReadOnly && this.isTaskNode(node) ? !disabledLowCode.includes(taskId) : false,
+                    draggable: nodeType === "task" ? !isReadOnlyTask : false,
                     data: {
                         node: node,
                         namespace: clusterByNodeUid[node.uid]?.taskNode?.task?.namespace ?? namespace,
                         flowId: clusterByNodeUid[node.uid]?.taskNode?.task?.flowId ?? flowId,
-                        isFlowable: clusterByNodeUid[node.uid]?.uid === CLUSTER_PREFIX + node.uid,
+                        isFlowable: clusterByNodeUid[node.uid]?.uid === CLUSTER_PREFIX + node.uid && !node.type.endsWith("SubflowGraphTask"),
                         color: color,
-                        expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer, isReadOnly),
-                        isReadOnly: isReadOnly,
+                        expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer),
+                        isReadOnly: isReadOnlyTask,
                         iconComponent: this.isCollapsedCluster(node) ? "webhook" : null,
                         executionId: node.executionId
                     },
@@ -432,8 +433,6 @@ export default class VueFlowUtils {
             }
         }
 
-        const rawClusters = clusters.map(c => c.cluster);
-        const readOnlyUidPrefixes = rawClusters.filter(c => c.type.endsWith("SubflowGraphCluster")).map(c => c.taskNode.uid);
         const clusterRootTaskNodeUids = rawClusters.filter(c => c.taskNode).map(c => c.taskNode.uid);
         const edges = flowGraph.edges ?? [];
 
@@ -451,11 +450,10 @@ export default class VueFlowUtils {
                             type: MarkerType.ArrowClosed,
                         },
                     data: {
-                        haveAdd: this.haveAdd(edge, nodeByUid, clusterRootTaskNodeUids, readOnlyUidPrefixes),
+                        haveAdd: !isReadOnly && isAllowedEdit && this.haveAdd(edge, nodeByUid, clusterRootTaskNodeUids, readOnlyUidPrefixes),
                         haveDashArray: nodeByUid[edge.source].type.endsWith("GraphTrigger")
                             || nodeByUid[edge.target].type.endsWith("GraphTrigger")
                             || edge.source.startsWith(TRIGGERS_NODE_UID),
-                        disabled: isReadOnly || !isAllowedEdit,
                         color: this.getEdgeColor(edge, nodeByUid)
                     },
                     style: {
@@ -469,32 +467,6 @@ export default class VueFlowUtils {
 
     static isClusterRootOrEnd(node) {
         return ["GraphClusterRoot", "GraphClusterEnd"].some(s => node.type.endsWith(s));
-    }
-
-    static linkDatas(node, execution) {
-        let data;
-
-        if (node.task?.type === "io.kestra.core.tasks.flows.Flow") {
-            data = {
-                id: node.task.flowId,
-                namespace: node.task.namespace
-            };
-        }
-
-        let subflowTaskId = node.task?.id;
-        if (subflowTaskId && node.task.id === node.parentSubflow?.id) {
-            data = {
-                id: node.parentSubflow.flowId,
-                namespace: node.parentSubflow.namespace
-            };
-        }
-
-        // is a subflow
-        if (data) {
-            data.executionId = execution?.taskRunList?.find(r => r.taskId === subflowTaskId && r.outputs?.executionId)?.outputs?.executionId;
-        }
-
-        return data;
     }
 
     static computeClusterColor(cluster) {
@@ -513,8 +485,8 @@ export default class VueFlowUtils {
         return "blue";
     }
 
-    static isExpandableTask(node, clusterByNodeUid, edgeReplacer, isReadOnly) {
-        if (Object.keys(edgeReplacer).includes(node.uid)) {
+    static isExpandableTask(node, clusterByNodeUid, edgeReplacer) {
+        if (Object.values(edgeReplacer).includes(node.uid)) {
             return true;
         }
 
@@ -522,6 +494,6 @@ export default class VueFlowUtils {
             return true;
         }
 
-        return node.type.endsWith("SubflowGraphTask") && !(node.uid in clusterByNodeUid) && isReadOnly;
+        return node.type.endsWith("SubflowGraphTask") && clusterByNodeUid[node.uid]?.uid?.replace(CLUSTER_PREFIX, "") !== node.uid;
     }
 }

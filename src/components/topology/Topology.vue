@@ -10,6 +10,7 @@
     import VueflowUtils from "../../utils/VueFlowUtils.js";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants.js";
     import {Background} from "@vue-flow/background";
+    import Utils from "../../utils/Utils.js";
 
     const props = defineProps({
         id: {
@@ -55,6 +56,10 @@
             required: false,
             default: undefined
         },
+        expandedSubflows: {
+            type: Array,
+            default: () => []
+        }
     });
 
     const dragging = ref(false);
@@ -64,7 +69,6 @@
     const hiddenNodes = ref([]);
     const collapsed = ref(new Set());
     const clusterToNode = ref([])
-    const subflowsOpen = ref([])
 
     const emit = defineEmits(
         [
@@ -165,7 +169,10 @@
             const taskNode2 = e.intersections.find(n => n.type === "task");
             if (taskNode2) {
                 try {
-                    emit("swapped-task", YamlUtils.swapTasks(props.source, taskNode1.id, taskNode2.id))
+                    emit("swapped-task", {
+                        newSource: YamlUtils.swapTasks(props.source, Utils.afterLastDot(taskNode1.id), Utils.afterLastDot(taskNode2.id)),
+                        swappedTasks: [taskNode1.id, taskNode2.id]
+                    })
                 } catch (e) {
                     emit("message", {
                         variant: "error",
@@ -187,8 +194,8 @@
 
     onNodeDrag((e) => {
         resetNodesStyle();
-        getNodes.value.filter(n => n.id !== e.node.id).forEach(n => {
-            if (n.type === "trigger" || (n.type === "task" && YamlUtils.isParentChildrenRelation(props.source, n.id, e.node.id))) {
+        getNodes.value.filter(n => Utils.afterLastDot(n.id) !== Utils.afterLastDot(e.node.id)).forEach(n => {
+            if (n.type === "trigger" || (n.type === "task" && n.id.startsWith(e.node.id))) {
                 n.style = {...n.style, opacity: "0.5"}
             } else {
                 n.style = {...n.style, opacity: "1"}
@@ -207,11 +214,15 @@
     })
 
     const checkIntersections = (intersections, node) => {
-        const tasksMeet = intersections.filter(n => n.type === "task").map(n => n.id);
+        const tasksMeet = intersections.filter(n => n.type === "task").map(n => Utils.afterLastDot(n.id));
         if (tasksMeet.length > 1) {
             return "toomuchtaskerror";
         }
-        if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, tasksMeet[0], node.id)) {
+        try {
+            if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]), Utils.afterLastDot(node.id))) {
+                return "parentchildrenerror";
+            }
+        } catch (e) {
             return "parentchildrenerror";
         }
         if (intersections.filter(n => n.type === "trigger").length > 0) {
@@ -254,9 +265,8 @@
     }
 
     const expand = (expandData) => {
-        if (expandData.type === "io.kestra.core.tasks.flows.Flow") {
-            subflowsOpen.value.push(expandData.id);
-            forwardEvent("expand-subflow", subflowsOpen.value);
+        if (expandData.type === "io.kestra.core.tasks.flows.Flow" && !props.expandedSubflows.includes(expandData.id)) {
+            forwardEvent("expand-subflow", [...props.expandedSubflows, expandData.id]);
             return;
         }
         edgeReplacer.value = {};
