@@ -1,5 +1,5 @@
 <script setup>
-    import {nextTick, onMounted, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, ref, watch} from "vue";
     import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode,} from "../index.js";
     import {useVueFlow, VueFlow} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
@@ -28,10 +28,6 @@
         isAllowedEdit: {
             type: Boolean,
             default: false,
-        },
-        flowables: {
-            type: Array,
-            default: () => [],
         },
         source: {
             type: String,
@@ -116,8 +112,7 @@
                 collapsed.value,
                 clusterToNode.value,
                 props.isReadOnly,
-                props.isAllowedEdit,
-                flowables()
+                props.isAllowedEdit
             );
             setElements(elements);
             fitView();
@@ -192,10 +187,21 @@
         lastPosition.value = null;
     })
 
+    const subflowNestedTasks = computed(() => {
+        if(!props.flowGraph) {
+            return [];
+        }
+
+        return props.flowGraph.clusters.filter(cluster => cluster.cluster.type.endsWith("SubflowGraphCluster"))
+            .flatMap(cluster =>
+                cluster.nodes.filter(node => node !== cluster.cluster.taskNode.uid)
+            );
+    })
+
     onNodeDrag((e) => {
         resetNodesStyle();
         getNodes.value.filter(n => Utils.afterLastDot(n.id) !== Utils.afterLastDot(e.node.id)).forEach(n => {
-            if (n.type === "trigger" || (n.type === "task" && n.id.startsWith(e.node.id))) {
+            if (n.type === "trigger" || (n.type === "task" && n.id.startsWith(e.node.id + ".")) || subflowNestedTasks.value.includes(n.id)) {
                 n.style = {...n.style, opacity: "0.5"}
             } else {
                 n.style = {...n.style, opacity: "1"}
@@ -279,10 +285,6 @@
         generateGraph();
     }
 
-    const flowables = () => {
-        return props.flowGraph && props.flowGraph.flowables ? props.flowGraph.flowables : [];
-    }
-
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
 </script>
@@ -348,7 +350,6 @@
             <EdgeNode
                 v-bind="EdgeProps"
                 :yaml-source="source"
-                :flowables-ids="flowables"
                 @add-task="forwardEvent(EVENTS.ADD_TASK, $event)"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"

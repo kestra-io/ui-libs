@@ -47,6 +47,6 @@ export default class Utils {
     }
 
     static afterLastDot(str) {
-        return str.split(".").pop() ?? str;
+        return str.split(".").pop();
     }
 }

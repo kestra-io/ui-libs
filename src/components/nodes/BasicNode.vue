@@ -196,7 +196,7 @@
                     return subflowTask.namespace + " " + subflowTask.flowId;
                 }
 
-                return this.id.replace(/^root\./, "");
+                return this.trimmedId;
             }
         }
     }
