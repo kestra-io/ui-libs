@@ -187,21 +187,19 @@
         lastPosition.value = null;
     })
 
-    const subflowNestedTasks = computed(() => {
+    const subflowPrefixes = computed(() => {
         if(!props.flowGraph) {
             return [];
         }
 
         return props.flowGraph.clusters.filter(cluster => cluster.cluster.type.endsWith("SubflowGraphCluster"))
-            .flatMap(cluster =>
-                cluster.nodes.filter(node => node !== cluster.cluster.taskNode.uid)
-            );
+            .map(cluster => cluster.cluster.taskNode.uid + ".");
     })
 
     onNodeDrag((e) => {
         resetNodesStyle();
-        getNodes.value.filter(n => Utils.afterLastDot(n.id) !== Utils.afterLastDot(e.node.id)).forEach(n => {
-            if (n.type === "trigger" || (n.type === "task" && n.id.startsWith(e.node.id + ".")) || subflowNestedTasks.value.includes(n.id)) {
+        getNodes.value.filter(n => n.id !== e.node.id).forEach(n => {
+            if (n.type === "trigger" || (n.type === "task" && (n.id.startsWith(e.node.id + ".") || e.node.id.startsWith(n.id + "."))) || subflowPrefixes.value.some(subflowPrefix => n.id.startsWith(subflowPrefix))) {
                 n.style = {...n.style, opacity: "0.5"}
             } else {
                 n.style = {...n.style, opacity: "1"}
