@@ -20,6 +20,8 @@
 </template>
 
 <style scoped lang="scss">
+    @import "../../scss/variables";
+
     .add-task-div {
         margin: 0.2rem;
         width: 25px;
@@ -28,6 +30,10 @@
         background-color: var(--bs-white);
         html.dark & {
             background-color: var(--card-bg);
+        }
+
+        &.text-danger {
+            border-color: $red;
         }
     }
 </style>

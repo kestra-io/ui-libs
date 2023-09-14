@@ -1,28 +1,16 @@
 <script setup>
-    import {
-        ref,
-        watch,
-        nextTick,
-        onMounted
-    } from "vue";
-    import {
-        ClusterNode,
-        DotNode,
-        TaskNode,
-        TriggerNode,
-        CollapsedClusterNode,
-        EdgeNode,
-    } from "../index.js";
+    import {computed, nextTick, onMounted, ref, watch} from "vue";
+    import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode,} from "../index.js";
     import {useVueFlow, VueFlow} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
     import SplitCellsVertical from "../../assets/icons/SplitCellsVertical.vue";
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import {cssVariable} from "../../utils/global.js";
     import {VueFlowUtils, YamlUtils} from "../../index.js";
-    import Utils from "../../utils/Utils.js";
     import VueflowUtils from "../../utils/VueFlowUtils.js";
-    import {CLUSTER_UID_SEPARATOR, EVENTS} from "../../utils/constants.js";
+    import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants.js";
     import {Background} from "@vue-flow/background";
+    import Utils from "../../utils/Utils.js";
 
     const props = defineProps({
         id: {
@@ -40,10 +28,6 @@
         isAllowedEdit: {
             type: Boolean,
             default: false,
-        },
-        flowables: {
-            type: Array,
-            default: () => [],
         },
         source: {
             type: String,
@@ -68,6 +52,10 @@
             required: false,
             default: undefined
         },
+        expandedSubflows: {
+            type: Array,
+            default: () => []
+        }
     });
 
     const dragging = ref(false);
@@ -75,7 +63,7 @@
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements} = useVueFlow({id: props.id});
     const edgeReplacer = ref({});
     const hiddenNodes = ref([]);
-    const collapsed = ref([]);
+    const collapsed = ref(new Set());
     const clusterToNode = ref([])
 
     const emit = defineEmits(
@@ -90,11 +78,12 @@
             "toggle-orientation",
             "loading",
             "swapped-task",
-            "message"
+            "message",
+            "expand-subflow"
         ]
     )
 
-    onMounted( () => {
+    onMounted(() => {
         generateGraph();
     })
 
@@ -123,8 +112,7 @@
                 collapsed.value,
                 clusterToNode.value,
                 props.isReadOnly,
-                props.isAllowedEdit,
-                flowables()
+                props.isAllowedEdit
             );
             setElements(elements);
             fitView();
@@ -176,7 +164,10 @@
             const taskNode2 = e.intersections.find(n => n.type === "task");
             if (taskNode2) {
                 try {
-                    emit("swapped-task", YamlUtils.swapTasks(props.source, taskNode1.id, taskNode2.id))
+                    emit("swapped-task", {
+                        newSource: YamlUtils.swapTasks(props.source, Utils.afterLastDot(taskNode1.id), Utils.afterLastDot(taskNode2.id)),
+                        swappedTasks: [taskNode1.id, taskNode2.id]
+                    })
                 } catch (e) {
                     emit("message", {
                         variant: "error",
@@ -196,10 +187,21 @@
         lastPosition.value = null;
     })
 
+    const subflowNestedTasks = computed(() => {
+        if(!props.flowGraph) {
+            return [];
+        }
+
+        return props.flowGraph.clusters.filter(cluster => cluster.cluster.type.endsWith("SubflowGraphCluster"))
+            .flatMap(cluster =>
+                cluster.nodes.filter(node => node !== cluster.cluster.taskNode.uid)
+            );
+    })
+
     onNodeDrag((e) => {
         resetNodesStyle();
-        getNodes.value.filter(n => n.id !== e.node.id).forEach(n => {
-            if (n.type === "trigger" || (n.type === "task" && YamlUtils.isParentChildrenRelation(props.source, n.id, e.node.id))) {
+        getNodes.value.filter(n => Utils.afterLastDot(n.id) !== Utils.afterLastDot(e.node.id)).forEach(n => {
+            if (n.type === "trigger" || (n.type === "task" && n.id.startsWith(e.node.id + ".")) || subflowNestedTasks.value.includes(n.id)) {
                 n.style = {...n.style, opacity: "0.5"}
             } else {
                 n.style = {...n.style, opacity: "1"}
@@ -218,11 +220,15 @@
     })
 
     const checkIntersections = (intersections, node) => {
-        const tasksMeet = intersections.filter(n => n.type === "task").map(n => n.id);
+        const tasksMeet = intersections.filter(n => n.type === "task").map(n => Utils.afterLastDot(n.id));
         if (tasksMeet.length > 1) {
             return "toomuchtaskerror";
         }
-        if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, tasksMeet[0], node.id)) {
+        try {
+            if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]), Utils.afterLastDot(node.id))) {
+                return "parentchildrenerror";
+            }
+        } catch (e) {
             return "parentchildrenerror";
         }
         if (intersections.filter(n => n.type === "trigger").length > 0) {
@@ -232,13 +238,12 @@
     }
 
     const collapseCluster = (clusterUid, regenerate, recursive) => {
-
-        const cluster = props.flowGraph.clusters.find(cluster => cluster.cluster.uid === clusterUid)
-        const nodeId = clusterUid === "Triggers" ? "Triggers" : Utils.splitFirst(clusterUid, CLUSTER_UID_SEPARATOR);
-        collapsed.value = collapsed.value.concat([nodeId])
+        const cluster = props.flowGraph.clusters.find(cluster => cluster.cluster.uid.endsWith(clusterUid));
+        const nodeId = clusterUid === "root.Triggers" ? "root.Triggers" : clusterUid.replace(CLUSTER_PREFIX, "");
+        collapsed.value.add(nodeId)
 
         hiddenNodes.value = hiddenNodes.value.concat(cluster.nodes.filter(e => e !== nodeId || recursive));
-        if (clusterUid !== "Triggers") {
+        if (clusterUid !== "root.Triggers") {
             hiddenNodes.value = hiddenNodes.value.concat([cluster.cluster.uid])
             edgeReplacer.value = {
                 ...edgeReplacer.value,
@@ -265,19 +270,19 @@
         }
     }
 
-    const expand = (taskId) => {
-        edgeReplacer.value = {}
-        hiddenNodes.value = []
-        clusterToNode.value = []
-        collapsed.value = collapsed.value.filter(n => n != taskId)
+    const expand = (expandData) => {
+        if (expandData.type === "io.kestra.core.tasks.flows.Flow" && !props.expandedSubflows.includes(expandData.id)) {
+            forwardEvent("expand-subflow", [...props.expandedSubflows, expandData.id]);
+            return;
+        }
+        edgeReplacer.value = {};
+        hiddenNodes.value = [];
+        clusterToNode.value = [];
+        collapsed.value.delete(expandData.id);
 
-        collapsed.value.forEach(n => collapseCluster(CLUSTER_UID_SEPARATOR + n, false, false))
+        collapsed.value.forEach(n => collapseCluster(n, false, false));
 
         generateGraph();
-    }
-
-    const flowables = () => {
-        return props.flowGraph && props.flowGraph.flowables ? props.flowGraph.flowables : [];
     }
 
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
@@ -311,12 +316,12 @@
         <template #node-task="taskProps">
             <TaskNode
                 v-bind="taskProps"
-                @edit="forwardEvent('edit', $event)"
-                @delete="forwardEvent('delete', $event)"
+                @edit="forwardEvent(EVENTS.EDIT, $event)"
+                @delete="forwardEvent(EVENTS.DELETE, $event)"
                 @expand="expand($event)"
-                @open-link="forwardEvent('open-link', $event)"
-                @show-logs="forwardEvent('show-logs', $event)"
-                @show-description="forwardEvent('show-description', $event)"
+                @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
+                @show-logs="forwardEvent(EVENTS.SHOW_LOGS, $event)"
+                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="forwardEvent('on-add-flowable-error', $event)"
@@ -328,9 +333,9 @@
                 v-bind="triggerProps"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
-                @delete="forwardEvent('delete', $event)"
-                @edit="forwardEvent('edit', $event)"
-                @show-description="forwardEvent('show-description', $event)"
+                @delete="forwardEvent(EVENTS.DELETE, $event)"
+                @edit="forwardEvent(EVENTS.EDIT, $event)"
+                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
             />
         </template>
 
@@ -345,8 +350,7 @@
             <EdgeNode
                 v-bind="EdgeProps"
                 :yaml-source="source"
-                :flowables-ids="flowables"
-                @add-task="forwardEvent('add-task', $event)"
+                @add-task="forwardEvent(EVENTS.ADD_TASK, $event)"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
             />

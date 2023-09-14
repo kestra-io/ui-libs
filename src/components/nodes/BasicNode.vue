@@ -7,24 +7,24 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
-            <TaskIcon :icon="data.icon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" />
+            <TaskIcon :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" />
         </div>
         <div class="node-content">
             <div class="d-flex node-title">
                 <div
                     class="text-truncate task-title"
                 >
-                    <tooltip :title="id">
-                        {{ id }}
+                    <tooltip :title="hoverTooltip">
+                        {{ trimmedId }}
                     </tooltip>
                 </div>
                 <span
                     class="d-flex"
                     v-if="description"
                 >
-                    <tooltip :title="$t('show description')">
+                    <tooltip :title="$t('show description')" class="d-flex align-items-center">
                         <InformationOutline
-                            @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: id, description:description})"
+                            @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
                             class="description-button ms-2"
                         />
                     </tooltip>
@@ -35,10 +35,10 @@
         <div class="text-white top-button-div">
             <slot name="badge-button-before" />
             <span
-                v-if="link"
+                v-if="data.link"
                 class="rounded-button"
                 :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, linkData)"
+                @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
             >
                 <tooltip :title="$t('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
@@ -66,8 +66,8 @@
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import {VueFlowUtils} from "../../index.js";
     import {mapState} from "vuex";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         components: {
@@ -144,15 +144,15 @@
             expandable() {
                 return this.data?.expandable || false
             },
-            link() {
-                return this.data?.link || false
-            },
             description() {
                 const node = this.data.node.task ?? this.data.node.trigger ?? null
                 if (node) {
                     return node.description ?? null
                 }
                 return null
+            },
+            trimmedId() {
+                return Utils.afterLastDot(this.id);
             },
             taskIconBg() {
                 return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
@@ -178,16 +178,27 @@
                     [this.$attrs.class]: true
                 }
             },
-            linkData() {
-                if(this.data.node.task) {
-                    return {link: VueFlowUtils.linkDatas(this.data.node.task, this.execution)}
-                }
-                return null
-            },
             cls() {
-                return this.data.node?.task ? this.data.node.task.type : this.data.node?.trigger ? this.data.node.trigger.type : null
+                if (this.data.node.trigger) {
+                    return this.data.node.trigger.type;
+                }
+
+                if (!this.data.node?.task) {
+                    return undefined;
+                }
+
+                return this.data.node.task.type;
+            },
+            hoverTooltip() {
+                if (this.data.node.type.endsWith("SubflowGraphTask")) {
+                    const subflowTask = this.data.node.task;
+
+                    return subflowTask.namespace + " " + subflowTask.flowId;
+                }
+
+                return this.trimmedId;
             }
-        },
+        }
     }
 </script>
 

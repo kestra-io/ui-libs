@@ -2,8 +2,9 @@ import {MarkerType, Position, useVueFlow} from "@vue-flow/core"
 import dagre from "dagre";
 import {YamlUtils} from "../index.js";
 import Utils from "./Utils.js";
-import {CLUSTER_UID_SEPARATOR, NODE_SIZES} from "./constants.js";
+import {CLUSTER_PREFIX, NODE_SIZES} from "./constants.js";
 
+const TRIGGERS_NODE_UID = "root.Triggers";
 export default class VueFlowUtils {
 
     static predecessorsEdge(vueFlowId, nodeUid) {
@@ -87,7 +88,7 @@ export default class VueFlowUtils {
         ])
     }
 
-    static generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clusterCollapseToNode, edgeReplacer, collapsed, clusterToNode) {
+    static generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clustersWithoutRootNode, edgeReplacer, collapsed, clusterToNode) {
         const dagreGraph = new dagre.graphlib.Graph({compound: true})
         dagreGraph.setDefaultEdgeLabel(() => ({}))
         dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB"})
@@ -102,9 +103,10 @@ export default class VueFlowUtils {
         }
 
         for (let cluster of (flowGraph.clusters || [])) {
-            if (clusterCollapseToNode.includes(cluster.cluster.uid) && collapsed.includes(cluster.cluster.uid)) {
-                const node = {uid: cluster.cluster.uid, type: "collapsedcluster"};
-                dagreGraph.setNode(cluster.cluster.uid, {
+            const nodeUid = cluster.cluster.uid.replace(CLUSTER_PREFIX, "");
+            if (clustersWithoutRootNode.includes(cluster.cluster.uid) && collapsed.has(nodeUid)) {
+                const node = {uid: nodeUid, type: "collapsedcluster"};
+                dagreGraph.setNode(nodeUid, {
                     width: this.getNodeWidth(node),
                     height: this.getNodeHeight(node)
                 });
@@ -156,15 +158,15 @@ export default class VueFlowUtils {
     }
 
     static getNodeHeight(node) {
-        return this.isTaskNode(node) || this.isTriggerNode(node) ? NODE_SIZES.TASK_HEIGHT : this.isCollapsedCluster(node) ?  NODE_SIZES.COLLAPSED_CLUSTER_HEIGHT : NODE_SIZES.DOT_HEIGHT;
+        return this.isTaskNode(node) || this.isTriggerNode(node) ? NODE_SIZES.TASK_HEIGHT : this.isCollapsedCluster(node) ? NODE_SIZES.COLLAPSED_CLUSTER_HEIGHT : NODE_SIZES.DOT_HEIGHT;
     }
 
     static isTaskNode(node) {
-        return node.task !== undefined && (node.type === "io.kestra.core.models.hierarchies.GraphTask")
+        return node.task !== undefined && ["GraphTask", "SubflowGraphTask"].some(t => node.type.endsWith(t));
     }
 
     static isTriggerNode(node) {
-        return node.trigger !== undefined && (node.type === "io.kestra.core.models.hierarchies.GraphTrigger");
+        return node.trigger !== undefined && node.type.endsWith("GraphTrigger");
     }
 
     static isCollapsedCluster(node) {
@@ -199,98 +201,107 @@ export default class VueFlowUtils {
         return source ? YamlUtils.flowHaveTasks(source) : false;
     }
 
-    static linkDatas(task, execution) {
-        const data = {id: task.flowId, namespace: task.namespace}
-        if (execution) {
-            const taskrun = execution.taskRunList.find(r => r.taskId === task.id && r.outputs.executionId)
-            if (taskrun) {
-                data.executionId = taskrun?.outputs.executionId
-            }
-        }
-        return data
-    }
-
-    static nodeColor(node, collapsed, flowSource) {
-        if (this.isTaskNode(node)) {
-            if (YamlUtils.isTaskError(flowSource, node.task.id)) {
-                return "danger"
-            }
-            if (collapsed.includes(node.uid)) {
-                return "blue";
-            }
-            if (node.task.type === "io.kestra.core.tasks.flows.Flow") {
-                return "primary"
-            }
-        } else if (this.isTriggerNode(node) || this.isCollapsedCluster(node)) {
+    static nodeColor(node, collapsed) {
+        if (node.uid === TRIGGERS_NODE_UID) {
             return "success";
         }
-        return "default"
-    }
 
-    static getClusterTaskIdWithEndNodeUid (nodeUid, flowGraph) {
-        const cluster = flowGraph.clusters.find(cluster => cluster.end === nodeUid);
-        if (cluster) {
-
-            return Utils.splitFirst(cluster.cluster.uid, CLUSTER_UID_SEPARATOR);
+        if (node.type === "dot") {
+            return null;
         }
 
-        return undefined;
+        if (this.isTriggerNode(node) || this.isCollapsedCluster(node)) {
+            return "success";
+        }
+
+        if (node.type.endsWith("SubflowGraphTask")) {
+            return "primary";
+        }
+        if (node.error) {
+            return "danger";
+        }
+        if (collapsed.has(node.uid)) {
+            return "blue";
+        }
+
+        return "default";
     }
 
-    static haveAdd(edge, flowSource, flowGraph, flowables) {
-        if (edge.target === YamlUtils.getFirstTask(flowSource)) {
-            return [YamlUtils.getNextTaskId(edge.target, flowSource, flowGraph), "before"];
-        }
-        if (YamlUtils.isTaskParallel(edge.target, flowSource) || YamlUtils.isTrigger(flowSource, edge.target) || YamlUtils.isTrigger(flowSource, edge.source)) {
+    static haveAdd(edge, nodeByUid, clustersRootTaskUids, readOnlyUidPrefixes) {
+        // prevent subflow edit (edge = subflowNode -> subflowNode)
+        if(readOnlyUidPrefixes.some(prefix => edge.source.startsWith(prefix) && edge.target.startsWith(prefix))) {
             return undefined;
         }
-        if (YamlUtils.extractTask(flowSource, edge.source) && YamlUtils.extractTask(flowSource, edge.target)) {
-            return [edge.source, "after"];
-        }
-        // Check if edge is an ending flowable
-        // If true, enable add button to add a task
-        // under the flowable task
-        if (edge.source.endsWith("_end") && edge.target.endsWith("_end")) {
-            // Cluster uid contains the flowable task id
-            // So we look for the cluster having this end edge
-            // to return his flowable id
-            return [this.getClusterTaskIdWithEndNodeUid(edge.source, flowGraph), "after"];
-        }
-        if (flowables.includes(edge.source)) {
-            return [YamlUtils.getNextTaskId(edge.target, flowSource, flowGraph), "before"];
-        }
-        if (YamlUtils.extractTask(flowSource, edge.source) && edge.target.endsWith("_end")) {
-            return [edge.source, "after"];
-        }
-        if (YamlUtils.extractTask(flowSource, edge.source) && edge.target.endsWith("_start")) {
-            return [edge.source, "after"];
-        }
-        if (YamlUtils.extractTask(flowSource, edge.target) && edge.source.endsWith("_end")) {
-            return [edge.target, "before"];
+
+        // edge = clusterRoot -> clusterRootTask
+        if (clustersRootTaskUids.includes(edge.target)) {
+            return undefined;
         }
 
-        return undefined;
+        // edge = Triggers cluster -> something || edge = something -> Triggers cluster
+        if(edge.source.startsWith(TRIGGERS_NODE_UID) || edge.target.startsWith(TRIGGERS_NODE_UID)) {
+            return undefined;
+        }
+
+        const dotSplitTarget = edge.target.split(".");
+        dotSplitTarget.pop();
+        const targetNodeClusterUid = dotSplitTarget.join(".");
+        const clusterRootTaskId = Utils.afterLastDot(targetNodeClusterUid);
+
+        // edge = task of parallel -> end of parallel, we only add + symbol right after the parallel cluster root task node
+        const targetNode = nodeByUid[edge.target];
+        if(targetNode.type.endsWith("GraphClusterEnd") && nodeByUid[targetNodeClusterUid]?.task?.type?.endsWith("Parallel")) {
+            return undefined;
+        }
+
+        // edge = something -> clusterRoot ==> we insert before the cluster
+        // clusterUid = clusterTraversalPrefix.{rootTaskUid}
+        // clusterRoot.uid = clusterUid.someUid = clusterTraversalPrefix.{rootTaskUid}.someUid
+        if(targetNode.type.endsWith("GraphClusterRoot")) {
+            return [clusterRootTaskId, "before"];
+        }
+
+        const sourceIsEndOfCluster = nodeByUid[edge.source].type.endsWith("GraphClusterEnd");
+        // edge = clusterTask -> clusterEnd ==> we insert after the previous task
+        if(!sourceIsEndOfCluster && targetNode.type.endsWith("GraphClusterEnd")) {
+            return [Utils.afterLastDot(edge.source), "after"]
+        }
+
+        // edge = cluster1End -> something ==> we insert after cluster1
+        if(sourceIsEndOfCluster) {
+            const dotSplitSource = edge.source.split(".");
+            return [dotSplitSource[dotSplitSource.length - 2], "after"];
+        }
+
+        return [Utils.afterLastDot(edge.target), "before"];
     }
 
-    static getEdgeColor(edge, flowSource) {
-        if (YamlUtils.isTaskError(flowSource, edge.source) || YamlUtils.isTaskError(flowSource, edge.target)) {
+    static getEdgeColor(edge, nodeByUid) {
+        const sourceNode = nodeByUid[edge.source];
+        const targetNode = nodeByUid[edge.target];
+        if (sourceNode.error && targetNode.error) {
             return "danger"
         }
-        if (this.isClusterError(flowSource, edge.source) || this.isClusterError(flowSource, edge.target)) {
+
+        if (sourceNode.type.endsWith("GraphClusterRoot") && targetNode.error) {
             return "danger"
         }
+
+        if (sourceNode.error && targetNode.type.endsWith("GraphClusterEnd")) {
+            return "danger"
+        }
+
         return null;
     }
 
-    static generateGraph(vueFlowId, flowId, namespace, flowGraph, flowSource, hiddenNodes, isHorizontal, edgeReplacer, collapsed, clusterToNode, isReadOnly, isAllowedEdit, flowables) {
+    static generateGraph(vueFlowId, flowId, namespace, flowGraph, flowSource, hiddenNodes, isHorizontal, edgeReplacer, collapsed, clusterToNode, isReadOnly, isAllowedEdit) {
         const elements = [];
 
-        const clusterCollapseToNode = ["Triggers"];
+        const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
         if (!flowGraph || !this.flowHaveTasks(flowSource)) {
             elements.push({
                 id: "start",
-                label: "",
                 type: "dot",
                 position: {x: 0, y: 0},
                 style: {
@@ -304,7 +315,6 @@ export default class VueFlowUtils {
             })
             elements.push({
                 id: "end",
-                label: "",
                 type: "dot",
                 position: isHorizontal ? {x: 50, y: 0} : {x: 0, y: 50},
                 style: {
@@ -335,18 +345,29 @@ export default class VueFlowUtils {
 
             return;
         }
-        const dagreGraph = this.generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clusterCollapseToNode, edgeReplacer, collapsed, clusterToNode);
-        const clusters = {};
-        for (let cluster of (flowGraph.clusters || [])) {
-            if (!edgeReplacer[cluster.cluster.uid] && !collapsed.includes(cluster.cluster.uid)) {
+
+        const dagreGraph = this.generateDagreGraph(flowGraph, hiddenNodes, isHorizontal, clustersWithoutRootNode, edgeReplacer, collapsed, clusterToNode);
+
+        const clusterByNodeUid = {};
+
+        const clusters = flowGraph.clusters || [];
+        const rawClusters = clusters.map(c => c.cluster);
+        const readOnlyUidPrefixes = rawClusters.filter(c => c.type.endsWith("SubflowGraphCluster")).map(c => c.taskNode.uid);
+        for (let cluster of clusters) {
+            if (!edgeReplacer[cluster.cluster.uid] && !collapsed.has(cluster.cluster.uid)) {
+                if (cluster.cluster.taskNode?.task?.type === "io.kestra.core.tasks.flows.Dag") {
+                    readOnlyUidPrefixes.push(cluster.cluster.taskNode.uid);
+                }
+
                 for (let nodeUid of cluster.nodes) {
-                    clusters[nodeUid] = cluster.cluster;
+                    clusterByNodeUid[nodeUid] = cluster.cluster;
                 }
 
                 const clusterUid = cluster.cluster.uid;
-                const isClusterError = YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid, CLUSTER_UID_SEPARATOR))
                 const dagreNode = dagreGraph.node(clusterUid)
                 const parentNode = cluster.parents ? cluster.parents[cluster.parents.length - 1] : undefined;
+
+                const clusterColor = this.computeClusterColor(cluster.cluster);
 
                 elements.push({
                     id: clusterUid,
@@ -354,73 +375,68 @@ export default class VueFlowUtils {
                     parentNode: parentNode,
                     position: this.getNodePosition(dagreNode, parentNode ? dagreGraph.node(parentNode) : undefined),
                     style: {
-                        width: clusterUid === "Triggers" && isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_WIDTH + "px" : dagreNode.width + "px",
-                        height: clusterUid === "Triggers" && !isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_HEIGHT + "px" : dagreNode.height + "px"
+                        width: clusterUid === TRIGGERS_NODE_UID && isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_WIDTH + "px" : dagreNode.width + "px",
+                        height: clusterUid === TRIGGERS_NODE_UID && !isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_HEIGHT + "px" : dagreNode.height + "px"
                     },
                     data: {
                         collapsable: true,
-                        color: clusterUid === "Triggers" ? "success" : isClusterError ? "danger" : "blue"
+                        color: clusterColor,
+                        taskNode: cluster.cluster.taskNode
                     },
-                    class: `bg-light-${clusterUid === "Triggers" ? "success" : isClusterError ? "danger" : "blue"}-border rounded p-2`,
+                    class: `bg-light-${clusterColor}-border rounded p-2`,
                 })
             }
         }
 
-        let disabledLowCode = [];
+        const nodeByUid = {};
         for (const node of flowGraph.nodes.concat(clusterToNode)) {
+            nodeByUid[node.uid] = node;
+
             if (!hiddenNodes.includes(node.uid)) {
                 const dagreNode = dagreGraph.node(node.uid);
                 let nodeType = "task";
-                if (node.type.includes("GraphClusterEnd")) {
-                    nodeType = "dot";
-                } else if (clusters[node.uid] === undefined && node.type.includes("GraphClusterRoot")) {
-                    nodeType = "dot";
-                } else if (node.type.includes("GraphClusterRoot")) {
+                if (this.isClusterRootOrEnd(node)) {
                     nodeType = "dot";
                 } else if (node.type.includes("GraphTrigger")) {
                     nodeType = "trigger";
                 } else if (node.type === "collapsedcluster") {
                     nodeType = "collapsedcluster";
                 }
-                // Disable interaction for Dag task
-                // because our low code editor can not handle it for now
-                if (this.isTaskNode(node) && node.task.type === "io.kestra.core.tasks.flows.Dag") {
-                    disabledLowCode.push(node.task.id);
-                    YamlUtils.getChildrenTasks(flowSource, node.task.id).forEach(child => {
-                        disabledLowCode.push(child);
-                    })
-                }
 
-                const taskId = node?.task?.id;
+                const color = this.nodeColor(node, collapsed, flowSource);
+                const isReadOnlyTask = isReadOnly || readOnlyUidPrefixes.some(prefix => node.uid.startsWith(prefix + "."));
                 elements.push({
                     id: node.uid,
-                    label: this.isTaskNode(node) ? taskId : "",
                     type: nodeType,
-                    position: this.getNodePosition(dagreNode, clusters[node.uid] ? dagreGraph.node(clusters[node.uid].uid) : undefined),
+                    position: this.getNodePosition(dagreNode, clusterByNodeUid[node.uid] ? dagreGraph.node(clusterByNodeUid[node.uid].uid) : undefined),
                     style: {
                         width: this.getNodeWidth(node) + "px",
                         height: this.getNodeHeight(node) + "px"
                     },
                     sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
                     targetPosition: isHorizontal ? Position.Left : Position.Top,
-                    parentNode: clusters[node.uid] ? clusters[node.uid].uid : undefined,
-                    draggable: nodeType === "task" && !isReadOnly && this.isTaskNode(node) ? !disabledLowCode.includes(taskId) : false,
+                    parentNode: clusterByNodeUid[node.uid] ? clusterByNodeUid[node.uid].uid : undefined,
+                    draggable: nodeType === "task" ? !isReadOnlyTask : false,
                     data: {
                         node: node,
-                        namespace: namespace,
-                        flowId: flowId,
-                        isFlowable: this.isTaskNode(node) ? flowables.includes(taskId) : false,
-                        color: nodeType != "dot" ? this.nodeColor(node, collapsed, flowSource) : null,
-                        expandable: taskId ? edgeReplacer[CLUSTER_UID_SEPARATOR + taskId] !== undefined : this.isCollapsedCluster(node),
-                        isReadOnly: isReadOnly,
-                        link: node.task?.type === "io.kestra.core.tasks.flows.Flow" ? this.linkDatas(node.task) : false,
-                        iconComponent: this.isCollapsedCluster(node) ? "webhook" : null
+                        namespace: clusterByNodeUid[node.uid]?.taskNode?.task?.namespace ?? namespace,
+                        flowId: clusterByNodeUid[node.uid]?.taskNode?.task?.flowId ?? flowId,
+                        isFlowable: clusterByNodeUid[node.uid]?.uid === CLUSTER_PREFIX + node.uid && !node.type.endsWith("SubflowGraphTask"),
+                        color: color,
+                        expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer),
+                        isReadOnly: isReadOnlyTask,
+                        iconComponent: this.isCollapsedCluster(node) ? "webhook" : null,
+                        executionId: node.executionId
                     },
-                    class: node.type === "collapsedcluster" ? `bg-light-${node.uid === "Triggers" ? "success" : YamlUtils.isTaskError(flowSource, taskId) ? "danger" : "blue"}-border rounded` : "",
+                    class: node.type === "collapsedcluster" ? `bg-light-${color}-border rounded` : "",
                 })
             }
         }
-        for (const edge of (flowGraph.edges || [])) {
+
+        const clusterRootTaskNodeUids = rawClusters.filter(c => c.taskNode).map(c => c.taskNode.uid);
+        const edges = flowGraph.edges ?? [];
+
+        for (const edge of edges) {
             const newEdge = this.replaceIfCollapsed(edge.source, edge.target, edgeReplacer, hiddenNodes);
             if (newEdge) {
                 elements.push({
@@ -428,17 +444,17 @@ export default class VueFlowUtils {
                     source: newEdge.source,
                     target: newEdge.target,
                     type: "edge",
-                    markerEnd: YamlUtils.extractTask(flowSource, newEdge.target) ? {
-                        id: YamlUtils.isTaskError(flowSource, newEdge.target) ? "marker-danger" : "marker-custom",
-                        type: MarkerType.ArrowClosed,
-                    } : "",
+                    markerEnd: this.isClusterRootOrEnd(nodeByUid[newEdge.target]) ? ""
+                        : {
+                            id: nodeByUid[newEdge.target].error ? "marker-danger" : "marker-custom",
+                            type: MarkerType.ArrowClosed,
+                        },
                     data: {
-                        haveAdd: this.haveAdd(edge, flowSource, flowGraph, flowables),
-                        isFlowable: flowables.includes(edge.source) || flowables.includes(edge.target),
-                        haveDashArray: YamlUtils.isTrigger(flowSource, edge.source) || YamlUtils.isTrigger(flowSource, edge.target),
-                        nextTaskId: YamlUtils.getNextTaskId(edge.target, flowSource, flowGraph),
-                        disabled: disabledLowCode.includes(edge.source) || isReadOnly || !isAllowedEdit,
-                        color: this.getEdgeColor(edge, flowSource)
+                        haveAdd: !isReadOnly && isAllowedEdit && this.haveAdd(edge, nodeByUid, clusterRootTaskNodeUids, readOnlyUidPrefixes),
+                        haveDashArray: nodeByUid[edge.source].type.endsWith("GraphTrigger")
+                            || nodeByUid[edge.target].type.endsWith("GraphTrigger")
+                            || edge.source.startsWith(TRIGGERS_NODE_UID),
+                        color: this.getEdgeColor(edge, nodeByUid)
                     },
                     style: {
                         zIndex: 10,
@@ -449,19 +465,35 @@ export default class VueFlowUtils {
         return elements;
     }
 
-    static isClusterError(flowSource, clusterUid) {
-        if(clusterUid.startsWith(CLUSTER_UID_SEPARATOR)) {
-            if(clusterUid.endsWith("_end")) {
-
-                return YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid.substring(0, clusterUid.length - 4), CLUSTER_UID_SEPARATOR));
-            }
-            if(clusterUid.endsWith("_start")) {
-
-                return YamlUtils.isTaskError(flowSource, Utils.splitFirst(clusterUid.substring(0, clusterUid.length - 6), CLUSTER_UID_SEPARATOR));
-            }
-        }
-
-        return false
+    static isClusterRootOrEnd(node) {
+        return ["GraphClusterRoot", "GraphClusterEnd"].some(s => node.type.endsWith(s));
     }
 
+    static computeClusterColor(cluster) {
+        if (cluster.uid === CLUSTER_PREFIX + TRIGGERS_NODE_UID) {
+            return "success";
+        }
+
+        if (cluster.type.endsWith("SubflowGraphCluster")) {
+            return "primary";
+        }
+
+        if (cluster.error) {
+            return "danger";
+        }
+
+        return "blue";
+    }
+
+    static isExpandableTask(node, clusterByNodeUid, edgeReplacer) {
+        if (Object.values(edgeReplacer).includes(node.uid)) {
+            return true;
+        }
+
+        if (this.isCollapsedCluster(node)) {
+            return true;
+        }
+
+        return node.type.endsWith("SubflowGraphTask") && clusterByNodeUid[node.uid]?.uid?.replace(CLUSTER_PREFIX, "") !== node.uid;
+    }
 }

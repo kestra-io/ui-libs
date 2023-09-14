@@ -1,5 +1,5 @@
 <template>
-    <tooltip>
+    <tooltip :key="lastStep.date">
         <template #content>
             <span v-for="(history, index) in filteredHistories" :key="'tt-' + index" class="duration-tt">
                 <span class="square" :class="squareClass(history.state)" />
