@@ -100,6 +100,14 @@
 
         nextTick(() => {
             forwardEvent("loading", true);
+
+            // Workaround due to start & end nodes regeneration when fetching the graph again
+            const oldCollapsed = collapsed.value;
+            collapsed.value = new Set();
+            hiddenNodes.value = [];
+            edgeReplacer.value = {};
+            oldCollapsed.forEach(n => collapseCluster(CLUSTER_PREFIX + n, false, false))
+
             const elements = VueflowUtils.generateGraph(
                 props.id,
                 props.flowId,
@@ -237,29 +245,21 @@
 
     const collapseCluster = (clusterUid, regenerate, recursive) => {
         const cluster = props.flowGraph.clusters.find(cluster => cluster.cluster.uid.endsWith(clusterUid));
-        const nodeId = clusterUid === "root.Triggers" ? "root.Triggers" : clusterUid.replace(CLUSTER_PREFIX, "");
+        const nodeId = clusterUid.replace(CLUSTER_PREFIX, "");
         collapsed.value.add(nodeId)
 
         hiddenNodes.value = hiddenNodes.value.concat(cluster.nodes.filter(e => e !== nodeId || recursive));
-        if (clusterUid !== "root.Triggers") {
-            hiddenNodes.value = hiddenNodes.value.concat([cluster.cluster.uid])
-            edgeReplacer.value = {
-                ...edgeReplacer.value,
-                [cluster.cluster.uid]: nodeId,
-                [cluster.start]: nodeId,
-                [cluster.end]: nodeId
-            }
+        hiddenNodes.value = hiddenNodes.value.concat([cluster.cluster.uid])
+        edgeReplacer.value = {
+            ...edgeReplacer.value,
+            [cluster.cluster.uid]: nodeId,
+            [cluster.start]: nodeId,
+            [cluster.end]: nodeId
+        }
 
-            for (let child of cluster.nodes) {
-                if (props.flowGraph.clusters.map(cluster => cluster.cluster.uid).includes(child)) {
-                    collapseCluster(child, false, true);
-                }
-            }
-        } else {
-            edgeReplacer.value = {
-                ...edgeReplacer.value,
-                [cluster.start]: nodeId,
-                [cluster.end]: nodeId
+        for (let child of cluster.nodes) {
+            if (props.flowGraph.clusters.map(cluster => cluster.cluster.uid).includes(child)) {
+                collapseCluster(child, false, true);
             }
         }
 
