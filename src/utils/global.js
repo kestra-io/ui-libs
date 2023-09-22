@@ -15,9 +15,9 @@ String.prototype.hashCode = function () {
     return hash + "";
 }
 
+export const cssVariable = (name) => {
     const root = document.querySelector(":root");
     const rootStyle = getComputedStyle(root);
 
-    export const cssVariable = (name) => {
-        return rootStyle.getPropertyValue(name);
-    }
+    return rootStyle.getPropertyValue(name);
+}
