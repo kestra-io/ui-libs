@@ -1,4 +1,4 @@
-import _mapValues from "lodash/mapValues";
+import {mapValues} from "lodash";
 import PauseCircle from "vue-material-design-icons/PauseCircle.vue";
 import CheckCircle from "vue-material-design-icons/CheckCircle.vue";
 import PlayCircle from "vue-material-design-icons/PlayCircle.vue";
@@ -138,7 +138,7 @@ export default class State {
     }
 
     static allStates() {
-        return _mapValues(STATE, state => {
+        return mapValues(STATE, state => {
             return {
                 key: state.name,
                 icon: state.icon,
@@ -152,14 +152,14 @@ export default class State {
     }
 
     static colorClass() {
-        return _mapValues(STATE, state => state.colorClass);
+        return mapValues(STATE, state => state.colorClass);
     }
 
     static color() {
-        return _mapValues(STATE, state => 'cssVariable("--bs-" + state.colorClass)');
+        return mapValues(STATE, state => 'cssVariable("--bs-" + state.colorClass)');
     }
 
     static icon() {
-        return _mapValues(STATE, state => state.icon);
+        return mapValues(STATE, state => state.icon);
     }
 }
