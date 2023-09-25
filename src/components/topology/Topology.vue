@@ -7,7 +7,6 @@
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import {cssVariable} from "../../utils/global.js";
     import {VueFlowUtils, YamlUtils} from "../../index.js";
-    import VueflowUtils from "../../utils/VueFlowUtils.js";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants.js";
     import {Background} from "@vue-flow/background";
     import Utils from "../../utils/Utils.js";
@@ -108,7 +107,7 @@
             edgeReplacer.value = {};
             oldCollapsed.forEach(n => collapseCluster(CLUSTER_PREFIX + n, false, false))
 
-            const elements = VueflowUtils.generateGraph(
+            const elements = VueFlowUtils.generateGraph(
                 props.id,
                 props.flowId,
                 props.namespace,
@@ -364,5 +363,7 @@
 </template>
 
 <style scoped lang="scss">
-
+    :deep(.unused-path) {
+        opacity: 0.3;
+    }
 </style>

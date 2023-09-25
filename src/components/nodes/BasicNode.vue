@@ -111,11 +111,6 @@
             data: {
                 type: Object,
                 required: true
-            },
-            style: {
-                type: Object,
-                required: false,
-                default: undefined
             }
         },
         methods: {
@@ -173,6 +168,7 @@
             },
             classes() {
                 return {
+                    "unused-path": this.data.unused,
                     [`border-${this.borderColor}`]: this.borderColor,
                     "disabled": this.data.node.task?.disabled,
                     [this.$attrs.class]: true

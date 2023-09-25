@@ -35,6 +35,7 @@
                 return {
                     "vue-flow__edge-path": true,
                     ["stroke-" + this.data.color]: this.data.color,
+                    "unused-path": this.data.unused
                 }
             },
         },
@@ -52,7 +53,7 @@
 <template>
     <path
         :id="id"
-        :class="'vue-flow__edge-path stroke-'+data.color"
+        :class="classes"
         :style="data.haveDashArray ?
             {
                 strokeDasharray: '2',

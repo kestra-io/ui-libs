@@ -1,16 +1,18 @@
 <template>
-    <span class="badge rounded-pill text-truncate text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
-    <div class="top-button-div text-white d-flex">
-        <span
-            v-if="data.collapsable"
-            class="rounded-button"
-            :class="[`bg-${data.color}`]"
-            @click="collapse()"
-        >
-            <tooltip :title="$t('collapse')">
-                <ArrowCollapse class="button-icon" alt="Collapse task" />
-            </tooltip>
-        </span>
+    <div :class="classes">
+        <span class="badge rounded-pill text-truncate text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
+        <div class="top-button-div text-white d-flex">
+            <span
+                v-if="data.collapsable"
+                class="rounded-button"
+                :class="[`bg-${data.color}`]"
+                @click="collapse()"
+            >
+                <tooltip :title="$t('collapse')">
+                    <ArrowCollapse class="button-icon" alt="Collapse task" />
+                </tooltip>
+            </span>
+        </div>
     </div>
 </template>
 <script setup>
@@ -55,6 +57,9 @@
             }
         },
         computed: {
+            classes() {
+                return {"unused-path": this.data.unused}
+            },
             clusterName() {
                 const taskNode = this.data.taskNode;
                 if (taskNode?.type?.endsWith("SubflowGraphTask")) {
