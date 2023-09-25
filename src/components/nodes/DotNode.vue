@@ -1,9 +1,11 @@
 <template>
-    <Handle type="source" class="custom-handle" :position="sourcePosition" />
-    <div class="dot">
-        <CircleIcon :class="{'text-danger': data.node.error}" class="circle" alt="circle" />
+    <div :class="classes">
+        <Handle type="source" class="custom-handle" :position="sourcePosition" />
+        <div class="dot">
+            <CircleIcon :class="{'text-danger': data.node.error}" class="circle" alt="circle" />
+        </div>
+        <Handle type="target" class="custom-handle" :position="targetPosition" />
     </div>
-    <Handle type="target" class="custom-handle" :position="targetPosition" />
 </template>
 
 <script>
@@ -31,6 +33,11 @@
                 type: String
             }
         },
+        computed: {
+            classes() {
+                return {"unused-path": this.data.unused};
+            }
+        }
     }
 </script>
 <style scoped>
