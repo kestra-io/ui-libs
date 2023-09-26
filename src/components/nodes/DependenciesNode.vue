@@ -5,7 +5,7 @@
         class="dependency-node-wrapper rounded-3 border"
     >
         <TaskIcon :custom-icon="{icon: icon}" class="bg-pink rounded" theme="light" />
-        <div class="dependency-text d-flex flex-column">
+        <div class="dependency-text d-flex flex-column flex-grow-1">
             <div class="dependency-flow-text text-truncate">
                 <tooltip :title="data.flowId">
                     {{ data.flowId }}
@@ -112,6 +112,10 @@
         display: flex;
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
+    }
+
+    .wrapper {
+        width: 26px;
     }
 
     .dependency-text {

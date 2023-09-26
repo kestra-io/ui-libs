@@ -18,7 +18,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @each $color, $value in $theme-colors {
     html.dark {
         .border-#{$color} {
-            border-color: $color;
+            border-color: $value;
         }
 
         .bg-#{$color} {
