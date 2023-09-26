@@ -20,8 +20,27 @@
     font-size: 0.66rem;
 }
 
+.vue-flow__controls {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+}
+
 .vue-flow__controls-button {
-    color: black;
+    color: var(--bs-black);
+    border-bottom-color: var(--bs-border-color);
+
+    svg {
+        fill: var(--bs-black);
+    }
+
+    html.dark & {
+        background: var(--bs-card-bg);
+        color: var(--bs-white);
+
+        svg {
+            fill: var(--bs-white);
+        }
+    }
 }
 
 .vue-flow__container {
