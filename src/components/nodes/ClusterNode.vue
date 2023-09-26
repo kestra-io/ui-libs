@@ -1,5 +1,5 @@
 <template>
-    <span class="badge rounded-pill text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
+    <span class="badge rounded-pill text-truncate text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
     <div class="top-button-div text-white d-flex">
         <span
             v-if="data.collapsable"
@@ -82,9 +82,11 @@
     }
 
     .badge {
-        top: -10px;
+        top: -3px;
         position: relative;
         left: -3px;
+        display: inline-block;
+        max-width: 100%;
     }
 
     .text-color {
