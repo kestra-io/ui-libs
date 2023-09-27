@@ -383,7 +383,7 @@ export default class VueFlowUtils {
                         collapsable: true,
                         color: clusterColor,
                         taskNode: cluster.cluster.taskNode,
-                        unused: nodeByUid[cluster.cluster.taskNode.uid].unused
+                        unused: cluster.cluster.taskNode ? nodeByUid[cluster.cluster.taskNode.uid].unused : false
                     },
                     class: `bg-light-${clusterColor}-border rounded p-2`,
                 })
