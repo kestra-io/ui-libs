@@ -353,10 +353,44 @@ export default class VueFlowUtils {
         const rawClusters = clusters.map(c => c.cluster);
         const readOnlyUidPrefixes = rawClusters.filter(c => c.type.endsWith("SubflowGraphCluster")).map(c => c.taskNode.uid);
 
-        const nodeByUid = {};
-        for (const node of flowGraph.nodes.concat(clusterToNode)) {
-            nodeByUid[node.uid] = node;
+        const nodeByUid = Object.fromEntries(flowGraph.nodes.concat(clusterToNode).map(node => [node.uid, node]));
+        for (let cluster of clusters) {
+            if (!edgeReplacer[cluster.cluster.uid] && !collapsed.has(cluster.cluster.uid)) {
+                if (cluster.cluster.taskNode?.task?.type === "io.kestra.core.tasks.flows.Dag") {
+                    readOnlyUidPrefixes.push(cluster.cluster.taskNode.uid);
+                }
 
+                for (let nodeUid of cluster.nodes) {
+                    clusterByNodeUid[nodeUid] = cluster.cluster;
+                }
+
+                const clusterUid = cluster.cluster.uid;
+                const dagreNode = dagreGraph.node(clusterUid)
+                const parentNode = cluster.parents ? cluster.parents[cluster.parents.length - 1] : undefined;
+
+                const clusterColor = this.computeClusterColor(cluster.cluster);
+
+                elements.push({
+                    id: clusterUid,
+                    type: "cluster",
+                    parentNode: parentNode,
+                    position: this.getNodePosition(dagreNode, parentNode ? dagreGraph.node(parentNode) : undefined),
+                    style: {
+                        width: clusterUid === TRIGGERS_NODE_UID && isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_WIDTH + "px" : dagreNode.width + "px",
+                        height: clusterUid === TRIGGERS_NODE_UID && !isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_HEIGHT + "px" : dagreNode.height + "px"
+                    },
+                    data: {
+                        collapsable: true,
+                        color: clusterColor,
+                        taskNode: cluster.cluster.taskNode,
+                        unused: nodeByUid[cluster.cluster.taskNode.uid].unused
+                    },
+                    class: `bg-light-${clusterColor}-border rounded p-2`,
+                })
+            }
+        }
+
+        for (const node of flowGraph.nodes.concat(clusterToNode)) {
             if (!hiddenNodes.includes(node.uid)) {
                 const dagreNode = dagreGraph.node(node.uid);
                 let nodeType = "task";
@@ -395,42 +429,6 @@ export default class VueFlowUtils {
                         unused: node.unused
                     },
                     class: node.type === "collapsedcluster" ? `bg-light-${color}-border rounded` : "",
-                })
-            }
-        }
-
-        for (let cluster of clusters) {
-            if (!edgeReplacer[cluster.cluster.uid] && !collapsed.has(cluster.cluster.uid)) {
-                if (cluster.cluster.taskNode?.task?.type === "io.kestra.core.tasks.flows.Dag") {
-                    readOnlyUidPrefixes.push(cluster.cluster.taskNode.uid);
-                }
-
-                for (let nodeUid of cluster.nodes) {
-                    clusterByNodeUid[nodeUid] = cluster.cluster;
-                }
-
-                const clusterUid = cluster.cluster.uid;
-                const dagreNode = dagreGraph.node(clusterUid)
-                const parentNode = cluster.parents ? cluster.parents[cluster.parents.length - 1] : undefined;
-
-                const clusterColor = this.computeClusterColor(cluster.cluster);
-
-                elements.push({
-                    id: clusterUid,
-                    type: "cluster",
-                    parentNode: parentNode,
-                    position: this.getNodePosition(dagreNode, parentNode ? dagreGraph.node(parentNode) : undefined),
-                    style: {
-                        width: clusterUid === TRIGGERS_NODE_UID && isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_WIDTH + "px" : dagreNode.width + "px",
-                        height: clusterUid === TRIGGERS_NODE_UID && !isHorizontal ? NODE_SIZES.TRIGGER_CLUSTER_HEIGHT + "px" : dagreNode.height + "px"
-                    },
-                    data: {
-                        collapsable: true,
-                        color: clusterColor,
-                        taskNode: cluster.cluster.taskNode,
-                        unused: nodeByUid[cluster.cluster.taskNode.uid].unused
-                    },
-                    class: `bg-light-${clusterColor}-border rounded p-2`,
                 })
             }
         }
