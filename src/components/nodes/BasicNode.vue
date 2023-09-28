@@ -235,9 +235,9 @@
         }
 
         .icon {
-            margin: 0.2rem;
-            width: 25px;
-            height: 25px;
+            position: relative;
+            width: 32px;
+            height: 30px;
             border: 0.4px solid var(--bs-border-color);
         }
     }
