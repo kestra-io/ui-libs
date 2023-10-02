@@ -49,4 +49,12 @@ export default class Utils {
     static afterLastDot(str) {
         return str.split(".").pop();
     }
+
+    static translate(text) {
+        if (typeof $t !== "undefined" && typeof $t === "function") {
+            return $t(text);
+        } else {
+            return text;
+        }
+    }
 }

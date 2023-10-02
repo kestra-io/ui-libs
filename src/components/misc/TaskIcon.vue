@@ -9,7 +9,6 @@
     </div>
 </template>
 <script>
-    import {mapState} from "vuex";
     import {Buffer} from "buffer";
     import Tooltip from "../misc/Tooltip.vue";
     import {cssVariable} from "../../utils/global.js";
@@ -32,10 +31,13 @@
                 validator(value) {
                     return ["dark", "light"].includes(value)
                 }
+            },
+            icons: {
+                type: Object,
+                default: undefined
             }
         },
         computed: {
-            ...mapState("plugin", ["icons"]),
             backgroundImage() {
                 return `data:image/svg+xml;base64,${this.imageBase64}`
             },

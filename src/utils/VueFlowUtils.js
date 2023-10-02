@@ -294,7 +294,7 @@ export default class VueFlowUtils {
         return null;
     }
 
-    static generateGraph(vueFlowId, flowId, namespace, flowGraph, flowSource, hiddenNodes, isHorizontal, edgeReplacer, collapsed, clusterToNode, isReadOnly, isAllowedEdit) {
+    static generateGraph(vueFlowId, flowId, namespace, flowGraph, flowSource, hiddenNodes, isHorizontal, edgeReplacer, collapsed, clusterToNode, isReadOnly, isAllowedEdit, enableSubflowInteraction) {
         const elements = [];
 
         const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
@@ -422,7 +422,7 @@ export default class VueFlowUtils {
                         flowId: clusterByNodeUid[node.uid]?.taskNode?.task?.flowId ?? flowId,
                         isFlowable: clusterByNodeUid[node.uid]?.uid === CLUSTER_PREFIX + node.uid && !node.type.endsWith("SubflowGraphTask"),
                         color: color,
-                        expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer),
+                        expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer, enableSubflowInteraction),
                         isReadOnly: isReadOnlyTask,
                         iconComponent: this.isCollapsedCluster(node) ? "webhook" : null,
                         executionId: node.executionId,
@@ -486,7 +486,7 @@ export default class VueFlowUtils {
         return "blue";
     }
 
-    static isExpandableTask(node, clusterByNodeUid, edgeReplacer) {
+    static isExpandableTask(node, clusterByNodeUid, edgeReplacer, enableSubflowInteraction) {
         if (Object.values(edgeReplacer).includes(node.uid)) {
             return true;
         }
@@ -495,6 +495,6 @@ export default class VueFlowUtils {
             return true;
         }
 
-        return node.type.endsWith("SubflowGraphTask") && clusterByNodeUid[node.uid]?.uid?.replace(CLUSTER_PREFIX, "") !== node.uid;
+        return node.type.endsWith("SubflowGraphTask") && clusterByNodeUid[node.uid]?.uid?.replace(CLUSTER_PREFIX, "") !== node.uid && enableSubflowInteraction;
     }
 }

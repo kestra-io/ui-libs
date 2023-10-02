@@ -7,7 +7,7 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
-            <TaskIcon :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" />
+            <TaskIcon :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
         </div>
         <div class="node-content">
             <div class="d-flex node-title">
@@ -22,7 +22,7 @@
                     class="d-flex"
                     v-if="description"
                 >
-                    <tooltip :title="$t('show description')" class="d-flex align-items-center">
+                    <tooltip :title="Utils.translate('show description')" class="d-flex align-items-center">
                         <InformationOutline
                             @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
                             class="description-button ms-2"
@@ -36,21 +36,21 @@
             <slot name="badge-button-before" />
             <span
                 v-if="data.link"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
             >
-                <tooltip :title="$t('open')">
+                <tooltip :title="Utils.translate('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
                 </tooltip>
             </span>
             <span
                 v-if="expandable"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND)"
             >
-                <tooltip :title="$t('expand')">
+                <tooltip :title="Utils.translate('expand')">
                     <ArrowExpand class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>
@@ -111,6 +111,10 @@
             data: {
                 type: Object,
                 required: true
+            },
+            icons: {
+                type: Object,
+                default: undefined
             }
         },
         methods: {
@@ -128,6 +132,9 @@
             };
         },
         computed: {
+            Utils() {
+                return Utils
+            },
             ...mapState("execution", ["execution"]),
             borderColor() {
                 const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
@@ -263,7 +270,7 @@
         padding: 1px;
     }
 
-    .rounded-button {
+    .circle-button {
         border-radius: 1rem;
         width: 1rem;
         height: 1rem;

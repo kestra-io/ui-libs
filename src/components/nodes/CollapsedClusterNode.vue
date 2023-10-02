@@ -9,11 +9,11 @@
             <slot name="badge-button-before" />
             <span
                 v-if="expandable"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND, {id})"
             >
-                <tooltip :title="$t('expand')">
+                <tooltip :title="Utils.translate('expand')">
                     <ArrowExpand class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>
@@ -33,6 +33,7 @@
     import Webhook from "vue-material-design-icons/Webhook.vue";
     import {Handle} from "@vue-flow/core";
     import Tooltip from "../misc/Tooltip.vue";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         components: {
@@ -102,7 +103,7 @@
         }
     }
 
-    .rounded-button {
+    .circle-button {
         border-radius: 1rem;
         width: 1rem;
         height: 1rem;

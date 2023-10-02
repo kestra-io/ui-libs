@@ -5,7 +5,7 @@
 }
 
 
-.rounded-button {
+.circle-button {
     border-radius: 1rem;
     width: 1rem;
     height: 1rem;
@@ -46,12 +46,11 @@
 .vue-flow__container {
     .top-button-div {
         position: absolute;
-        top: 0;
-        width: 100%;
-        justify-content: end;
-        display: flex;
-        right: -16px;
-        transform: translate(-5%, -50%) !important;
+        top: -0.5rem;
+        right: -0.5rem;
+        justify-content: center;
+        padding-right: 3px;
+        display: flex
     }
 
     .vue-flow__node-cluster {
