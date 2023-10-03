@@ -4,27 +4,28 @@
         :id="id"
         :data="data"
         :color="color"
+        :icons="icons"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, {id})"
     >
-        <template #badge-button-before>
+        <template #badge-button-before v-if="!data.isReadOnly">
             <span
-                v-if="!execution && !data.isReadOnly"
-                class="rounded-button"
+                v-if="!execution"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.trigger, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="$t('edit')">
+                <tooltip :title="Utils.translate('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
             <span
-                v-if="!execution && !data.isReadOnly"
-                class="rounded-button"
+                v-if="!execution"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="$t('delete')">
+                <tooltip :title="Utils.translate('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>
@@ -42,6 +43,7 @@
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
     import Tooltip from "../misc/Tooltip.vue";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         name: "Task",
@@ -82,6 +84,10 @@
             id: {
                 type: String,
                 required: true
+            },
+            icons: {
+                type: Object,
+                default: undefined
             }
         },
         methods: {

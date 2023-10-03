@@ -4,6 +4,7 @@
     import AddTaskButton from "../buttons/AddTaskButton.vue";
     import {EVENTS} from "../../utils/constants.js";
     import Tooltip from "../misc/Tooltip.vue";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         data() {
@@ -28,6 +29,9 @@
             Tooltip
         },
         computed: {
+            Utils() {
+                return Utils
+            },
             EVENTS() {
                 return EVENTS
             },
@@ -71,7 +75,7 @@
                 transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
             }"
         >
-            <tooltip :title="$t('add task')">
+            <tooltip :title="Utils.translate('add task')">
                 <AddTaskButton
                     v-if="data.haveAdd"
                     :add-task="true"
@@ -79,7 +83,6 @@
                     :class="{'text-danger': data.color}"
                 />
             </tooltip>
-
         </div>
     </EdgeLabelRenderer>
 </template>

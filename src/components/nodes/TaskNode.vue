@@ -5,6 +5,7 @@
         :data="dataWithLink"
         :state="state"
         :class="classes"
+        :icons="icons"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, expandData)"
         @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
@@ -17,41 +18,41 @@
         <template #badge-button-before>
             <span
                 v-if="taskExecution"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id: taskId, execution: taskExecution, taskRuns})"
             >
-                <tooltip :title="$t('show task logs')">
+                <tooltip :title="Utils.translate('show task logs')">
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
             >
-                <tooltip :title="$t('add error handler')">
+                <tooltip :title="Utils.translate('add error handler')">
                     <AlertOutline class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
             <span
                 v-if="!taskExecution && !data.isReadOnly"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="$t('edit')">
+                <tooltip :title="Utils.translate('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
             <span
                 v-if="!taskExecution && !data.isReadOnly"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id: taskId, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="$t('delete')">
+                <tooltip :title="Utils.translate('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>
@@ -162,7 +163,7 @@
                 }
             },
             dataWithLink() {
-                if(this.data.node.type.endsWith("SubflowGraphTask")){
+                if(this.data.node.type.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
                     return {
                         ...this.data,
                         link: {
@@ -205,6 +206,14 @@
             id: {
                 type: String,
                 required: true
+            },
+            icons: {
+                type: Object,
+                default: undefined
+            },
+            enableSubflowInteraction: {
+                type: Boolean,
+                default: true
             }
         },
         methods: {

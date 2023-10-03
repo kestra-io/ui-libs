@@ -54,6 +54,14 @@
         expandedSubflows: {
             type: Array,
             default: () => []
+        },
+        icons: {
+            type: Object,
+            default: undefined
+        },
+        enableSubflowInteraction: {
+            type: Boolean,
+            default: true
         }
     });
 
@@ -84,6 +92,7 @@
 
     onMounted(() => {
         generateGraph();
+
     })
 
     watch(() => props.flowGraph, () => {
@@ -119,7 +128,8 @@
                 collapsed.value,
                 clusterToNode.value,
                 props.isReadOnly,
-                props.isAllowedEdit
+                props.isAllowedEdit,
+                props.enableSubflowInteraction
             );
             setElements(elements);
             fitView();
@@ -195,7 +205,7 @@
     })
 
     const subflowPrefixes = computed(() => {
-        if(!props.flowGraph) {
+        if(!props.flowGraph?.clusters) {
             return [];
         }
 
@@ -206,7 +216,7 @@
     onNodeDrag((e) => {
         resetNodesStyle();
         getNodes.value.filter(n => n.id !== e.node.id).forEach(n => {
-            if (n.type === "trigger" || (n.type === "task" && (n.id.startsWith(e.node.id + ".") || e.node.id.startsWith(n.id + "."))) || subflowPrefixes.value.some(subflowPrefix => n.id.startsWith(subflowPrefix))) {
+            if (n.type === "trigger" || (n.type === "task" && (n.id.startsWith(e.node.id + ".") || e.node.id.startsWith(n.id + "."))) || subflowPrefixes?.value?.some(subflowPrefix => n.id.startsWith(subflowPrefix))) {
                 n.style = {...n.style, opacity: "0.5"}
             } else {
                 n.style = {...n.style, opacity: "1"}
@@ -313,6 +323,7 @@
         <template #node-task="taskProps">
             <TaskNode
                 v-bind="taskProps"
+                :icons="icons"
                 @edit="forwardEvent(EVENTS.EDIT, $event)"
                 @delete="forwardEvent(EVENTS.DELETE, $event)"
                 @expand="expand($event)"
@@ -322,12 +333,14 @@
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="forwardEvent('on-add-flowable-error', $event)"
+                :enable-subflow-interaction="enableSubflowInteraction"
             />
         </template>
 
         <template #node-trigger="triggerProps">
             <TriggerNode
                 v-bind="triggerProps"
+                :icons="icons"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
                 @delete="forwardEvent(EVENTS.DELETE, $event)"

@@ -22,20 +22,20 @@
             <slot name="badge-button-before" />
             <span
                 v-if="data.link"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, data)"
             >
-                <tooltip :title="$t('open')">
+                <tooltip :title="Utils.translate('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
                 </tooltip>
             </span>
             <span
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND_DEPENDENCIES, data)"
             >
-                <tooltip :title="$t('expand')">
+                <tooltip :title="Utils.translate('expand')">
                     <ArrowExpandAll class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>
@@ -53,6 +53,7 @@
     import ArrowExpandAll from "vue-material-design-icons/ArrowExpandAll.vue";
     import {EVENTS} from "../../utils/constants.js";
     import Tooltip from "../misc/Tooltip.vue";
+    import Utils from "../../utils/Utils.js";
 
     export default {
         name: "Dependencies",

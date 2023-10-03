@@ -1,14 +1,14 @@
 <template>
     <div :class="classes">
-        <span class="badge rounded-pill text-truncate text-color" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
+        <span class="badge rounded-pill text-truncate text-color position-reliative" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
         <div class="top-button-div text-white d-flex">
             <span
                 v-if="data.collapsable"
-                class="rounded-button"
+                class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="collapse()"
             >
-                <tooltip :title="$t('collapse')">
+                <tooltip :title="Utils.translate('collapse')">
                     <ArrowCollapse class="button-icon" alt="Collapse task" />
                 </tooltip>
             </span>
@@ -19,6 +19,7 @@
     import ArrowCollapse from "vue-material-design-icons/ArrowCollapse.vue"
     import {EVENTS} from "../../utils/constants.js";
     import {Position} from "@vue-flow/core";
+    import Utils from "../../utils/Utils.js";
 
     const props = defineProps({
         "data": {
@@ -72,7 +73,7 @@
     }
 </script>
 <style scoped lang="scss">
-    .rounded-button {
+    .circle-button {
         border-radius: 1rem;
         width: 1rem;
         height: 1rem;
@@ -102,10 +103,12 @@
     }
 
     .top-button-div {
-        transform: translate(-50%, -50%) !important;
-        left: 100% !important;
+        position: absolute;
+        top: -0.5rem;
+        right: -0.5rem;
         justify-content: center;
         padding-right: 3px;
+        display: flex
     }
 
 </style>
