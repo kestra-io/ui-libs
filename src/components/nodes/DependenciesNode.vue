@@ -45,6 +45,10 @@
     <Handle type="target" :position="targetPosition" />
 </template>
 
+<script setup>
+    import Utils from "../../utils/Utils.js";
+</script>
+
 <script>
     import {Handle} from "@vue-flow/core";
     import TaskIcon from "../misc/TaskIcon.vue";
@@ -53,7 +57,6 @@
     import ArrowExpandAll from "vue-material-design-icons/ArrowExpandAll.vue";
     import {EVENTS} from "../../utils/constants.js";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
 
     export default {
         name: "Dependencies",
