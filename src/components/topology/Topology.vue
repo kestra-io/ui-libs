@@ -278,7 +278,7 @@
     }
 
     const expand = (expandData) => {
-        const taskTypesWithSubflows = ["io.kestra.core.tasks.flows.Flow", "io.kestra.core.tasks.flows.ForEachItem"];
+        const taskTypesWithSubflows = ["io.kestra.core.tasks.flows.Flow", "io.kestra.core.tasks.flows.Subflow", "io.kestra.core.tasks.flows.ForEachItem"];
         if (taskTypesWithSubflows.includes(expandData.type) && !props.expandedSubflows.includes(expandData.id)) {
             forwardEvent("expand-subflow", [...props.expandedSubflows, expandData.id]);
             return;
