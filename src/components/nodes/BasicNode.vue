@@ -7,7 +7,7 @@
     >
         <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
-            <TaskIcon :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
+            <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
         </div>
         <div class="node-content">
             <div class="d-flex node-title">
@@ -59,8 +59,11 @@
     </div>
 </template>
 
-<script>
+<script setup>
     import TaskIcon from "../misc/TaskIcon.vue";
+</script>
+
+<script>
     import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
     import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
@@ -72,7 +75,6 @@
     export default {
         components: {
             ArrowExpand,
-            TaskIcon,
             InformationOutline,
             OpenInNew,
             Tooltip
@@ -113,6 +115,10 @@
                 required: true
             },
             icons: {
+                type: Object,
+                default: undefined
+            },
+            iconComponent: {
                 type: Object,
                 default: undefined
             }

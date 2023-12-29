@@ -5,6 +5,7 @@
         :data="data"
         :color="color"
         :icons="icons"
+        :icon-component="iconComponent"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, {id})"
     >
@@ -86,6 +87,10 @@
                 required: true
             },
             icons: {
+                type: Object,
+                default: undefined
+            },
+            iconComponent: {
                 type: Object,
                 default: undefined
             }

@@ -6,6 +6,7 @@
         :state="state"
         :class="classes"
         :icons="icons"
+        :icon-component="iconComponent"
         @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
         @expand="forwardEvent(EVENTS.EXPAND, expandData)"
         @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
@@ -208,6 +209,10 @@
                 required: true
             },
             icons: {
+                type: Object,
+                default: undefined
+            },
+            iconComponent: {
                 type: Object,
                 default: undefined
             },

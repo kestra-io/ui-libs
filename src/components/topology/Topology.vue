@@ -59,6 +59,10 @@
             type: Object,
             default: undefined
         },
+        iconComponent: {
+            type: Object,
+            default: undefined
+        },
         enableSubflowInteraction: {
             type: Boolean,
             default: true
@@ -325,6 +329,7 @@
             <TaskNode
                 v-bind="taskProps"
                 :icons="icons"
+                :icon-component="iconComponent"
                 @edit="forwardEvent(EVENTS.EDIT, $event)"
                 @delete="forwardEvent(EVENTS.DELETE, $event)"
                 @expand="expand($event)"
@@ -342,6 +347,7 @@
             <TriggerNode
                 v-bind="triggerProps"
                 :icons="icons"
+                :icon-component="iconComponent"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
                 @delete="forwardEvent(EVENTS.DELETE, $event)"
