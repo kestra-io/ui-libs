@@ -9,7 +9,6 @@
     </div>
 </template>
 <script>
-    import {Buffer} from "buffer";
     import Tooltip from "../misc/Tooltip.vue";
     import {cssVariable} from "../../utils/global.js";
 
@@ -52,7 +51,7 @@
                 }
             },
             imageBase64() {
-                let icon = this.icon && this.icon.icon ? Buffer.from(this.icon.icon, "base64").toString("utf8") : undefined;
+                let icon = this.icon && this.icon.icon ? window.atob(this.icon.icon) : undefined;
 
                 if (!icon) {
                     icon = "<svg xmlns=\"http://www.w3.org/2000/svg\" " +
@@ -73,7 +72,7 @@
 
                 icon = icon.replaceAll("currentColor", color);
 
-                return Buffer.from(icon, "utf8").toString("base64");
+                return window.btoa(icon);
             },
             icon() {
                 return this.cls ? (this.icons || {})[this.cls] : this.customIcon;
