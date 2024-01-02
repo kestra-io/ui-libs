@@ -15,7 +15,6 @@ export default defineConfig({
                 "humanize-duration",
                 "moment",
                 "lodash",
-                "buffer",
                 "bootstrap",
                 "@vue-flow/core",
                 "@vue-flow/controls",
