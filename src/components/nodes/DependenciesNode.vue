@@ -34,6 +34,7 @@
                 class="circle-button"
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND_DEPENDENCIES, data)"
+                v-if="data.expandEnabled"
             >
                 <tooltip :title="Utils.translate('expand')">
                     <ArrowExpandAll class="button-icon" alt="Expand task" />

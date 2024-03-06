@@ -13,15 +13,42 @@
             }
         },
         props: {
-            id: String,
-            data: Object,
-            sourceX: Number,
-            sourceY: Number,
-            targetX: Number,
-            targetY: Number,
-            markerEnd: String,
-            sourcePosition: String,
-            targetPosition: String,
+            id: {
+                type: String,
+                default: undefined,
+            },
+            data: {
+                type: Object,
+                default: undefined,
+            },
+            sourceX: {
+                type: Number,
+                default: undefined,
+            },
+            sourceY: {
+                type: Number,
+                default: undefined,
+            },
+            targetX: {
+                type: Number,
+                default: undefined,
+            },
+            targetY: {
+                type: Number,
+                default: undefined,
+            },
+            markerEnd: {
+                type: String,
+                default: undefined,
+            },
+            sourcePosition: {
+                type: String,
+                default: undefined,
+            },
+            targetPosition: {
+                type: String,
+                default: undefined,
+            },
         },
         components: {
             AddTaskButton,

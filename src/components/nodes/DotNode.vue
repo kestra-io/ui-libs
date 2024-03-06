@@ -30,7 +30,8 @@
                 required: true
             },
             label: {
-                type: String
+                type: String,
+                default: undefined
             }
         },
         computed: {
