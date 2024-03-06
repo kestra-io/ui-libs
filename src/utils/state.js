@@ -156,7 +156,7 @@ export default class State {
     }
 
     static color() {
-        return mapValues(STATE, state => 'cssVariable("--bs-" + state.colorClass)');
+        return mapValues(STATE, () => "cssVariable(\"--bs-\" + state.colorClass)");
     }
 
     static icon() {

@@ -51,8 +51,10 @@ export default class Utils {
     }
 
     static translate(text) {
+        /* eslint-disable */
         if (typeof $t !== "undefined" && typeof $t === "function") {
             return $t(text);
+        /* eslint-enable */
         } else {
             return text;
         }

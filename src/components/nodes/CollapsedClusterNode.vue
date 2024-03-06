@@ -33,7 +33,6 @@
     import Webhook from "vue-material-design-icons/Webhook.vue";
     import {Handle} from "@vue-flow/core";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
 
     export default {
         components: {

@@ -1,6 +1,9 @@
 <template>
     <div :class="classes">
-        <span class="badge rounded-pill text-truncate text-color position-reliative" :class="[`bg-${data.color}`]">{{ clusterName }}</span>
+        <span
+            class="badge rounded-pill text-truncate text-color position-reliative"
+            :class="[`bg-${data.color}`]"
+        >{{ clusterName }}</span>
         <div class="top-button-div text-white d-flex">
             <span
                 v-if="data.collapsable"
@@ -47,7 +50,6 @@
 </script>
 <script>
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
 
     export default {
         inheritAttrs: false,

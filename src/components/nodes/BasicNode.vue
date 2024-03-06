@@ -167,16 +167,16 @@
             },
             stateColor() {
                 switch (this.state) {
-                    case "RUNNING":
-                        return "primary"
-                    case "SUCCESS":
-                        return "success"
-                    case "WARNING":
-                        return "warning"
-                    case "FAILED":
-                        return "danger"
-                    default:
-                        return null;
+                case "RUNNING":
+                    return "primary"
+                case "SUCCESS":
+                    return "success"
+                case "WARNING":
+                    return "warning"
+                case "FAILED":
+                    return "danger"
+                default:
+                    return null;
                 }
             },
             classes() {
