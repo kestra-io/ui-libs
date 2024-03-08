@@ -2,7 +2,7 @@
     <Handle type="source" :position="sourcePosition" />
     <basic-node
         :id="id"
-        :data="data"
+        :data="formattedData"
         :color="color"
         :icons="icons"
         :icon-component="iconComponent"
@@ -59,6 +59,12 @@
             },
             color() {
                 return this.data.color ?? "primary"
+            },
+            formattedData() {
+                return {
+                    ...this.data,
+                    unused: this.data.node?.triggerDeclaration?.disabled || this.data.node?.trigger?.disabled
+                }
             }
         },
         emits: [
