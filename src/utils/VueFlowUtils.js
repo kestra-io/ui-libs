@@ -166,7 +166,7 @@ export default class VueFlowUtils {
     }
 
     static isTriggerNode(node) {
-        return node.trigger !== undefined && node.type.endsWith("GraphTrigger");
+        return node.triggerDeclaration !== undefined && node.type.endsWith("GraphTrigger");
     }
 
     static isCollapsedCluster(node) {

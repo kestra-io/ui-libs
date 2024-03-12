@@ -188,8 +188,8 @@
                 }
             },
             cls() {
-                if (this.data.node.trigger) {
-                    return this.data.node.trigger.type;
+                if (this.data.node.triggerDeclaration) {
+                    return this.data.node.triggerDeclaration.type;
                 }
 
                 if (!this.data.node?.task) {

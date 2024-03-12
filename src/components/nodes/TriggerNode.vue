@@ -14,7 +14,7 @@
                 v-if="!execution"
                 class="circle-button"
                 :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.EDIT, {task: data.node.trigger, section: SECTIONS.TRIGGERS})"
+                @click="$emit(EVENTS.EDIT, {task: data.node.triggerDeclaration, section: SECTIONS.TRIGGERS})"
             >
                 <tooltip :title="Utils.translate('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
