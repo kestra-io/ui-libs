@@ -34,7 +34,7 @@
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
             >
                 <tooltip :title="Utils.translate('add error handler')">
-                    <AlertOutline class="button-icon" alt="Edit task" />
+                    <AlertOutline class="button-icon" alt="Add error handler" />
                 </tooltip>
             </span>
             <span
@@ -165,11 +165,12 @@
             },
             dataWithLink() {
                 if(this.data.node.type.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
+                    const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
                     return {
                         ...this.data,
                         link: {
-                            namespace: this.data.node.task.namespace,
-                            id: this.data.node.task.flowId,
+                            namespace: subflowIdContainer.namespace,
+                            id: subflowIdContainer.flowId,
                             executionId: this.taskExecution?.taskRunList
                                 .filter(taskRun => taskRun.taskId === this.data.node.task.id && taskRun.outputs?.executionId)
                                 ?.[0]?.outputs?.executionId

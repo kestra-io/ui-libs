@@ -403,7 +403,9 @@ export default class VueFlowUtils {
                 }
 
                 const color = this.nodeColor(node, collapsed, flowSource);
-                const isReadOnlyTask = isReadOnly || readOnlyUidPrefixes.some(prefix => node.uid.startsWith(prefix + "."));
+                // If task type includes '$', it's an inner class so it's probably an internal class not supposed to be editable
+                // In such case, only the root task will be editable
+                const isReadOnlyTask = isReadOnly || node.task?.type?.includes("$") || readOnlyUidPrefixes.some(prefix => node.uid.startsWith(prefix + "."));
                 elements.push({
                     id: node.uid,
                     type: nodeType,
