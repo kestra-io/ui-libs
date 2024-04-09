@@ -75,7 +75,12 @@
                 return window.btoa(icon);
             },
             icon() {
-                return this.cls ? (this.icons || {})[this.cls] : this.customIcon;
+                return this.cls ? (this.icons || {})[this.innerClassToParent(this.cls)] : this.customIcon;
+            }
+        },
+        methods: {
+            innerClassToParent(cls) {
+                return cls.includes("$") ? cls.substring(0, cls.indexOf("$")) : cls;
             }
         }
     }
