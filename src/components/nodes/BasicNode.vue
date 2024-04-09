@@ -200,9 +200,9 @@
             },
             hoverTooltip() {
                 if (this.data.node.type.endsWith("SubflowGraphTask")) {
-                    const subflowTask = this.data.node.task;
+                    const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
 
-                    return subflowTask.namespace + " " + subflowTask.flowId;
+                    return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
                 }
 
                 return this.trimmedId;

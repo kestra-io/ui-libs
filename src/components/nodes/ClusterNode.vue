@@ -66,7 +66,8 @@
             clusterName() {
                 const taskNode = this.data.taskNode;
                 if (taskNode?.type?.endsWith("SubflowGraphTask")) {
-                    return taskNode.task.namespace + " " + taskNode.task.flowId;
+                    const subflowIdContainer = taskNode.task.subflowId ?? taskNode.task
+                    return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
                 }
 
                 return Utils.afterLastDot(this.id);
