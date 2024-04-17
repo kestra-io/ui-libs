@@ -24,7 +24,7 @@
                 v-if="!execution"
                 class="circle-button"
                 :class="[`bg-${color}`]"
-                @click="$emit(EVENTS.DELETE, {id, section: SECTIONS.TRIGGERS})"
+                @click="$emit(EVENTS.DELETE, {id: triggerId, section: SECTIONS.TRIGGERS})"
             >
                 <tooltip :title="Utils.translate('delete')">
                     <Delete class="button-icon" alt="Delete task" />
@@ -65,6 +65,9 @@
                     ...this.data,
                     unused: this.data.node?.triggerDeclaration?.disabled || this.data.node?.trigger?.disabled
                 }
+            },
+            triggerId() {
+                return Utils.afterLastDot(this.id);
             }
         },
         emits: [
