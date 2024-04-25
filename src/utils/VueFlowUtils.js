@@ -162,11 +162,11 @@ export default class VueFlowUtils {
     }
 
     static isTaskNode(node) {
-        return node.task !== undefined && ["GraphTask", "SubflowGraphTask"].some(t => node.type.endsWith(t));
+        return ["GraphTask", "SubflowGraphTask"].some(t => node.type.endsWith(t));
     }
 
     static isTriggerNode(node) {
-        return node.triggerDeclaration !== undefined && node.type.endsWith("GraphTrigger");
+        return node.type.endsWith("GraphTrigger");
     }
 
     static isCollapsedCluster(node) {
@@ -299,7 +299,7 @@ export default class VueFlowUtils {
 
         const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
-        if (!flowGraph || !this.flowHaveTasks(flowSource)) {
+        if (!flowGraph || (flowSource && !this.flowHaveTasks(flowSource))) {
             elements.push({
                 id: "start",
                 type: "dot",
@@ -402,7 +402,7 @@ export default class VueFlowUtils {
                     nodeType = "collapsedcluster";
                 }
 
-                const color = this.nodeColor(node, collapsed, flowSource);
+                const color = this.nodeColor(node, collapsed);
                 // If task type includes '$', it's an inner class so it's probably an internal class not supposed to be editable
                 // In such case, only the root task will be editable
                 const isReadOnlyTask = isReadOnly || node.task?.type?.includes("$") || readOnlyUidPrefixes.some(prefix => node.uid.startsWith(prefix + "."));

@@ -14,7 +14,7 @@
         @mouseleave="forwardEvent(EVENTS.MOUSE_LEAVE)"
     >
         <template #content>
-            <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" />
+            <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" :uid="data.node.uid" />
         </template>
         <template #badge-button-before>
             <span
@@ -117,7 +117,7 @@
                 return undefined;
             },
             taskRuns() {
-                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.data.node.task.id))
+                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.data.node.uid))
             },
             state() {
                 if (!this.taskRuns) {

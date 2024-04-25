@@ -22,7 +22,7 @@
                 return this.execution && this.execution.taskRunList ? this.execution.taskRunList : []
             },
             taskRuns() {
-                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.task.id))
+                return this.taskRunList.filter(t => t.taskId === Utils.afterLastDot(this.uid))
             },
             state() {
                 if (!this.taskRuns) {
@@ -88,6 +88,10 @@
             },
             task: {
                 type: Object,
+                default: null
+            },
+            uid: {
+                type: String,
                 default: null
             }
         }
