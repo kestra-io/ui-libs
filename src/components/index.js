@@ -19,7 +19,11 @@ import TaskIcon from "./misc/TaskIcon.vue";
 // buttons
 import AddTaskButton from "./buttons/AddTaskButton.vue";
 
+// plugins
+import Markdown from "./plugins/Markdown.vue";
+
 export {ClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode, BasicNode, CollapsedClusterNode, DependenciesNode};
 export {Topology}
 export {ExecutionInformations, State, TaskIcon};
 export {AddTaskButton};
+export {Markdown};
