@@ -30,7 +30,7 @@
 <script>
     import {EVENTS} from "../../utils/constants.js";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
-    import Webhook from "vue-material-design-icons/Webhook.vue";
+    import LightningBolt from "vue-material-design-icons/LightningBolt.vue";
     import {Handle} from "@vue-flow/core";
     import Tooltip from "../misc/Tooltip.vue";
 
@@ -39,7 +39,7 @@
             Tooltip,
             Handle,
             ArrowExpand,
-            Webhook
+            LightningBolt
         },
         inheritAttrs: false,
         props: {
