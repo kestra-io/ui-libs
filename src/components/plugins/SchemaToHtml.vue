@@ -4,7 +4,7 @@
             <p>⚠ Deprecated</p>
         </div>
 
-        <CodeContainer language="yaml" :code='`type: "${getPageName()}"`'/>
+        <SchemaToCode language="yaml" :code='`type: "${getPageName()}"`'/>
         <p v-if="page.title">
             <span style="font-size:1.5em;" v-html="replaceText(page.title)"/>
         </p>
@@ -17,12 +17,12 @@
             <blockquote class="blockquote">
                 <p v-html="replaceText(example.title)" />
             </blockquote>
-            <CodeContainer
+            <SchemaToCode
               language="yaml"
-              :code="example.title.split('```yaml')[1].split('```')[0]"
-              v-if="example.title.split('```yaml')[1].split('```')[0]"
+              :code="example.title?.split('```yaml')[1]?.split('```')[0]"
+              v-if="example.title?.split('```yaml')[1]?.split('```')[0]"
             />
-            <Code :language="example.lang" :code="example.code" v-if="example.code"/>
+            <SchemaToCode :language="example.lang" :code="example.code" v-if="example.code"/>
         </template>
         <template v-for="(pageBlock, key) in page.body.children" v-if="page.body.children">
             <template v-if="key !== 'examples'">
@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-    import Code from "./Code.vue";
+    import SchemaToCode from "./SchemaToCode.vue";
 
     const props = defineProps({
         page: {
