@@ -18,11 +18,11 @@
 </template>
 
 <script>
-    import {defineComponent} from "#imports";
     import { createPopper } from "@popperjs/core";
     import { codeToHtml } from 'shiki';
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
+    import {defineComponent} from "vue";
 
     export default defineComponent({
         props: {
