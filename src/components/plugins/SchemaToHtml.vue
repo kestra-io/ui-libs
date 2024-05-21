@@ -8,21 +8,14 @@
         <p v-if="page.title">
             <span style="font-size:1.5em;" v-html="replaceText(page.title)"/>
         </p>
-        <div v-if="page.description" v-html="generateDescHtml"/>
+        <slot :content="page.description" name="markdown" />
         <h2 id="examples" v-if="page.body.children['examples']">
             <a href="#examples">Examples</a>
         </h2>
         <template v-for="example in page.body.children['examples']"
                   v-if="page.body.children['examples']">
-            <blockquote class="blockquote">
-                <p v-html="replaceText(example.title)" />
-            </blockquote>
-            <SchemaToCode
-              language="yaml"
-              :code="example.title?.split('```yaml')[1]?.split('```')[0]"
-              v-if="example.title?.split('```yaml')[1]?.split('```')[0]"
-            />
-            <SchemaToCode :language="example.lang" :code="example.code" v-if="example.code"/>
+            <slot :content="example.title" name="markdown" />
+            <SchemaToCode :language="example.lang" :code="example.code" v-if="example.code" />
         </template>
         <template v-for="(pageBlock, key) in page.body.children" v-if="page.body.children">
             <template v-if="key !== 'examples'">
@@ -95,11 +88,10 @@
                             </ul>
                         </li>
                     </ul>
-                    <p>
-                        <strong v-html="replaceText(property.title)"/>
-                    </p>
+
+                    <slot :content="property.title" name="markdown" />
                     <blockquote class="blockquote">
-                        <p v-html="replaceText(property.description)"/>
+                        <slot :content="property.description" name="markdown" />
                     </blockquote>
                 </template>
                 <template v-else>
@@ -261,6 +253,15 @@
         });
 
         return optionList;
+    }
+
+    const generateExampleCode = (example) => {
+        if (!example?.full) {
+            const firstCode = `id: "${props.getPageName()?.split('.').reverse()[0]?.toLowerCase()}"\ntype: "${props.getPageName()}"\n`;
+            return firstCode.concat(example.code)
+        }
+
+        return example.code;
     }
 </script>
 
