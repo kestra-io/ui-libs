@@ -426,7 +426,7 @@ export default class VueFlowUtils {
                         color: color,
                         expandable: this.isExpandableTask(node, clusterByNodeUid, edgeReplacer, enableSubflowInteraction),
                         isReadOnly: isReadOnlyTask,
-                        iconComponent: this.isCollapsedCluster(node) ? "webhook" : null,
+                        iconComponent: this.isCollapsedCluster(node) ? "lightning-bolt" : null,
                         executionId: node.executionId,
                         unused: node.unused
                     },
