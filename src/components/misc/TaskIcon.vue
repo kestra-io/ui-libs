@@ -3,9 +3,11 @@
         :class="classes"
         class="wrapper"
     >
-        <Tooltip :title="cls">
+        <Tooltip v-if="!onlyIcon" :title="cls">
             <div class="icon" :style="styles" />
         </Tooltip>
+
+        <div v-else class="icon" :style="styles" />
     </div>
 </template>
 <script>
@@ -34,7 +36,15 @@
             icons: {
                 type: Object,
                 default: undefined
-            }
+            },
+            onlyIcon: {
+                type: Boolean,
+                default: false
+            },
+            color: {
+                type: String,
+                default: undefined
+            },
         },
         computed: {
             backgroundImage() {
@@ -68,6 +78,10 @@
 
                 if (this.theme) {
                     color = this.theme === "dark" ? cssVariable("--bs-gray-900") : cssVariable("--bs-black");
+                }
+
+                if(this.color) {
+                    color = this.color;
                 }
 
                 icon = icon.replaceAll("currentColor", color);
