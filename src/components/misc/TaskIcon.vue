@@ -41,7 +41,7 @@
                 type: Boolean,
                 default: false
             },
-            color: {
+            variable: {
                 type: String,
                 default: undefined
             },
@@ -80,8 +80,8 @@
                     color = this.theme === "dark" ? cssVariable("--bs-gray-900") : cssVariable("--bs-black");
                 }
 
-                if(this.color) {
-                    color = this.color;
+                if(this.variable) {
+                    color = cssVariable(this.variable);
                 }
 
                 icon = icon.replaceAll("currentColor", color);
