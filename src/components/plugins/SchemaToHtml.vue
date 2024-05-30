@@ -22,7 +22,7 @@
                 <h2 :id="key">
                     <a :href="`#${key}`">{{capitalizeFirstLetter(key)}}</a>
                 </h2>
-                <template v-for="(property, propertyKey) in pageBlock" v-if="key !== 'definitions'">
+                <template v-for="(property, propertyKey) in sortSchemaByRequired(pageBlock)" v-if="key !== 'definitions'">
                     <h3 :id="property.name || propertyKey">
                         <a :href="`#${property.name || propertyKey}`">
                             <code>{{property.name || propertyKey}}</code>
@@ -241,6 +241,28 @@
 
         return content;
     });
+
+    const sortSchemaByRequired = (schema) => {
+        const requiredKeys = [];
+        const nonRequiredKeys = [];
+
+        for (const key in schema) {
+            if (schema[key].$required) {
+                requiredKeys.push(key);
+            } else {
+                nonRequiredKeys.push(key);
+            }
+        }
+
+        const sortedKeys = [...requiredKeys, ...nonRequiredKeys];
+
+        const sortedSchema = {};
+        sortedKeys.forEach(key => {
+            sortedSchema[key] = schema[key];
+        });
+
+        return sortedSchema;
+    }
 
     const generateList = (descriptionPart) => {
         let optionList = '';
