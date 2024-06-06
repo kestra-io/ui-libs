@@ -15,7 +15,7 @@
         <template v-for="example in page.body.children['examples']"
                   v-if="page.body.children['examples']">
             <slot :content="example.title" name="markdown" />
-            <SchemaToCode :language="example.lang" :code="example.code" v-if="example.code" />
+            <SchemaToCode :language="example.lang" :code="generateExampleCode(example)" v-if="example.code" />
         </template>
         <template v-for="(pageBlock, key) in page.body.children" v-if="page.body.children">
             <template v-if="key !== 'examples'">
