@@ -1,16 +1,18 @@
 <template>
     <div class="code-block mb-3" @mouseover="hoverCode" @mouseleave="isHoveringCode = false">
-        <div class="language" v-if="language">{{ language }}</div>
+        <div class="language" v-if="language">
+            {{ language }}
+        </div>
         <template v-if="isHoveringCode">
             <button ref="copyButton" class="copy">
                 <component
-                  :is="copyIcon"
-                  @click="copyToClipboard"
+                    :is="copyIcon"
+                    @click="copyToClipboard"
                 />
             </button>
             <div ref="copyTooltip" v-if="!!copyIconResetTimer" id="copied-tooltip" role="tooltip">
                 Copied!
-                <div id="arrow" data-popper-arrow></div>
+                <div id="arrow" data-popper-arrow />
             </div>
         </template>
         <div v-html="codeData" />
@@ -18,11 +20,11 @@
 </template>
 
 <script>
-    import { createPopper } from "@popperjs/core";
-    import { codeToHtml } from 'shiki';
+    import {createPopper} from "@popperjs/core";
+    import {codeToHtml} from "shiki";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
-    import {defineComponent} from "vue";
+    import {defineComponent, nextTick, shallowRef} from "vue";
 
     export default defineComponent({
         props: {
@@ -59,11 +61,11 @@
                 codeData: null,
             }
         },
-       async created() {
+        async created() {
             this.copyIcon = this.icons.ContentCopy;
             this.codeData = await codeToHtml(this.code, {
-              lang: this.language,
-              theme: 'github-dark',
+                lang: this.language,
+                theme: "github-dark",
             });
         },
         methods: {
@@ -72,7 +74,7 @@
                 if(this.copyIconResetTimer) {
                     nextTick(() => {
                         createPopper(this.$refs.copyButton, this.$refs.copyTooltip, {
-                            placement: 'left',
+                            placement: "left",
                         });
                     });
                 }

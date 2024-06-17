@@ -4,162 +4,193 @@
             <p>⚠ Deprecated</p>
         </div>
 
-        <SchemaToCode language="yaml" :code='`type: "${getPageName()}"`'/>
+        <SchemaToCode language="yaml" :code="`type: &quot;${getPageName()}&quot;`" />
         <p v-if="page.title">
-            <span style="font-size:1.5em;" v-html="replaceText(page.title)"/>
+            <span style="font-size:1.5em;" v-html="replaceText(page.title)" />
         </p>
-        <slot :content="page.description" name="markdown" />
+        <slot v-if="page.description" :content="page.description" name="markdown" />
         <h2 id="examples" v-if="page.body.children['examples']">
             <a href="#examples">Examples</a>
         </h2>
-        <template v-for="example in page.body.children['examples']"
-                  v-if="page.body.children['examples']">
-            <slot :content="example.title" name="markdown" />
+        <template
+            v-for="(example, index) in page?.body?.children?.['examples'] ?? []"
+            :key="index"
+        >
+            <slot v-if="example.title" :content="example.title" name="markdown" />
             <SchemaToCode :language="example.lang" :code="generateExampleCode(example)" v-if="example.code" />
         </template>
-        <template v-for="(pageBlock, key) in page.body.children" v-if="page.body.children">
+        <template v-for="(pageBlock, key) in page?.body?.children ?? []" :key="key">
             <template v-if="key !== 'examples'">
                 <h2 :id="key">
-                    <a :href="`#${key}`">{{capitalizeFirstLetter(key)}}</a>
+                    <a :href="`#${key}`">{{ capitalizeFirstLetter(key) }}</a>
                 </h2>
-                <template v-for="(property, propertyKey) in sortSchemaByRequired(pageBlock)" v-if="key !== 'definitions'">
-                    <h3 :id="property.name || propertyKey">
-                        <a :href="`#${property.name || propertyKey}`">
-                            <code>{{property.name || propertyKey}}</code>
-                        </a>
-                    </h3>
-                    <div class="doc-alert alert alert-warning" role="alert"
-                         v-if="property['$deprecated']">
-                        <p>⚠ Deprecated</p>
-                    </div>
-                    <ul>
-                        <li><strong>Type: </strong>
-                            <mark class="type-mark type-mark-default"
-                                  v-if="property.type || property['$ref']">
-                                {{property.type || property['$ref']?.split('.').reverse()[0]}}
-                            </mark>
-                            <ul v-else-if="property.anyOf">
-                                <li v-for="anyOf in property.anyOf">
-                                    <mark class="type-mark type-mark-default">{{anyOf.type}}</mark>
-                                </li>
-                            </ul>
-                        </li>
-                        <li v-if="property.items">
-                            <strong>SubType: </strong>
-                            <a aria-current="page"
-                               :href="generateTaskHref(property.items['$ref'])"
-                               class="router-link-active router-link-exact-active">
-                                <mark class="type-mark type-mark-default">
-                                    {{property.items['$ref']?.split('.').reverse()[0] ||
-                                    property.items.type ||'String'}}
-                                </mark>
-                            </a>
-                        </li>
-                        <li v-if="property['$dynamic'] !== undefined"><strong>Dynamic: </strong>{{
-                            property['$dynamic'] === true ? "✔️" :
-                            (property['$dynamic'] === false ? "❌" : "❓") }}
-                        </li>
-                        <li v-if="property['$required'] !== undefined"><strong>Required: </strong> {{
-                            property['$required'] === true ? "✔️" :
-                            (property['$required'] === false ? "❌" : "❓") }}
-                        </li>
-                        <li v-if="property.default !== undefined">
-                            <strong>Default: </strong>
-                            <code>{{property.default}}</code>
-                        </li>
-                        <li v-if="property.format">
-                            <strong>Format: </strong>
-                            <code> {{property.format}} </code>
-                        </li>
-                        <li v-if="property.minItems">
-                            <strong>Min items: </strong>
-                            <code> {{property.minItems}} </code>
-                        </li>
-                        <li v-if="property.minLength">
-                            <strong>Min length: </strong>
-                            <code>{{property.minLength}}</code>
-                        </li>
-                        <li v-if="property.enum">
-                            <strong>Possible Values:</strong>
-                            <ul>
-                                <li v-for="possibleValue in property.enum">
-                                    <code data-v-c4861ad0="" class="">{{possibleValue}}</code>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <slot :content="property.title" name="markdown" />
-                    <blockquote class="blockquote">
-                        <slot :content="property.description" name="markdown" />
-                    </blockquote>
-                </template>
-                <template v-else>
-                    <template v-for="(item, key) in pageBlock"
-                              v-if="pageBlock">
-                        <h3 :id="key">
-                            <a :href="`#${key}`">
-                                <code>{{key}}</code>
+                <template v-if="key !== 'definitions'">
+                    <template v-for="(property, propertyKey) in sortSchemaByRequired(pageBlock)" :key="propertyKey">
+                        <h3 :id="property.name || propertyKey">
+                            <a :href="`#${property.name || propertyKey}`">
+                                <code>{{ property.name || propertyKey }}</code>
                             </a>
                         </h3>
-                        <h4 id="properties-1"
-                            v-if="item.properties">
+                        <div
+                            class="doc-alert alert alert-warning"
+                            role="alert"
+                            v-if="property['$deprecated']"
+                        >
+                            <p>⚠ Deprecated</p>
+                        </div>
+                        <ul>
+                            <li>
+                                <strong>Type: </strong>
+                                <mark
+                                    class="type-mark type-mark-default"
+                                    v-if="property.type || property['$ref']"
+                                >
+                                    {{ property.type || property['$ref']?.split('.').reverse()[0] }}
+                                </mark>
+                                <ul v-else-if="property.anyOf">
+                                    <li v-for="(anyOf, index) in property.anyOf" :key="index">
+                                        <mark class="type-mark type-mark-default">{{ anyOf.type }}</mark>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li v-if="property.items">
+                                <strong>SubType: </strong>
+                                <a
+                                    aria-current="page"
+                                    v-if="property.items['$ref']"
+                                    :href="generateTaskHref(property.items['$ref'])"
+                                    class="router-link-active router-link-exact-active"
+                                >
+                                    <mark class="type-mark type-mark-default">
+                                        {{ property.items['$ref']?.split('.').reverse()[0] ||
+                                            property.items.type ||'String' }}
+                                    </mark>
+                                </a>
+                                <mark v-else class="type-mark type-mark-default">
+                                    {{ property.items['$ref']?.split('.').reverse()[0] || 
+                                        property.items.type ||'String' }}
+                                </mark>
+                            </li>
+                            <li v-if="property['$dynamic'] !== undefined">
+                                <strong>Dynamic: </strong>{{
+                                    property['$dynamic'] === true ? "✔️" :
+                                    (property['$dynamic'] === false ? "❌" : "❓") }}
+                            </li>
+                            <li v-if="property['$required'] !== undefined">
+                                <strong>Required: </strong> {{
+                                    property['$required'] === true ? "✔️" :
+                                    (property['$required'] === false ? "❌" : "❓") }}
+                            </li>
+                            <li v-if="property.default !== undefined">
+                                <strong>Default: </strong>
+                                <code>{{ property.default }}</code>
+                            </li>
+                            <li v-if="property.format">
+                                <strong>Format: </strong>
+                                <code> {{ property.format }} </code>
+                            </li>
+                            <li v-if="property.minItems">
+                                <strong>Min items: </strong>
+                                <code> {{ property.minItems }} </code>
+                            </li>
+                            <li v-if="property.minLength">
+                                <strong>Min length: </strong>
+                                <code>{{ property.minLength }}</code>
+                            </li>
+                            <li v-if="property.enum">
+                                <strong>Possible Values:</strong>
+                                <ul>
+                                    <li v-for="(possibleValue, index) in property.enum" :key="index">
+                                        <code data-v-c4861ad0="" class="">{{ possibleValue }}</code>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <slot v-if="property.title" :content="property.title" name="markdown" />
+                        <blockquote class="blockquote">
+                            <slot v-if="property.description" :content="property.description" name="markdown" />
+                        </blockquote>
+                    </template>
+                </template>
+                <template v-else-if="pageBlock">
+                    <template
+                        v-for="(item, childrenBlockKey) in pageBlock"
+                        :key="childrenBlockKey"
+                    >
+                        <h3 :id="childrenBlockKey">
+                            <a :href="`#${childrenBlockKey}`">
+                                <code>{{ childrenBlockKey }}</code>
+                            </a>
+                        </h3>
+                        <h4
+                            id="properties-1"
+                            v-if="item.properties"
+                        >
                             <a href="#properties-1">Properties</a>
                         </h4>
                         <template
-                          v-for="(definition, key) in item.properties"
-                          v-if="item.properties">
-                            <h5 :id="definition.name || key">
-                                <a :href="`#${definition.name || key}`">
-                                    <code>{{definition.name || key}}</code>
+                            v-for="(definition, propertyKey) in item.properties ?? []"
+                            :key="propertyKey"
+                        >
+                            <h5 :id="definition.name || propertyKey">
+                                <a :href="`#${definition.name || propertyKey}`">
+                                    <code>{{ definition.name || propertyKey }}</code>
                                 </a>
                             </h5>
                             <ul>
-                                <li><strong>Type: </strong>
+                                <li>
+                                    <strong>Type: </strong>
                                     <mark class="type-mark type-mark-default">
-                                        {{definition.type ||
-                                        definition['$ref']?.split('.').reverse()[0]}}
+                                        {{ definition.type ||
+                                            definition['$ref']?.split('.').reverse()[0] }}
                                     </mark>
                                 </li>
                                 <li v-if="definition.items">
                                     <strong>SubType: </strong>
-                                    <a aria-current="page"
-                                       :href="generateTaskHref(definition.items['$ref'])"
-                                       class="router-link-active router-link-exact-active">
+                                    <a
+                                        aria-current="page"
+                                        v-if="definition.items['$ref']"
+                                        :href="generateTaskHref(definition.items['$ref'])"
+                                        class="router-link-active router-link-exact-active"
+                                    >
                                         <mark class="type-mark type-mark-default">
-                                            {{definition.items?.type || 'Task'}}
+                                            {{ definition.items?.type || 'Task' }}
                                         </mark>
                                     </a>
+                                    <mark v-else class="type-mark type-mark-default">
+                                        {{ definition.items?.type || 'Task' }}
+                                    </mark>
                                 </li>
                                 <li v-if="definition['$dynamic'] !== undefined">
                                     <strong>Dynamic: </strong>
-                                    {{definition['$dynamic'] === true ? "✔️" :
-                                    (definition['$dynamic'] === false ? "❌" : "❓") }}
+                                    {{ definition['$dynamic'] === true ? "✔️" :
+                                        (definition['$dynamic'] === false ? "❌" : "❓") }}
                                 </li>
                                 <li v-if="definition['$required'] !== undefined">
                                     <strong>Required: </strong>
                                     {{
-                                    definition['$required'] === true ? "✔️" :
-                                    (definition['$required'] === false ? "❌" : "❓") }}
+                                        definition['$required'] === true ? "✔️" :
+                                        (definition['$required'] === false ? "❌" : "❓") }}
                                 </li>
                                 <li v-if="definition.default !== undefined">
                                     <strong>Default: </strong>
-                                    <code>{{definition.default}}</code>
+                                    <code>{{ definition.default }}</code>
                                 </li>
                                 <li v-if="definition.format">
                                     <strong>Format: </strong>
-                                    <code>{{definition.format}}</code>
+                                    <code>{{ definition.format }}</code>
                                 </li>
                                 <li v-if="definition.minItems">
                                     <strong>Min items: </strong>
-                                    <code>{{definition.minItems}}</code>
+                                    <code>{{ definition.minItems }}</code>
                                 </li>
                             </ul>
                             <p>
-                                <strong v-html="replaceText(definition.title)"/>
+                                <strong v-html="replaceText(definition.title)" />
                             </p>
                             <blockquote class="blockquote">
-                                <p v-html="replaceText(definition.description)"/>
+                                <p v-html="replaceText(definition.description)" />
                             </blockquote>
                         </template>
                     </template>
@@ -171,6 +202,7 @@
 
 <script setup>
     import SchemaToCode from "./SchemaToCode.vue";
+    import {computed} from "vue";
 
     const props = defineProps({
         page: {
@@ -189,49 +221,48 @@
     }
 
     const replaceText = (str) => {
-        str = str?.split("```")[0]?.replace(/`([^`]*)`/g, '<code>$1</code>');
+        str = str?.split("```")[0]?.replace(/`([^`]*)`/g, "<code>$1</code>");
         str = str?.replace(
-          /\[(.*?)\]\((.*?)\)/g,
-          (match, text, url) => {
-              if (text && url ) {
-                  return `<a href="${url}" rel="nofollow" target="_blank">${text}</a>`;
-              } else {
-                  return match;
-              }
-          }
+            /\[(.*?)\]\((.*?)\)/g,
+            (match, text, url) => {
+                if (text && url ) {
+                    return `<a href="${url}" rel="nofollow" target="_blank">${text}</a>`;
+                } else {
+                    return match;
+                }
+            }
         );
         return str?.split("```")[0];
     };
 
     const generateTaskHref = (href) => {
         if (href) {
-            const taskHref = href?.split('/');
+            const taskHref = href?.split("/");
             return `#${taskHref[taskHref?.length - 1].toLowerCase()}`;
         }
     };
-
-    const generateDescHtml = computed(() => {
-        const textBlocks = props.page?.description.split('\n\n');
-        let content = '';
+    computed(() => {
+        const textBlocks = props.page?.description.split("\n\n");
+        let content = "";
         textBlocks.forEach((text) => {
             const newText = replaceText(text);
             const descriptionParts = newText?.split(/:\s?\n/);
 
             if (descriptionParts) {
-                const alertParts = descriptionParts[0].split(/::alert{type=\"warning\"}\n/);
+                const alertParts = descriptionParts[0].split(/::alert{type="warning"}\n/);
                 const alertContent =  (alertParts.length > 1)
-                ?
-                    `<div class="doc-alert alert alert-warning" role="alert">
-                      <p>${replaceText(alertParts[1]?.split(':')[0])}</p>
+                    ?
+                        `<div class="doc-alert alert alert-warning" role="alert">
+                      <p>${replaceText(alertParts[1]?.split(":")[0])}</p>
                     </div>`
-                :
-                    `<p>${descriptionParts[0]}:</p>`;
+                    :
+                        `<p>${descriptionParts[0]}:</p>`;
 
                 const listContent = descriptionParts[1]
-                ?
-                    `<ul>${generateList(descriptionParts[1])}</ul>`
-                :
-                    '';
+                    ?
+                        `<ul>${generateList(descriptionParts[1])}</ul>`
+                    :
+                        "";
 
                 content += alertContent + listContent;
             } else {
@@ -241,7 +272,6 @@
 
         return content;
     });
-
     const sortSchemaByRequired = (schema) => {
         const requiredKeys = [];
         const nonRequiredKeys = [];
@@ -265,7 +295,7 @@
     }
 
     const generateList = (descriptionPart) => {
-        let optionList = '';
+        let optionList = "";
         descriptionPart?.split(/[-*]/).forEach((item) => {
             if (item.trim()) {
                 optionList += `
@@ -279,7 +309,7 @@
 
     const generateExampleCode = (example) => {
         if (!example?.full) {
-            const firstCode = `id: "${props.getPageName()?.split('.').reverse()[0]?.toLowerCase()}"\ntype: "${props.getPageName()}"\n`;
+            const firstCode = `id: "${props.getPageName()?.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.getPageName()}"\n`;
             return firstCode.concat(example.code)
         }
 

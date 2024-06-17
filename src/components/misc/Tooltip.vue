@@ -9,7 +9,12 @@
     </span>
 </template>
 <script>
-    import {Tooltip} from "bootstrap";
+    // conditional import is required for website not to crash due to
+    // bootstrap launching some init upon import that is incompatible with SSR
+    let bootstrap;
+    if (document) {
+        bootstrap = import("bootstrap");
+    }
 
     export default {
         props: {
@@ -22,18 +27,20 @@
                 default: "top"
             },
         },
-        mounted() {
-            new Tooltip(this.$refs.tooltip, {
-                trigger: "hover",
-                html: true,
-                placement: this.placement,
-                title: this.$refs.tooltipContent.innerHTML,
-                customClass: "tooltip-custom"
-            })
+        async mounted() {
+            if (document) {
+                new (await bootstrap).Tooltip(this.$refs.tooltip, {
+                    trigger: "hover",
+                    html: true,
+                    placement: this.placement,
+                    title: this.$refs.tooltipContent.innerHTML,
+                    customClass: "tooltip-custom"
+                })
+            }
         },
-        beforeUnmount() {
+        async beforeUnmount() {
             if (this.$refs.tooltip) {
-                const tooltip = Tooltip.getInstance(this.$refs.tooltip);
+                const tooltip = (await bootstrap).Tooltip.getInstance(this.$refs.tooltip);
                 if (tooltip) {
                     tooltip.dispose();
                 }
