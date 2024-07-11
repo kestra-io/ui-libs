@@ -8,7 +8,7 @@ const TRIGGERS_NODE_UID = "root.Triggers";
 export default class VueFlowUtils {
 
     static predecessorsEdge(vueFlowId, nodeUid) {
-        const {getEdges} = useVueFlow({id: vueFlowId});
+        const {getEdges} = useVueFlow(vueFlowId);
 
         let nodes = [];
 
@@ -26,7 +26,7 @@ export default class VueFlowUtils {
     }
 
     static successorsEdge(vueFlowId, nodeUid) {
-        const {getEdges} = useVueFlow({id: vueFlowId});
+        const {getEdges} = useVueFlow(vueFlowId);
 
         let nodes = [];
 
@@ -44,7 +44,7 @@ export default class VueFlowUtils {
     }
 
     static predecessorsNode(vueFlowId, nodeUid) {
-        const {getEdges, findNode} = useVueFlow({id: vueFlowId});
+        const {getEdges, findNode} = useVueFlow(vueFlowId);
 
         let nodes = [findNode(nodeUid)];
 
@@ -62,7 +62,7 @@ export default class VueFlowUtils {
     }
 
     static successorsNode(vueFlowId, nodeUid) {
-        const {getEdges, findNode} = useVueFlow({id: vueFlowId});
+        const {getEdges, findNode} = useVueFlow(vueFlowId);
 
         let nodes = [findNode(nodeUid)];
 
@@ -191,7 +191,7 @@ export default class VueFlowUtils {
             removeEdges,
             removeNodes,
             removeSelectedElements
-        } = useVueFlow({id: vueflowId});
+        } = useVueFlow(vueflowId);
         removeEdges(getEdges.value)
         removeNodes(getNodes.value)
         removeSelectedElements(getElements.value)
