@@ -27,9 +27,14 @@
                 default: "top"
             },
         },
+        data() {
+            return {
+                tooltip: undefined
+            }
+        },
         async mounted() {
             if (document) {
-                new (await bootstrap).Tooltip(this.$refs.tooltip, {
+                this.tooltip = new (await bootstrap).Tooltip(this.$refs.tooltip, {
                     trigger: "hover",
                     html: true,
                     placement: this.placement,
@@ -39,12 +44,7 @@
             }
         },
         async beforeUnmount() {
-            if (this.$refs.tooltip) {
-                const tooltip = (await bootstrap).Tooltip.getInstance(this.$refs.tooltip);
-                if (tooltip) {
-                    tooltip.dispose();
-                }
-            }
+            this.tooltip?.dispose();
         }
     }
 </script>

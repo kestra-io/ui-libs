@@ -149,7 +149,7 @@
     const onMouseOver = (node) => {
         if (!dragging.value) {
             VueFlowUtils.linkedElements(props.id, node.uid).forEach((n) => {
-                if (n.type === "task") {
+                if (n?.type === "task") {
                     n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-gray-900")}
                     n.class = "rounded-3"
                 }
