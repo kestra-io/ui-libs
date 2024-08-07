@@ -12,12 +12,17 @@ updates:
       - "dependency-upgrade"
     open-pull-requests-limit: 50
 
-  # Maintain dependencies for Npm modules
+  # Maintain dependencies for NPM modules
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every week
       interval: "weekly"
+      day: "sunday"
+      time: "09:00"
+    open-pull-requests-limit: 50
     labels:
       - "dependency-upgrade"
-    open-pull-requests-limit: 50
+    ignore:
+      # Ignore major versions of ESLint greater than 8, as it's still known to be flaky
+      - dependency-name: "eslint"
+        versions: [">8"]

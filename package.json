@@ -18,26 +18,26 @@
   "peerDependencies": {
     "@vue-flow/background": "^1.3.0",
     "@vue-flow/controls": "^1.1.1",
-    "@vue-flow/core": "^1.39.0",
+    "@vue-flow/core": "^1.39.3",
     "bootstrap": "^5.3.3",
     "dagre": "^0.8.5",
     "humanize-duration": "^3.31.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
-    "vue": "^3.4.32",
+    "vue": "^3.4.36",
     "vue-material-design-icons": "^5.3.0",
     "vuex": "^4.1.0",
-    "yaml": "^2.4.5"
+    "yaml": "^2.5.0"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^7.16.1",
-    "@vitejs/plugin-vue": "^5.0.4",
+    "@typescript-eslint/parser": "^8.0.1",
+    "@vitejs/plugin-vue": "^5.1.2",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.27.0",
     "sass": "^1.77.8",
-    "shiki": "^1.1.7",
-    "vite": "^5.3.4",
+    "shiki": "^1.12.1",
+    "vite": "^5.3.5",
     "vite-plugin-static-copy": "^1.0.6"
   }
 }
