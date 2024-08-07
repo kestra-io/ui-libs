@@ -1,9 +1,8 @@
-import type {Plugin} from "vite";
 import {execSync} from "child_process";
 
-const getInfo = (formats: string[]): string[] => formats.map(format => execSync(`git log -1 --format=${format}`).toString().trim());
+const getInfo = formats => formats.map(format => execSync(`git log -1 --format=${format}`).toString().trim());
 
-const comment = (message: string, author: string, date: string): string => `
+const comment = (message, author, date) => `
 <!--
 
     Last Commit: 
@@ -15,14 +14,14 @@ const comment = (message: string, author: string, date: string): string => `
 
 -->`;
 
-export const commit = (): Plugin => {
+export const commit = () => {
     const [message, author, date] = getInfo(["%s", "%an", "%cd"]);
 
     return {
         name: "commit",
         transformIndexHtml: {
             order: "pre",
-            handler(html: string): string {
+            handler(html) {
                 return comment(message, author, date) + html;
             },
         },
