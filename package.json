@@ -34,7 +34,7 @@
     "@typescript-eslint/parser": "^8.0.1",
     "@vitejs/plugin-vue": "^5.1.2",
     "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.27.0",
+    "eslint-plugin-vue": "^9.28.0",
     "sass": "^1.77.8",
     "shiki": "^1.12.1",
     "vite": "^5.3.5",
