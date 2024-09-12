@@ -16,12 +16,12 @@ $custom-colors: (
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
 @each $color, $value in $theme-colors {
+    .bg-light-#{$color}-border {
+        background-color: rgba($value, 0.05);
+        border: 1px solid $value;
+    }
+    
     html.dark {
-        .bg-light-#{$color}-border {
-            background-color: rgba($value, 0.05);
-            border: 1px solid $value;
-        }
-
         .border-execution-#{$color} {
             border-left: 0.8125rem;
             border-color: $value;
