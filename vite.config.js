@@ -2,6 +2,7 @@ import {resolve} from "path"
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import {viteStaticCopy} from "vite-plugin-static-copy"
+import * as sass from "sass"
 
 export default defineConfig({
     build: {
@@ -46,5 +47,12 @@ export default defineConfig({
                 {src: "src/scss/_theme-dark.scss", dest: ""},
             ],
         }),
-    ]
+    ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                logger: sass.Logger.silent
+            },
+        }
+    }
 })
