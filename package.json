@@ -37,7 +37,7 @@
     "eslint-plugin-vue": "^9.28.0",
     "sass": "^1.78.0",
     "shiki": "^1.17.6",
-    "vite": "^5.4.5",
+    "vite": "^5.4.6",
     "vite-plugin-static-copy": "^1.0.6"
   }
 }
