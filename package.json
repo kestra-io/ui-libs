@@ -1,10 +1,11 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.60",
+  "version": "0.0.61",
   "type": "module",
   "files": [
     "src",
-    "package.json"
+    "package.json",
+    "stub-mdc-imports.js"
   ],
   "main": "./src/index.js",
   "module": "./src/index.js",
