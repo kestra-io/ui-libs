@@ -1,10 +1,17 @@
 import {resolve} from "path"
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
-import {viteStaticCopy} from "vite-plugin-static-copy"
-import * as sass from "sass"
+import {viteStaticCopy} from "vite-plugin-static-copy";
+import * as sass from "sass";
+import path from "path";
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            "#mdc-imports": path.resolve(__dirname, "./stub-mdc-imports.js"),
+            "#mdc-configs": path.resolve(__dirname, "./stub-mdc-imports.js"),
+        }
+    },
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.js"),
@@ -27,7 +34,6 @@ export default defineConfig({
                 "@popperjs/core",
                 "yaml",
                 "js-yaml"
-
             ],
             output: {
                 // Provide global variables to use in the UMD build

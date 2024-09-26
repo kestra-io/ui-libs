@@ -7,6 +7,7 @@ $tertiary: #2F3342 !default;
 $blue: #1761FD !default;
 $indigo: #8405FF !default;
 $purple: #9F9DFF !default;
+$purple-36: #9CA1DE;
 $pink: #FD3C97 !default;
 $red: #E36065 !default;
 $red-light: #FF9D9D !default;
@@ -32,11 +33,21 @@ $black: #26282D !default;
 $light: $gray-200 !default;
 $dark: $gray-900 !default;
 
+$white-3:  #B9B9BA;
+
+$black-2 : #161617;
+$black-3 : #252526;
+
 // fonts
 $font-size-base: 1rem !default;
 $font-family-sans-serif: "Public Sans", sans-serif;
 $font-family-monospace: "Source Code Pro", monospace;
 $font-size-xs: $font-size-base * 0.75 !default;
+$font-size-md : $font-size-base * 1;
+$font-size-xl: $font-size-base * 1.375;
+
+// border
+$block-border: 1px solid $black-3;
 
 // border radius
 $border-radius: 0.25rem !default;
@@ -96,6 +107,8 @@ $element-colors: (
                 'base': $cyan,
         ),
 );
+
+$popper-margin: .2rem;
 
 $baseline-max-width: 730px;
 
