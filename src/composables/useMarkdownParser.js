@@ -44,7 +44,7 @@ export default function useMarkdownParser() {
                 if (!info) {
                     throw new Error(`[@nuxtjs/mdc] Could not find shiki language: ${lang}`);
                 }
-                const langImport = () => import(`../../node_modules/shiki/dist/langs/${info.id}.mjs`);
+                const langImport = () => import(`@shiki-langs/${info.id}.mjs`);
                 langsMap[info.id] = langImport;
                 for (const alias of info.aliases || []) {
                     langsMap[alias] = langImport;
