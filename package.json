@@ -1,6 +1,6 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.62",
+  "version": "0.0.63",
   "type": "module",
   "files": [
     "src",
@@ -38,13 +38,13 @@
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.28.0",
     "sass": "^1.78.0",
-    "shiki": "^1.17.6",
     "vite": "^5.4.5",
     "vite-plugin-static-copy": "^1.0.6"
   },
   "dependencies": {
     "@nuxtjs/mdc": "^0.9.0",
     "@popperjs/core": "^2.11.8",
-    "mermaid": "^11.2.1"
+    "mermaid": "^11.2.1",
+    "shiki": "^1.17.6"
   }
 }
