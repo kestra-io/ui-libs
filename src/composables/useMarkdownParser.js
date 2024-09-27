@@ -1,4 +1,5 @@
 import {createMarkdownParser, createShikiHighlighter, rehypeHighlight,} from "@nuxtjs/mdc/runtime";
+import GithubLight from "shiki/themes/github-light.mjs";
 import GithubDark from "shiki/themes/github-dark.mjs";
 import Bash from "shiki/langs/bash.mjs";
 import C from "shiki/langs/c.mjs";
@@ -82,13 +83,12 @@ export default function useMarkdownParser() {
                         highlight: {
                             instance: rehypeHighlight,
                             options: {
-                                // Pass in your desired theme(s)
-                                theme: "github-dark",
+                                theme: {
+                                    dark: GithubDark,
+                                    light: GithubLight
+                                },
                                 // Create the Shiki highlighter
                                 highlighter: createShikiHighlighter({
-                                    bundledThemes: {
-                                        "github-dark": GithubDark,
-                                    },
                                     // Configure the bundled languages
                                     bundledLangs: langsMap,
                                 }),
