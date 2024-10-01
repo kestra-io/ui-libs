@@ -1,6 +1,6 @@
 <template>
     <div class="container table-responsive">
-        <table class="table table-dark">
+        <table class="table">
             <slot />
         </table>
     </div>
@@ -25,9 +25,9 @@
             line-height: 1.25rem;
             padding: calc($spacer * 0.5) $spacer $spacer;
             background-color: transparent;
-            border-bottom: 4px solid #8B8B8D !important;
+            border-bottom: 4px solid var(--bs-border-color) !important;
             border-top: none;
-            color: $white;
+            color: var(--bs-body-color);
         }
     }
 
@@ -37,14 +37,8 @@
                 font-size: $font-size-sm;
                 padding: calc($spacer * 1.5) $spacer $spacer !important;
                 font-weight: 400;
-                color: $white;
+                color: var(--bs-body-color);
             }
         }
-    }
-
-    .table-dark {
-        --bs-table-bg: $black-2 !important;
-        color: transparent !important;
-        outline: none !important;
     }
 </style>
