@@ -18,6 +18,16 @@
         </template>
         <template #badge-button-before>
             <span
+                v-if="data.node.task.runIf"
+                class="circle-button"
+                :class="[`bg-warning`]"
+                @click="$emit(EVENTS.SHOW_CONDITION, {id: taskId, task: data.node.task, section: SECTIONS.TASKS})"
+            >
+                <tooltip :title="Utils.translate('show task condition')">
+                    <SendLock class="button-icon" alt="Show condition" />
+                </tooltip>
+            </span>
+            <span
                 v-if="taskExecution"
                 class="circle-button"
                 :class="[`bg-${color}`]"
@@ -73,6 +83,7 @@
     import Delete from "vue-material-design-icons/Delete.vue";
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
+    import SendLock from "vue-material-design-icons/SendLock.vue"
     import {mapGetters, mapState} from "vuex";
     import Tooltip from "../misc/Tooltip.vue"
     import Utils from "../../utils/Utils.js";
@@ -86,7 +97,8 @@
             Handle,
             TextBoxSearch,
             AlertOutline,
-            Tooltip
+            Tooltip,
+            SendLock
         },
         inheritAttrs: false,
         computed: {
@@ -190,7 +202,8 @@
             EVENTS.ADD_ERROR,
             EVENTS.EDIT,
             EVENTS.DELETE,
-            EVENTS.ADD_TASK
+            EVENTS.ADD_TASK,
+            EVENTS.SHOW_CONDITION
         ],
         props: {
             data: {

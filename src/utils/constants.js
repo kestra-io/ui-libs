@@ -16,6 +16,7 @@ export const EVENTS = {
     "MOUSE_LEAVE": "mouseleave",
     "ADD_ERROR": "addError",
     "EXPAND_DEPENDENCIES": "expandDependencies",
+    "SHOW_CONDITION": "showCondition",
 }
 
 export const CLUSTER_PREFIX = "cluster_";

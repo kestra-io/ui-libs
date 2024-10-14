@@ -90,7 +90,8 @@
             "loading",
             "swapped-task",
             "message",
-            "expand-subflow"
+            "expand-subflow",
+            EVENTS.SHOW_CONDITION
         ]
     )
 
@@ -339,6 +340,7 @@
                 @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
                 @show-logs="forwardEvent(EVENTS.SHOW_LOGS, $event)"
                 @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
+                @show-condition="forwardEvent(EVENTS.SHOW_CONDITION, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="forwardEvent('on-add-flowable-error', $event)"
