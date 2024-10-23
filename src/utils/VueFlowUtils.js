@@ -330,7 +330,7 @@ export default class VueFlowUtils {
                 id: "start|end",
                 source: "start",
                 target: "end",
-                type: "edge",
+                type: "bezier",
                 data: {
                     edge: {
                         relation: {
@@ -445,7 +445,7 @@ export default class VueFlowUtils {
                     id: newEdge.source + "|" + newEdge.target,
                     source: newEdge.source,
                     target: newEdge.target,
-                    type: "edge",
+                    type: "bezier",
                     markerEnd: this.isClusterRootOrEnd(nodeByUid[newEdge.target]) ? ""
                         : {
                             id: nodeByUid[newEdge.target].error ? "marker-danger" : "marker-custom",
