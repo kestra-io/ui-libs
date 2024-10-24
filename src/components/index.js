@@ -21,9 +21,11 @@ import AddTaskButton from "./buttons/AddTaskButton.vue";
 
 // plugins
 import SchemaToHtml from "./plugins/SchemaToHtml.vue";
+import ContentParentPlugin from "./plugins/ContentParentPlugin.vue";
 
 export {ClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode, BasicNode, CollapsedClusterNode, DependenciesNode};
 export {Topology}
 export {ExecutionInformations, State, TaskIcon};
 export {AddTaskButton};
 export {SchemaToHtml};
+export {ContentParentPlugin};
