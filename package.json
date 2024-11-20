@@ -34,7 +34,7 @@
   "devDependencies": {
     "@esbuild/linux-x64": "^0.24.0",
     "@typescript-eslint/parser": "^8.14.0",
-    "@vitejs/plugin-vue": "^5.1.5",
+    "@vitejs/plugin-vue": "^5.2.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.31.0",
     "sass": "^1.80.7",
