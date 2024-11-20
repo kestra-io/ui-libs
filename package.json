@@ -45,6 +45,6 @@
     "@nuxtjs/mdc": "^0.9.2",
     "@popperjs/core": "^2.11.8",
     "mermaid": "^11.4.0",
-    "shiki": "^1.22.2"
+    "shiki": "^1.23.1"
   }
 }
