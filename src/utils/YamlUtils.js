@@ -164,7 +164,7 @@ export default class YamlUtils {
     static extractAllTypes(source) {
         const yamlDoc = yaml.parseDocument(source);
         const types = [];
-        if (yamlDoc.contents && yamlDoc.contents.items && yamlDoc.contents.items.find(e => ["tasks", "triggers", "errors"].includes(e.key.value))) {
+        if (yamlDoc.contents && yamlDoc.contents.items && yamlDoc.contents.items.find(e => ["tasks", "triggers", "errors", "layout"].includes(e.key.value))) {
             yaml.visit(yamlDoc, {
                 Map(_, map) {
                     if (map.items) {
@@ -182,8 +182,9 @@ export default class YamlUtils {
     }
 
     static getTaskType(source, position) {
+        console.log("entering getTaskType...")
         const types = this.extractAllTypes(source)
-
+        console.log("types", types)
         const lineCounter = new LineCounter();
         yaml.parseDocument(source, {lineCounter});
         const cursorIndex = lineCounter.lineStarts[position.lineNumber - 1] + position.column;
