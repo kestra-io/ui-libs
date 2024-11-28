@@ -182,9 +182,7 @@ export default class YamlUtils {
     }
 
     static getTaskType(source, position) {
-        console.log("entering getTaskType...")
         const types = this.extractAllTypes(source)
-        console.log("types", types)
         const lineCounter = new LineCounter();
         yaml.parseDocument(source, {lineCounter});
         const cursorIndex = lineCounter.lineStarts[position.lineNumber - 1] + position.column;
