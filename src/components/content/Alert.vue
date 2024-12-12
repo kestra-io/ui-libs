@@ -4,16 +4,13 @@
     </div>
 </template>
 
-<script>
-    export default {
-        components: {},
-        props: {
-            type: {
-                type: String,
-                required: true
-            },
+<script lang="ts" setup>
+    defineProps({
+        type: {
+            type: String,
+            required: true
         },
-    }
+    })
 </script>
 
 <style lang="scss" scoped>

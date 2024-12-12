@@ -7,14 +7,8 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue"
-</script>
-
-<script>
-    export default {
-
-    }
 </script>
 
 <style lang="scss" scoped>

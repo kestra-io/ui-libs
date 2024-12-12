@@ -1,16 +1,16 @@
-<script>
+<script setup lang="ts">
     import Plus from "vue-material-design-icons/Plus.vue";
 
-    export default {
+    defineOptions({
         name: "AddTaskButton",
-        components: {Plus},
-        props: {
-            addTask: {
-                type: Boolean,
-                default: false
-            },
-        }
-    }
+    })
+
+    defineProps({
+        addTask: {
+            type: Boolean,
+            default: false
+        },
+    })
 </script>
 
 <template>

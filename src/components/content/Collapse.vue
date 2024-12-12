@@ -11,33 +11,23 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
+    import {ref} from "vue";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue"
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue"
 
-    export default {
-        components: {
-            ChevronDown,
-            ChevronRight
-        },
-        props: {
-            title: {
-                type: String,
-                required: true,
-                default: "Details"
-            },
-        },
-        data() {
-            return {
-                show: false
-            }
-        },
-        methods: {
-            toggleShow() {
-                this.show = !this.show
-            }
-
+    defineProps({
+        title: {
+            type: String,
+            required: true,
         }
+    })
+
+    const show =  ref(false)
+          
+        
+    function toggleShow() {
+        show.value = !show.value
     }
 </script>
 

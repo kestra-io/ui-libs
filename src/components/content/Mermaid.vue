@@ -4,8 +4,8 @@
     </div>
 </template>
 
-<script setup>
-    import mermaid from "mermaid/dist/mermaid.esm.mjs";
+<script setup lang="ts">
+    import mermaid from "mermaid";
     import {nextTick, onMounted, ref} from "vue";
 
     let show = ref(false);
