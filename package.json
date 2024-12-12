@@ -1,6 +1,6 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "type": "module",
   "main": "./dist/kestra-ui.umd.cjs",
   "module": "./dist/kestra-ui.js",
