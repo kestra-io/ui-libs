@@ -2,6 +2,12 @@
   "name": "@kestra-io/ui-libs",
   "version": "0.0.75",
   "type": "module",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "stub-mdc-imports.js"
+  ],
   "main": "./dist/kestra-ui.umd.cjs",
   "module": "./dist/kestra-ui.js",
   "exports": {
