@@ -21,7 +21,11 @@
 
 <script>
     import {createPopper} from "@popperjs/core";
-    import {codeToHtml} from "shiki";
+    import {createOnigurumaEngine} from "@shikijs/engine-oniguruma";
+    import {createHighlighterCore} from "shiki/core";
+    import yaml from "shiki/langs/yaml.mjs";
+    import python from "shiki/langs/python.mjs";
+    import javascript from "shiki/langs/javascript.mjs";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
     import {defineComponent, nextTick, shallowRef} from "vue";
@@ -63,7 +67,19 @@
         },
         async created() {
             this.copyIcon = this.icons.ContentCopy;
-            this.codeData = await codeToHtml(this.code, {
+            const highlighter = await createHighlighterCore({
+                themes: [
+                    import("shiki/themes/github-dark.mjs")
+                ],
+                langs: [
+                    yaml,
+                    python,
+                    javascript
+                ],
+                // `shiki/wasm` contains the wasm binary inlined as base64 string.
+                engine: createOnigurumaEngine(() => import("shiki/wasm"))
+            })
+            this.codeData = highlighter.codeToHtml(this.code, {
                 lang: this.language,
                 theme: "github-dark",
             });

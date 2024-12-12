@@ -1,4 +1,4 @@
-import {mapValues} from "lodash";
+import mapValues from "lodash/mapValues";
 import PauseCircle from "vue-material-design-icons/PauseCircle.vue";
 import CheckCircle from "vue-material-design-icons/CheckCircle.vue";
 import PlayCircle from "vue-material-design-icons/PlayCircle.vue";
