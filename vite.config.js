@@ -12,9 +12,7 @@ export default defineConfig({
             fileName: "kestra-ui",
         },
         rollupOptions: {
-            external: [
-                "shiki",
-                "vue",
+            external: ["vue",
                 "humanize-duration",
                 "moment",
                 "lodash",

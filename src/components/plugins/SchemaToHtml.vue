@@ -26,9 +26,9 @@
                 </h2>
                 <template v-if="key !== 'definitions'">
                     <template v-for="(property, propertyKey) in sortSchemaByRequired(pageBlock)" :key="propertyKey">
-                        <h3 :id="property.name ?? propertyKey">
-                            <a :href="`#${property.name ?? propertyKey}`">
-                                <code>{{ property.name ?? propertyKey }}</code>
+                        <h3 :id="property.name || propertyKey">
+                            <a :href="`#${property.name || propertyKey}`">
+                                <code>{{ property.name || propertyKey }}</code>
                             </a>
                         </h3>
                         <div
@@ -41,18 +41,11 @@
                         <ul>
                             <li>
                                 <strong>Type: </strong>
-                                <a
-                                    aria-current="page"
-                                    v-if="property['$ref']"
-                                    :href="generateTaskHref(property['$ref'])"
-                                    class="router-link-active router-link-exact-active"
+                                <mark
+                                    class="type-mark type-mark-default"
+                                    v-if="property.type || property['$ref']"
                                 >
-                                    <mark class="type-mark type-mark-default">
-                                        {{ property['$ref']?.split('.').reverse()[0] }}
-                                    </mark>
-                                </a>
-                                <mark v-else-if="property.type" class="type-mark type-mark-default">
-                                    {{ property.type }}
+                                    {{ property.type || property['$ref']?.split('.').reverse()[0] }}
                                 </mark>
                                 <ul v-else-if="property.anyOf">
                                     <li v-for="(anyOf, index) in property.anyOf" :key="index">
@@ -60,38 +53,30 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li v-if="property.items ?? property.additionalProperties">
+                            <li v-if="property.items">
                                 <strong>SubType: </strong>
-                                <template v-if="property.items">
-                                    <a
-                                        aria-current="page"
-                                        v-if="property.items['$ref']"
-                                        :href="generateTaskHref(property.items['$ref'])"
-                                        class="router-link-active router-link-exact-active"
-                                    >
-                                        <mark class="type-mark type-mark-default">
-                                            {{ property.items['$ref'].split('.').reverse()[0] }}
-                                        </mark>
-                                    </a>
-                                    <mark v-else class="type-mark type-mark-default">
-                                        {{ property.items.type ?? 'string' }}
+                                <a
+                                    aria-current="page"
+                                    v-if="property.items['$ref']"
+                                    :href="generateTaskHref(property.items['$ref'])"
+                                    class="router-link-active router-link-exact-active"
+                                >
+                                    <mark class="type-mark type-mark-default">
+                                        {{ property.items['$ref']?.split('.').reverse()[0] ||
+                                            property.items.type ||'String' }}
                                     </mark>
-                                </template>
-                                <mark v-else-if="property.additionalProperties.type" class="type-mark type-mark-default">
-                                    <template v-if="property.additionalProperties.items">
-                                        {{ property.additionalProperties.items.type ?? 'string' }}
-                                    </template>
-                                    <template v-else-if="property.additionalProperties.type">
-                                        {{ property.additionalProperties.type }}
-                                    </template>
+                                </a>
+                                <mark v-else class="type-mark type-mark-default">
+                                    {{ property.items['$ref']?.split('.').reverse()[0] || 
+                                        property.items.type ||'String' }}
                                 </mark>
                             </li>
-                            <li>
+                            <li v-if="property['$dynamic'] !== undefined">
                                 <strong>Dynamic: </strong>{{
                                     property['$dynamic'] === true ? "✔️" :
                                     (property['$dynamic'] === false ? "❌" : "❓") }}
                             </li>
-                            <li>
+                            <li v-if="property['$required'] !== undefined">
                                 <strong>Required: </strong> {{
                                     property['$required'] === true ? "✔️" :
                                     (property['$required'] === false ? "❌" : "❓") }}
@@ -116,21 +101,15 @@
                                 <strong>Possible Values:</strong>
                                 <ul>
                                     <li v-for="(possibleValue, index) in property.enum" :key="index">
-                                        <code>{{ possibleValue }}</code>
+                                        <code data-v-c4861ad0="" class="">{{ possibleValue }}</code>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
 
-                        <div class="nested-fw-bolder">
-                            <slot v-if="property.title" :content="property.title" name="markdown">
-                                <template v-html="replaceText(property.title)" />
-                            </slot>
-                        </div>
-                        <blockquote v-if="property.description" class="blockquote">
-                            <slot :content="property.description" name="markdown">
-                                <template v-html="replaceText(property.description)" />
-                            </slot>
+                        <slot v-if="property.title" :content="property.title" name="markdown" />
+                        <blockquote class="blockquote">
+                            <slot v-if="property.description" :content="property.description" name="markdown" />
                         </blockquote>
                     </template>
                 </template>
@@ -154,65 +133,41 @@
                             v-for="(definition, propertyKey) in item.properties ?? []"
                             :key="propertyKey"
                         >
-                            <h5 :id="definition.name ?? propertyKey">
-                                <a :href="`#${definition.name ?? propertyKey}`">
-                                    <code>{{ definition.name ?? propertyKey }}</code>
+                            <h5 :id="definition.name || propertyKey">
+                                <a :href="`#${definition.name || propertyKey}`">
+                                    <code>{{ definition.name || propertyKey }}</code>
                                 </a>
                             </h5>
                             <ul>
                                 <li>
                                     <strong>Type: </strong>
-                                    <a
-                                        aria-current="page"
-                                        v-if="definition['$ref']"
-                                        :href="generateTaskHref(definition['$ref'])"
-                                        class="router-link-active router-link-exact-active"
-                                    >
-                                        <mark class="type-mark type-mark-default">
-                                            {{ definition['$ref']?.split('.').reverse()[0] }}
-                                        </mark>
-                                    </a>
-                                    <mark v-else-if="definition.type" class="type-mark type-mark-default">
-                                        {{ definition.type }}
+                                    <mark class="type-mark type-mark-default">
+                                        {{ definition.type ||
+                                            definition['$ref']?.split('.').reverse()[0] }}
                                     </mark>
-                                    <ul v-else-if="definition.anyOf">
-                                        <li v-for="(anyOf, index) in definition.anyOf" :key="index">
-                                            <mark class="type-mark type-mark-default">{{ anyOf.type }}</mark>
-                                        </li>
-                                    </ul>
                                 </li>
                                 <li v-if="definition.items">
                                     <strong>SubType: </strong>
-                                    <template v-if="definition.items">
-                                        <a
-                                            aria-current="page"
-                                            v-if="definition.items['$ref']"
-                                            :href="generateTaskHref(definition.items['$ref'])"
-                                            class="router-link-active router-link-exact-active"
-                                        >
-                                            <mark class="type-mark type-mark-default">
-                                                {{ definition.items['$ref'].split('.').reverse()[0] }}
-                                            </mark>
-                                        </a>
-                                        <mark v-else class="type-mark type-mark-default">
-                                            {{ definition.items.type ?? 'string' }}
+                                    <a
+                                        aria-current="page"
+                                        v-if="definition.items['$ref']"
+                                        :href="generateTaskHref(definition.items['$ref'])"
+                                        class="router-link-active router-link-exact-active"
+                                    >
+                                        <mark class="type-mark type-mark-default">
+                                            {{ definition.items?.type || 'Task' }}
                                         </mark>
-                                    </template>
-                                    <mark v-else-if="definition.additionalProperties.type" class="type-mark type-mark-default">
-                                        <template v-if="definition.additionalProperties.items">
-                                            {{ definition.additionalProperties.items.type ?? 'string' }}
-                                        </template>
-                                        <template v-else-if="definition.additionalProperties.type">
-                                            {{ definition.additionalProperties.type }}
-                                        </template>
+                                    </a>
+                                    <mark v-else class="type-mark type-mark-default">
+                                        {{ definition.items?.type || 'Task' }}
                                     </mark>
                                 </li>
-                                <li>
+                                <li v-if="definition['$dynamic'] !== undefined">
                                     <strong>Dynamic: </strong>
                                     {{ definition['$dynamic'] === true ? "✔️" :
                                         (definition['$dynamic'] === false ? "❌" : "❓") }}
                                 </li>
-                                <li>
+                                <li v-if="definition['$required'] !== undefined">
                                     <strong>Required: </strong>
                                     {{
                                         definition['$required'] === true ? "✔️" :
@@ -224,34 +179,18 @@
                                 </li>
                                 <li v-if="definition.format">
                                     <strong>Format: </strong>
-                                    <code> {{ definition.format }} </code>
+                                    <code>{{ definition.format }}</code>
                                 </li>
                                 <li v-if="definition.minItems">
                                     <strong>Min items: </strong>
-                                    <code> {{ definition.minItems }} </code>
-                                </li>
-                                <li v-if="definition.minLength">
-                                    <strong>Min length: </strong>
-                                    <code>{{ definition.minLength }}</code>
-                                </li>
-                                <li v-if="definition.enum">
-                                    <strong>Possible Values:</strong>
-                                    <ul>
-                                        <li v-for="(possibleValue, index) in definition.enum" :key="index">
-                                            <code>{{ possibleValue }}</code>
-                                        </li>
-                                    </ul>
+                                    <code>{{ definition.minItems }}</code>
                                 </li>
                             </ul>
-                            <div class="nested-fw-bolder">
-                                <slot v-if="definition.title" :content="definition.title" name="markdown">
-                                    <template v-html="replaceText(definition.title)" />
-                                </slot>
-                            </div>
+                            <p>
+                                <strong v-html="replaceText(definition.title)" />
+                            </p>
                             <blockquote class="blockquote">
-                                <slot v-if="definition.description" :content="definition.description" name="markdown">
-                                    <template v-html="replaceText(definition.description)" />
-                                </slot>
+                                <p v-html="replaceText(definition.description)" />
                             </blockquote>
                         </template>
                     </template>
@@ -299,7 +238,7 @@
     const generateTaskHref = (href) => {
         if (href) {
             const taskHref = href?.split("/");
-            return `#${taskHref[taskHref?.length - 1]}`;
+            return `#${taskHref[taskHref?.length - 1].toLowerCase()}`;
         }
     };
     computed(() => {
@@ -345,7 +284,7 @@
             }
         }
 
-        const sortedKeys = [...requiredKeys.sort(), ...nonRequiredKeys.sort()];
+        const sortedKeys = [...requiredKeys, ...nonRequiredKeys];
 
         const sortedSchema = {};
         sortedKeys.forEach(key => {
@@ -379,14 +318,16 @@
 </script>
 
 <style lang="scss" scoped>
-    .bd-markdown {
+    :deep(.bd-markdown) {
         p {
-            code{
-                background: #161617;
-                border: 1px solid #252526;
-                border-radius: var(--bs-border-radius);
-                color: #b9b9ba;
-                padding: 0 .25rem;
+            strong {
+                code{
+                    background: #161617;
+                    border: 1px solid #252526;
+                    border-radius: var(--bs-border-radius);
+                    color: #b9b9ba;
+                    padding: 0 .25rem;
+                }
             }
         }
     }

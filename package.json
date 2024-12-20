@@ -1,29 +1,14 @@
 {
   "name": "@kestra-io/ui-libs",
-  "version": "0.0.78",
+  "version": "0.0.72",
   "type": "module",
   "files": [
-    "dist",
     "src",
     "package.json",
     "stub-mdc-imports.js"
   ],
-  "main": "./dist/kestra-ui.umd.cjs",
-  "module": "./dist/kestra-ui.js",
-  "exports": {
-    ".": {
-      "import": {
-        "development": "./src/index.js",
-        "production": "./dist/kestra-ui.js"
-      },
-      "require": {
-        "development": "./src/index.js",
-        "production": "./dist/kestra-ui.umd.cjs"
-      }
-    },
-    "./style.css": "./dist/style.css",
-    "./src/*": "./src/*"
-  },
+  "main": "./src/index.js",
+  "module": "./src/index.js",
   "scripts": {
     "dev": "vite",
     "debug": "vite --debug",
