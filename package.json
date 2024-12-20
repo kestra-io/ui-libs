@@ -21,7 +21,10 @@
         "production": "./dist/kestra-ui.umd.cjs"
       }
     },
-    "./style.css": "./dist/style.css",
+    "./style.css": {
+      "development": "./src/placeholder.css",
+      "production": "./dist/style.css"
+    },
     "./src/*": "./src/*"
   },
   "scripts": {

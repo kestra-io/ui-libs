@@ -1,261 +1,142 @@
 <template>
     <div class="bd-markdown">
-        <div class="doc-alert alert alert-warning" role="alert" v-if="page.deprecated">
-            <p>⚠ Deprecated</p>
+
+
+        <div class="doc-alert alert alert-info" role="alert" v-if="schema.properties?.$beta">
+            <p>
+                This plugin is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.
+            </p>
         </div>
 
-        <SchemaToCode language="yaml" :code="`type: &quot;${getPageName()}&quot;`" />
-        <p v-if="page.title">
-            <span style="font-size:1.5em;" v-html="replaceText(page.title)" />
-        </p>
-        <slot v-if="page.description" :content="page.description" name="markdown" />
-        <h2 id="examples" v-if="page.body.children['examples']">
-            <a href="#examples">Examples</a>
-        </h2>
-        <template
-            v-for="(example, index) in page?.body?.children?.['examples'] ?? []"
-            :key="index"
-        >
-            <slot v-if="example.title" :content="example.title" name="markdown" />
-            <SchemaToCode :language="example.lang" :code="generateExampleCode(example)" v-if="example.code" />
-        </template>
-        <template v-for="(pageBlock, key) in page?.body?.children ?? []" :key="key">
-            <template v-if="key !== 'examples'">
-                <h2 :id="key">
-                    <a :href="`#${key}`">{{ capitalizeFirstLetter(key) }}</a>
-                </h2>
-                <template v-if="key !== 'definitions'">
-                    <template v-for="(property, propertyKey) in sortSchemaByRequired(pageBlock)" :key="propertyKey">
-                        <h3 :id="property.name ?? propertyKey">
-                            <a :href="`#${property.name ?? propertyKey}`">
-                                <code>{{ property.name ?? propertyKey }}</code>
-                            </a>
-                        </h3>
-                        <div
-                            class="doc-alert alert alert-warning"
-                            role="alert"
-                            v-if="property['$deprecated']"
-                        >
-                            <p>⚠ Deprecated</p>
-                        </div>
-                        <ul>
-                            <li>
-                                <strong>Type: </strong>
-                                <a
-                                    aria-current="page"
-                                    v-if="property['$ref']"
-                                    :href="generateTaskHref(property['$ref'])"
-                                    class="router-link-active router-link-exact-active"
-                                >
-                                    <mark class="type-mark type-mark-default">
-                                        {{ property['$ref']?.split('.').reverse()[0] }}
-                                    </mark>
-                                </a>
-                                <mark v-else-if="property.type" class="type-mark type-mark-default">
-                                    {{ property.type }}
-                                </mark>
-                                <ul v-else-if="property.anyOf">
-                                    <li v-for="(anyOf, index) in property.anyOf" :key="index">
-                                        <mark class="type-mark type-mark-default">{{ anyOf.type }}</mark>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li v-if="property.items ?? property.additionalProperties">
-                                <strong>SubType: </strong>
-                                <template v-if="property.items">
-                                    <a
-                                        aria-current="page"
-                                        v-if="property.items['$ref']"
-                                        :href="generateTaskHref(property.items['$ref'])"
-                                        class="router-link-active router-link-exact-active"
-                                    >
-                                        <mark class="type-mark type-mark-default">
-                                            {{ property.items['$ref'].split('.').reverse()[0] }}
-                                        </mark>
-                                    </a>
-                                    <mark v-else class="type-mark type-mark-default">
-                                        {{ property.items.type ?? 'string' }}
-                                    </mark>
-                                </template>
-                                <mark v-else-if="property.additionalProperties.type" class="type-mark type-mark-default">
-                                    <template v-if="property.additionalProperties.items">
-                                        {{ property.additionalProperties.items.type ?? 'string' }}
-                                    </template>
-                                    <template v-else-if="property.additionalProperties.type">
-                                        {{ property.additionalProperties.type }}
-                                    </template>
-                                </mark>
-                            </li>
-                            <li>
-                                <strong>Dynamic: </strong>{{
-                                    property['$dynamic'] === true ? "✔️" :
-                                    (property['$dynamic'] === false ? "❌" : "❓") }}
-                            </li>
-                            <li>
-                                <strong>Required: </strong> {{
-                                    property['$required'] === true ? "✔️" :
-                                    (property['$required'] === false ? "❌" : "❓") }}
-                            </li>
-                            <li v-if="property.default !== undefined">
-                                <strong>Default: </strong>
-                                <code>{{ property.default }}</code>
-                            </li>
-                            <li v-if="property.format">
-                                <strong>Format: </strong>
-                                <code> {{ property.format }} </code>
-                            </li>
-                            <li v-if="property.minItems">
-                                <strong>Min items: </strong>
-                                <code> {{ property.minItems }} </code>
-                            </li>
-                            <li v-if="property.minLength">
-                                <strong>Min length: </strong>
-                                <code>{{ property.minLength }}</code>
-                            </li>
-                            <li v-if="property.enum">
-                                <strong>Possible Values:</strong>
-                                <ul>
-                                    <li v-for="(possibleValue, index) in property.enum" :key="index">
-                                        <code>{{ possibleValue }}</code>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+        <!-- TODO ADD EE LICENSE MESSAGE -->
 
-                        <div class="nested-fw-bolder">
-                            <slot v-if="property.title" :content="property.title" name="markdown">
-                                <template v-html="replaceText(property.title)" />
-                            </slot>
-                        </div>
-                        <blockquote v-if="property.description" class="blockquote">
-                            <slot :content="property.description" name="markdown">
-                                <template v-html="replaceText(property.description)" />
-                            </slot>
-                        </blockquote>
+        <SchemaToCode :highlighter="highlighter" language="yaml" :code="`type: &quot;${pluginType}&quot;`" />
+        <p v-if="schema.properties?.title">
+            <span style="font-size:1.5em;" v-html="replaceText(schema.properties.title)" />
+        </p>
+
+        <slot v-if="schema.properties?.description" :content="schema.properties.description" name="markdown" />
+
+        <template v-if="schema.properties?.['$examples']">
+            <h2 id="examples">
+                <a href="#examples">Examples</a>
+            </h2>
+            <template
+                v-for="(example, index) in schema.properties['$examples']"
+                :key="index"
+            >
+                <slot v-if="example.title" :content="example.title" name="markdown" />
+                <SchemaToCode :highlighter="highlighter" :language="example.lang ?? 'yaml'" :code="generateExampleCode(example)" v-if="example.code" />
+            </template>
+        </template>
+
+        <template v-if="schema.properties?.properties">
+            <h2 id="properties">
+                <a href="#properties">Properties</a>
+            </h2>
+
+            <template v-for="(property, propertyKey) in sortSchemaByRequired(schema.properties.properties)" :key="propertyKey">
+                <h3 :id="propertyKey">
+                    <a :href="`#${propertyKey}`">
+                        <code>{{ propertyKey }}</code>
+                    </a>
+                </h3>
+<!--                <div
+                    class="doc-alert alert alert-warning"
+                    role="alert"
+                    v-if="property['$deprecated']"
+                >
+                    <p>⚠ Deprecated</p>
+                </div>-->
+                <div
+                    class="doc-alert alert alert-info"
+                    role="alert"
+                    v-if="property['$beta']"
+                >
+                    <p>This property is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.</p>
+                </div>
+                <ul>
+                    <PropertyType :property="property" />
+
+                    <li>
+                        <strong>Dynamic: </strong> {{ dynamicText(property) }}
+                    </li>
+
+                    <li>
+                        <strong>Required: </strong> {{ requiredText(property) }}
+                    </li>
+
+                    <PropertyDetail :property="property" :text-sanitizer="replaceText" />
+                </ul>
+            </template>
+        </template>
+
+        <template v-if="schema.outputs?.properties">
+            <h2 id="outputs">
+                <a href="#outputs">Outputs</a>
+            </h2>
+
+            <template v-for="(output, outputKey) in sortSchemaByRequired(schema.outputs.properties)" :key="outputKey">
+                <h3 :id="outputKey">
+                    <a :href="`#${outputKey}`">
+                        <code>{{ outputKey }}</code>
+                    </a>
+                </h3>
+                <div
+                    class="doc-alert alert alert-warning"
+                    role="alert"
+                    v-if="output['$deprecated']"
+                >
+                    <p>⚠ Deprecated</p>
+                </div>
+                <div
+                    class="doc-alert alert alert-info"
+                    role="alert"
+                    v-if="output['$beta']"
+                >
+                    <p>This property is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.</p>
+                </div>
+                <ul>
+                    <PropertyType :property="output" />
+
+                    <li>
+                        <strong>Required: </strong> {{ requiredText(output) }}
+                    </li>
+
+                    <PropertyDetail :property="output" :text-sanitizer="replaceText" />
+                </ul>
+            </template>
+        </template>
+
+        <template v-if="schema.definitions">
+            <h2 id="definitions">
+                <a href="#definitions">Definitions</a>
+            </h2>
+
+            <template v-for="(definition, definitionKey) in schema.definitions" :key="definitionKey">
+                <h3 :id="definitionKey">
+                    <a :href="`#${definitionKey}`">
+                        <code>{{ definitionKey }}</code>
+                    </a>
+                </h3>
+                <h4 v-if="definition.properties">
+                    Properties
+                </h4>
+                <ul>
+                    <template v-for="(property, propertyKey) in sortSchemaByRequired(definition.properties)" :key="propertyKey">
+                        <PropertyType :property="property" />
+        
+                        <li>
+                            <strong>Dynamic: </strong> {{ dynamicText(property) }}
+                        </li>
+        
+                        <li>
+                            <strong>Required: </strong> {{ requiredText(property) }}
+                        </li>
+        
+                        <PropertyDetail :property="property" :text-sanitizer="replaceText" />
                     </template>
-                </template>
-                <template v-else-if="pageBlock">
-                    <template
-                        v-for="(item, childrenBlockKey) in pageBlock"
-                        :key="childrenBlockKey"
-                    >
-                        <h3 :id="childrenBlockKey">
-                            <a :href="`#${childrenBlockKey}`">
-                                <code>{{ childrenBlockKey }}</code>
-                            </a>
-                        </h3>
-                        <h4
-                            id="properties-1"
-                            v-if="item.properties"
-                        >
-                            <a href="#properties-1">Properties</a>
-                        </h4>
-                        <template
-                            v-for="(definition, propertyKey) in item.properties ?? []"
-                            :key="propertyKey"
-                        >
-                            <h5 :id="definition.name ?? propertyKey">
-                                <a :href="`#${definition.name ?? propertyKey}`">
-                                    <code>{{ definition.name ?? propertyKey }}</code>
-                                </a>
-                            </h5>
-                            <ul>
-                                <li>
-                                    <strong>Type: </strong>
-                                    <a
-                                        aria-current="page"
-                                        v-if="definition['$ref']"
-                                        :href="generateTaskHref(definition['$ref'])"
-                                        class="router-link-active router-link-exact-active"
-                                    >
-                                        <mark class="type-mark type-mark-default">
-                                            {{ definition['$ref']?.split('.').reverse()[0] }}
-                                        </mark>
-                                    </a>
-                                    <mark v-else-if="definition.type" class="type-mark type-mark-default">
-                                        {{ definition.type }}
-                                    </mark>
-                                    <ul v-else-if="definition.anyOf">
-                                        <li v-for="(anyOf, index) in definition.anyOf" :key="index">
-                                            <mark class="type-mark type-mark-default">{{ anyOf.type }}</mark>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li v-if="definition.items">
-                                    <strong>SubType: </strong>
-                                    <template v-if="definition.items">
-                                        <a
-                                            aria-current="page"
-                                            v-if="definition.items['$ref']"
-                                            :href="generateTaskHref(definition.items['$ref'])"
-                                            class="router-link-active router-link-exact-active"
-                                        >
-                                            <mark class="type-mark type-mark-default">
-                                                {{ definition.items['$ref'].split('.').reverse()[0] }}
-                                            </mark>
-                                        </a>
-                                        <mark v-else class="type-mark type-mark-default">
-                                            {{ definition.items.type ?? 'string' }}
-                                        </mark>
-                                    </template>
-                                    <mark v-else-if="definition.additionalProperties.type" class="type-mark type-mark-default">
-                                        <template v-if="definition.additionalProperties.items">
-                                            {{ definition.additionalProperties.items.type ?? 'string' }}
-                                        </template>
-                                        <template v-else-if="definition.additionalProperties.type">
-                                            {{ definition.additionalProperties.type }}
-                                        </template>
-                                    </mark>
-                                </li>
-                                <li>
-                                    <strong>Dynamic: </strong>
-                                    {{ definition['$dynamic'] === true ? "✔️" :
-                                        (definition['$dynamic'] === false ? "❌" : "❓") }}
-                                </li>
-                                <li>
-                                    <strong>Required: </strong>
-                                    {{
-                                        definition['$required'] === true ? "✔️" :
-                                        (definition['$required'] === false ? "❌" : "❓") }}
-                                </li>
-                                <li v-if="definition.default !== undefined">
-                                    <strong>Default: </strong>
-                                    <code>{{ definition.default }}</code>
-                                </li>
-                                <li v-if="definition.format">
-                                    <strong>Format: </strong>
-                                    <code> {{ definition.format }} </code>
-                                </li>
-                                <li v-if="definition.minItems">
-                                    <strong>Min items: </strong>
-                                    <code> {{ definition.minItems }} </code>
-                                </li>
-                                <li v-if="definition.minLength">
-                                    <strong>Min length: </strong>
-                                    <code>{{ definition.minLength }}</code>
-                                </li>
-                                <li v-if="definition.enum">
-                                    <strong>Possible Values:</strong>
-                                    <ul>
-                                        <li v-for="(possibleValue, index) in definition.enum" :key="index">
-                                            <code>{{ possibleValue }}</code>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <div class="nested-fw-bolder">
-                                <slot v-if="definition.title" :content="definition.title" name="markdown">
-                                    <template v-html="replaceText(definition.title)" />
-                                </slot>
-                            </div>
-                            <blockquote class="blockquote">
-                                <slot v-if="definition.description" :content="definition.description" name="markdown">
-                                    <template v-html="replaceText(definition.description)" />
-                                </slot>
-                            </blockquote>
-                        </template>
-                    </template>
-                </template>
+                </ul>
             </template>
         </template>
     </div>
@@ -263,22 +144,51 @@
 
 <script setup>
     import SchemaToCode from "./SchemaToCode.vue";
+    import {createHighlighterCore} from "shiki/core";
+    import githubDark from "shiki/themes/github-dark.mjs";
+    import yaml from "shiki/langs/yaml.mjs";
+    import python from "shiki/langs/python.mjs";
+    import javascript from "shiki/langs/javascript.mjs";
     import {computed} from "vue";
+    import PropertyDetail from "./PropertyDetail.vue";
+    import PropertyType from "./PropertyType.vue";
+    import {createJavaScriptRegexEngine} from "shiki/engine/javascript";
 
     const props = defineProps({
-        page: {
+        schema: {
             type: Object,
             required: true,
         },
-        getPageName: {
-            type: Function,
+        pluginType: {
+            type: String,
             required: true,
         }
     });
 
+    console.log("PROP NUL : "+ JSON.stringify(props.schema.properties.properties));
+    
+    function dynamicText(property) {
+        if (property["$dynamic"] === true) {
+            return "✔️";
+        }
 
-    function capitalizeFirstLetter(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+        if (property["$dynamic"] === true) {
+            return "❌";
+        }
+
+        if (property.oneOf?.some(prop => prop["$dynamic"] === true)) {
+            return "✔️";
+        }
+
+        return "❌";
+    }
+
+    function requiredText(property) {
+        if (property["$required"] === true) {
+            return "✔️";
+        }
+
+        return property["$required"] === false ? "❌" : "❓";
     }
 
     const replaceText = (str) => {
@@ -296,14 +206,8 @@
         return str?.split("```")[0];
     };
 
-    const generateTaskHref = (href) => {
-        if (href) {
-            const taskHref = href?.split("/");
-            return `#${taskHref[taskHref?.length - 1]}`;
-        }
-    };
     computed(() => {
-        const textBlocks = props.page?.description.split("\n\n");
+        const textBlocks = props.schema?.description.split("\n\n");
         let content = "";
         textBlocks.forEach((text) => {
             const newText = replaceText(text);
@@ -370,12 +274,24 @@
 
     const generateExampleCode = (example) => {
         if (!example?.full) {
-            const firstCode = `id: "${props.getPageName()?.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.getPageName()}"\n`;
-            return firstCode.concat(example.code)
+            const fullCode = `id: "${props.pluginType.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.pluginType}"\n`;
+            return fullCode.concat(example.code)
         }
 
         return example.code;
     }
+
+    const highlighter = await createHighlighterCore({
+        themes: [
+            githubDark
+        ],
+        langs: [
+            yaml,
+            python,
+            javascript
+        ],
+        engine: createJavaScriptRegexEngine(),
+    });
 </script>
 
 <style lang="scss" scoped>
