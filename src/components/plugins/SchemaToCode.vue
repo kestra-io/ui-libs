@@ -21,13 +21,16 @@
 
 <script>
     import {createPopper} from "@popperjs/core";
-    import {codeToHtml} from "shiki";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
     import {defineComponent, nextTick, shallowRef} from "vue";
 
     export default defineComponent({
         props: {
+            highlighter: {
+                type: Object,
+                required: true
+            },
             code: {
                 type: String,
                 default: ""
@@ -63,7 +66,8 @@
         },
         async created() {
             this.copyIcon = this.icons.ContentCopy;
-            this.codeData = await codeToHtml(this.code, {
+
+            this.codeData = this.highlighter.codeToHtml(this.code, {
                 lang: this.language,
                 theme: "github-dark",
             });

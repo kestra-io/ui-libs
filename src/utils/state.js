@@ -1,4 +1,4 @@
-import {mapValues} from "lodash";
+import mapValues from "lodash/mapValues";
 import PauseCircle from "vue-material-design-icons/PauseCircle.vue";
 import CheckCircle from "vue-material-design-icons/CheckCircle.vue";
 import PlayCircle from "vue-material-design-icons/PlayCircle.vue";
@@ -7,7 +7,6 @@ import StopCircle from "vue-material-design-icons/StopCircle.vue";
 import SkipPreviousCircle from "vue-material-design-icons/SkipPreviousCircle.vue";
 import AlertCircle from "vue-material-design-icons/AlertCircle.vue";
 import DotsVerticalCircle from "vue-material-design-icons/DotsVerticalCircle.vue";
-// import {cssVariable} from "./global"
 
 const STATE = Object.freeze({
     CREATED: {
