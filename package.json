@@ -3,12 +3,30 @@
   "version": "0.0.79",
   "type": "module",
   "files": [
+    "dist",
     "src",
     "package.json",
     "stub-mdc-imports.js"
   ],
-  "main": "./src/index.js",
-  "module": "./src/index.js",
+  "main": "./dist/kestra-ui.umd.cjs",
+  "module": "./dist/kestra-ui.js",
+  "exports": {
+    ".": {
+      "import": {
+        "development": "./src/index.js",
+        "production": "./dist/kestra-ui.js"
+      },
+      "require": {
+        "development": "./src/index.js",
+        "production": "./dist/kestra-ui.umd.cjs"
+      }
+    },
+    "./style.css": {
+      "development": "./src/placeholder.css",
+      "production": "./dist/style.css"
+    },
+    "./src/*": "./src/*"
+  },
   "scripts": {
     "dev": "vite",
     "debug": "vite --debug",
