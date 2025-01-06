@@ -12,7 +12,7 @@
     // conditional import is required for website not to crash due to
     // bootstrap launching some init upon import that is incompatible with SSR
     let bootstrap;
-    if (document) {
+    if (typeof document !== "undefined") {
         bootstrap = import("bootstrap");
     }
 
@@ -33,7 +33,7 @@
             }
         },
         async mounted() {
-            if (document) {
+            if (typeof document !== "undefined") {
                 this.tooltip = new (await bootstrap).Tooltip(this.$refs.tooltip, {
                     trigger: "hover",
                     html: true,

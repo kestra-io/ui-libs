@@ -12,7 +12,9 @@ export default defineConfig({
             fileName: "kestra-ui",
         },
         rollupOptions: {
-            external: ["vue",
+            external: [
+                "shiki",
+                "vue",
                 "humanize-duration",
                 "moment",
                 "lodash",
@@ -34,8 +36,7 @@ export default defineConfig({
                 globals: {
                     vue: "Vue",
                 },
-            },
-            plugins: []
+            }
         },
     },
     plugins: [
@@ -43,9 +44,9 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {src: "src/scss/_variables.scss", dest: ""},
-                {src: "src/scss/_theme-dark.scss", dest: ""},
-            ],
-        }),
+                {src: "src/scss/_theme-dark.scss", dest: ""}
+            ]
+        })
     ],
     css: {
         preprocessorOptions: {
