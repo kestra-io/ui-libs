@@ -6,6 +6,7 @@ import * as sass from "sass";
 
 export default defineConfig({
     build: {
+        sourcemap: true,
         lib: {
             entry: resolve(__dirname, "src/index.js"),
             name: "KestraUI",

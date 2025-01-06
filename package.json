@@ -12,19 +12,10 @@
   "module": "./dist/kestra-ui.js",
   "exports": {
     ".": {
-      "import": {
-        "development": "./src/index.js",
-        "production": "./dist/kestra-ui.js"
-      },
-      "require": {
-        "development": "./src/index.js",
-        "production": "./dist/kestra-ui.umd.cjs"
-      }
+      "import": "./dist/kestra-ui.js",
+      "require": "./dist/kestra-ui.umd.cjs"
     },
-    "./style.css": {
-      "development": "./src/placeholder.css",
-      "production": "./dist/style.css"
-    },
+    "./style.css": "./dist/style.css",
     "./src/*": "./src/*"
   },
   "scripts": {
