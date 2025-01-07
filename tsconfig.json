@@ -25,7 +25,7 @@
     "noUncheckedSideEffectImports": true,
   },
   "include": [
-    ".storybook/preview.*",
+    ".storybook/*.*",
     "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue",
     "theme/**/*.ts", "theme/**/*.tsx", "theme/**/*.vue",
   ]
