@@ -82,13 +82,13 @@
 </template>
 <script setup>
     import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode,} from "../index.js";
+    import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode} from "../index.js";
     import {useVueFlow, VueFlow} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
     import SplitCellsVertical from "../../assets/icons/SplitCellsVertical.vue";
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
-    import {cssVariable} from "../../utils/global.js";
-    import {VueFlowUtils, YamlUtils} from "../../index.js";
+    import {cssVariable} from "../../utils/global";
+    import {VueFlowUtils, YamlUtils} from "../../index";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants.js";
     import {Background} from "@vue-flow/background";
     import Utils from "../../utils/Utils.js";

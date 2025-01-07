@@ -15,7 +15,7 @@ import { SECTIONS } from "./constants.js";
 
 const TOSTRING_OPTIONS = { lineWidth: 0 };
 
-export default {
+export const YamlUtils = {
   stringify(value:any) {
     if (typeof value === "undefined") {
       return "";

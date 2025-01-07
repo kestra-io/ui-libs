@@ -47,8 +47,7 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {src: "src/scss/_variables.scss", dest: ""},
-                {src: "src/scss/_theme-dark.scss", dest: ""},
-                {src: "src/scss/color-palette.scss", dest: ""}
+                {src: "src/scss/_theme-dark.scss", dest: ""}
             ]
         })
     ],

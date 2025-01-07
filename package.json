@@ -13,7 +13,8 @@
   "exports": {
     ".": {
       "import": "./dist/kestra-ui.js",
-      "require": "./dist/kestra-ui.umd.cjs"
+      "require": "./dist/kestra-ui.umd.cjs",
+      "types": "./dist/index.d.ts"
     },
     "./style.css": "./dist/style.css",
     "./src/*": "./src/*"
@@ -53,6 +54,7 @@
     "@storybook/test": "^8.4.7",
     "@storybook/vue3": "^8.4.7",
     "@storybook/vue3-vite": "^8.4.7",
+    "@types/dagre": "^0.7.52",
     "@types/humanize-duration": "^3.27.4",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.14",
