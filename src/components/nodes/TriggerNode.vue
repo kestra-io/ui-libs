@@ -16,7 +16,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.triggerDeclaration, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="Utils.translate('edit')">
+                <tooltip :title="$t('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
@@ -26,7 +26,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id: triggerId, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="Utils.translate('delete')">
+                <tooltip :title="$t('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>

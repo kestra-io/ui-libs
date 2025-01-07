@@ -13,7 +13,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND, {id})"
             >
-                <tooltip :title="Utils.translate('expand')">
+                <tooltip :title="$t('expand')">
                     <ArrowExpand class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>

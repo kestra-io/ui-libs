@@ -23,7 +23,7 @@
                 :class="[`bg-warning`]"
                 @click="$emit(EVENTS.SHOW_CONDITION, {id: taskId, task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('show task condition')">
+                <tooltip :title="$t('show task condition')">
                     <SendLock class="button-icon" alt="Show condition" />
                 </tooltip>
             </span>
@@ -33,7 +33,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id: taskId, execution: taskExecution, taskRuns})"
             >
-                <tooltip :title="Utils.translate('show task logs')">
+                <tooltip :title="$t('show task logs')">
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
@@ -43,7 +43,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
             >
-                <tooltip :title="Utils.translate('add error handler')">
+                <tooltip :title="$t('add error handler')">
                     <AlertOutline class="button-icon" alt="Add error handler" />
                 </tooltip>
             </span>
@@ -53,7 +53,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('edit')">
+                <tooltip :title="$t('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
@@ -63,7 +63,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id: taskId, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('delete')">
+                <tooltip :title="$t('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>

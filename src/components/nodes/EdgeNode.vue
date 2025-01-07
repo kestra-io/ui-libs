@@ -19,7 +19,7 @@
                 transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
             }"
         >
-            <tooltip :title="Utils.translate('add task')">
+            <tooltip :title="$t('add task')">
                 <AddTaskButton
                     v-if="data.haveAdd"
                     :add-task="true"

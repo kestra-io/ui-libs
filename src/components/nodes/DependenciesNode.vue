@@ -26,7 +26,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, data)"
             >
-                <tooltip :title="Utils.translate('open')">
+                <tooltip :title="$t('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
                 </tooltip>
             </span>
@@ -36,7 +36,7 @@
                 @click="$emit(EVENTS.EXPAND_DEPENDENCIES, data)"
                 v-if="data.expandEnabled"
             >
-                <tooltip :title="Utils.translate('expand')">
+                <tooltip :title="$t('expand')">
                     <ArrowExpandAll class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>

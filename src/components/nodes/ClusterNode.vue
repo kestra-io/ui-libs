@@ -11,7 +11,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="collapse()"
             >
-                <tooltip :title="Utils.translate('collapse')">
+                <tooltip :title="$t('collapse')">
                     <ArrowCollapse class="button-icon" alt="Collapse task" />
                 </tooltip>
             </span>
