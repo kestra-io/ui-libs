@@ -1,3 +1,9 @@
+<template>
+    <div class="add-task-div rounded d-flex justify-content-center align-items-center">
+        <Plus v-if="addTask" alt="add task icon" />
+    </div>
+</template>
+
 <script>
     import Plus from "vue-material-design-icons/Plus.vue";
 
@@ -12,12 +18,6 @@
         }
     }
 </script>
-
-<template>
-    <div class="add-task-div rounded d-flex justify-content-center align-items-center">
-        <Plus v-if="addTask" alt="add task icon" />
-    </div>
-</template>
 
 <style scoped lang="scss">
     @import "../../scss/variables";

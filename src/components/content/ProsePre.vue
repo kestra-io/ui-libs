@@ -1,3 +1,29 @@
+<template>
+    <template v-if="language === 'mermaid'">
+        <Mermaid>
+            {{ code }}
+        </Mermaid>
+    </template>
+    <div class="code-block mb-3" @mouseover="hoverCode" @mouseleave="isHoveringCode = false" v-else>
+        <div class="language" v-if="language">
+            {{ language }}
+        </div>
+        <template v-if="isHoveringCode">
+            <button ref="copyButton" class="copy">
+                <component
+                    :is="copyIcon"
+                    @click="copyToClipboard"
+                />
+            </button>
+            <div ref="copyTooltip" v-if="!!copyIconResetTimer" id="copied-tooltip" role="tooltip">
+                Copied!
+                <div id="arrow" data-popper-arrow />
+            </div>
+        </template>
+        <slot />
+    </div>
+</template>
+
 <script>
     import {createPopper} from "@popperjs/core";
 
@@ -70,32 +96,6 @@
         }
     });
 </script>
-
-<template>
-    <template v-if="language === 'mermaid'">
-        <Mermaid>
-            {{ code }}
-        </Mermaid>
-    </template>
-    <div class="code-block mb-3" @mouseover="hoverCode" @mouseleave="isHoveringCode = false" v-else>
-        <div class="language" v-if="language">
-            {{ language }}
-        </div>
-        <template v-if="isHoveringCode">
-            <button ref="copyButton" class="copy">
-                <component
-                    :is="copyIcon"
-                    @click="copyToClipboard"
-                />
-            </button>
-            <div ref="copyTooltip" v-if="!!copyIconResetTimer" id="copied-tooltip" role="tooltip">
-                Copied!
-                <div id="arrow" data-popper-arrow />
-            </div>
-        </template>
-        <slot />
-    </div>
-</template>
 
 <style lang="scss" scoped>
     @import "../../scss/variables";

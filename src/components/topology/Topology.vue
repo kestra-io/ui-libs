@@ -1,3 +1,85 @@
+<template>
+    <VueFlow
+        :id="id"
+        :default-marker-color="cssVariable('--bs-cyan')"
+        fit-view-on-init
+        :nodes-draggable="false"
+        :nodes-connectable="false"
+        :elevate-nodes-on-select="false"
+        :elevate-edges-on-select="false"
+    >
+        <Background :pattern-color="darkTheme ? cssVariable('--bs-grey-500') : cssVariable('--bs-grey-300')" />
+
+        <template #node-cluster="clusterProps">
+            <ClusterNode
+                v-bind="clusterProps"
+                @collapse="collapseCluster($event, true)"
+            />
+        </template>
+
+        <template #node-dot="dotProps">
+            <DotNode
+                v-bind="dotProps"
+            />
+        </template>
+
+        <template #node-task="taskProps">
+            <TaskNode
+                v-bind="taskProps"
+                :icons="icons"
+                :icon-component="iconComponent"
+                @edit="forwardEvent(EVENTS.EDIT, $event)"
+                @delete="forwardEvent(EVENTS.DELETE, $event)"
+                @expand="expand($event)"
+                @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
+                @show-logs="forwardEvent(EVENTS.SHOW_LOGS, $event)"
+                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
+                @show-condition="forwardEvent(EVENTS.SHOW_CONDITION, $event)"
+                @mouseover="onMouseOver($event)"
+                @mouseleave="onMouseLeave()"
+                @add-error="forwardEvent('on-add-flowable-error', $event)"
+                :enable-subflow-interaction="enableSubflowInteraction"
+            />
+        </template>
+
+        <template #node-trigger="triggerProps">
+            <TriggerNode
+                v-bind="triggerProps"
+                :icons="icons"
+                :icon-component="iconComponent"
+                :is-read-only="isReadOnly"
+                :is-allowed-edit="isAllowedEdit"
+                @delete="forwardEvent(EVENTS.DELETE, $event)"
+                @edit="forwardEvent(EVENTS.EDIT, $event)"
+                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
+            />
+        </template>
+
+        <template #node-collapsedcluster="CollapsedProps">
+            <CollapsedClusterNode
+                v-bind="CollapsedProps"
+                @expand="expand($event)"
+            />
+        </template>
+
+        <template #edge-edge="EdgeProps">
+            <EdgeNode
+                v-bind="EdgeProps"
+                :yaml-source="source"
+                @add-task="forwardEvent(EVENTS.ADD_TASK, $event)"
+                :is-read-only="isReadOnly"
+                :is-allowed-edit="isAllowedEdit"
+            />
+        </template>
+
+        <Controls :show-interactive="false">
+            <ControlButton @click="forwardEvent('toggle-orientation', $event)" v-if="toggleOrientationButton">
+                <SplitCellsVertical :size="48" v-if="!isHorizontal" />
+                <SplitCellsHorizontal v-if="isHorizontal" />
+            </ControlButton>
+        </Controls>
+    </VueFlow>
+</template>
 <script setup>
     import {computed, nextTick, onMounted, ref, watch} from "vue";
     import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode,} from "../index.js";
@@ -248,7 +330,7 @@
             if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]), Utils.afterLastDot(node.id))) {
                 return "parentchildrenerror";
             }
-        } catch (e) {
+        } catch {
             return "parentchildrenerror";
         }
         if (intersections.filter(n => n.type === "trigger").length > 0) {
@@ -304,88 +386,6 @@
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
 </script>
-<template>
-    <VueFlow
-        :id="id"
-        :default-marker-color="cssVariable('--bs-cyan')"
-        fit-view-on-init
-        :nodes-draggable="false"
-        :nodes-connectable="false"
-        :elevate-nodes-on-select="false"
-        :elevate-edges-on-select="false"
-    >
-        <Background :pattern-color="darkTheme ? cssVariable('--bs-grey-500') : cssVariable('--bs-grey-300')" />
-
-        <template #node-cluster="clusterProps">
-            <ClusterNode
-                v-bind="clusterProps"
-                @collapse="collapseCluster($event, true)"
-            />
-        </template>
-
-        <template #node-dot="dotProps">
-            <DotNode
-                v-bind="dotProps"
-            />
-        </template>
-
-        <template #node-task="taskProps">
-            <TaskNode
-                v-bind="taskProps"
-                :icons="icons"
-                :icon-component="iconComponent"
-                @edit="forwardEvent(EVENTS.EDIT, $event)"
-                @delete="forwardEvent(EVENTS.DELETE, $event)"
-                @expand="expand($event)"
-                @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
-                @show-logs="forwardEvent(EVENTS.SHOW_LOGS, $event)"
-                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
-                @show-condition="forwardEvent(EVENTS.SHOW_CONDITION, $event)"
-                @mouseover="onMouseOver($event)"
-                @mouseleave="onMouseLeave()"
-                @add-error="forwardEvent('on-add-flowable-error', $event)"
-                :enable-subflow-interaction="enableSubflowInteraction"
-            />
-        </template>
-
-        <template #node-trigger="triggerProps">
-            <TriggerNode
-                v-bind="triggerProps"
-                :icons="icons"
-                :icon-component="iconComponent"
-                :is-read-only="isReadOnly"
-                :is-allowed-edit="isAllowedEdit"
-                @delete="forwardEvent(EVENTS.DELETE, $event)"
-                @edit="forwardEvent(EVENTS.EDIT, $event)"
-                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
-            />
-        </template>
-
-        <template #node-collapsedcluster="CollapsedProps">
-            <CollapsedClusterNode
-                v-bind="CollapsedProps"
-                @expand="expand($event)"
-            />
-        </template>
-
-        <template #edge-edge="EdgeProps">
-            <EdgeNode
-                v-bind="EdgeProps"
-                :yaml-source="source"
-                @add-task="forwardEvent(EVENTS.ADD_TASK, $event)"
-                :is-read-only="isReadOnly"
-                :is-allowed-edit="isAllowedEdit"
-            />
-        </template>
-
-        <Controls :show-interactive="false">
-            <ControlButton @click="forwardEvent('toggle-orientation', $event)" v-if="toggleOrientationButton">
-                <SplitCellsVertical :size="48" v-if="!isHorizontal" />
-                <SplitCellsHorizontal v-if="isHorizontal" />
-            </ControlButton>
-        </Controls>
-    </VueFlow>
-</template>
 
 <style scoped lang="scss">
     :deep(.unused-path) {

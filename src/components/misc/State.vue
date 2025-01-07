@@ -1,3 +1,10 @@
+<template>
+    <div :class="[`text-${color}`]">
+        <component class="icon" :is="stateIcon" fill-color="#ff0000" />
+        <span>{{ stateText }}</span>
+    </div>
+</template>
+
 <script>
     import AlertOctagonOutline from "vue-material-design-icons/AlertOctagonOutline.vue";
     import Check from "vue-material-design-icons/Check.vue";
@@ -42,13 +49,6 @@
         },
     }
 </script>
-
-<template>
-    <div :class="[`text-${color}`]">
-        <component class="icon" :is="stateIcon" fill-color="#ff0000" />
-        <span>{{ stateText }}</span>
-    </div>
-</template>
 
 <style scoped>
     .icon {

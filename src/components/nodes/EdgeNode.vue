@@ -1,3 +1,36 @@
+<template>
+    <path
+        :id="id"
+        :class="classes"
+        :style="data.haveDashArray ?
+            {
+                strokeDasharray: '2',
+            }:
+            {}"
+        :d="path[0]"
+        :marker-end="markerEnd"
+    />
+
+    <EdgeLabelRenderer style="z-index: 10">
+        <div
+            :style="{
+                pointerEvents: 'all',
+                position: 'absolute',
+                transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
+            }"
+        >
+            <tooltip :title="Utils.translate('add task')">
+                <AddTaskButton
+                    v-if="data.haveAdd"
+                    :add-task="true"
+                    @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
+                    :class="{'text-danger': data.color}"
+                />
+            </tooltip>
+        </div>
+    </EdgeLabelRenderer>
+</template>
+
 <script>
     import {computed} from "vue";
     import {EdgeLabelRenderer, getSmoothStepPath} from "@vue-flow/core";
@@ -80,36 +113,3 @@
         inheritAttrs: false,
     };
 </script>
-
-<template>
-    <path
-        :id="id"
-        :class="classes"
-        :style="data.haveDashArray ?
-            {
-                strokeDasharray: '2',
-            }:
-            {}"
-        :d="path[0]"
-        :marker-end="markerEnd"
-    />
-
-    <EdgeLabelRenderer style="z-index: 10">
-        <div
-            :style="{
-                pointerEvents: 'all',
-                position: 'absolute',
-                transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
-            }"
-        >
-            <tooltip :title="Utils.translate('add task')">
-                <AddTaskButton
-                    v-if="data.haveAdd"
-                    :add-task="true"
-                    @click="$emit(EVENTS.ADD_TASK, data.haveAdd)"
-                    :class="{'text-danger': data.color}"
-                />
-            </tooltip>
-        </div>
-    </EdgeLabelRenderer>
-</template>
