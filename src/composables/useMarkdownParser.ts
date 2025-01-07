@@ -1,4 +1,5 @@
-import {createMarkdownParser, createShikiHighlighter, rehypeHighlight,} from "@nuxtjs/mdc/runtime";
+import {createMarkdownParser, createShikiHighlighter, rehypeHighlight} from "@nuxtjs/mdc/runtime";
+import type {MDCParserResult} from "@nuxtjs/mdc";
 import GithubLight from "shiki/themes/github-light.mjs";
 import GithubDark from "shiki/themes/github-dark.mjs";
 import Bash from "shiki/langs/bash.mjs";
@@ -30,43 +31,48 @@ import Typescript from "shiki/langs/typescript.mjs";
 import Xml from "shiki/langs/xml.mjs";
 import Yaml from "shiki/langs/yaml.mjs";
 
-export default function useMarkdownParser() {
-    let parser;
 
-    return async (markdown) => {
+const langsMap: Record<string, any> = {
+    bash: Bash,
+    c: C,
+    cpp: Cpp,
+    csv: Csv,
+    dockerfile: Dockerfile,
+    go: Go,
+    groovy: Groovy,
+    handlebars: Handlebars,
+    hcl: Hcl,
+    ini: Ini,
+    java: Java,
+    javascript: Javascript,
+    json: Json,
+    markdown: Markdown,
+    mermaid: Mermaid,
+    perl: Perl,
+    php: Php,
+    python: Python,
+    r: R,
+    ruby: Ruby,
+    rust: Rust,
+    scala: Scala,
+    sql: Sql,
+    systemd: Systemd,
+    twig: Twig,
+    typescript: Typescript,
+    xml: Xml,
+    yaml: Yaml,
+};
+
+export type MDParser = (md: string) => Promise<MDCParserResult>
+
+export default function useMarkdownParser() {
+    let parser: MDParser;
+
+    return async (markdown:string) => {
         if (!parser) {
             const {bundledLanguagesInfo} = await import("shiki/langs");
 
-            const langsMap = {
-                bash: Bash,
-                c: C,
-                cpp: Cpp,
-                csv: Csv,
-                dockerfile: Dockerfile,
-                go: Go,
-                groovy: Groovy,
-                handlebars: Handlebars,
-                hcl: Hcl,
-                ini: Ini,
-                java: Java,
-                javascript: Javascript,
-                json: Json,
-                markdown: Markdown,
-                mermaid: Mermaid,
-                perl: Perl,
-                php: Php,
-                python: Python,
-                r: R,
-                ruby: Ruby,
-                rust: Rust,
-                scala: Scala,
-                sql: Sql,
-                systemd: Systemd,
-                twig: Twig,
-                typescript: Typescript,
-                xml: Xml,
-                yaml: Yaml,
-            };
+            
             Object.entries(langsMap).forEach(([langId, lang]) => {
                 const info = bundledLanguagesInfo.find(i => i.aliases?.includes?.(langId) || i.id === langId);
                 if (!info) {

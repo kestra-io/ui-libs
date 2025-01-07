@@ -23,6 +23,7 @@
     "debug": "vite --debug",
     "preview": "vite preview",
     "build": "vite build",
+    "build:types": "vue-tsc --project ./tsconfig.build.json",
     "lint": "eslint --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -62,7 +63,8 @@
     "storybook": "^8.4.7",
     "typescript-eslint": "^8.19.1",
     "vite": "^5.4.5",
-    "vite-plugin-static-copy": "^2.0.0"
+    "vite-plugin-static-copy": "^2.0.0",
+    "vue-tsc": "^2.2.0"
   },
   "dependencies": {
     "@nuxtjs/mdc": "^0.9.0",
