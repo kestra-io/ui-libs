@@ -21,7 +21,7 @@ jobs:
         id: vars
         run: |
           VERSION=${GITHUB_REF#refs/*/}
-          npm version '$VERSION'
+          npm version '$VERSION' --no-git-tag-version
 
       - name: Install dependencies
         run: npm install
