@@ -4,9 +4,9 @@
     </div>
 </template>
 
-<script setup>
-    import mermaid from "mermaid/dist/mermaid.esm.mjs";
+<script setup lang="ts">
     import {nextTick, onMounted, ref} from "vue";
+    import mermaid from "mermaid";
 
     let show = ref(false);
 

@@ -28,27 +28,16 @@
         </table>
     </div>
 </template>
-<script>
-    import {defineComponent} from "vue";
+<script setup lang="ts">
     import ProseCode from "./ProseCode.vue";
 
-    export default defineComponent({
-        components: {ProseCode},
-        props: {
-            type: {
-                type: String,
-                default: undefined,
-                required: true
-            },
-            defaultValue: {
-                type: [String, Boolean, Number, Array, Object],
-                default: ""
-            },
-            validValues: {
-                type: String,
-                default: ""
-            },
-        },
+    withDefaults(defineProps<{
+        type: string,
+        defaultValue?: string | boolean | number | string[] | any,
+        validValues?: string
+    }>(), {
+        defaultValue: "",
+        validValues: ""
     });
 </script>
 
