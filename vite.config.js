@@ -1,6 +1,7 @@
 import {resolve} from "path"
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import {viteStaticCopy} from "vite-plugin-static-copy";
 import * as sass from "sass";
 
@@ -42,6 +43,7 @@ export default defineConfig({
     },
     plugins: [
         vue(),
+        vueJsx(),
         viteStaticCopy({
             targets: [
                 {src: "src/scss/_variables.scss", dest: ""},

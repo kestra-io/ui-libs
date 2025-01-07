@@ -1,4 +1,5 @@
 import globals from "globals";
+import storybook from "eslint-plugin-storybook"
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginVue from "eslint-plugin-vue";
@@ -13,6 +14,7 @@ const gitignorePath = path.resolve(__dirname, ".gitignore");
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     includeIgnoreFile(gitignorePath),
+    ...storybook.configs["flat/recommended"],
     {
         files: ["**/*.{js,mjs,cjs,ts,vue}"],
         ignores: ["node_modules", "node"],
