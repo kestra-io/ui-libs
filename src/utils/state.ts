@@ -8,7 +8,16 @@ import SkipPreviousCircle from "vue-material-design-icons/SkipPreviousCircle.vue
 import AlertCircle from "vue-material-design-icons/AlertCircle.vue";
 import DotsVerticalCircle from "vue-material-design-icons/DotsVerticalCircle.vue";
 
-const STATE = Object.freeze({
+interface StateModel {
+    name: string;
+    colorClass: string;
+    icon: any;
+    isRunning: boolean;
+    isKillable: boolean;
+    isFailed: boolean;
+}
+
+const STATE:Record<string, StateModel> = Object.freeze({
     CREATED: {
         name: "CREATED",
         colorClass: "cyan",
@@ -120,24 +129,24 @@ export default class State {
         return STATE.PAUSED.name;
     }
 
-    static isRunning(state) {
+    static isRunning(state:string) {
         return STATE[state] && STATE[state].isRunning;
     }
 
-    static isKillable(state) {
+    static isKillable(state:string) {
         return STATE[state] && STATE[state].isKillable;
     }
 
-    static isPaused(state) {
+    static isPaused(state:string) {
         return STATE[state] && STATE[state] === STATE.PAUSED;
     }
 
-    static isFailed(state) {
+    static isFailed(state:string) {
         return STATE[state] && STATE[state].isFailed;
     }
 
     static allStates() {
-        return mapValues(STATE, state => {
+        return mapValues(STATE, (state:StateModel) => {
             return {
                 key: state.name,
                 icon: state.icon,
@@ -151,7 +160,7 @@ export default class State {
     }
 
     static colorClass() {
-        return mapValues(STATE, state => state.colorClass);
+        return mapValues(STATE, (state: StateModel) => state.colorClass);
     }
 
     static color() {
@@ -159,6 +168,6 @@ export default class State {
     }
 
     static icon() {
-        return mapValues(STATE, state => state.icon);
+        return mapValues(STATE, (state:StateModel) => state.icon);
     }
 }
