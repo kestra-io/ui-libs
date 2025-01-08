@@ -1,12 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "dist",
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationMap": true,
     "sourceMap": true,
-    "noEmit": false,
-    "incremental": true
+    "noEmit": false
   },
   "include": [
     "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue",

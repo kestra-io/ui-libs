@@ -1,4 +1,4 @@
-import {resolve} from "path"
+import * as path from "path"
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
@@ -9,7 +9,7 @@ export default defineConfig({
     build: {
         sourcemap: true,
         lib: {
-            entry: resolve(__dirname, "src/index.js"),
+            entry: path.resolve(__dirname, "src/index.ts"),
             name: "KestraUI",
             fileName: "kestra-ui",
         },
@@ -44,18 +44,20 @@ export default defineConfig({
     plugins: [
         vue(),
         vueJsx(),
-        viteStaticCopy({
-            targets: [
-                {src: "src/scss/_variables.scss", dest: ""},
-                {src: "src/scss/_theme-dark.scss", dest: ""}
-            ]
-        })
     ],
     css: {
         preprocessorOptions: {
             scss: {
                 logger: sass.Logger.silent
             },
+        }
+    },
+    resolve: {
+        alias: {
+            "#imports": path.resolve(__dirname, "./stub-mdc-imports.js"),
+            "#build/mdc-image-component.mjs": path.resolve(__dirname, "./stub-mdc-imports.js"),
+            "#mdc-imports": path.resolve(__dirname, "./stub-mdc-imports.js"),
+            "#mdc-configs": path.resolve(__dirname, "./stub-mdc-imports.js"),
         }
     }
 })

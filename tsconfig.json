@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -15,14 +14,12 @@
     "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "outDir": "dist",
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
   },
   "include": [
     ".storybook/*.*",
