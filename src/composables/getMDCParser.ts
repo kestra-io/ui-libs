@@ -2,7 +2,7 @@ import type {MDParser} from "./useMarkdownParser"
 
 let parser:MDParser
 
-export default async function useMarkdownParserAsync() {
+export default async function getMDCParser() {
     if(parser){
         return parser
     }

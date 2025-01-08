@@ -1,22 +1,19 @@
 // nodes
-import DependenciesNode from "./nodes/DependenciesNode.vue"
+export {default as DependenciesNode} from "./nodes/DependenciesNode.vue"
 
 // Topology Component
-import Topology from "./topology/Topology.vue";
+export {default as Topology} from "./topology/Topology.vue";
 
 // misc
-import ExecutionInformations from "./misc/ExecutionInformations.vue";
-import State from "./misc/State.vue";
-import TaskIcon from "./misc/TaskIcon.vue";
+export {default as ExecutionInformations} from "./misc/ExecutionInformations.vue";
+export {default as State} from "./misc/State.vue";
+export {default as TaskIcon} from "./misc/TaskIcon.vue";
 
 // buttons
-import AddTaskButton from "./buttons/AddTaskButton.vue";
+export {default as AddTaskButton} from "./buttons/AddTaskButton.vue";
 
 // plugins
-import SchemaToHtml from "./plugins/SchemaToHtml.vue";
+export {default as SchemaToHtml} from "./plugins/SchemaToHtml.vue";
 
-export {DependenciesNode};
-export {Topology}
-export {ExecutionInformations, State, TaskIcon};
-export {AddTaskButton};
-export {SchemaToHtml};
+// content
+export {default as MDCRenderer} from "./content/MDCRenderer.vue";
