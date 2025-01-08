@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
     defineProps<{
-        type?: 'info' | 'warning' | 'danger' | 'success'
+        type?: "info" | "warning" | "danger" | "success"
     }>();
 
     defineOptions({

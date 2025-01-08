@@ -1,52 +1,50 @@
 <template>
-    <span ref="tooltip" v-bind="$attrs">
+    <span ref="$tooltip" v-bind="$attrs">
         <slot name="default" />
     </span>
-    <span class="d-none" ref="tooltipContent">
+    <span class="d-none" ref="$tooltipContent">
         <slot name="content">
             {{ title }}
         </slot>
     </span>
 </template>
-<script>
+
+<script lang="ts" setup>
+    import {onBeforeUnmount, onMounted, ref} from "vue";
+    import type * as Bootstrap from "bootstrap"
+
     // conditional import is required for website not to crash due to
     // bootstrap launching some init upon import that is incompatible with SSR
-    let bootstrap;
+    let bootstrap: Promise<typeof Bootstrap>;
     if (typeof document !== "undefined") {
         bootstrap = import("bootstrap");
     }
 
-    export default {
-        props: {
-            title: {
-                type: String,
-                default: undefined
-            },
-            placement: {
-                type: String,
-                default: "top"
-            },
-        },
-        data() {
-            return {
-                tooltip: undefined
-            }
-        },
-        async mounted() {
-            if (typeof document !== "undefined") {
-                this.tooltip = new (await bootstrap).Tooltip(this.$refs.tooltip, {
-                    trigger: "hover",
-                    html: true,
-                    placement: this.placement,
-                    title: this.$refs.tooltipContent.innerHTML,
-                    customClass: "tooltip-custom"
-                })
-            }
-        },
-        async beforeUnmount() {
-            this.tooltip?.dispose();
+    const props = defineProps<{
+        title?: string;
+        placement?: "top" | "right" | "bottom" | "left"
+    }>()
+        
+    const tooltip = ref()
+    const $tooltip = ref()
+    const $tooltipContent = ref()
+        
+    onMounted(async () => {
+        if (typeof document !== "undefined") {
+            tooltip.value = new (await bootstrap).Tooltip($tooltip.value, {
+                trigger: "hover",
+                html: true,
+                placement: props.placement,
+                title: $tooltipContent.value.innerHTML,
+                customClass: "tooltip-custom"
+            })
         }
-    }
+    })
+
+    onBeforeUnmount(async () => {
+        tooltip.value?.dispose();
+    })
+    
 </script>
 
 <style lang="scss">

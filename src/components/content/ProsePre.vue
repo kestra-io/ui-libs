@@ -29,54 +29,54 @@
 
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
-    import { nextTick, Ref, ref} from "vue";
+    import {nextTick, Ref, ref} from "vue";
     import Mermaid from "./Mermaid.vue";
 
     const props = defineProps<{
-            code:string,
-            language: string,
-            filename: string,
-            highlights:string,
-            meta:string,
+        code:string,
+        language: string,
+        filename: string,
+        highlights:string,
+        meta:string,
     }>()
 
-        const icons = {
-                    ContentCopy,
-                    Check
-                }
+    const icons = {
+        ContentCopy,
+        Check
+    }
 
-        const copyIcon = ref(icons.ContentCopy)
-        const copyIconResetTimer = ref()
-        const isHoveringCode = ref(false)
+    const copyIcon = ref(icons.ContentCopy)
+    const copyIconResetTimer = ref()
+    const isHoveringCode = ref(false)
 
-        const copyButton: Ref<HTMLButtonElement | undefined> = ref()
-            const copyTooltip: Ref<HTMLElement | undefined> = ref()
+    const copyButton: Ref<HTMLButtonElement | undefined> = ref()
+    const copyTooltip: Ref<HTMLElement | undefined> = ref()
 
 
-            function hoverCode(){
-                isHoveringCode.value = true;
-                if(copyIconResetTimer.value) {
-                    nextTick(() => {
-                        if(copyButton.value && copyTooltip.value){
-                            createPopper(copyButton.value, copyTooltip.value, {
-                            placement: "left",
-                        });
-                        }
+    function hoverCode(){
+        isHoveringCode.value = true;
+        if(copyIconResetTimer.value) {
+            nextTick(() => {
+                if(copyButton.value && copyTooltip.value){
+                    createPopper(copyButton.value, copyTooltip.value, {
+                        placement: "left",
                     });
                 }
-            }
-            function copyToClipboard() {
-                clearTimeout(copyIconResetTimer.value);
+            });
+        }
+    }
+    function copyToClipboard() {
+        clearTimeout(copyIconResetTimer.value);
 
-                navigator.clipboard.writeText(props.code.trimEnd())
+        navigator.clipboard.writeText(props.code.trimEnd())
 
-                copyIcon.value = icons.Check;
+        copyIcon.value = icons.Check;
 
-                copyIconResetTimer.value = setTimeout(() => {
-                    copyIcon.value = icons.ContentCopy;
-                    copyIconResetTimer.value = undefined;
-                }, 2000)
-            }
+        copyIconResetTimer.value = setTimeout(() => {
+            copyIcon.value = icons.ContentCopy;
+            copyIconResetTimer.value = undefined;
+        }, 2000)
+    }
         
 </script>
 

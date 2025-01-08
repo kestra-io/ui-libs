@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue"
+    import {ref} from "vue"
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue"
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue"
 

@@ -10,10 +10,10 @@ import yaml, {
   LineCounter,
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep.js";
-import { SECTIONS } from "./constants.js";
+import {SECTIONS} from "./constants.js";
 
 
-const TOSTRING_OPTIONS = { lineWidth: 0 };
+const TOSTRING_OPTIONS = {lineWidth: 0};
 
 export const YamlUtils = {
   stringify(value:any) {
@@ -28,7 +28,7 @@ export const YamlUtils = {
     return JsYaml.dump(this._transform(cloneDeep(value)), {
       lineWidth: -1,
       noCompatMode: true,
-      quotingType: '"',
+      quotingType: "\"",
     });
   },
 
@@ -38,13 +38,13 @@ export const YamlUtils = {
 
   extractTask(source:string, taskId:string) {
     const yamlDoc = yaml.parseDocument(source);
-    let taskNode = this._extractTask(yamlDoc, taskId);
+    const taskNode = this._extractTask(yamlDoc, taskId);
     return taskNode === undefined
       ? undefined
       : new yaml.Document(taskNode).toString(TOSTRING_OPTIONS);
   },
 
-  _extractTask(yamlDoc:ReturnType<typeof yaml.parseDocument>, taskId:string, callback?:Function) {
+  _extractTask(yamlDoc:ReturnType<typeof yaml.parseDocument>, taskId:string, callback?:(element: yaml.YAMLMap<any, any>) => void) {
     function find(element?: any):any {
       if (!element) {
         return;
@@ -81,7 +81,7 @@ export const YamlUtils = {
       }
     };
 
-    let result = find(yamlDoc.contents);
+    const result = find(yamlDoc.contents);
 
     if (result === undefined) {
       return undefined;
@@ -183,9 +183,9 @@ export const YamlUtils = {
     const types:{type:string, range: any}[] = [];
     if (
       yamlDoc.contents &&
-      'items' in yamlDoc.contents &&
+      "items" in yamlDoc.contents &&
       yamlDoc.contents.items.find((e) =>
-        'key' in e && 'value' in e.key && ["tasks", "triggers", "errors", "layout"].includes(e.key.value as string)
+        "key" in e && "value" in e.key && ["tasks", "triggers", "errors", "layout"].includes(e.key.value as string)
       )
     ) {
       yaml.visit(yamlDoc, {
@@ -194,7 +194,7 @@ export const YamlUtils = {
             for (const item of map.items as any[]) {
               if (item.key.value === "type") {
                 const type = item.value?.value;
-                types.push({ type, range: map.range });
+                types.push({type, range: map.range});
               }
             }
           }
@@ -207,7 +207,7 @@ export const YamlUtils = {
   getTaskType(source:string, position:{lineNumber:number, column:number}) {
     const types = this.extractAllTypes(source);
     const lineCounter = new LineCounter();
-    yaml.parseDocument(source, { lineCounter });
+    yaml.parseDocument(source, {lineCounter});
     const cursorIndex =
       lineCounter.lineStarts[position.lineNumber - 1] + position.column;
 
@@ -236,7 +236,7 @@ export const YamlUtils = {
         ) {
           throw {
             message: "dependency task",
-            messageOptions: { taskId: taskId2 },
+            messageOptions: {taskId: taskId2},
           };
         }
       },
@@ -419,7 +419,7 @@ export const YamlUtils = {
   },
 
   getFirstTask(source:string):string | undefined {
-    let parse = this.parse(source) as any;
+    const parse = this.parse(source) as any;
 
     return parse?.tasks?.[0]?.id;
   },

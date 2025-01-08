@@ -1,8 +1,8 @@
-import { GraphNode, GraphEdge, MarkerType, Position, useVueFlow } from "@vue-flow/core";
+import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow} from "@vue-flow/core";
 import dagre from "dagre";
-import { YamlUtils } from "./YamlUtils";
+import {YamlUtils} from "./YamlUtils";
 import Utils from "./Utils";
-import { CLUSTER_PREFIX, NODE_SIZES } from "./constants";
+import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
 
 const TRIGGERS_NODE_UID = "root.Triggers";
 
@@ -38,14 +38,14 @@ type EdgeReplacer = Record<string, string>
 
 export default {
   predecessorsEdge(vueFlowId:string, nodeUid: string): GraphEdge[] {
-    const { getEdges } = useVueFlow(vueFlowId);
+    const {getEdges} = useVueFlow(vueFlowId);
 
-    let nodes = [];
+    const nodes = [];
 
     for (const edge of getEdges.value) {
       if (edge.target === nodeUid) {
         nodes.push(edge);
-        let recursiveEdge = this.predecessorsEdge(vueFlowId, edge.source);
+        const recursiveEdge = this.predecessorsEdge(vueFlowId, edge.source);
         if (recursiveEdge.length > 0) {
           nodes.push(...recursiveEdge);
         }
@@ -56,14 +56,14 @@ export default {
   },
 
   successorsEdge(vueFlowId:string, nodeUid:string):GraphEdge[] {
-    const { getEdges } = useVueFlow(vueFlowId);
+    const {getEdges} = useVueFlow(vueFlowId);
 
-    let nodes = [];
+    const nodes = [];
 
     for (const edge of getEdges.value) {
       if (edge.source === nodeUid) {
         nodes.push(edge);
-        let recursiveEdge = this.successorsEdge(vueFlowId, edge.target);
+        const recursiveEdge = this.successorsEdge(vueFlowId, edge.target);
         if (recursiveEdge.length > 0) {
           nodes.push(...recursiveEdge);
         }
@@ -74,15 +74,15 @@ export default {
   },
 
   predecessorsNode(vueFlowId:string, nodeUid:string): (GraphEdge | GraphNode)[] {
-    const { getEdges, findNode } = useVueFlow(vueFlowId);
+    const {getEdges, findNode} = useVueFlow(vueFlowId);
 
     const foundNode = findNode(nodeUid)
-    let nodes: (GraphEdge | GraphNode)[] = foundNode ? [foundNode] : [];
+    const nodes: (GraphEdge | GraphNode)[] = foundNode ? [foundNode] : [];
 
     for (const edge of getEdges.value) {
       if (edge.target === nodeUid) {
         nodes.push(edge.sourceNode);
-        let recursiveEdge = this.predecessorsNode(vueFlowId, edge.source);
+        const recursiveEdge = this.predecessorsNode(vueFlowId, edge.source);
         if (recursiveEdge.length > 0) {
           nodes.push(...recursiveEdge);
         }
@@ -93,14 +93,14 @@ export default {
   },
 
   successorsNode(vueFlowId:string, nodeUid:string) {
-    const { getEdges, findNode } = useVueFlow(vueFlowId);
+    const {getEdges, findNode} = useVueFlow(vueFlowId);
 
-    let nodes = [findNode(nodeUid)];
+    const nodes = [findNode(nodeUid)];
 
     for (const edge of getEdges.value) {
       if (edge.source === nodeUid) {
         nodes.push(edge.targetNode);
-        let recursiveEdge = this.successorsNode(vueFlowId, edge.target);
+        const recursiveEdge = this.successorsNode(vueFlowId, edge.target);
         if (recursiveEdge.length > 0) {
           nodes.push(...recursiveEdge);
         }
@@ -128,9 +128,9 @@ export default {
     collapsed: Set<string>,
     clusterToNode: MinimalNode[]
   ) {
-    const dagreGraph = new dagre.graphlib.Graph({ compound: true });
+    const dagreGraph = new dagre.graphlib.Graph({compound: true});
     dagreGraph.setDefaultEdgeLabel(() => ({}));
-    dagreGraph.setGraph({ rankdir: isHorizontal ? "LR" : "TB" });
+    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB"});
 
     for (const node of flowGraph.nodes) {
       if (!hiddenNodes.includes(node.uid)) {
@@ -141,13 +141,13 @@ export default {
       }
     }
 
-    for (let cluster of flowGraph.clusters || []) {
+    for (const cluster of flowGraph.clusters || []) {
       const nodeUid = cluster.cluster.uid.replace(CLUSTER_PREFIX, "");
       if (
         clustersWithoutRootNode.includes(cluster.cluster.uid) &&
         collapsed.has(nodeUid)
       ) {
-        const node = { uid: nodeUid, type: "collapsedcluster" };
+        const node = {uid: nodeUid, type: "collapsedcluster"};
         dagreGraph.setNode(nodeUid, {
           width: this.getNodeWidth(node),
           height: this.getNodeHeight(node),
@@ -156,9 +156,9 @@ export default {
         continue;
       }
       if (!edgeReplacer[cluster.cluster.uid]) {
-        dagreGraph.setNode(cluster.cluster.uid, { clusterLabelPos: "top" });
+        dagreGraph.setNode(cluster.cluster.uid, {clusterLabelPos: "top"});
 
-        for (let node of cluster.nodes || []) {
+        for (const node of cluster.nodes || []) {
           if (!hiddenNodes.includes(node)) {
             dagreGraph.setParent(node, cluster.cluster.uid);
           }
@@ -204,7 +204,7 @@ export default {
     width: number;
     height: number; 
 }) {
-    const position = { x: n.x - n.width / 2, y: n.y - n.height / 2 };
+    const position = {x: n.x - n.width / 2, y: n.y - n.height / 2};
 
     // bug with parent node,
     if (parent) {
@@ -254,7 +254,7 @@ export default {
     ) {
       return null;
     }
-    return { target: newTarget, source: newSource };
+    return {target: newTarget, source: newSource};
   },
 
   cleanGraph(vueflowId:string) {
@@ -416,7 +416,7 @@ export default {
       elements.push({
         id: "start",
         type: "dot",
-        position: { x: 0, y: 0 },
+        position: {x: 0, y: 0},
         style: {
           width: "5px",
           height: "5px",
@@ -429,7 +429,7 @@ export default {
       elements.push({
         id: "end",
         type: "dot",
-        position: isHorizontal ? { x: 50, y: 0 } : { x: 0, y: 50 },
+        position: isHorizontal ? {x: 50, y: 0} : {x: 0, y: 50},
         style: {
           width: "5px",
           height: "5px",
@@ -479,7 +479,7 @@ export default {
     const nodeByUid = Object.fromEntries(
       flowGraph.nodes.concat(clusterToNode).map((node) => [node.uid, node])
     );
-    for (let cluster of clusters) {
+    for (const cluster of clusters) {
       if (
         !edgeReplacer[cluster.cluster.uid] &&
         !collapsed.has(cluster.cluster.uid)
@@ -491,7 +491,7 @@ export default {
           readOnlyUidPrefixes.push(cluster.cluster.taskNode.uid);
         }
 
-        for (let nodeUid of cluster.nodes) {
+        for (const nodeUid of cluster.nodes) {
           clusterByNodeUid[nodeUid] = cluster.cluster;
         }
 
