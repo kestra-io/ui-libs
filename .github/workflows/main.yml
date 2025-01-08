@@ -26,14 +26,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Publish to npm
+      - name: Build
         run: |
           npm run build
           npm run build:types
-          npm publish --access public
+          
+      - name: Publish
+        run: |
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+          
       # Slack
       - name: Slack notification
         uses: 8398a7/action-slack@v3
