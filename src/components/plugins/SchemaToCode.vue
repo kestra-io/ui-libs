@@ -1,9 +1,9 @@
 <template>
     <div class="code-block mb-3" @mouseover="hoverCode" @mouseleave="isHoveringCode = false">
-        <div class="language" v-if="language">
+        <div class="language" v-if="language && showLang">
             {{ language }}
         </div>
-        <template v-if="isHoveringCode">
+        <template v-if="isHoveringCode && copyable">
             <button ref="copyButton" class="copy">
                 <component
                     :is="copyIcon"
@@ -15,7 +15,7 @@
                 <div id="arrow" data-popper-arrow />
             </div>
         </template>
-        <div v-html="codeData" />
+        <div style="{font-size: .875rem}" v-html="codeData" />
     </div>
 </template>
 
@@ -38,6 +38,8 @@
             filename?: string | null
             highlights?: string[]
             meta?: string | null
+            showLang?: boolean
+            copyable?: boolean
         }>(), {
             code: "",
             language: null,
