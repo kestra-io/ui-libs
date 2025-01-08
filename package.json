@@ -17,7 +17,7 @@
       },
       "require": "./dist/kestra-ui.umd.cjs"
     },
-    "./style.css": "./dist/style.css",
+    "./style.css": "./dist/kestra-ui.css",
     "./src/*": "./src/*"
   },
   "scripts": {

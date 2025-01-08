@@ -76,7 +76,7 @@ function makePalettes(palette, paletteName, selector) {
     const {tokenScss, cssVariableNames} = getVariableScss(palette.filter(c => !c.name.startsWith("base-color-palette/")), colorIndex)
 
     // write the scss file containing colors in the token palette
-    fs.writeFileSync(path.resolve(__dirname, `../src/scss/theme-${paletteName}.scss`), `@import "./color-palette.scss";\n\n${selector}{\n\t${tokenScss}\n}`, {encoding: "utf-8"})
+    fs.writeFileSync(path.resolve(__dirname, `../src/scss/ks-theme-${paletteName}.scss`), `@import "./color-palette.scss";\n\n${selector}{\n\t${tokenScss}\n}`, {encoding: "utf-8"})
 
     // write the css variables into an index for theme documentation
     // NOTE: we assume that all themes will have the same variables and write the same file over and over
