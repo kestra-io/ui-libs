@@ -23,7 +23,7 @@
                 :class="[`bg-warning`]"
                 @click="$emit(EVENTS.SHOW_CONDITION, {id: taskId, task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('show task condition')">
+                <tooltip :title="$t('show task condition')">
                     <SendLock class="button-icon" alt="Show condition" />
                 </tooltip>
             </span>
@@ -33,7 +33,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.SHOW_LOGS, {id: taskId, execution: taskExecution, taskRuns})"
             >
-                <tooltip :title="Utils.translate('show task logs')">
+                <tooltip :title="$t('show task logs')">
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
@@ -43,7 +43,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.ADD_ERROR, {task: data.node.task})"
             >
-                <tooltip :title="Utils.translate('add error handler')">
+                <tooltip :title="$t('add error handler')">
                     <AlertOutline class="button-icon" alt="Add error handler" />
                 </tooltip>
             </span>
@@ -53,7 +53,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.task, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('edit')">
+                <tooltip :title="$t('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
@@ -63,7 +63,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id: taskId, section: SECTIONS.TASKS})"
             >
-                <tooltip :title="Utils.translate('delete')">
+                <tooltip :title="$t('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>
@@ -76,8 +76,8 @@
 </script>
 <script>
     import {Handle} from "@vue-flow/core";
-    import State from "../../utils/state.js";
-    import {EVENTS, SECTIONS} from "../../utils/constants.js";
+    import State from "../../utils/state";
+    import {EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
@@ -86,7 +86,7 @@
     import SendLock from "vue-material-design-icons/SendLock.vue"
     import {mapGetters, mapState} from "vuex";
     import Tooltip from "../misc/Tooltip.vue"
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         name: "Task",

@@ -1,76 +1,3 @@
-<script>
-    import {createPopper} from "@popperjs/core";
-
-    import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
-    import Check from "vue-material-design-icons/Check.vue";
-    import {defineComponent, nextTick, shallowRef} from "vue";
-    import Mermaid from "./Mermaid.vue";
-
-    export default defineComponent({
-        components: {Mermaid},
-        props: {
-            code: {
-                type: String,
-                default: ""
-            },
-            language: {
-                type: String,
-                default: null
-            },
-            filename: {
-                type: String,
-                default: null
-            },
-            highlights: {
-                type: Array,
-                default: () => []
-            },
-            meta: {
-                type: String,
-                default: null
-            }
-        },
-        data() {
-            return {
-                icons: shallowRef({
-                    ContentCopy: shallowRef(ContentCopy),
-                    Check: shallowRef(Check)
-                }),
-                copyIcon: undefined,
-                copyIconResetTimer: undefined,
-                isHoveringCode: false
-            }
-        },
-        created() {
-            this.copyIcon = this.icons.ContentCopy;
-        },
-        methods: {
-            hoverCode(){
-                this.isHoveringCode = true;
-                if(this.copyIconResetTimer) {
-                    nextTick(() => {
-                        createPopper(this.$refs.copyButton, this.$refs.copyTooltip, {
-                            placement: "left",
-                        });
-                    });
-                }
-            },
-            copyToClipboard() {
-                clearTimeout(this.copyIconResetTimer);
-
-                navigator.clipboard.writeText(this.code.trimEnd())
-
-                this.copyIcon = this.icons.Check;
-
-                this.copyIconResetTimer = setTimeout(() => {
-                    this.copyIcon = this.icons.ContentCopy;
-                    this.copyIconResetTimer = undefined;
-                }, 2000)
-            }
-        }
-    });
-</script>
-
 <template>
     <template v-if="language === 'mermaid'">
         <Mermaid>
@@ -96,6 +23,62 @@
         <slot />
     </div>
 </template>
+
+<script setup lang="ts">
+    import {createPopper} from "@popperjs/core";
+
+    import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
+    import Check from "vue-material-design-icons/Check.vue";
+    import {nextTick, Ref, ref} from "vue";
+    import Mermaid from "./Mermaid.vue";
+
+    const props = defineProps<{
+        code:string,
+        language: string,
+        filename: string,
+        highlights:string,
+        meta:string,
+    }>()
+
+    const icons = {
+        ContentCopy,
+        Check
+    }
+
+    const copyIcon = ref(icons.ContentCopy)
+    const copyIconResetTimer = ref()
+    const isHoveringCode = ref(false)
+
+    const copyButton: Ref<HTMLButtonElement | undefined> = ref()
+    const copyTooltip: Ref<HTMLElement | undefined> = ref()
+
+
+    function hoverCode(){
+        isHoveringCode.value = true;
+        if(copyIconResetTimer.value) {
+            nextTick(() => {
+                if(copyButton.value && copyTooltip.value){
+                    createPopper(copyButton.value, copyTooltip.value, {
+                        placement: "left",
+                    });
+                }
+            });
+        }
+    }
+    function copyToClipboard() {
+        clearTimeout(copyIconResetTimer.value);
+
+        navigator.clipboard.writeText(props.code.trimEnd())
+
+        copyIcon.value = icons.Check;
+
+        copyIconResetTimer.value = setTimeout(() => {
+            copyIcon.value = icons.ContentCopy;
+            copyIconResetTimer.value = undefined;
+        }, 2000)
+    }
+        
+</script>
 
 <style lang="scss" scoped>
     @import "../../scss/variables";

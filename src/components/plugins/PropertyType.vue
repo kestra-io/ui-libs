@@ -53,15 +53,39 @@
     </li>
 </template>
 
-<script setup>
-    defineProps({
-        property: {
-            type: Object,
-            required: true,
-        }
-    });
+<script setup lang="ts">
 
-    const generateTaskHref = (href) => {
+    export interface JSONProperty {
+        type:string;
+        $dynamic?: boolean;
+        $ref?:string;
+        $required?:boolean;
+        $beta?: boolean;
+        $deprecated?: boolean;
+        oneOf?:JSONProperty[];
+        items?: JSONProperty;
+        additionalProperties?:JSONProperty;
+        title?:string;
+        description?:string;
+        default?:string;
+        pattern?:string;
+        minLength?:number;
+        maxLength?:number;
+        minItems?:number;
+        maxItems?:number;
+        minimum?:number;
+        exclusiveMinimum?:number;
+        maximum?:number;
+        exclusiveMaximum?:number;
+        format?:string;
+        enum?: string[];
+    }
+
+    defineProps<{
+        property:JSONProperty
+    }>();
+
+    const generateTaskHref = (href:string) => {
         if (href) {
             const taskHref = href?.split("/");
             return `#${taskHref[taskHref?.length - 1]}`;

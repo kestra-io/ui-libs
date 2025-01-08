@@ -1,23 +1,18 @@
-<script>
-    import Plus from "vue-material-design-icons/Plus.vue";
-
-    export default {
-        name: "AddTaskButton",
-        components: {Plus},
-        props: {
-            addTask: {
-                type: Boolean,
-                default: false
-            },
-        }
-    }
-</script>
-
 <template>
     <div class="add-task-div rounded d-flex justify-content-center align-items-center">
         <Plus v-if="addTask" alt="add task icon" />
     </div>
 </template>
+
+<script setup lang="ts">
+    import Plus from "vue-material-design-icons/Plus.vue";
+
+    defineOptions({
+        name: "AddTaskButton",
+    })
+      
+    defineProps<{addTask?: boolean}>()
+</script>
 
 <style scoped lang="scss">
     @import "../../scss/variables";

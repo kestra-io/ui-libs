@@ -4,16 +4,14 @@
     </div>
 </template>
 
-<script>
-    export default {
-        components: {},
-        props: {
-            type: {
-                type: String,
-                required: true
-            },
-        },
-    }
+<script setup lang="ts">
+    defineProps<{
+        type?: "info" | "warning" | "danger" | "success"
+    }>();
+
+    defineOptions({
+        name: "Alert",
+    });
 </script>
 
 <style lang="scss" scoped>

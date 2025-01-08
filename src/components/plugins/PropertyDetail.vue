@@ -88,32 +88,25 @@
     </div>
 </template>
 
-<script setup>
-    import PropertyType from "./PropertyType.vue";
+<script setup lang="ts">
+    import PropertyType, {type JSONProperty} from "./PropertyType.vue";
 
-    defineProps({
-        property: {
-            type: Object,
-            required: true,
-        },
-        textSanitizer: {
-            type: Function,
-            required: false,
-            default: (text) => text
-        },
-        showDynamic: {
-            type: Boolean,
-            required: false,
-            default: true
-        }
-    });
+    withDefaults(
+        defineProps<{
+            property: JSONProperty,
+            textSanitizer?: (text:string) => string
+            showDynamic?: boolean
+        }>(), {
+            textSanitizer: (text:string) => text,
+            showDynamic: true
+        })
 
-    function dynamicText(property) {
+    function dynamicText(property: JSONProperty) {
         if (property["$dynamic"] === true) {
             return "✔️";
         }
 
-        if (property["$dynamic"] === true) {
+        if (property["$dynamic"] === false) {
             return "❌";
         }
 
@@ -124,7 +117,7 @@
         return "❌";
     }
 
-    function requiredText(property) {
+    function requiredText(property: JSONProperty) {
         if (property["$required"] === true) {
             return "✔️";
         }

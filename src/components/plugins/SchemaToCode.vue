@@ -19,92 +19,71 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
+    import {nextTick, ref} from "vue";
     import {createPopper} from "@popperjs/core";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
-    import {defineComponent, nextTick, shallowRef} from "vue";
 
-    export default defineComponent({
-        props: {
-            highlighter: {
-                type: Object,
-                required: true
-            },
-            code: {
-                type: String,
-                default: ""
-            },
-            language: {
-                type: String,
-                default: null
-            },
-            filename: {
-                type: String,
-                default: null
-            },
-            highlights: {
-                type: Array,
-                default: () => []
-            },
-            meta: {
-                type: String,
-                default: null
-            },
-            showLang: {
-                type: Boolean,
-                default: false
-            },
-            copyable: {
-                type: Boolean,
-                default: false
-            }
-        },
-        data() {
-            return {
-                icons: shallowRef({
-                    ContentCopy: shallowRef(ContentCopy),
-                    Check: shallowRef(Check)
-                }),
-                copyIcon: undefined,
-                copyIconResetTimer: undefined,
-                isHoveringCode: false,
-                codeData: null,
-            }
-        },
-        async created() {
-            this.copyIcon = this.icons.ContentCopy;
+    const icons = {
+        ContentCopy,
+        Check
+    } as const
 
-            this.codeData = this.highlighter.codeToHtml(this.code, {
-                lang: this.language,
-                theme: "github-dark",
-            });
-        },
-        methods: {
-            hoverCode(){
-                this.isHoveringCode = true;
-                if(this.copyIconResetTimer) {
-                    nextTick(() => {
-                        createPopper(this.$refs.copyButton, this.$refs.copyTooltip, {
-                            placement: "left",
-                        });
+    const props = withDefaults(
+        defineProps<{
+            highlighter: any;
+            code?: string;
+            language?: string | null
+            filename?: string | null
+            highlights?: string[]
+            meta?: string | null
+            showLang?: boolean
+            copyable?: boolean
+        }>(), {
+            code: "",
+            language: null,
+            filename: null,
+            highlights: () => [],
+            meta: null
+        })
+
+    const isHoveringCode = ref(false)
+    const copyIconResetTimer = ref()
+    const copyIcon = ref(icons.ContentCopy)
+    const copyButton = ref<HTMLButtonElement>()
+    const copyTooltip = ref<HTMLDivElement>()
+
+    const codeData = ref(props.highlighter.codeToHtml(props.code, {
+        lang: props.language,
+        theme: "github-dark",
+    }))
+
+    function hoverCode(){
+        isHoveringCode.value = true;
+        if(copyIconResetTimer.value) {
+            nextTick(() => {
+                if(copyButton.value && copyTooltip.value){
+                    createPopper(copyButton.value, copyTooltip.value, {
+                        placement: "left",
                     });
                 }
-            },
-            copyToClipboard() {
-                clearTimeout(this.copyIconResetTimer);
+            });
+        }
+    }
 
-                navigator.clipboard.writeText(this.code.trimEnd())
+    function copyToClipboard() {
+        clearTimeout(copyIconResetTimer.value);
 
-                this.copyIcon = this.icons.Check;
+        navigator.clipboard.writeText(props.code.trimEnd())
 
-                this.copyIconResetTimer = setTimeout(() => {
-                    this.copyIcon = this.icons.ContentCopy;
-                    this.copyIconResetTimer = undefined;
-                }, 2000)
-            },
-        },
-    });
+        copyIcon.value = icons.Check;
+
+        copyIconResetTimer.value = setTimeout(() => {
+            copyIcon.value = icons.ContentCopy;
+            copyIconResetTimer.value = undefined;
+        }, 2000)
+    }
 </script>
 
 <style lang="scss" scoped>

@@ -11,7 +11,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="collapse()"
             >
-                <tooltip :title="Utils.translate('collapse')">
+                <tooltip :title="$t('collapse')">
                     <ArrowCollapse class="button-icon" alt="Collapse task" />
                 </tooltip>
             </span>
@@ -20,9 +20,9 @@
 </template>
 <script setup>
     import ArrowCollapse from "vue-material-design-icons/ArrowCollapse.vue"
-    import {EVENTS} from "../../utils/constants.js";
+    import {EVENTS} from "../../utils/constants";
     import {Position} from "@vue-flow/core";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     const props = defineProps({
         "data": {

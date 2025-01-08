@@ -16,7 +16,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.EDIT, {task: data.node.triggerDeclaration, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="Utils.translate('edit')">
+                <tooltip :title="$t('edit')">
                     <Pencil class="button-icon" alt="Edit task" />
                 </tooltip>
             </span>
@@ -26,7 +26,7 @@
                 :class="[`bg-${color}`]"
                 @click="$emit(EVENTS.DELETE, {id: triggerId, section: SECTIONS.TRIGGERS})"
             >
-                <tooltip :title="Utils.translate('delete')">
+                <tooltip :title="$t('delete')">
                     <Delete class="button-icon" alt="Delete task" />
                 </tooltip>
             </span>
@@ -40,11 +40,11 @@
 <script>
     import {Handle} from "@vue-flow/core";
     import {mapState} from "vuex";
-    import {EVENTS, SECTIONS} from "../../utils/constants.js";
+    import {EVENTS, SECTIONS} from "../../utils/constants";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         name: "Task",

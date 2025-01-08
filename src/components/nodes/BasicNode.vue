@@ -22,7 +22,7 @@
                     class="d-flex"
                     v-if="description"
                 >
-                    <tooltip :title="Utils.translate('show description')" class="d-flex align-items-center">
+                    <tooltip :title="$t('show description')" class="d-flex align-items-center">
                         <InformationOutline
                             @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
                             class="description-button ms-2"
@@ -40,7 +40,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
             >
-                <tooltip :title="Utils.translate('open')">
+                <tooltip :title="$t('open')">
                     <OpenInNew class="button-icon" alt="Open in new tab" />
                 </tooltip>
             </span>
@@ -50,7 +50,7 @@
                 :class="[`bg-${data.color}`]"
                 @click="$emit(EVENTS.EXPAND)"
             >
-                <tooltip :title="Utils.translate('expand')">
+                <tooltip :title="$t('expand')">
                     <ArrowExpand class="button-icon" alt="Expand task" />
                 </tooltip>
             </span>
@@ -65,12 +65,12 @@
 
 <script>
     import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
-    import {EVENTS} from "../../utils/constants.js";
+    import {EVENTS} from "../../utils/constants";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import {mapState} from "vuex";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         components: {

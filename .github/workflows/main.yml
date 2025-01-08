@@ -16,15 +16,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
-        with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Change version
         id: vars
         run: |
           VERSION=${GITHUB_REF#refs/*/}
-          sed -i  's/"version": "0.0.0",/"version": "'$VERSION'",/' package.json
+          npm version '$VERSION' --no-git-tag-version
 
       - name: Install dependencies
         run: npm install
@@ -32,6 +29,7 @@ jobs:
       - name: Publish to npm
         run: |
           npm run build
+          npm run build:types
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
