@@ -1,14 +1,14 @@
 <template>
-    <div class="bd-markdown">
-        <div class="doc-alert alert alert-info" role="alert" v-if="schema.properties?.$beta">
+    <div>
+        <div class="alert alert-info" role="alert" v-if="schema.properties?.$beta">
             <p>
                 This plugin is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.
             </p>
         </div>
 
-        <SchemaToCode :highlighter="highlighter" language="yaml" :code="`type: &quot;${pluginType}&quot;`" />
+        <SchemaToCode :show-lang="showCodeLang" :copyable="copyableCode" :highlighter="highlighter" language="yaml" :code="`type: &quot;${pluginType}&quot;`" />
         <p v-if="schema.properties?.title">
-            <span style="font-size:1.5em;" v-html="replaceText(schema.properties.title)" />
+            <span class="plugin-title" v-html="replaceText(schema.properties.title)" />
         </p>
 
         <slot v-if="schema.properties?.description" :content="schema.properties.description" name="markdown" />
@@ -22,7 +22,7 @@
                 :key="index"
             >
                 <slot v-if="example.title" :content="example.title" name="markdown" />
-                <SchemaToCode :highlighter="highlighter" :language="example.lang ?? 'yaml'" :code="generateExampleCode(example)" v-if="example.code" />
+                <SchemaToCode :show-lang="showCodeLang" :copyable="copyableCode" :highlighter="highlighter" :language="example.lang ?? 'yaml'" :code="generateExampleCode(example)" v-if="example.code" />
             </template>
         </template>
 
@@ -38,19 +38,17 @@
                     </a>
                 </h3>
                 <div
-                    class="doc-alert alert alert-info"
+                    class="alert alert-info"
                     role="alert"
                     v-if="property['$beta']"
                 >
                     <p>This property is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.</p>
                 </div>
-                <ul>
-                    <PropertyDetail :property="property" :text-sanitizer="replaceText">
-                        <template #markdown="{content}">
-                            <slot :content="content" name="markdown" />
-                        </template>
-                    </PropertyDetail>
-                </ul>
+                <PropertyDetail :property="property" :text-sanitizer="replaceText">
+                    <template #markdown="{content}">
+                        <slot :content="content" name="markdown" />
+                    </template>
+                </PropertyDetail>
             </template>
         </template>
 
@@ -66,22 +64,20 @@
                     </a>
                 </h3>
                 <div
-                    class="doc-alert alert alert-warning"
+                    class="alert alert-warning"
                     role="alert"
                     v-if="output['$deprecated']"
                 >
                     <p>⚠ Deprecated</p>
                 </div>
                 <div
-                    class="doc-alert alert alert-info"
+                    class="alert alert-info"
                     role="alert"
                     v-if="output['$beta']"
                 >
                     <p>This property is currently in beta. While it is considered safe for use, please be aware that its API could change in ways that are not compatible with earlier versions in future releases, or it might become unsupported.</p>
                 </div>
-                <ul>
-                    <PropertyDetail :show-dynamic="false" :property="output" :text-sanitizer="replaceText" />
-                </ul>
+                <PropertyDetail :show-dynamic="false" :property="output" :text-sanitizer="replaceText" />
             </template>
         </template>
 
@@ -101,44 +97,39 @@
                         Properties
                     </a>
                 </h4>
-                <ul>
-                    <template v-for="(property, propertyKey) in sortSchemaByRequired(definition.properties)" :key="propertyKey">
+                <ul class="list-unstyled">
+                    <li v-for="(property, propertyKey) in sortSchemaByRequired(definition.properties)" :key="propertyKey">
                         <h5 :id="definitionKey + '-' + propertyKey" v-if="definition.properties">
                             <code>
                                 {{ propertyKey }}
                             </code>
                         </h5>
                         <PropertyDetail :property="property" :text-sanitizer="replaceText" />
-                    </template>
+                    </li>
                 </ul>
             </template>
         </template>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import SchemaToCode from "./SchemaToCode.vue";
     import {createHighlighterCore} from "shiki/core";
     import githubDark from "shiki/themes/github-dark.mjs";
     import yaml from "shiki/langs/yaml.mjs";
     import python from "shiki/langs/python.mjs";
     import javascript from "shiki/langs/javascript.mjs";
-    import {computed} from "vue";
     import PropertyDetail from "./PropertyDetail.vue";
     import {createJavaScriptRegexEngine} from "shiki/engine/javascript";
 
-    const props = defineProps({
-        schema: {
-            type: Object,
-            required: true,
-        },
-        pluginType: {
-            type: String,
-            required: true,
-        }
-    });
+    const props = defineProps<{
+        schema: object,
+        pluginType: string,
+        showCodeLang: boolean,
+        copyableCode: boolean
+    }>();
 
-    const replaceText = (str) => {
+    const replaceText = (str: string) => {
         str = str?.split("```")[0]?.replace(/`([^`]*)`/g, "<code>$1</code>");
         str = str?.replace(
             /\[(.*?)\]\((.*?)\)/g,
@@ -153,37 +144,6 @@
         return str?.split("```")[0];
     };
 
-    computed(() => {
-        const textBlocks = props.schema?.description.split("\n\n");
-        let content = "";
-        textBlocks.forEach((text) => {
-            const newText = replaceText(text);
-            const descriptionParts = newText?.split(/:\s?\n/);
-
-            if (descriptionParts) {
-                const alertParts = descriptionParts[0].split(/::alert{type="warning"}\n/);
-                const alertContent =  (alertParts.length > 1)
-                    ?
-                        `<div class="doc-alert alert alert-warning" role="alert">
-                      <p>${replaceText(alertParts[1]?.split(":")[0])}</p>
-                    </div>`
-                    :
-                        `<p>${descriptionParts[0]}:</p>`;
-
-                const listContent = descriptionParts[1]
-                    ?
-                        `<ul>${generateList(descriptionParts[1])}</ul>`
-                    :
-                        "";
-
-                content += alertContent + listContent;
-            } else {
-                content += `<p>${newText}</p>`;
-            }
-        });
-
-        return content;
-    });
     const sortSchemaByRequired = (schema) => {
         const requiredKeys = [];
         const nonRequiredKeys = [];
@@ -204,19 +164,6 @@
         });
 
         return sortedSchema;
-    }
-
-    const generateList = (descriptionPart) => {
-        let optionList = "";
-        descriptionPart?.split(/[-*]/).forEach((item) => {
-            if (item.trim()) {
-                optionList += `
-                  <li>${replaceText(item)}</li>
-                `
-            }
-        });
-
-        return optionList;
     }
 
     const generateExampleCode = (example) => {
@@ -240,15 +187,3 @@
         engine: createJavaScriptRegexEngine(),
     });
 </script>
-
-<style lang="scss" scoped>
-    .bd-markdown {
-        code{
-            background: #161617;
-            border: 1px solid #252526;
-            border-radius: var(--bs-border-radius);
-            color: #b9b9ba;
-            padding: 0 .25rem;
-        }
-    }
-</style>
