@@ -16,7 +16,6 @@
       "types": "./dist/index.d.ts"
     },
     "./style.css": "./dist/style.css",
-    "./*.scss": "./src/scss/*.scss",
     "./src/*": "./src/*"
   },
   "scripts": {
