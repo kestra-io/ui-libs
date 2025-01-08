@@ -40,11 +40,11 @@
 <script>
     import {Handle} from "@vue-flow/core";
     import {mapState} from "vuex";
-    import {EVENTS, SECTIONS} from "../../utils/constants.js";
+    import {EVENTS, SECTIONS} from "../../utils/constants";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         name: "Task",

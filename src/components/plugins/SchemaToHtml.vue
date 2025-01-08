@@ -60,7 +60,7 @@
             </h2>
 
             <template v-for="(output, outputKey) in sortSchemaByRequired(schema.outputs.properties)" :key="outputKey">
-                <h3 :id="outputKey">
+                <h3 :id="outputKey.toString()">
                     <a :href="`#${outputKey}`">
                         <code>{{ outputKey }}</code>
                     </a>
@@ -91,7 +91,7 @@
             </h2>
 
             <template v-for="(definition, definitionKey) in schema.definitions" :key="definitionKey">
-                <h3 :id="definitionKey">
+                <h3 :id="definitionKey.toString()">
                     <a :href="`#${definitionKey}`">
                         <code>{{ definitionKey }}</code>
                     </a>
@@ -101,9 +101,9 @@
                         Properties
                     </a>
                 </h4>
-                <ul>
+                <ul v-if="definition.properties">
                     <template v-for="(property, propertyKey) in sortSchemaByRequired(definition.properties)" :key="propertyKey">
-                        <h5 :id="definitionKey + '-' + propertyKey" v-if="definition.properties">
+                        <h5 :id="definitionKey + '-' + propertyKey">
                             <code>
                                 {{ propertyKey }}
                             </code>
@@ -116,29 +116,45 @@
     </div>
 </template>
 
-<script setup>
-    import SchemaToCode from "./SchemaToCode.vue";
+<script setup lang="ts">
+    import {computed} from "vue";
     import {createHighlighterCore} from "shiki/core";
     import githubDark from "shiki/themes/github-dark.mjs";
     import yaml from "shiki/langs/yaml.mjs";
     import python from "shiki/langs/python.mjs";
     import javascript from "shiki/langs/javascript.mjs";
-    import {computed} from "vue";
-    import PropertyDetail from "./PropertyDetail.vue";
     import {createJavaScriptRegexEngine} from "shiki/engine/javascript";
+    import SchemaToCode from "./SchemaToCode.vue";
+    import PropertyDetail from "./PropertyDetail.vue";
+    import type {JSONProperty} from "./PropertyType.vue";
 
-    const props = defineProps({
-        schema: {
-            type: Object,
-            required: true,
-        },
-        pluginType: {
-            type: String,
-            required: true,
+    interface JSONSchema {
+        description?: string
+        definitions?: Record<string, JSONSchema>
+        outputs?: {
+            properties: Record<string, JSONProperty>
         }
-    });
+        properties?: Record<string, JSONProperty> & {
+            title?: string
+            description?: string
+            length?: number
+            properties?: Record<string, JSONProperty>
+            $beta?: boolean
+            $examples?: {
+                title?: string
+                code: string
+                lang?: string
+                full?: boolean
+            }[]
+        }
+    }
 
-    const replaceText = (str) => {
+    const props = defineProps<{
+        schema: JSONSchema
+        pluginType: string
+    }>();
+
+    const replaceText = (str:string) => {
         str = str?.split("```")[0]?.replace(/`([^`]*)`/g, "<code>$1</code>");
         str = str?.replace(
             /\[(.*?)\]\((.*?)\)/g,
@@ -154,9 +170,9 @@
     };
 
     computed(() => {
-        const textBlocks = props.schema?.description.split("\n\n");
+        const textBlocks = props.schema.description?.split("\n\n");
         let content = "";
-        textBlocks.forEach((text) => {
+        textBlocks?.forEach((text) => {
             const newText = replaceText(text);
             const descriptionParts = newText?.split(/:\s?\n/);
 
@@ -184,21 +200,24 @@
 
         return content;
     });
-    const sortSchemaByRequired = (schema) => {
+
+    function sortSchemaByRequired<T extends NonNullable<NonNullable<JSONSchema["properties"]>["properties"]>>(schema: T): T{
         const requiredKeys = [];
         const nonRequiredKeys = [];
 
         for (const key in schema) {
-            if (schema[key].$required) {
-                requiredKeys.push(key);
-            } else {
-                nonRequiredKeys.push(key);
+            if(typeof schema[key] === "object"){
+                if (schema[key].$required) {
+                    requiredKeys.push(key);
+                } else {
+                    nonRequiredKeys.push(key);
+                }
             }
         }
 
         const sortedKeys = [...requiredKeys.sort(), ...nonRequiredKeys.sort()];
 
-        const sortedSchema = {};
+        const sortedSchema: T = {} as T;
         sortedKeys.forEach(key => {
             sortedSchema[key] = schema[key];
         });
@@ -206,7 +225,7 @@
         return sortedSchema;
     }
 
-    const generateList = (descriptionPart) => {
+    const generateList = (descriptionPart: string) => {
         let optionList = "";
         descriptionPart?.split(/[-*]/).forEach((item) => {
             if (item.trim()) {
@@ -219,8 +238,8 @@
         return optionList;
     }
 
-    const generateExampleCode = (example) => {
-        if (!example?.full) {
+    const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
+        if (!example.full) {
             const fullCode = `id: "${props.pluginType.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.pluginType}"\n`;
             return fullCode.concat(example.code)
         }

@@ -9,8 +9,8 @@ import yaml, {
   YAMLSeq,
   LineCounter,
 } from "yaml";
-import cloneDeep from "lodash/cloneDeep.js";
-import {SECTIONS} from "./constants.js";
+import cloneDeep from "lodash/cloneDeep";
+import {SECTIONS} from "./constants";
 
 
 const TOSTRING_OPTIONS = {lineWidth: 0};

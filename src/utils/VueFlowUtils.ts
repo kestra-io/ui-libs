@@ -1,4 +1,4 @@
-import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow} from "@vue-flow/core";
+import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow, Elements} from "@vue-flow/core";
 import dagre from "dagre";
 import {YamlUtils} from "./YamlUtils";
 import Utils from "./Utils";
@@ -32,6 +32,18 @@ interface Cluster {
         }
     }
     error: boolean
+}
+
+export interface FlowGraph { 
+    nodes: MinimalNode[]; 
+    clusters: {
+        cluster: Cluster;
+        nodes: string[];
+        parents: {
+            uid: string;
+        }[];
+    }[];
+    edges: GraphEdge[] 
 }
 
 type EdgeReplacer = Record<string, string>
@@ -384,21 +396,11 @@ export default {
   },
 
   generateGraph(
-    vueFlowId: string,
-    flowId:string,
-    namespace:string,
-    flowGraph: { 
-        nodes: MinimalNode[]; 
-        clusters: {
-            cluster: Cluster;
-            nodes: string[];
-            parents: {
-                uid: string;
-            }[];
-        }[];
-        edges: GraphEdge[] 
-    },
-    flowSource:string,
+    _vueFlowId: string,
+    flowId:string | undefined,
+    namespace:string| undefined,
+    flowGraph: FlowGraph | undefined,
+    flowSource:string | undefined,
     hiddenNodes: string[],
     isHorizontal: boolean,
     edgeReplacer: EdgeReplacer,
@@ -407,8 +409,8 @@ export default {
     isReadOnly: boolean,
     isAllowedEdit: boolean,
     enableSubflowInteraction: boolean
-  ) {
-    const elements = [];
+  ):Elements | undefined{
+    const elements:Elements = [];
 
     const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
@@ -506,7 +508,7 @@ export default {
         elements.push({
           id: clusterUid,
           type: "cluster",
-          parentNode: parentNode,
+          parentNode: parentNode?.uid,
           position: this.getNodePosition(
             dagreNode,
             parentNode ? dagreGraph.node(parentNode) : undefined
@@ -655,6 +657,7 @@ export default {
         });
       }
     }
+
     return elements;
   },
 

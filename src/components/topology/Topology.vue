@@ -28,16 +28,16 @@
                 v-bind="taskProps"
                 :icons="icons"
                 :icon-component="iconComponent"
-                @edit="forwardEvent(EVENTS.EDIT, $event)"
-                @delete="forwardEvent(EVENTS.DELETE, $event)"
+                @edit="emit(EVENTS.EDIT, $event)"
+                @delete="emit(EVENTS.DELETE, $event)"
                 @expand="expand($event)"
-                @open-link="forwardEvent(EVENTS.OPEN_LINK, $event)"
-                @show-logs="forwardEvent(EVENTS.SHOW_LOGS, $event)"
-                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
-                @show-condition="forwardEvent(EVENTS.SHOW_CONDITION, $event)"
+                @open-link="emit(EVENTS.OPEN_LINK, $event)"
+                @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
+                @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
+                @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
-                @add-error="forwardEvent('on-add-flowable-error', $event)"
+                @add-error="emit('on-add-flowable-error', $event)"
                 :enable-subflow-interaction="enableSubflowInteraction"
             />
         </template>
@@ -49,9 +49,9 @@
                 :icon-component="iconComponent"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
-                @delete="forwardEvent(EVENTS.DELETE, $event)"
-                @edit="forwardEvent(EVENTS.EDIT, $event)"
-                @show-description="forwardEvent(EVENTS.SHOW_DESCRIPTION, $event)"
+                @delete="emit(EVENTS.DELETE, $event)"
+                @edit="emit(EVENTS.EDIT, $event)"
+                @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
             />
         </template>
 
@@ -66,32 +66,46 @@
             <EdgeNode
                 v-bind="EdgeProps"
                 :yaml-source="source"
-                @add-task="forwardEvent(EVENTS.ADD_TASK, $event)"
+                @add-task="emit(EVENTS.ADD_TASK, $event)"
                 :is-read-only="isReadOnly"
                 :is-allowed-edit="isAllowedEdit"
             />
         </template>
 
         <Controls :show-interactive="false">
-            <ControlButton @click="forwardEvent('toggle-orientation', $event)" v-if="toggleOrientationButton">
+            <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <SplitCellsVertical :size="48" v-if="!isHorizontal" />
                 <SplitCellsHorizontal v-if="isHorizontal" />
             </ControlButton>
         </Controls>
     </VueFlow>
 </template>
-<script setup>
-    import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import {ClusterNode, CollapsedClusterNode, DotNode, EdgeNode, TaskNode, TriggerNode} from "../index.js";
-    import {useVueFlow, VueFlow} from "@vue-flow/core";
+<script lang="ts" setup>
+    import {computed, nextTick, onMounted, PropType, ref, watch} from "vue";
+    import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
+    import {Background} from "@vue-flow/background";
+    // @ts-expect-error no types for internals necessary
+    import ClusterNode from "../nodes/ClusterNode.vue";
+    // @ts-expect-error no types for internals necessary
+    import DotNode from "../nodes/DotNode.vue";
+    // @ts-expect-error no types for internals necessary
+    import EdgeNode from "../nodes/EdgeNode.vue";
+    // @ts-expect-error no types for internals necessary
+    import TaskNode from "../nodes/TaskNode.vue";
+    // @ts-expect-error no types for internals necessary
+    import TriggerNode from "../nodes/TriggerNode.vue"
+    // @ts-expect-error no types for internals necessary
+    import CollapsedClusterNode from "../nodes/CollapsedClusterNode.vue";
+    // @ts-expect-error no types for internals necessary
     import SplitCellsVertical from "../../assets/icons/SplitCellsVertical.vue";
+    // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import {cssVariable} from "../../utils/global";
-    import {VueFlowUtils, YamlUtils} from "../../index";
-    import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants.js";
-    import {Background} from "@vue-flow/background";
-    import Utils from "../../utils/Utils.js";
+    import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
+    import Utils from "../../utils/Utils"
+    import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
+    import {YamlUtils} from "../../utils/YamlUtils"
 
     const props = defineProps({
         id: {
@@ -120,7 +134,7 @@
             default: false,
         },
         flowGraph: {
-            type: Object,
+            type: Object as PropType<FlowGraph>,
             required: true
         },
         flowId: {
@@ -152,11 +166,11 @@
     });
 
     const dragging = ref(false);
-    const lastPosition = ref(null)
+    const lastPosition = ref<XYPosition | null>()
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements} = useVueFlow({id: props.id});
     const edgeReplacer = ref({});
-    const hiddenNodes = ref([]);
-    const collapsed = ref(new Set());
+    const hiddenNodes = ref<string[]>([]);
+    const collapsed = ref(new Set<string>());
     const clusterToNode = ref([])
 
     const emit = defineEmits(
@@ -194,11 +208,11 @@
         VueFlowUtils.cleanGraph(props.id);
 
         nextTick(() => {
-            forwardEvent("loading", true);
+            emit("loading", true);
 
             // Workaround due to start & end nodes regeneration when fetching the graph again
             const oldCollapsed = collapsed.value;
-            collapsed.value = new Set();
+            collapsed.value = new Set<string>();
             hiddenNodes.value = [];
             edgeReplacer.value = {};
             oldCollapsed.forEach(n => collapseCluster(CLUSTER_PREFIX + n, false, false))
@@ -218,18 +232,16 @@
                 props.isAllowedEdit,
                 props.enableSubflowInteraction
             );
-            setElements(elements);
-            fitView();
-            forwardEvent("loading", false);
+            if(elements) {
+                setElements(elements);
+                fitView();
+                emit("loading", false);
+            }
         })
     }
 
-    const forwardEvent = (type, payload) => {
-        emit(type, payload);
-    };
-
     // Graph interactions functions
-    const onMouseOver = (node) => {
+    const onMouseOver = (node: any) => {
         if (!dragging.value) {
             VueFlowUtils.linkedElements(props.id, node.uid).forEach((n) => {
                 if (n?.type === "task") {
@@ -260,19 +272,21 @@
         lastPosition.value = e.node.position;
     })
 
-    onNodeDragStop((e) => {
+    onNodeDragStop((e:any) => {
         dragging.value = false;
         if (checkIntersections(e.intersections, e.node) === null) {
             const taskNode1 = e.node;
             // check multiple intersection with task
-            const taskNode2 = e.intersections.find(n => n.type === "task");
+            const taskNode2 = e.intersections.find((n:any) => n.type === "task");
             if (taskNode2) {
                 try {
-                    emit("swapped-task", {
-                        newSource: YamlUtils.swapTasks(props.source, Utils.afterLastDot(taskNode1.id), Utils.afterLastDot(taskNode2.id)),
-                        swappedTasks: [taskNode1.id, taskNode2.id]
-                    })
-                } catch (e) {
+                    if(props.source){
+                        emit("swapped-task", {
+                            newSource: YamlUtils.swapTasks(props.source, Utils.afterLastDot(taskNode1.id) ?? "", Utils.afterLastDot(taskNode2.id) ?? ""),
+                            swappedTasks: [taskNode1.id, taskNode2.id]
+                        })
+                    }
+                } catch (e: any) {
                     emit("message", {
                         variant: "error",
                         title: "cannot swap tasks",
@@ -300,7 +314,7 @@
             .map(cluster => cluster.cluster.taskNode.uid + ".");
     })
 
-    onNodeDrag((e) => {
+    onNodeDrag((e: any) => {
         resetNodesStyle();
         getNodes.value.filter(n => n.id !== e.node.id).forEach(n => {
             if (n.type === "trigger" || (n.type === "task" && (n.id.startsWith(e.node.id + ".") || e.node.id.startsWith(n.id + "."))) || subflowPrefixes?.value?.some(subflowPrefix => n.id.startsWith(subflowPrefix))) {
@@ -309,8 +323,8 @@
                 n.style = {...n.style, opacity: "1"}
             }
         })
-        if (!checkIntersections(e.intersections, e.node) && e.intersections.filter(n => n.type === "task").length === 1) {
-            e.intersections.forEach(n => {
+        if (!checkIntersections(e.intersections, e.node) && e.intersections.filter((n:any) => n.type === "task").length === 1) {
+            e.intersections.forEach((n:any) => {
                 if (n.type === "task") {
                     n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-primary")}
                     n.class = "rounded-3"
@@ -321,31 +335,31 @@
         }
     })
 
-    const checkIntersections = (intersections, node) => {
-        const tasksMeet = intersections.filter(n => n.type === "task").map(n => Utils.afterLastDot(n.id));
+    const checkIntersections = (intersections:any, node:any) => {
+        const tasksMeet = intersections.filter((n:any) => n.type === "task").map((n:any) => Utils.afterLastDot(n.id));
         if (tasksMeet.length > 1) {
             return "toomuchtaskerror";
         }
         try {
-            if (tasksMeet.length === 1 && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]), Utils.afterLastDot(node.id))) {
+            if (tasksMeet.length === 1 && props.source && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]) ?? "", Utils.afterLastDot(node.id) ?? "")) {
                 return "parentchildrenerror";
             }
         } catch {
             return "parentchildrenerror";
         }
-        if (intersections.filter(n => n.type === "trigger").length > 0) {
+        if (intersections.filter((n:any) => n.type === "trigger").length > 0) {
             return "triggererror";
         }
         return null;
     }
 
-    const collapseCluster = (clusterUid, regenerate, recursive) => {
-        const cluster = props.flowGraph.clusters.find(cluster => cluster.cluster.uid.endsWith(clusterUid));
+    const collapseCluster = (clusterUid: string, regenerate: boolean, recursive = false) => {
+        const cluster:any = props.flowGraph.clusters.find(cluster => cluster.cluster.uid.endsWith(clusterUid));
         const nodeId = clusterUid.replace(CLUSTER_PREFIX, "");
         collapsed.value.add(nodeId)
 
-        hiddenNodes.value = hiddenNodes.value.concat(cluster.nodes.filter(e => e !== nodeId || recursive));
-        hiddenNodes.value = hiddenNodes.value.concat([cluster.cluster.uid])
+        hiddenNodes.value = hiddenNodes.value.concat(cluster.nodes.filter((e:any) => e !== nodeId || recursive));
+        hiddenNodes.value = hiddenNodes.value.concat([cluster.cluster.uid] as string[])
         edgeReplacer.value = {
             ...edgeReplacer.value,
             [cluster.cluster.uid]: nodeId,
@@ -364,13 +378,13 @@
         }
     }
 
-    const expand = (expandData) => {
+    const expand = (expandData:any) => {
         const taskTypesWithSubflows = [
             "io.kestra.core.tasks.flows.Flow", "io.kestra.core.tasks.flows.Subflow", "io.kestra.plugin.core.flow.Subflow",
             "io.kestra.core.tasks.flows.ForEachItem$ForEachItemExecutable", "io.kestra.plugin.core.flow.ForEachItem$ForEachItemExecutable"
         ];
         if (taskTypesWithSubflows.includes(expandData.type) && !props.expandedSubflows.includes(expandData.id)) {
-            forwardEvent("expand-subflow", [...props.expandedSubflows, expandData.id]);
+            emit("expand-subflow", [...props.expandedSubflows, expandData.id]);
             return;
         }
         edgeReplacer.value = {};

@@ -76,8 +76,8 @@
 </script>
 <script>
     import {Handle} from "@vue-flow/core";
-    import State from "../../utils/state.js";
-    import {EVENTS, SECTIONS} from "../../utils/constants.js";
+    import State from "../../utils/state";
+    import {EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
@@ -86,7 +86,7 @@
     import SendLock from "vue-material-design-icons/SendLock.vue"
     import {mapGetters, mapState} from "vuex";
     import Tooltip from "../misc/Tooltip.vue"
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         name: "Task",

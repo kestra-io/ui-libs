@@ -65,12 +65,12 @@
 
 <script>
     import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
-    import {EVENTS} from "../../utils/constants.js";
+    import {EVENTS} from "../../utils/constants";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import {mapState} from "vuex";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         components: {

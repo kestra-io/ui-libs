@@ -10,16 +10,18 @@
         <div v-else class="icon" :style="styles" />
     </div>
 </template>
+
 <script setup lang="ts">
     import {computed} from "vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import {cssVariable} from "../../utils/global.js";
+    import {cssVariable} from "../../utils/global";
 
     defineOptions({
         name: "TaskIcon",
     })
+
     const props = defineProps<{
-        customIcon?: any;
+        customIcon?: {icon:string, };
         cls?:string;
         theme?: "dark" | "light";
         icons?: any;

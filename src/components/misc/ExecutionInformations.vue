@@ -12,8 +12,8 @@
     import {computed} from "vue";
     import moment from "moment";
     import Duration from "./Duration.vue";
-    import State from "../../utils/state.js";
-    import Utils from "../../utils/Utils.js";
+    import State from "../../utils/state";
+    import Utils from "../../utils/Utils"
 
     defineOptions({
         name: "ExecutionInformations",

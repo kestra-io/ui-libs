@@ -24,11 +24,11 @@
 </template>
 
 <script setup>
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 </script>
 
 <script>
-    import {EVENTS} from "../../utils/constants.js";
+    import {EVENTS} from "../../utils/constants"
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import LightningBolt from "vue-material-design-icons/LightningBolt.vue";
     import {Handle} from "@vue-flow/core";

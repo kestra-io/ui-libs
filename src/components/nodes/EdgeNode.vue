@@ -35,9 +35,9 @@
     import {computed} from "vue";
     import {EdgeLabelRenderer, getSmoothStepPath} from "@vue-flow/core";
     import AddTaskButton from "../buttons/AddTaskButton.vue";
-    import {EVENTS} from "../../utils/constants.js";
+    import {EVENTS} from "../../utils/constants";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils.js";
+    import Utils from "../../utils/Utils";
 
     export default {
         data() {
