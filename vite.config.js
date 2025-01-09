@@ -29,13 +29,24 @@ export default defineConfig({
                 "sass",
                 "@popperjs/core",
                 "yaml",
-                "js-yaml"
+                "js-yaml",
+                "moment-timezone"
             ],
             output: {
                 // Provide global variables to use in the UMD build
                 // Add external deps here
                 globals: {
                     vue: "Vue",
+                    "yaml": "PkgYaml",
+                    "js-yaml": "JsYaml",
+                    "humanize-duration": "HumanizeDuration",
+                    "moment": "Moment",
+                    "lodash": "Lodash",
+                    "bootstrap": "Bootstrap",
+                    "@vue-flow/core": "VueFlowCore",
+                    "@vue-flow/controls": "VueFlowControls",
+                    "@popperjs/core": "PopperCore",
+                    "moment-timezone": "MomentTimezone",
                 },
             }
         },

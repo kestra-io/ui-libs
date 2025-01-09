@@ -113,12 +113,8 @@
 </template>
 
 <script setup lang="ts">
-    import {createHighlighterCore} from "shiki/core";
-    import githubDark from "shiki/themes/github-dark.mjs";
-    import yaml from "shiki/langs/yaml.mjs";
-    import python from "shiki/langs/python.mjs";
-    import javascript from "shiki/langs/javascript.mjs";
-    import {createJavaScriptRegexEngine} from "shiki/engine/javascript";
+    import {onMounted, ref} from "vue";
+    import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
     import PropertyDetail from "./PropertyDetail.vue";
     import type {JSONProperty} from "./PropertyType.vue";
@@ -199,15 +195,20 @@
         return example.code;
     }
 
-    const highlighter = await createHighlighterCore({
-        themes: [
-            githubDark
-        ],
-        langs: [
-            yaml,
-            python,
-            javascript
-        ],
-        engine: createJavaScriptRegexEngine(),
-    });
+    const highlighter = ref<HighlighterCore | null>(null);  
+
+    onMounted(async () => {
+        const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine} = await import("./shikiToolset");
+        highlighter.value = await createHighlighterCore({
+            themes: [
+                githubDark
+            ],
+            langs: [
+                yaml,
+                python,
+                javascript
+            ],
+            engine: createJavaScriptRegexEngine(),
+        });
+    })
 </script>
