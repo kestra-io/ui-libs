@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-    import {onBeforeUnmount, onMounted, ref} from "vue";
+    import {onBeforeUnmount, onMounted, ref, nextTick} from "vue";
     import type * as Bootstrap from "bootstrap"
 
     // conditional import is required for website not to crash due to
@@ -20,25 +20,30 @@
         bootstrap = import("bootstrap");
     }
 
-    const props = defineProps<{
+    const props = withDefaults(defineProps<{
         title?: string;
         placement?: "top" | "right" | "bottom" | "left"
-    }>()
+    }>(), {
+        title: undefined,
+        placement: "top"
+    })
         
     const tooltip = ref()
     const $tooltip = ref()
     const $tooltipContent = ref()
         
     onMounted(async () => {
-        if (typeof document !== "undefined") {
-            tooltip.value = new (await bootstrap).Tooltip($tooltip.value, {
-                trigger: "hover",
-                html: true,
-                placement: props.placement,
-                title: $tooltipContent.value.innerHTML,
-                customClass: "tooltip-custom"
-            })
-        }
+        nextTick(async () => {
+            if (typeof document !== "undefined" && $tooltip.value && $tooltipContent.value) {
+                tooltip.value = new (await bootstrap).Tooltip($tooltip.value, {
+                    trigger: "hover",
+                    html: true,
+                    placement: props.placement,
+                    title: $tooltipContent.value.innerHTML,
+                    customClass: "tooltip-custom"
+                })
+            }
+        })
     })
 
     onBeforeUnmount(async () => {

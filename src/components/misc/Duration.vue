@@ -23,10 +23,10 @@
     import Utils from "../../utils/Utils";
     import Tooltip from "./Tooltip.vue";
 
-    const ts = (date: string) => new Date(date).getTime();
-
     const props = defineProps<{
-        histories: any[];
+        histories: {date: string & {
+            isValid: () => boolean
+        }; state: string}[];
     }>();
 
     watch(
@@ -46,13 +46,13 @@
     });
 
     const start = computed(() => {
-        return props.histories?.length && ts(props.histories[0].date);
+        return props.histories?.length && new Date(props.histories[0].date).getTime();
     });
     const lastStep = computed(() => {
         return props.histories[props.histories.length - 1];
     });
     const filteredHistories = computed(() => {
-        return props.histories.filter((h) => h.date && h.date.isValid() && h.state);
+        return props.histories.filter((h) => h.date && h.state);
     });
 
     function paint() {
@@ -79,7 +79,7 @@
         if (!props.histories || State.isRunning(lastStep.value.state)) {
             return +new Date();
         }
-        return ts(lastStep.value.date);
+        return new Date(lastStep.value.date).getTime();
     }
     function computeDuration() {
         duration.value =

@@ -16,9 +16,9 @@
 
 <style lang="scss" scoped>
     .doc-alert {
-        --bs-alert-padding-x: var(--spacer);
-        --bs-alert-padding-y: var(--spacer);
-        --bs-alert-margin-bottom: var(--spacer);
+        --bs-alert-padding-x: 1rem;
+        --bs-alert-padding-y: 1rem;
+        --bs-alert-margin-bottom: 1rem;
 
         background-color: #18131f;
         border: 1px solid #3a3c55;

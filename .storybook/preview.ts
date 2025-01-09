@@ -1,9 +1,10 @@
+import moment from "moment";
+import {setup} from "@storybook/vue3";
 import {withThemeByClassName} from "@storybook/addon-themes";
 
-// @ts-expect-error no types needed here
-import "../src/scss/theme-light.scss";
-// @ts-expect-error no types needed here
-import "../src/scss/theme-dark.scss";
+import "../src/scss/vendor.scss";
+import "../src/scss/ks-theme-light.scss";
+import "../src/scss/ks-theme-dark.scss";
 
 /** @type { import('@storybook/vue3').Preview } */
 const preview = {
@@ -25,5 +26,9 @@ const preview = {
     }),
   ]
 };
+
+setup((app) => {
+  app.config.globalProperties.$moment = moment;
+})
 
 export default preview;
