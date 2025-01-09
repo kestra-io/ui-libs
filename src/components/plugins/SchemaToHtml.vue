@@ -198,7 +198,7 @@
     const highlighter = ref<HighlighterCore | null>(null);  
 
     onMounted(async () => {
-        const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine} = await import("./shikiToolset");
+        const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine, createHighlighterCore} = await import("./shikiToolset");
         highlighter.value = await createHighlighterCore({
             themes: [
                 githubDark
