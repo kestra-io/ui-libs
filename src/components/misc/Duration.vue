@@ -1,5 +1,5 @@
 <template>
-    <tooltip :key="lastStep.date">
+    <tooltip :key="lastStep.date.toString()">
         <template #content>
             <span
                 v-for="(history, index) in filteredHistories"
@@ -7,7 +7,7 @@
                 class="duration-tt"
             >
                 <span class="square" :class="squareClass(history.state)" />
-                <strong>{{ history.state }}: </strong>{{ Utils.dateFilter(history.date, "iso") }} <br>
+                <strong>{{ history.state }}: </strong>{{ Utils.dateFilter(history.date.toString(), "iso") }} <br>
             </span>
         </template>
 
@@ -19,14 +19,16 @@
 
 <script setup lang="ts">
     import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+    import {type Moment} from "moment";
     import State from "../../utils/state";
     import Utils from "../../utils/Utils";
     import Tooltip from "./Tooltip.vue";
 
     const props = defineProps<{
-        histories: {date: string & {
-            isValid: () => boolean
-        }; state: string}[];
+        histories: {
+            date: Moment;
+            state: string
+        }[];
     }>();
 
     watch(
@@ -46,7 +48,7 @@
     });
 
     const start = computed(() => {
-        return props.histories?.length && new Date(props.histories[0].date).getTime();
+        return props.histories?.length && new Date(props.histories[0].date.toString()).getTime();
     });
     const lastStep = computed(() => {
         return props.histories[props.histories.length - 1];
@@ -79,7 +81,7 @@
         if (!props.histories || State.isRunning(lastStep.value.state)) {
             return +new Date();
         }
-        return new Date(lastStep.value.date).getTime();
+        return new Date(lastStep.value.date.toString()).getTime();
     }
     function computeDuration() {
         duration.value =
