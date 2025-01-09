@@ -115,6 +115,7 @@
 <script setup lang="ts">
     import {ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
+    import {loadWasm} from "shiki/engine/oniguruma"
     import SchemaToCode from "./SchemaToCode.vue";
     import PropertyDetail from "./PropertyDetail.vue";
     import type {JSONProperty} from "./PropertyType.vue";
@@ -146,6 +147,9 @@
         showCodeLang: boolean,
         copyableCode: boolean
     }>();
+
+    // import wasm as assets
+    await loadWasm(import("shiki/wasm"))
 
     const replaceText = (str:string) => {
         str = str?.split("```")[0]?.replace(/`([^`]*)`/g, "<code>$1</code>");
@@ -199,6 +203,7 @@
 
     
     const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine, createHighlighterCore} = await import("./shikiToolset");
+    
     highlighter.value = await createHighlighterCore({
         themes: [
             githubDark

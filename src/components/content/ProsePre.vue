@@ -32,13 +32,17 @@
     import {nextTick, Ref, ref} from "vue";
     import Mermaid from "./Mermaid.vue";
 
-    const props = defineProps<{
+    const props = withDefaults(defineProps<{
         code:string,
         language: string,
-        filename: string,
-        highlights:string,
-        meta:string,
-    }>()
+        filename?: string,
+        highlights?: string,
+        meta?: string,
+    }>(), {
+        filename: undefined,
+        highlights: undefined,
+        meta: undefined,
+    })
 
     const icons = {
         ContentCopy,
