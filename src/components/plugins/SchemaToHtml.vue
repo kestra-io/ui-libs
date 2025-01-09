@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-    import {onMounted, ref} from "vue";
+    import {ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
     import PropertyDetail from "./PropertyDetail.vue";
@@ -197,18 +197,18 @@
 
     const highlighter = ref<HighlighterCore | null>(null);  
 
-    onMounted(async () => {
-        const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine, createHighlighterCore} = await import("./shikiToolset");
-        highlighter.value = await createHighlighterCore({
-            themes: [
-                githubDark
-            ],
-            langs: [
-                yaml,
-                python,
-                javascript
-            ],
-            engine: createJavaScriptRegexEngine(),
-        });
-    })
+    
+    const {githubDark, yaml, python, javascript, createJavaScriptRegexEngine, createHighlighterCore} = await import("./shikiToolset");
+    highlighter.value = await createHighlighterCore({
+        themes: [
+            githubDark
+        ],
+        langs: [
+            yaml,
+            python,
+            javascript
+        ],
+        engine: createJavaScriptRegexEngine(),
+    });
+    
 </script>
