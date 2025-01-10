@@ -1,4 +1,5 @@
 import mapValues from "lodash/mapValues";
+import {cssVariable} from "./global";
 import PauseCircle from "vue-material-design-icons/PauseCircle.vue";
 import CheckCircle from "vue-material-design-icons/CheckCircle.vue";
 import PlayCircle from "vue-material-design-icons/PlayCircle.vue";
@@ -7,9 +8,13 @@ import StopCircle from "vue-material-design-icons/StopCircle.vue";
 import SkipPreviousCircle from "vue-material-design-icons/SkipPreviousCircle.vue";
 import AlertCircle from "vue-material-design-icons/AlertCircle.vue";
 import DotsVerticalCircle from "vue-material-design-icons/DotsVerticalCircle.vue";
+import MotionPauseOutline from "vue-material-design-icons/MotionPauseOutline.vue";
+import Refresh from "vue-material-design-icons/Refresh.vue";
+import Cancel from "vue-material-design-icons/Cancel.vue";
 
 interface StateModel {
     name: string;
+    color: string;
     colorClass: string;
     icon: any;
     isRunning: boolean;
@@ -20,6 +25,7 @@ interface StateModel {
 const STATE:Record<string, StateModel> = Object.freeze({
     CREATED: {
         name: "CREATED",
+        color: "#1761FD",
         colorClass: "cyan",
         icon: DotsVerticalCircle,
         isRunning: true,
@@ -28,6 +34,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     RESTARTED: {
         name: "RESTARTED",
+        color: "#1761FD",
         colorClass: "cyan",
         icon: SkipPreviousCircle,
         isRunning: false,
@@ -36,6 +43,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     SUCCESS: {
         name: "SUCCESS",
+        color: "#029E73",
         colorClass: "green",
         icon: CheckCircle,
         isRunning: false,
@@ -44,6 +52,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     RUNNING: {
         name: "RUNNING",
+        color: "#8405FF",
         colorClass: "purple",
         icon: PlayCircle,
         isRunning: true,
@@ -52,6 +61,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     KILLING: {
         name: "KILLING",
+        color: "#FCE07C",
         colorClass: "yellow",
         icon: CloseCircle,
         isRunning: true,
@@ -60,6 +70,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     KILLED: {
         name: "KILLED",
+        color: "#FCE07C",
         colorClass: "yellow",
         icon: StopCircle,
         isRunning: false,
@@ -68,6 +79,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     WARNING: {
         name: "WARNING",
+        color: "#DD5F00",
         colorClass: "orange",
         icon: AlertCircle,
         isRunning: false,
@@ -76,6 +88,7 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     FAILED: {
         name: "FAILED",
+        color: "#AB0009",
         colorClass: "red",
         icon: CloseCircle,
         isRunning: false,
@@ -84,12 +97,58 @@ const STATE:Record<string, StateModel> = Object.freeze({
     },
     PAUSED: {
         name: "PAUSED",
+        color: "#918BA9",
         colorClass: "indigo",
         icon: PauseCircle,
         isRunning: true,
         isKillable: true,
         isFailed: false,
-    }
+    },
+    CANCELLED: {
+        name: "CANCELLED",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: Cancel,
+        isRunning: false,
+        isKillable: false,
+        isFailed: true,
+    },
+    SKIPPED: {
+        name: "SKIPPED",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: Cancel,
+        isRunning: false,
+        isKillable: false,
+        isFailed: true,
+    },
+    QUEUED: {
+        name: "QUEUED",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: MotionPauseOutline,
+        isRunning: false,
+        isKillable: false,
+        isFailed: false,
+    },
+    RETRYING: {
+        name: "RETRYING",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: Refresh,
+        isRunning: false,
+        isKillable: true,
+        isFailed: false,
+    },
+    RETRIED: {
+        name: "RETRIED",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: Refresh,
+        isRunning: false,
+        isKillable: false,
+        isFailed: false,
+    },
 });
 
 export default class State {
@@ -129,6 +188,22 @@ export default class State {
         return STATE.PAUSED.name;
     }
 
+    static get CANCELLED() {
+        return STATE.CANCELLED.name;
+    }
+
+    static get QUEUED() {
+        return STATE.QUEUED.name;
+    }
+
+    static get RETRYING() {
+        return STATE.RETRYING.name;
+    }
+
+    static get RETRIED() {
+        return STATE.RETRIED.name;
+    }
+
     static isRunning(state:string) {
         return STATE[state] && STATE[state].isRunning;
     }
@@ -143,6 +218,10 @@ export default class State {
 
     static isFailed(state:string) {
         return STATE[state] && STATE[state].isFailed;
+    }
+
+    static isQueued(state:string) {
+        return STATE[state] && STATE[state] === STATE.QUEUED;
     }
 
     static allStates() {
@@ -160,14 +239,24 @@ export default class State {
     }
 
     static colorClass() {
-        return mapValues(STATE, (state: StateModel) => state.colorClass);
+        return mapValues(STATE, (state) => state.colorClass);
     }
 
     static color() {
-        return mapValues(STATE, () => "cssVariable(\"--bs-\" + state.colorClass)");
+        return mapValues(STATE, (state) =>
+            cssVariable("--bs-" + state.colorClass),
+        );
+    }
+
+    static getStateColor(state:string) {
+        return STATE[state].color;
     }
 
     static icon() {
-        return mapValues(STATE, (state:StateModel) => state.icon);
+        return mapValues(STATE, (state) => state.icon);
+    }
+
+    static getTerminatedStates() {
+        return Object.values(STATE).filter(state => !state.isRunning).map(state => state.name);
     }
 }
