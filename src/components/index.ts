@@ -5,12 +5,8 @@ export {default as DependenciesNode} from "./nodes/DependenciesNode.vue"
 export {default as Topology} from "./topology/Topology.vue";
 
 // misc
-export {default as ExecutionInformations} from "./misc/ExecutionInformations.vue";
 export {default as State} from "./misc/State.vue";
 export {default as TaskIcon} from "./misc/TaskIcon.vue";
-
-// buttons
-export {default as AddTaskButton} from "./buttons/AddTaskButton.vue";
 
 // plugins
 export {default as SchemaToHtml} from "./plugins/SchemaToHtml.vue";
