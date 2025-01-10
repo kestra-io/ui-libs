@@ -63,6 +63,18 @@ function getVariableScss(themeColors, colorIndex) {
  */
 function makePalettes(palette, paletteName, selector) {
     const baseColorNames = palette.filter(c => c.name.startsWith("base-color-palette/"))
+        .sort((a, b) => {
+            const aName = a.name.split("/").pop() ?? ""
+            const aNameRoot = aName?.split("-")[0] ?? ""
+            const bName = b.name.split("/").pop() ?? ""
+            const bNameRoot = bName?.split("-")[0] ?? ""
+            return aNameRoot !== bNameRoot 
+                ? aNameRoot.localeCompare(bNameRoot) 
+                : aName.length === bName.length
+                    ? aName.localeCompare(bName)
+                    : aName.length - bName.length
+        })
+        
     const colorIndex = baseColorNames.reduce((acc, color) => {
         acc[color.value] = color.name.split("/").pop()
         return acc
