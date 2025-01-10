@@ -1,4 +1,5 @@
 import Duration from "./Duration.vue"
+import State from "../../utils/state"
 
 export default {
     title: "Components/Misc/Duration",
@@ -13,6 +14,22 @@ export const Default = {
                 {date: new Date(), state: "SUCCESS"}
             ]
             return () => <Duration histories={histories} />
+        }
+    })
+}
+
+export const AllStates = {
+    render: () => ({
+        setup() {
+            const histories = (state) => [
+                {date: new Date(Date.now() - 5000), state},
+                {date: new Date(), state}
+            ]
+            return () => {
+                return <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {Object.keys(State.allStates()).map((state) => <div>{state} - <Duration key={state} histories={histories(state)} /></div>)}
+                </div>
+            }
         }
     })
 }
