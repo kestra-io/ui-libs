@@ -10,7 +10,7 @@
     defineOptions({
         name: "AddTaskButton",
     })
-      
+
     defineProps<{addTask?: boolean}>()
 </script>
 
@@ -21,11 +21,8 @@
         margin: 0.2rem;
         width: 25px;
         height: 25px;
-        border: 0.4px solid var(--bs-border-color);
-        background-color: var(--bs-white);
-        html.dark & {
-            background-color: var(--card-bg);
-        }
+        border: 0.4px solid var(--ks-border-primary);
+        background-color: var(--ks-background-card);
 
         &.text-danger {
             border-color: $red;

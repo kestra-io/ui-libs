@@ -22,9 +22,9 @@
             line-height: 1.25rem;
             padding: calc($spacer * 0.5) $spacer $spacer;
             background-color: transparent;
-            border-bottom: 4px solid var(--bs-border-color) !important;
+            border-bottom: 4px solid var(--ks-border-primary) !important;
             border-top: none;
-            color: var(--bs-body-color);
+            color: var(--ks-content-primary);
         }
     }
 
@@ -34,7 +34,7 @@
                 font-size: $font-size-sm;
                 padding: calc($spacer * 1.5) $spacer $spacer !important;
                 font-weight: 400;
-                color: var(--bs-body-color);
+                color: var(--ks-content-primary);
             }
         }
     }

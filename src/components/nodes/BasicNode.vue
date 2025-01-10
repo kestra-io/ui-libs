@@ -60,160 +60,160 @@
 </template>
 
 <script setup>
-    import TaskIcon from "../misc/TaskIcon.vue";
+import TaskIcon from "../misc/TaskIcon.vue";
 </script>
 
 <script>
-    import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
-    import {EVENTS} from "../../utils/constants";
-    import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
-    import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
-    import Tooltip from "../misc/Tooltip.vue";
-    import {mapState} from "vuex";
-    import Utils from "../../utils/Utils";
+import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
+import {EVENTS} from "../../utils/constants";
+import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
+import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
+import Tooltip from "../misc/Tooltip.vue";
+import {mapState} from "vuex";
+import Utils from "../../utils/Utils";
 
-    export default {
-        components: {
-            ArrowExpand,
-            InformationOutline,
-            OpenInNew,
-            Tooltip
+export default {
+    components: {
+        ArrowExpand,
+        InformationOutline,
+        OpenInNew,
+        Tooltip
+    },
+
+    emits: [
+        EVENTS.EXPAND,
+        EVENTS.OPEN_LINK,
+        EVENTS.SHOW_LOGS,
+        EVENTS.MOUSE_OVER,
+        EVENTS.MOUSE_LEAVE,
+        EVENTS.ADD_ERROR,
+        EVENTS.EDIT,
+        EVENTS.DELETE,
+        EVENTS.ADD_TASK,
+        EVENTS.SHOW_DESCRIPTION
+    ],
+    inheritAttrs: false,
+    props: {
+        id: {
+            type: String,
+            default: undefined
         },
-
-        emits: [
-            EVENTS.EXPAND,
-            EVENTS.OPEN_LINK,
-            EVENTS.SHOW_LOGS,
-            EVENTS.MOUSE_OVER,
-            EVENTS.MOUSE_LEAVE,
-            EVENTS.ADD_ERROR,
-            EVENTS.EDIT,
-            EVENTS.DELETE,
-            EVENTS.ADD_TASK,
-            EVENTS.SHOW_DESCRIPTION
-        ],
-        inheritAttrs: false,
-        props: {
-            id: {
-                type: String,
-                default: undefined
-            },
-            type: {
-                type: String,
-                default: undefined
-            },
-            disabled: {
-                type: Boolean,
-                default: undefined
-            },
-            state: {
-                type: String,
-                default: undefined
-            },
-            data: {
-                type: Object,
-                required: true
-            },
-            icons: {
-                type: Object,
-                default: undefined
-            },
-            iconComponent: {
-                type: Object,
-                default: undefined
+        type: {
+            type: String,
+            default: undefined
+        },
+        disabled: {
+            type: Boolean,
+            default: undefined
+        },
+        state: {
+            type: String,
+            default: undefined
+        },
+        data: {
+            type: Object,
+            required: true
+        },
+        icons: {
+            type: Object,
+            default: undefined
+        },
+        iconComponent: {
+            type: Object,
+            default: undefined
+        }
+    },
+    methods: {
+        mouseover() {
+            this.$emit(EVENTS.MOUSE_OVER, this.data.node);
+        },
+        mouseleave() {
+            this.$emit(EVENTS.MOUSE_LEAVE);
+        },
+    },
+    data() {
+        return {
+            filter: undefined,
+            isOpen: false,
+        };
+    },
+    computed: {
+        Utils() {
+            return Utils
+        },
+        ...mapState("execution", ["execution"]),
+        borderColor() {
+            const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
+            return color ? color : this.expandable ? "blue" : null
+        },
+        EVENTS() {
+            return EVENTS
+        },
+        expandable() {
+            return this.data?.expandable || false
+        },
+        description() {
+            const node = this.data.node.task ?? this.data.node.trigger ?? null
+            if (node) {
+                return node.description ?? null
+            }
+            return null
+        },
+        trimmedId() {
+            return Utils.afterLastDot(this.id);
+        },
+        taskIconBg() {
+            return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
+        },
+        stateColor() {
+            switch (this.state) {
+            case "RUNNING":
+                return "primary"
+            case "SUCCESS":
+                return "success"
+            case "WARNING":
+                return "warning"
+            case "FAILED":
+                return "danger"
+            default:
+                return null;
             }
         },
-        methods: {
-            mouseover() {
-                this.$emit(EVENTS.MOUSE_OVER, this.data.node);
-            },
-            mouseleave() {
-                this.$emit(EVENTS.MOUSE_LEAVE);
-            },
-        },
-        data() {
+        classes() {
             return {
-                filter: undefined,
-                isOpen: false,
-            };
-        },
-        computed: {
-            Utils() {
-                return Utils
-            },
-            ...mapState("execution", ["execution"]),
-            borderColor() {
-                const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
-                return color ? color : this.expandable ? "blue" : null
-            },
-            EVENTS() {
-                return EVENTS
-            },
-            expandable() {
-                return this.data?.expandable || false
-            },
-            description() {
-                const node = this.data.node.task ?? this.data.node.trigger ?? null
-                if (node) {
-                    return node.description ?? null
-                }
-                return null
-            },
-            trimmedId() {
-                return Utils.afterLastDot(this.id);
-            },
-            taskIconBg() {
-                return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
-            },
-            stateColor() {
-                switch (this.state) {
-                case "RUNNING":
-                    return "primary"
-                case "SUCCESS":
-                    return "success"
-                case "WARNING":
-                    return "warning"
-                case "FAILED":
-                    return "danger"
-                default:
-                    return null;
-                }
-            },
-            classes() {
-                return {
-                    "unused-path": this.data.unused,
-                    [`border-${this.borderColor}`]: this.borderColor,
-                    "disabled": this.data.node.task?.disabled,
-                    [this.$attrs.class]: true
-                }
-            },
-            cls() {
-                if (this.data.node.triggerDeclaration) {
-                    return this.data.node.triggerDeclaration.type;
-                }
-
-                if (!this.data.node?.task) {
-                    return undefined;
-                }
-
-                return this.data.node.task.type;
-            },
-            hoverTooltip() {
-                if (this.data.node.type.endsWith("SubflowGraphTask")) {
-                    const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
-
-                    return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
-                }
-
-                return this.trimmedId;
+                "unused-path": this.data.unused,
+                [`border-${this.borderColor}`]: this.borderColor,
+                "disabled": this.data.node.task?.disabled,
+                [this.$attrs.class]: true
             }
+        },
+        cls() {
+            if (this.data.node.triggerDeclaration) {
+                return this.data.node.triggerDeclaration.type;
+            }
+
+            if (!this.data.node?.task) {
+                return undefined;
+            }
+
+            return this.data.node.task.type;
+        },
+        hoverTooltip() {
+            if (this.data.node.type.endsWith("SubflowGraphTask")) {
+                const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
+
+                return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
+            }
+
+            return this.trimmedId;
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
     .node-wrapper {
-        background-color: var(--bs-white);
+        background-color: var(--ks-background-card);
 
         html.dark & {
             background-color: var(--bs-gray-300);
@@ -251,7 +251,7 @@
             margin: 0.2rem;
             width: 25px;
             height: 25px;
-            border: 0.4px solid var(--bs-border-color);
+            border: 0.4px solid var(--ks-border-primary);
         }
     }
 

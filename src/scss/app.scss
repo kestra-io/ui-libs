@@ -16,7 +16,7 @@
 }
 
 .vue-flow__controls {
-    border: 1px solid var(--bs-border-color);
+    border: 1px solid var(--ks-border-primary);
     border-radius: var(--bs-border-radius);
 }
 
@@ -29,7 +29,7 @@
     }
 
     html.dark & {
-        background: var(--bs-card-bg);
+        background: var(--ks-background-card);
         color: var(--bs-white);
 
         svg {
