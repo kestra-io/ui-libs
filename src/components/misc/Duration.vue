@@ -125,7 +125,7 @@
 
   @each $value in global-var.$statusList {
     .ks-duration-tt-square-#{$value} {
-        background-color: var(--ks-chart-#{$value}, var(--ks-content-#{$value}));
+        background-color: var(--ks-chart-#{$value});
     }
   }
 }
