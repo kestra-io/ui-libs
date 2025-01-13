@@ -10,6 +10,9 @@ jobs:
   storybook:
     name: Storybook
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+    
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,5 +24,6 @@ jobs:
       
       # publish storybook to gs
       - name: Publish storybook to Google Cloud
+        if: env.GOOGLE_SERVICE_ACCOUNT != 0
         run: |
           gsutil -m rsync -d -r ./storybook-static gs://internal-kestra-host//${{ format('{0}/{1}', github.repository, 'jacoco') }}
