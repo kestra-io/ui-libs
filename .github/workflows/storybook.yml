@@ -33,10 +33,7 @@ jobs:
 
       - name: Show built files list
         run: ls -l ./storybook-static
-      
-      # publish storybook to gs
+
       - name: Publish storybook to Google Cloud
-        uses: google-github-actions/upload-cloud-storage@v1
-        with:
-          path: ./storybook-static
-          destination: internal-kestra-host/${{ format('{0}/{1}', github.repository, 'storybook') }}
+        run: |
+          gsutil -m rsync -d -r storybook-static/ gs://internal-kestra-host//${{ format('{0}/{1}', github.repository, 'storybook') }}
