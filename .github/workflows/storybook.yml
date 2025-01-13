@@ -16,14 +16,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+
       - name: Install dependencies
         run: npm install
+
       - name: Build
         run: |
           npm run build-storybook
+      
+      - name: Auth to Google Cloud
+        id: auth
+        if: ${{ always() && env.GOOGLE_SERVICE_ACCOUNT != 0 }}
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}"
       
       # publish storybook to gs
       - name: Publish storybook to Google Cloud
         if: env.GOOGLE_SERVICE_ACCOUNT != 0
         run: |
-          gsutil -m rsync -d -r ./storybook-static gs://internal-kestra-host//${{ format('{0}/{1}', github.repository, 'jacoco') }}
+          gsutil -m rsync -d -r ./storybook-static gs://internal-kestra-host//${{ format('{0}/{1}', github.repository, 'storybook') }}
