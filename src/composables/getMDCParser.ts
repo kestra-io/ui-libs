@@ -8,7 +8,9 @@ export default async function getMDCParser() {
         return parser
     }
     
-    const {default: useMarkdownParser} = await import("./useMarkdownParser")
+    const mdParserExport = await import("./useMarkdownParser")
+
+    const useMarkdownParser = mdParserExport.default ?? mdParserExport
     
     // import wasm as assets
     await loadWasm(import("shiki/wasm"))
