@@ -37,6 +37,13 @@ Thanks to the **declarative YAML interface** for defining orchestration logic, e
 
 ![Adding new tasks in the UI](https://kestra.io/adding-tasks.gif)
 
+## How to use the library for local development
+
+Since the library is packaged and intended to be used in a production-ready way (dist), you're required to build the library and link it to your project for changes to be visibled. For easier debugging, source maps are included in the build.
+To build the library, `npm run build` should be enough. However it's not ideal for local development when you're doing a lot of changes.
+A better alternative is to use `npm run watch` on ui-libs which will rebuild everytime you make a change. Next up is to link your local build to your project. There is two ways to do that:
+- Replicate the behaviour of a true install by using `npm link` in ui-libs then in your implementing project use `npm link @kestra-io/ui-libs`. To sum up the npm link behaviour, without argument it creates a symlink to your current project in a local repository, then you reference a symlink in your implementing project by adding the package name as argument. While it has some advantages, in the current setup (no workspace) the npm link will be amended by any npm install or basically anything that impacts node_modules
+- Reference ui-libs folder using relative / absolute path from your implementing project as an argument to npm install: `npm install ../../../ui-libs`. Contrarily to the above method, it will be kept even after npm installs. However beware that it can have side effect as the library is a direct access and not handled the same way as a true npm install (you may have accesses to thing that are not in the final package upon npm release)
 
 ## Key concepts
 
