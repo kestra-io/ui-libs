@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build-storybook
+          npm run build-storybook -- -o storybook-static/storybook   
       
       - name: Auth to Google Cloud
         id: auth
