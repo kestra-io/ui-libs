@@ -1,4 +1,4 @@
-import ProseBlockquote from "./ProseBlockquote.vue"
+import ProseBlockquote from "../../../src/components/content/ProseBlockquote.vue"
 
 export default {
     title: "Components/Content/ProseBlockquote",

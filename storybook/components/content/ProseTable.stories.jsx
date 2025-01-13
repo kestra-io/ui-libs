@@ -1,4 +1,4 @@
-import ProseTable from "./ProseTable.vue"
+import ProseTable from "../../../src/components/content/ProseTable.vue"
 
 export default {
     title: "Components/Content/ProseTable",

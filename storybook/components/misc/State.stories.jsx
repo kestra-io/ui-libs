@@ -1,4 +1,4 @@
-import State from "./State.vue"
+import State from "../../../src/components/misc//State.vue"
 
 export default {
     title: "Components/Misc/State",

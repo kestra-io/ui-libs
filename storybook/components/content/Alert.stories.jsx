@@ -1,4 +1,4 @@
-import Alert from "./Alert.vue"
+import Alert from "../../../src/components/content/Alert.vue"
 
 export default {
     title: "Components/Content/Alert",

@@ -1,7 +1,7 @@
-import ShowCaseColors from "./ShowCaseColors.vue";
+import ShowCaseColors from "./Colors.vue";
 
 const meta = {
-    title: "theme/ShowCaseColors",
+    title: "theme/ShowCase",
     component: ShowCaseColors,
 }
 
@@ -10,6 +10,6 @@ export default meta;
 /**
  * @type {import('@storybook/vue3').StoryObj<typeof ShowCaseColors>}
  */
-export const ColorsPlayground = {
+export const Colors = {
     render: () => <ShowCaseColors />,
 }

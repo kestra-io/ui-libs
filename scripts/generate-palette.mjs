@@ -2,7 +2,7 @@
 
 import fs from "fs"
 import path from "path"
-import figma from "../theme/figma.json" with {type: "json"}
+import figma from "../storybook/figma.json" with {type: "json"}
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
 

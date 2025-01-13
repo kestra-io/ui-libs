@@ -1,4 +1,4 @@
-import Mermaid from "./Mermaid.vue"
+import Mermaid from "../../../src/components/content/Mermaid.vue"
 
 export default {
     title: "Components/Content/Mermaid",

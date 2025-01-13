@@ -1,4 +1,4 @@
-import TaskIcon from "./TaskIcon.vue"
+import TaskIcon from "../../../src/components/misc//TaskIcon.vue"
 
 export default {
     title: "Components/Misc/TaskIcon",

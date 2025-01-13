@@ -1,4 +1,4 @@
-import ConfigPropertyCard from "./ConfigPropertyCard.vue"
+import ConfigPropertyCard from "../../../src/components/content//ConfigPropertyCard.vue"
 
 export default {
     title: "Components/Content/ConfigPropertyCard",

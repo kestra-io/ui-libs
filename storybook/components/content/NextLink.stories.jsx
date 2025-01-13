@@ -1,4 +1,4 @@
-import NextLink from "./NextLink.vue"
+import NextLink from "../../../src/components/content/NextLink.vue"
 
 export default {
     title: "Components/Content/NextLink",

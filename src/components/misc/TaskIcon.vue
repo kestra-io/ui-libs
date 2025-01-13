@@ -77,12 +77,10 @@
     const icon = computed(() => {
         return props.cls ? (props.icons || {})[innerClassToParent(props.cls)] : props.customIcon;
     })
-        
-        
+
     function innerClassToParent(cls:string) {
         return cls.includes("$") ? cls.substring(0, cls.indexOf("$")) : cls;
     }
-        
 </script>
 
 <style lang="scss" scoped>

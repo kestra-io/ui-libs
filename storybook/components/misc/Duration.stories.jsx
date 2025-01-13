@@ -1,5 +1,5 @@
-import Duration from "./Duration.vue"
-import State from "../../utils/state"
+import Duration from "../../../src/components/misc/Duration.vue"
+import State from "../../../src/utils/state"
 
 export default {
     title: "Components/Misc/Duration",

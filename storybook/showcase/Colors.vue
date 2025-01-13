@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-    import cssVariablesThemes from "./css-variables.json";
-    import ShowCaseColorsSample from "./ShowCaseColorsSample.vue";
+    import cssVariablesThemes from "../css-variables.json";
+    import ShowCaseColorsSample from "./ColorsSample.vue";
 </script>
 
 <style scoped>

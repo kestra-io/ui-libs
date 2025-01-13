@@ -1,4 +1,4 @@
-import ProsePre from "./ProsePre.vue"
+import ProsePre from "../../../src/components/content/ProsePre.vue"
 
 export default {
     title: "Components/Content/ProsePre",
