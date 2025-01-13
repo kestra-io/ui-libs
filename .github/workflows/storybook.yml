@@ -44,5 +44,5 @@ jobs:
         with:
           body: |
            Storybook published on 
-           https://internal.dev.kestra.io/ui-libs/storybook/storybook-static
+           https://internal.dev.kestra.io/ui-libs/${{ github.ref_name }}/storybook
           reactions: 'hooray'
