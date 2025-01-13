@@ -39,4 +39,4 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: ./storybook-static
-          destination: gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, 'storybook') }}
+          destination: internal-kestra-host/${{ format('{0}/{1}', github.repository, 'storybook') }}
