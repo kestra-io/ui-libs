@@ -634,7 +634,7 @@ export default {
           markerEnd: this.isClusterRootOrEnd(nodeByUid[newEdge.target])
             ? ""
             : {
-                id: "marker-" + (nodeByUid[newEdge.target].branchType ? nodeByUid[newEdge.target].branchType.toLocaleLowerCase() : "custom"),
+                id: "marker-" + (nodeByUid[newEdge.target].branchType ? nodeByUid[newEdge.target].branchType?.toLocaleLowerCase() : "custom"),
                 type: MarkerType.ArrowClosed,
                 color: edgeColor ? `var(--ks-border-${edgeColor})` : "var(--ks-topology-edge-color)"
               },
