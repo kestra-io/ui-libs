@@ -110,7 +110,7 @@
 </script>
 
 <style lang="scss">
-@use "../src/scss/variables.scss" as global-var;
+@use "../../scss/variables.scss" as global-var;
 .ks-duration-tt {
   text-align: left;
   white-space: nowrap;
@@ -123,7 +123,7 @@
     margin-right: 5px;
   }
 
-  @each $value in $statusList {
+  @each $value in global-var.$statusList {
     .ks-duration-tt-square-#{$value} {
         background-color: var(--ks-chart-#{$value}, var(--ks-content-#{$value}));
     }
