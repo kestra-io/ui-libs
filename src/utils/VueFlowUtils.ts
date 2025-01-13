@@ -512,7 +512,7 @@ export default {
         elements.push({
           id: clusterUid,
           type: "cluster",
-          parentNode: parentNode?.uid,
+          parentNode: parentNode,
           position: this.getNodePosition(
             dagreNode,
             parentNode ? dagreGraph.node(parentNode) : undefined
@@ -536,7 +536,7 @@ export default {
               : false,
           },
           class: `bg-light-${clusterColor}-border rounded p-2`,
-        });
+        } as any);
       }
     }
 
