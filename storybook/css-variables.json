@@ -67,7 +67,10 @@
   "chart": [
     "ks-chart-cancelled",
     "ks-chart-created",
+    "ks-chart-debug",
+    "ks-chart-error",
     "ks-chart-failed",
+    "ks-chart-info",
     "ks-chart-killed",
     "ks-chart-killing",
     "ks-chart-paused",
@@ -77,6 +80,8 @@
     "ks-chart-retrying",
     "ks-chart-running",
     "ks-chart-success",
+    "ks-chart-trace",
+    "ks-chart-warn",
     "ks-chart-warning"
   ],
   "content": [
@@ -129,11 +134,6 @@
     "ks-log-border-info",
     "ks-log-border-trace",
     "ks-log-border-warn",
-    "ks-log-chart-debug",
-    "ks-log-chart-error",
-    "ks-log-chart-info",
-    "ks-log-chart-log-warn",
-    "ks-log-chart-trace",
     "ks-log-content-debug",
     "ks-log-content-error",
     "ks-log-content-info",

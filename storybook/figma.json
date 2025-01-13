@@ -136,13 +136,13 @@
           },
           {
             "name": "base-color-palette/neutral/gray-100",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "",
             "rootAlias": ""
           },
           {
             "name": "base-color-palette/neutral/gray-200",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "",
             "rootAlias": ""
           },
@@ -568,7 +568,7 @@
           },
           {
             "name": "ks/background-table-row",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "base-color-palette/neutral/gray-100",
             "rootAlias": "base-color-palette/neutral/gray-100"
           },
@@ -580,7 +580,7 @@
           },
           {
             "name": "ks/background-tag",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -634,7 +634,7 @@
           },
           {
             "name": "ks/border-inactive",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "base-color-palette/neutral/gray-100",
             "rootAlias": "base-color-palette/neutral/gray-100"
           },
@@ -658,13 +658,13 @@
           },
           {
             "name": "ks/border-paused",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
             "name": "ks/border-primary",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -700,7 +700,7 @@
           },
           {
             "name": "ks/border-secondary",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "base-color-palette/neutral/gray-100",
             "rootAlias": "base-color-palette/neutral/gray-100"
           },
@@ -754,7 +754,7 @@
           },
           {
             "name": "ks/button-background-secondary-active",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "base-color-palette/neutral/gray-100",
             "rootAlias": "base-color-palette/neutral/gray-100"
           },
@@ -801,10 +801,28 @@
             "rootAlias": "base-color-palette/blue/blue-500"
           },
           {
+            "name": "ks/chart-debug",
+            "value": "#7fbbff",
+            "var": "base-color-palette/blue/blue-200",
+            "rootAlias": "base-color-palette/blue/blue-200"
+          },
+          {
+            "name": "ks/chart-error",
+            "value": "#fd7278",
+            "var": "base-color-palette/red/red-300",
+            "rootAlias": "base-color-palette/red/red-300"
+          },
+          {
             "name": "ks/chart-failed",
             "value": "#fd7278",
             "var": "base-color-palette/red/red-300",
             "rootAlias": "base-color-palette/red/red-300"
+          },
+          {
+            "name": "ks/chart-info",
+            "value": "#5bb8ff",
+            "var": "base-color-palette/blue/blue-300",
+            "rootAlias": "base-color-palette/blue/blue-300"
           },
           {
             "name": "ks/chart-killed",
@@ -859,6 +877,18 @@
             "value": "#02be8a",
             "var": "base-color-palette/green/green-400",
             "rootAlias": "base-color-palette/green/green-400"
+          },
+          {
+            "name": "ks/chart-trace",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
+          },
+          {
+            "name": "ks/chart-warn",
+            "value": "#eeae7e",
+            "var": "base-color-palette/orange/orange-200",
+            "rootAlias": "base-color-palette/orange/orange-200"
           },
           {
             "name": "ks/chart-warning",
@@ -1012,7 +1042,7 @@
           },
           {
             "name": "ks/dialog-border",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -1125,36 +1155,6 @@
             "rootAlias": "base-color-palette/orange/orange-400"
           },
           {
-            "name": "ks/log-chart-debug",
-            "value": "#7fbbff",
-            "var": "base-color-palette/blue/blue-200",
-            "rootAlias": "base-color-palette/blue/blue-200"
-          },
-          {
-            "name": "ks/log-chart-error",
-            "value": "#fd7278",
-            "var": "base-color-palette/red/red-300",
-            "rootAlias": "base-color-palette/red/red-300"
-          },
-          {
-            "name": "ks/log-chart-info",
-            "value": "#5bb8ff",
-            "var": "base-color-palette/blue/blue-300",
-            "rootAlias": "base-color-palette/blue/blue-300"
-          },
-          {
-            "name": "ks/log-chart-log-warn",
-            "value": "#eeae7e",
-            "var": "base-color-palette/orange/orange-200",
-            "rootAlias": "base-color-palette/orange/orange-200"
-          },
-          {
-            "name": "ks/log-chart-trace",
-            "value": "#ecebef",
-            "var": "base-color-palette/neutral/gray-200",
-            "rootAlias": "base-color-palette/neutral/gray-200"
-          },
-          {
             "name": "ks/log-content-debug",
             "value": "#134ecc",
             "var": "base-color-palette/blue/blue-600",
@@ -1204,13 +1204,13 @@
           },
           {
             "name": "ks/select-border",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
             "name": "ks/select-hover",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -1222,7 +1222,7 @@
           },
           {
             "name": "ks/tag-background-hover",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -2047,10 +2047,28 @@
             "rootAlias": "base-color-palette/blue/blue-400"
           },
           {
+            "name": "ks/chart-debug",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
+            "name": "ks/chart-error",
+            "value": "#fd7278",
+            "var": "base-color-palette/red/red-300",
+            "rootAlias": "base-color-palette/red/red-300"
+          },
+          {
             "name": "ks/chart-failed",
             "value": "#fd7278",
             "var": "base-color-palette/red/red-300",
             "rootAlias": "base-color-palette/red/red-300"
+          },
+          {
+            "name": "ks/chart-info",
+            "value": "#1761fd",
+            "var": "base-color-palette/blue/blue-500",
+            "rootAlias": "base-color-palette/blue/blue-500"
           },
           {
             "name": "ks/chart-killed",
@@ -2072,7 +2090,7 @@
           },
           {
             "name": "ks/chart-queued",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -2105,6 +2123,18 @@
             "value": "#21ce9c",
             "var": "base-color-palette/green/green-300",
             "rootAlias": "base-color-palette/green/green-300"
+          },
+          {
+            "name": "ks/chart-trace",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
+          },
+          {
+            "name": "ks/chart-warn",
+            "value": "#eeae7e",
+            "var": "base-color-palette/orange/orange-200",
+            "rootAlias": "base-color-palette/orange/orange-200"
           },
           {
             "name": "ks/chart-warning",
@@ -2186,7 +2216,7 @@
           },
           {
             "name": "ks/content-paused",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -2198,7 +2228,7 @@
           },
           {
             "name": "ks/content-queued",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -2228,7 +2258,7 @@
           },
           {
             "name": "ks/content-secondary",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
@@ -2371,36 +2401,6 @@
             "rootAlias": "base-color-palette/orange/orange-300"
           },
           {
-            "name": "ks/log-chart-debug",
-            "value": "#3991ff",
-            "var": "base-color-palette/blue/blue-400",
-            "rootAlias": "base-color-palette/blue/blue-400"
-          },
-          {
-            "name": "ks/log-chart-error",
-            "value": "#fd7278",
-            "var": "base-color-palette/red/red-300",
-            "rootAlias": "base-color-palette/red/red-300"
-          },
-          {
-            "name": "ks/log-chart-info",
-            "value": "#1761fd",
-            "var": "base-color-palette/blue/blue-500",
-            "rootAlias": "base-color-palette/blue/blue-500"
-          },
-          {
-            "name": "ks/log-chart-log-warn",
-            "value": "#eeae7e",
-            "var": "base-color-palette/orange/orange-200",
-            "rootAlias": "base-color-palette/orange/orange-200"
-          },
-          {
-            "name": "ks/log-chart-trace",
-            "value": "#9797a6",
-            "var": "base-color-palette/neutral/gray-300",
-            "rootAlias": "base-color-palette/neutral/gray-300"
-          },
-          {
             "name": "ks/log-content-debug",
             "value": "#a2cdff",
             "var": "base-color-palette/blue/blue-100",
@@ -2420,7 +2420,7 @@
           },
           {
             "name": "ks/log-content-trace",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "base-color-palette/neutral/gray-100",
             "rootAlias": "base-color-palette/neutral/gray-100"
           },

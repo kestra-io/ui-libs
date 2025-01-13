@@ -92,5 +92,5 @@ function makePalettes(palette, paletteName, selector) {
 
     // write the css variables into an index for theme documentation
     // NOTE: we assume that all themes will have the same variables and write the same file over and over
-    fs.writeFileSync(path.resolve(__dirname, "../theme/css-variables.json"), JSON.stringify(cssVariableNames, null, 2), {encoding: "utf-8"})
+    fs.writeFileSync(path.resolve(__dirname, "../storybook/css-variables.json"), JSON.stringify(cssVariableNames, null, 2), {encoding: "utf-8"})
 }
