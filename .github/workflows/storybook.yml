@@ -45,4 +45,4 @@ jobs:
           body: |
            Storybook published on 
            https://internal.dev.kestra.io/ui-libs/storybook
-          reactions: 'tada'
+          reactions: 'hooray'
