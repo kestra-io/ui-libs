@@ -4,13 +4,13 @@
             <span
                 v-for="(history, index) in filteredHistories"
                 :key="'tt-' + index"
-                class="duration-tt"
+                class="ks-duration-tt"
             >
-                <span class="square" :class="squareClass(history.state)" />
+                <span class="ks-duration-tt-square" :class="squareClass(history.state)" />
                 <strong>{{ history.state }}: </strong>{{ Utils.dateFilter(history.date.toString(), "iso") }} <br>
             </span>
         </template>
-
+        
         <template #default>
             <span v-html="duration" />
         </template>
@@ -50,9 +50,11 @@
     const start = computed(() => {
         return props.histories?.length && new Date(props.histories[0].date.toString()).getTime();
     });
+
     const lastStep = computed(() => {
         return props.histories[props.histories.length - 1];
     });
+
     const filteredHistories = computed(() => {
         return props.histories.filter((h) => h.date && h.state);
     });
@@ -74,23 +76,32 @@
             refreshHandler.value = undefined;
         }
     }
+
     function delta() {
         return stop() - start.value;
     }
+
     function stop() {
         if (!props.histories || State.isRunning(lastStep.value.state)) {
             return +new Date();
         }
         return new Date(lastStep.value.date.toString()).getTime();
     }
+
     function computeDuration() {
         duration.value =
             filteredHistories.value.length === 0
                 ? "&nbsp;"
                 : Utils.humanDuration(delta() / 1000);
     }
+
+    const STATE_REMAPPING: Record<string, string> = {
+        "FAILED": "error",
+    }
+
     function squareClass(state: string) {
-        return ["bg-" + State.colorClass()[state]];
+        const remappedState = STATE_REMAPPING[state] ?? state.toLowerCase();
+        return "ks-duration-tt-square-" + remappedState;
     }
 
     onBeforeUnmount(() => {
@@ -99,16 +110,23 @@
 </script>
 
 <style lang="scss">
-.duration-tt {
+@use "../src/scss/variables.scss" as global-var;
+.ks-duration-tt {
   text-align: left;
   white-space: nowrap;
   max-width: none;
 
-  .square {
+  .ks-duration-tt-square {
     display: inline-block;
     width: 10px;
     height: 10px;
     margin-right: 5px;
+  }
+
+  @each $value in $statusList {
+    .ks-duration-tt-square-#{$value} {
+        background-color: var(--ks-chart-#{$value}, var(--ks-content-#{$value}));
+    }
   }
 }
 </style>
