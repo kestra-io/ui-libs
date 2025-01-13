@@ -113,3 +113,13 @@
         inheritAttrs: false,
     };
 </script>
+
+<style scoped>
+    .stroke-error {
+        stroke: var(--ks-border-error);
+    }
+
+    .stroke-warning {
+        stroke: var(--ks-border-warning);
+    }
+</style>

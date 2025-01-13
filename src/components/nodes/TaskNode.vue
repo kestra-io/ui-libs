@@ -18,7 +18,7 @@
         </template>
         <template #badge-button-before>
             <span
-                v-if="data.node.task.runIf"
+                v-if="data.node.task && data.node.task.runIf"
                 class="circle-button"
                 :class="[`bg-warning`]"
                 @click="$emit(EVENTS.SHOW_CONDITION, {id: taskId, task: data.node.task, section: SECTIONS.TASKS})"

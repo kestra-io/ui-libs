@@ -6,10 +6,15 @@ import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
 
 const TRIGGERS_NODE_UID = "root.Triggers";
 
+enum BranchType {
+    ERROR = "ERROR",
+    FINALLY = "FINALLY"
+}
+
 interface MinimalNode {
     unused?: boolean;
     executionId?: string;
-    error?: boolean;
+    branchType?: BranchType;
     uid: string;
     type: string;
     task?: {
@@ -31,11 +36,11 @@ interface Cluster {
             flowId: string
         }
     }
-    error: boolean
+    branchType: BranchType
 }
 
-export interface FlowGraph { 
-    nodes: MinimalNode[]; 
+export interface FlowGraph {
+    nodes: MinimalNode[];
     clusters: {
         cluster: Cluster;
         nodes: string[];
@@ -43,7 +48,7 @@ export interface FlowGraph {
             uid: string;
         }[];
     }[];
-    edges: GraphEdge[] 
+    edges: GraphEdge[]
 }
 
 type EdgeReplacer = Record<string, string>
@@ -210,11 +215,11 @@ export default {
     y: number;
     width: number;
     height: number;
-  }, parent?: { 
+  }, parent?: {
     x: number;
     y: number;
     width: number;
-    height: number; 
+    height: number;
 }) {
     const position = {x: n.x - n.width / 2, y: n.y - n.height / 2};
 
@@ -230,17 +235,17 @@ export default {
   getNodeWidth(node: MinimalNode) {
     return this.isTaskNode(node) || this.isTriggerNode(node)
       ? NODE_SIZES.TASK_WIDTH
-      : this.isCollapsedCluster(node)
+      : (this.isCollapsedCluster(node)
       ? NODE_SIZES.COLLAPSED_CLUSTER_WIDTH
-      : NODE_SIZES.DOT_WIDTH;
+      : NODE_SIZES.DOT_WIDTH);
   },
 
   getNodeHeight(node: MinimalNode) {
     return this.isTaskNode(node) || this.isTriggerNode(node)
       ? NODE_SIZES.TASK_HEIGHT
-      : this.isCollapsedCluster(node)
+      : (this.isCollapsedCluster(node)
       ? NODE_SIZES.COLLAPSED_CLUSTER_HEIGHT
-      : NODE_SIZES.DOT_HEIGHT;
+      : NODE_SIZES.DOT_HEIGHT);
   },
 
   isTaskNode(node: MinimalNode) {
@@ -292,10 +297,6 @@ export default {
       return "success";
     }
 
-    if (node.type === "dot") {
-      return null;
-    }
-
     if (this.isTriggerNode(node) || this.isCollapsedCluster(node)) {
       return "success";
     }
@@ -303,9 +304,15 @@ export default {
     if (node.type.endsWith("SubflowGraphTask")) {
       return "primary";
     }
-    if (node.error) {
+
+    if (node.branchType == BranchType.ERROR) {
       return "danger";
     }
+
+    if (node.branchType == BranchType.FINALLY) {
+      return "warning";
+    }
+
     if (collapsed.has(node.uid)) {
       return "blue";
     }
@@ -313,9 +320,9 @@ export default {
     return "default";
   },
 
-  haveAdd(edge:GraphEdge, 
-    nodeByUid:Record<string, MinimalNode>, 
-    clustersRootTaskUids:string[], 
+  haveAdd(edge:GraphEdge,
+    nodeByUid:Record<string, MinimalNode>,
+    clustersRootTaskUids:string[],
     readOnlyUidPrefixes:string[]) {
     // prevent subflow edit (edge = subflowNode -> subflowNode)
     if (
@@ -380,16 +387,13 @@ export default {
   getEdgeColor(edge:GraphEdge, nodeByUid:Record<string, MinimalNode>,) {
     const sourceNode = nodeByUid[edge.source];
     const targetNode = nodeByUid[edge.target];
-    if (sourceNode.error && targetNode.error) {
-      return "danger";
+
+    if (targetNode.branchType === BranchType.ERROR || sourceNode.branchType === BranchType.ERROR) {
+      return "error";
     }
 
-    if (sourceNode.type.endsWith("GraphClusterRoot") && targetNode.error) {
-      return "danger";
-    }
-
-    if (sourceNode.error && targetNode.type.endsWith("GraphClusterEnd")) {
-      return "danger";
+    if (targetNode.branchType === BranchType.FINALLY || sourceNode.branchType === BranchType.FINALLY) {
+      return "warning";
     }
 
     return null;
@@ -621,6 +625,7 @@ export default {
         hiddenNodes
       );
       if (newEdge) {
+        const edgeColor = this.getEdgeColor(edge, nodeByUid);
         elements.push({
           id: newEdge.source + "|" + newEdge.target,
           source: newEdge.source,
@@ -629,10 +634,9 @@ export default {
           markerEnd: this.isClusterRootOrEnd(nodeByUid[newEdge.target])
             ? ""
             : {
-                id: nodeByUid[newEdge.target].error
-                  ? "marker-danger"
-                  : "marker-custom",
+                id: "marker-" + (nodeByUid[newEdge.target].branchType ? nodeByUid[newEdge.target].branchType.toLocaleLowerCase() : "custom"),
                 type: MarkerType.ArrowClosed,
+                color: edgeColor ? `var(--ks-border-${edgeColor})` : "var(--ks-topology-edge-color)"
               },
           data: {
             haveAdd:
@@ -648,7 +652,7 @@ export default {
               nodeByUid[edge.source].type.endsWith("GraphTrigger") ||
               nodeByUid[edge.target].type.endsWith("GraphTrigger") ||
               edge.source.startsWith(TRIGGERS_NODE_UID),
-            color: this.getEdgeColor(edge, nodeByUid),
+            color: edgeColor,
             unused: (edge as any).unused,
           },
           style: {
@@ -662,7 +666,7 @@ export default {
   },
 
   isClusterRootOrEnd(node:MinimalNode) {
-    return ["GraphClusterRoot", "GraphClusterEnd"].some((s) =>
+    return ["GraphClusterRoot", "GraphClusterFinally", "GraphClusterEnd"].some((s) =>
       node.type.endsWith(s)
     );
   },
@@ -676,7 +680,7 @@ export default {
       return "primary";
     }
 
-    if (cluster.error) {
+    if (cluster.branchType === BranchType.ERROR) {
       return "danger";
     }
 

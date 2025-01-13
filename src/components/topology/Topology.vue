@@ -274,7 +274,7 @@
 
     onNodeDragStop((e:any) => {
         dragging.value = false;
-        if (checkIntersections(e.intersections, e.node) === null) {
+        if (e.intersections && checkIntersections(e.intersections, e.node) === null) {
             const taskNode1 = e.node;
             // check multiple intersection with task
             const taskNode2 = e.intersections.find((n:any) => n.type === "task");
@@ -323,7 +323,7 @@
                 n.style = {...n.style, opacity: "1"}
             }
         })
-        if (!checkIntersections(e.intersections, e.node) && e.intersections.filter((n:any) => n.type === "task").length === 1) {
+        if (e.intersections && !checkIntersections(e.intersections, e.node) && e.intersections.filter((n:any) => n.type === "task").length === 1) {
             e.intersections.forEach((n:any) => {
                 if (n.type === "task") {
                     n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-primary")}

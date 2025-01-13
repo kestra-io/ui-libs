@@ -38,6 +38,10 @@
     }
 }
 
+:root {
+    #{--ks-topology-edge-color}: #9A8EB4;
+}
+
 .vue-flow__container {
     .top-button-div {
         position: absolute;
@@ -52,22 +56,11 @@
         pointer-events: none !important;
     }
 
-
-    marker[id*='id=marker-custom&type=arrowclosed'] polyline {
-        stroke: #9A8EB4;
-        fill: #9A8EB4;
-    }
-
-    marker[id*='id=marker-danger&type=arrowclosed'] polyline {
-        stroke: $red;
-        fill: $red;
-    }
-
     .vue-flow__handle {
         opacity: 0 !important;
     }
 
     .vue-flow__edge-path {
-        stroke: #9A8EB4;
+        stroke: var(--ks-topology-edge-color);
     }
 }
