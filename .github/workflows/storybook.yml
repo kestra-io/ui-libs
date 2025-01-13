@@ -37,12 +37,12 @@ jobs:
 
       - name: Publish storybook to Google Cloud
         run: |
-          gsutil -m rsync -d -r storybook-static/ gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, 'storybook') }}
+          gsutil -m rsync -d -r storybook-static/storybook gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, github.ref_name) }}
 
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
         with:
           body: |
            Storybook published on 
-           https://internal.dev.kestra.io/ui-libs/storybook
+           https://internal.dev.kestra.io/ui-libs/storybook/storybook-static
           reactions: 'hooray'

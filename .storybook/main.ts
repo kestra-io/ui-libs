@@ -10,6 +10,9 @@ const config = {
         name: "@storybook/vue3-vite",
         options: {},
     },
+    build: {
+        outputDir: "storybook-static/storybook",
+    },
 };
 
 export default config;
