@@ -1,4 +1,5 @@
-import {shallowRef} from "vue";
+import {shallowRef, ref, nextTick} from "vue";
+import {useVueFlow} from "@vue-flow/core";
 import lodash from "lodash";
 
 import TopologyComponent from "../../../src/components/topology/Topology.vue";
@@ -13,15 +14,23 @@ const base = {
     render: (args, {loaded: {flowGraph, source}}) => ({
         components: {TopologyComponent},
         setup() {
-            return {args, flowGraph: flowGraph, source: source};
+            const vueflowId = ref(Math.random().toString());
+            const {
+                fitView
+            } = useVueFlow({id: vueflowId.value});
+
+            nextTick(() => {
+                fitView();
+            });
+
+            return () => <TopologyComponent {...args} source={source} flowGraph={flowGraph} />;
         },
-        template: `<TopologyComponent v-bind="args" :source="source" :flow-graph="flowGraph" />`,
     }),
-    decorators: [() => ({
-        template: `<div style="outline: 1px solid var(--ks-select-border);width: calc(100vw - 2rem);height: calc(100vh - 2rem);">
-                <story />
-            </div>`
-    })],
+    // decorators: [() => ({
+    //     template: `<div style="outline: 1px solid var(--ks-select-border);width: calc(100vw - 2rem);height: calc(100vh - 2rem);">
+    //             <story />
+    //         </div>`
+    // })],
     args: {
         id: "test",
         isHorizontal: true,

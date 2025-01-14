@@ -34,8 +34,9 @@
         
     onMounted(async () => {
         nextTick(async () => {
+            const Bootstrap = await bootstrap
             if (typeof document !== "undefined" && $tooltip.value && $tooltipContent.value) {
-                tooltip.value = new (await bootstrap).Tooltip($tooltip.value, {
+                tooltip.value = new Bootstrap.Tooltip($tooltip.value, {
                     trigger: "hover",
                     html: true,
                     placement: props.placement,
