@@ -8,6 +8,8 @@
     Event-driven declarative orchestrator to simplify data operations <br>
 </h1>
 
+[![](https://img.shields.io/npm/v/@kestra-io/ui-libs.svg)](https://www.npmjs.com/package/@kestra-io/ui-libs)
+
 Kestra UI library implemented in both the website and the application UI.
 
 Install with npm: `npm install @kestra/ui-library`
