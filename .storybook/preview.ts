@@ -7,7 +7,6 @@ import "../src/scss/vendor.scss";
 import "../src/scss/ks-theme-light.scss";
 import "../src/scss/ks-theme-dark.scss";
 import "./app.scss";
-import "../src/scss/app.scss";
 
 /** @type { import('@storybook/vue3').Preview } */
 const preview = {
