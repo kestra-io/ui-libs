@@ -102,15 +102,6 @@
         }
     }
 
-    .circle-button {
-        border-radius: 1rem;
-        width: 1rem;
-        height: 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
     .button-icon {
         font-size: 0.75rem;
     }

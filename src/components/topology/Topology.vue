@@ -406,3 +406,5 @@
         opacity: 0.3;
     }
 </style>
+
+<style lang="scss" src="./topology.scss" />
