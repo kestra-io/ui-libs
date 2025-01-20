@@ -20,6 +20,7 @@ html.dark{
 	#{--ks-background-retried}: #578dff33;
 	#{--ks-background-retrying}: rgba($base-blue-500, 0.2);
 	#{--ks-background-running}: rgba($base-blue-500, 0.2);
+	#{--ks-background-skipped}: $base-gray-500;
 	#{--ks-background-success}: rgba($base-green-900, 0.2);
 	#{--ks-background-table-header}: $base-gray-600;
 	#{--ks-background-table-row}: $base-gray-400;
@@ -49,6 +50,7 @@ html.dark{
 	#{--ks-border-retrying}: $base-blue-200;
 	#{--ks-border-running}: $base-blue-400;
 	#{--ks-border-secondary}: $base-gray-500;
+	#{--ks-border-skipped}: $base-gray-300;
 	#{--ks-border-success}: $base-green-400;
 	#{--ks-border-system}: $base-blue-300;
 	#{--ks-border-warning}: $base-orange-300;
@@ -81,6 +83,7 @@ html.dark{
 	#{--ks-chart-retried}: $base-blue-100;
 	#{--ks-chart-retrying}: $base-blue-200;
 	#{--ks-chart-running}: $base-blue-300;
+	#{--ks-chart-skipped}: $base-gray-300;
 	#{--ks-chart-success}: $base-green-300;
 	#{--ks-chart-trace}: $base-gray-300;
 	#{--ks-chart-warn}: $base-orange-200;
@@ -107,6 +110,7 @@ html.dark{
 	#{--ks-content-retrying}: $base-blue-50;
 	#{--ks-content-running}: $base-blue-100;
 	#{--ks-content-secondary}: $base-gray-200;
+	#{--ks-content-skipped}: $base-gray-200;
 	#{--ks-content-success}: $base-green-100;
 	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-200;

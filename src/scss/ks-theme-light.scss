@@ -20,6 +20,7 @@
 	#{--ks-background-retried}: rgba($base-blue-500, 0.2);
 	#{--ks-background-retrying}: $base-blue-50;
 	#{--ks-background-running}: $base-blue-50;
+	#{--ks-background-skipped}: #b2b2b542;
 	#{--ks-background-success}: $base-green-50;
 	#{--ks-background-table-header}: $base-gray-50;
 	#{--ks-background-table-row}: $base-gray-100;
@@ -49,6 +50,7 @@
 	#{--ks-border-retrying}: $base-blue-500;
 	#{--ks-border-running}: $base-blue-400;
 	#{--ks-border-secondary}: $base-gray-100;
+	#{--ks-border-skipped}: $base-gray-200;
 	#{--ks-border-success}: $base-green-300;
 	#{--ks-border-system}: $base-blue-400;
 	#{--ks-border-warning}: $base-orange-300;
@@ -75,12 +77,13 @@
 	#{--ks-chart-info}: $base-blue-300;
 	#{--ks-chart-killed}: $base-yellow-200;
 	#{--ks-chart-killing}: $base-yellow-300;
-	#{--ks-chart-paused}: $base-yellow-500;
+	#{--ks-chart-paused}: $base-gray-200;
 	#{--ks-chart-queued}: $base-yellow-100;
 	#{--ks-chart-restarted}: $base-blue-50;
 	#{--ks-chart-retried}: $base-blue-100;
 	#{--ks-chart-retrying}: $base-blue-200;
 	#{--ks-chart-running}: $base-blue-300;
+	#{--ks-chart-skipped}: $base-gray-200;
 	#{--ks-chart-success}: $base-green-400;
 	#{--ks-chart-trace}: $base-gray-200;
 	#{--ks-chart-warn}: $base-orange-200;
@@ -107,6 +110,7 @@
 	#{--ks-content-retrying}: $base-blue-700;
 	#{--ks-content-running}: $base-blue-600;
 	#{--ks-content-secondary}: $base-gray-700;
+	#{--ks-content-skipped}: $base-gray-500;
 	#{--ks-content-success}: $base-green-700;
 	#{--ks-content-tertiary}: $base-gray-500;
 	#{--ks-content-warning}: $base-orange-500;

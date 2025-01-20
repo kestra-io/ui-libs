@@ -555,6 +555,12 @@
             "rootAlias": "base-color-palette/blue/blue-50"
           },
           {
+            "name": "ks/background-skipped",
+            "value": "#b2b2b542",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
             "name": "ks/background-success",
             "value": "#e4f9f3",
             "var": "base-color-palette/green/green-50",
@@ -705,6 +711,12 @@
             "rootAlias": "base-color-palette/neutral/gray-100"
           },
           {
+            "name": "ks/border-skipped",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
+          },
+          {
             "name": "ks/border-success",
             "value": "#21ce9c",
             "var": "base-color-palette/green/green-300",
@@ -838,9 +850,9 @@
           },
           {
             "name": "ks/chart-paused",
-            "value": "#fce07c",
-            "var": "base-color-palette/yellow/yellow-500",
-            "rootAlias": "base-color-palette/yellow/yellow-500"
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
             "name": "ks/chart-queued",
@@ -871,6 +883,12 @@
             "value": "#5bb8ff",
             "var": "base-color-palette/blue/blue-300",
             "rootAlias": "base-color-palette/blue/blue-300"
+          },
+          {
+            "name": "ks/chart-skipped",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
             "name": "ks/chart-success",
@@ -1015,6 +1033,12 @@
             "value": "#21242e",
             "var": "base-color-palette/neutral/gray-700",
             "rootAlias": "base-color-palette/neutral/gray-700"
+          },
+          {
+            "name": "ks/content-skipped",
+            "value": "#2f3342",
+            "var": "base-color-palette/neutral/gray-500",
+            "rootAlias": "base-color-palette/neutral/gray-500"
           },
           {
             "name": "ks/content-success",
@@ -1801,6 +1825,12 @@
             "rootAlias": ""
           },
           {
+            "name": "ks/background-skipped",
+            "value": "#2f3342",
+            "var": "base-color-palette/neutral/gray-500",
+            "rootAlias": "base-color-palette/neutral/gray-500"
+          },
+          {
             "name": "ks/background-success",
             "value": "#00231933",
             "var": "",
@@ -1949,6 +1979,12 @@
             "value": "#2f3342",
             "var": "base-color-palette/neutral/gray-500",
             "rootAlias": "base-color-palette/neutral/gray-500"
+          },
+          {
+            "name": "ks/border-skipped",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
           },
           {
             "name": "ks/border-success",
@@ -2119,6 +2155,12 @@
             "rootAlias": "base-color-palette/blue/blue-300"
           },
           {
+            "name": "ks/chart-skipped",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
+          },
+          {
             "name": "ks/chart-success",
             "value": "#21ce9c",
             "var": "base-color-palette/green/green-300",
@@ -2258,6 +2300,12 @@
           },
           {
             "name": "ks/content-secondary",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
+          },
+          {
+            "name": "ks/content-skipped",
             "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"

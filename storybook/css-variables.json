@@ -18,6 +18,7 @@
     "ks-background-retried",
     "ks-background-retrying",
     "ks-background-running",
+    "ks-background-skipped",
     "ks-background-success",
     "ks-background-table-header",
     "ks-background-table-row",
@@ -47,6 +48,7 @@
     "ks-border-retrying",
     "ks-border-running",
     "ks-border-secondary",
+    "ks-border-skipped",
     "ks-border-success",
     "ks-border-system",
     "ks-border-warning"
@@ -79,6 +81,7 @@
     "ks-chart-retried",
     "ks-chart-retrying",
     "ks-chart-running",
+    "ks-chart-skipped",
     "ks-chart-success",
     "ks-chart-trace",
     "ks-chart-warn",
@@ -105,6 +108,7 @@
     "ks-content-retrying",
     "ks-content-running",
     "ks-content-secondary",
+    "ks-content-skipped",
     "ks-content-success",
     "ks-content-tertiary",
     "ks-content-warning"
