@@ -11,6 +11,30 @@ export default {
     }
 }
 
+export const AllAlerts = {
+    render: () => ({
+        setup() {
+            return () => <>
+                <Alert type="info">This is an info alert</Alert>
+                <Alert type="warning">This is a warning alert</Alert>
+                <Alert type="danger">This is a danger alert</Alert>
+                <Alert type="success">This is a success alert</Alert>
+            </>
+        }
+    })
+}
+
+export const AlertsWithLongText   = {
+    render: () => ({
+        setup() {
+            return () => <Alert type="info">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore 
+                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </Alert>
+        }
+    })
+}
+
 export const Info = {
     args: {
         type: "info"
@@ -40,13 +64,8 @@ export const Danger = {
     render: (args) => ({
         components: {Alert},
         setup() {
-            return {args}
-        },
-        template: `
-            <Alert v-bind="args">
-                This is a danger alert
-            </Alert>
-        `
+            return () => <Alert {...args}>This is a danger alert</Alert>
+        }
     })
 }
 
@@ -57,12 +76,7 @@ export const Success = {
     render: (args) => ({
         components: {Alert},
         setup() {
-            return {args}
-        },
-        template: `
-            <Alert v-bind="args">
-                This is a success alert
-            </Alert>
-        `
+            return () => <Alert {...args}>This is a success alert</Alert>
+        }
     })
 } 
