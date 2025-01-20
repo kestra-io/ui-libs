@@ -15,19 +15,19 @@
                 <div id="arrow" data-popper-arrow />
             </div>
         </template>
-        <div style="{font-size: .875rem}" v-html="codeData" />
+        <div style="font-size: .875rem" v-html="codeData" />
     </div>
 </template>
 
 <script setup lang="ts">
-    import {nextTick, ref} from "vue";
+    import {nextTick, ref, shallowRef} from "vue";
     import {createPopper} from "@popperjs/core";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
 
     const icons = {
-        ContentCopy,
-        Check
+        ContentCopy: shallowRef(ContentCopy),
+        Check: shallowRef(Check)
     } as const
 
     const props = withDefaults(
