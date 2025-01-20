@@ -23,7 +23,7 @@
 	#{--ks-background-skipped}: #b2b2b542;
 	#{--ks-background-success}: $base-green-50;
 	#{--ks-background-table-header}: $base-gray-50;
-	#{--ks-background-table-row}: $base-gray-100;
+	#{--ks-background-table-row}: $base-white;
 	#{--ks-background-table-row-hover}: $base-white;
 	#{--ks-background-tag}: $base-gray-200;
 	#{--ks-background-warning}: $base-orange-50;
@@ -43,7 +43,7 @@
 	#{--ks-border-killed}: $base-yellow-600;
 	#{--ks-border-killing}: $base-yellow-400;
 	#{--ks-border-paused}: $base-gray-200;
-	#{--ks-border-primary}: $base-gray-200;
+	#{--ks-border-primary}: $base-gray-100;
 	#{--ks-border-queued}: $base-yellow-600;
 	#{--ks-border-restarted}: $base-blue-100;
 	#{--ks-border-retried}: $base-blue-600;
@@ -129,6 +129,9 @@
 	#{--ks-editor-punctuation}: $base-gray-400;
 	#{--ks-editor-value}: $base-blue-600;
 
+	/* ks */
+	#{--ks-ks-card-shadow}: $base-gray-100;
+
 	/* log */
 	#{--ks-log-background-debug}: $base-blue-50;
 	#{--ks-log-background-error}: $base-red-50;
@@ -145,6 +148,10 @@
 	#{--ks-log-content-info}: $base-blue-600;
 	#{--ks-log-content-trace}: $base-gray-500;
 	#{--ks-log-content-warn}: $base-orange-800;
+
+	/* scrollbar */
+	#{--ks-scrollbar-background}: $base-gray-100;
+	#{--ks-scrollbar-content}: $base-gray-200;
 
 	/* select */
 	#{--ks-select-active}: $base-gray-50;

@@ -127,6 +127,9 @@
     "ks-editor-punctuation",
     "ks-editor-value"
   ],
+  "ks": [
+    "ks-ks-card-shadow"
+  ],
   "log": [
     "ks-log-background-debug",
     "ks-log-background-error",
@@ -143,6 +146,10 @@
     "ks-log-content-info",
     "ks-log-content-trace",
     "ks-log-content-warn"
+  ],
+  "scrollbar": [
+    "ks-scrollbar-background",
+    "ks-scrollbar-content"
   ],
   "select": [
     "ks-select-active",

@@ -23,7 +23,7 @@ html.dark{
 	#{--ks-background-skipped}: $base-gray-500;
 	#{--ks-background-success}: rgba($base-green-900, 0.2);
 	#{--ks-background-table-header}: $base-gray-600;
-	#{--ks-background-table-row}: $base-gray-400;
+	#{--ks-background-table-row}: $base-gray-700;
 	#{--ks-background-table-row-hover}: #2f3342;
 	#{--ks-background-tag}: $base-gray-400;
 	#{--ks-background-warning}: rgba($base-orange-900, 0.2);
@@ -129,6 +129,9 @@ html.dark{
 	#{--ks-editor-punctuation}: $base-gray-300;
 	#{--ks-editor-value}: $base-blue-300;
 
+	/* ks */
+	#{--ks-ks-card-shadow}: $base-gray-900;
+
 	/* log */
 	#{--ks-log-background-debug}: rgba($base-blue-300, 0.2);
 	#{--ks-log-background-error}: rgba($base-red-300, 0.2);
@@ -145,6 +148,10 @@ html.dark{
 	#{--ks-log-content-info}: $base-blue-50;
 	#{--ks-log-content-trace}: $base-gray-100;
 	#{--ks-log-content-warn}: $base-orange-100;
+
+	/* scrollbar */
+	#{--ks-scrollbar-background}: $base-gray-900;
+	#{--ks-scrollbar-content}: $base-gray-400;
 
 	/* select */
 	#{--ks-select-active}: $base-gray-900;

@@ -574,9 +574,9 @@
           },
           {
             "name": "ks/background-table-row",
-            "value": "#ecebef",
-            "var": "base-color-palette/neutral/gray-100",
-            "rootAlias": "base-color-palette/neutral/gray-100"
+            "value": "#ffffff",
+            "var": "base-color-palette/neutral/white",
+            "rootAlias": "base-color-palette/neutral/white"
           },
           {
             "name": "ks/background-table-row-hover",
@@ -670,9 +670,9 @@
           },
           {
             "name": "ks/border-primary",
-            "value": "#cfd3d6",
-            "var": "base-color-palette/neutral/gray-200",
-            "rootAlias": "base-color-palette/neutral/gray-200"
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
           },
           {
             "name": "ks/border-queued",
@@ -1119,6 +1119,12 @@
             "rootAlias": "base-color-palette/blue/blue-600"
           },
           {
+            "name": "ks/ks-card-shadow",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
+          },
+          {
             "name": "ks/log-background-debug",
             "value": "#c7f0ff",
             "var": "base-color-palette/blue/blue-50",
@@ -1207,6 +1213,18 @@
             "value": "#8a3b00",
             "var": "base-color-palette/orange/orange-800",
             "rootAlias": "base-color-palette/orange/orange-800"
+          },
+          {
+            "name": "ks/scrollbar-background",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
+          },
+          {
+            "name": "ks/scrollbar-content",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
             "name": "ks/select-active",
@@ -1844,9 +1862,9 @@
           },
           {
             "name": "ks/background-table-row",
-            "value": "#404559",
-            "var": "base-color-palette/neutral/gray-400",
-            "rootAlias": "base-color-palette/neutral/gray-400"
+            "value": "#21242e",
+            "var": "base-color-palette/neutral/gray-700",
+            "rootAlias": "base-color-palette/neutral/gray-700"
           },
           {
             "name": "ks/background-table-row-hover",
@@ -2389,6 +2407,12 @@
             "rootAlias": "base-color-palette/blue/blue-300"
           },
           {
+            "name": "ks/ks-card-shadow",
+            "value": "#1c1e27",
+            "var": "base-color-palette/neutral/gray-900",
+            "rootAlias": "base-color-palette/neutral/gray-900"
+          },
+          {
             "name": "ks/log-background-debug",
             "value": "#5bb8ff33",
             "var": "",
@@ -2477,6 +2501,18 @@
             "value": "#f3c4a1",
             "var": "base-color-palette/orange/orange-100",
             "rootAlias": "base-color-palette/orange/orange-100"
+          },
+          {
+            "name": "ks/scrollbar-background",
+            "value": "#1c1e27",
+            "var": "base-color-palette/neutral/gray-900",
+            "rootAlias": "base-color-palette/neutral/gray-900"
+          },
+          {
+            "name": "ks/scrollbar-content",
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/select-active",
