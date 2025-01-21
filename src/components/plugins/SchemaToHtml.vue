@@ -70,7 +70,7 @@
                         <CollapsibleProperties
                             v-for="[definitionKey, definitionValue] in Object.entries(schema.definitions)"
                             :properties="definitionValue.properties"
-                            :section-name="definitionKey"
+                            :section-name="definitionValue.title ?? definitionKey"
                             :href="definitionKey"
                             :show-dynamic="true"
                             :key="definitionKey"
