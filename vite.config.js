@@ -16,6 +16,7 @@ export default defineConfig({
             external: [
                 "shiki",
                 "vue",
+                "vue-router",
                 "humanize-duration",
                 "moment",
                 "lodash",
@@ -37,6 +38,7 @@ export default defineConfig({
                 // Add external deps here
                 globals: {
                     vue: "Vue",
+                    "vue-router": "VueRouter",
                     "yaml": "PkgYaml",
                     "js-yaml": "JsYaml",
                     "humanize-duration": "HumanizeDuration",
