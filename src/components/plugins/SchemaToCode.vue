@@ -1,9 +1,9 @@
 <template>
-    <div class="code-block mb-3" @mouseover="hoverCode" @mouseleave="isHoveringCode = false">
-        <div class="language" v-if="language && showLang">
+    <div class="code-block" @mouseover="hoverCode" @mouseleave="isHoveringCode = false">
+        <div class="language" v-if="language && !isHoveringCode">
             {{ language }}
         </div>
-        <template v-if="isHoveringCode && copyable">
+        <template v-if="isHoveringCode">
             <button ref="copyButton" class="copy">
                 <component
                     :is="copyIcon"
@@ -15,7 +15,7 @@
                 <div id="arrow" data-popper-arrow />
             </div>
         </template>
-        <div style="font-size: .875rem" v-html="codeData" />
+        <div v-html="codeData" />
     </div>
 </template>
 
@@ -38,8 +38,6 @@
             filename?: string | null
             highlights?: string[]
             meta?: string | null
-            showLang?: boolean
-            copyable?: boolean
         }>(), {
             code: "",
             language: null,
@@ -50,7 +48,7 @@
 
     const isHoveringCode = ref(false)
     const copyIconResetTimer = ref()
-    const copyIcon = ref(icons.ContentCopy)
+    const copyIcon = shallowRef(icons.ContentCopy.value)
     const copyButton = ref<HTMLButtonElement>()
     const copyTooltip = ref<HTMLDivElement>()
 
@@ -77,10 +75,10 @@
 
         navigator.clipboard.writeText(props.code.trimEnd())
 
-        copyIcon.value = icons.Check;
+        copyIcon.value = icons.Check.value;
 
         copyIconResetTimer.value = setTimeout(() => {
-            copyIcon.value = icons.ContentCopy;
+            copyIcon.value = icons.ContentCopy.value;
             copyIconResetTimer.value = undefined;
         }, 2000)
     }
@@ -88,23 +86,18 @@
 
 <style lang="scss" scoped>
     .code-block {
-        background-color: #161617;
-        border: 1px solid #252526;
-        padding: 1.25rem 1.5rem;
+        padding: 1.25rem;
         border-radius: var(--bs-border-radius-lg);
-        color: var(--bs-white);
         position: relative;
 
         .language {
-            position: absolute;
-            right: 0.35rem;
-            top: 0.25rem;
-            color: var(--bs-gray-600);
             font-size: 0.75rem;
         }
 
         :deep(pre) {
             margin-bottom: 0;
+            padding: 0;
+            border: 0 !important;
         }
 
         :deep(.github-dark) {
@@ -116,12 +109,21 @@
         }
 
         .copy {
-            position: absolute;
-            right: 0;
-            bottom: 0.1rem;
-            color: #7081b9;
             border: none;
             background: none;
+
+            & .material-design-icon{
+                &, & * {
+                    height: 1.125rem !important;
+                    width: 1.125rem !important;
+                }
+            }
+        }
+
+        .copy, .language {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
         }
 
         #copied-tooltip {
@@ -155,5 +157,6 @@
     :deep(pre code .line) {
         display: block;
         min-height: 1rem;
+        white-space: pre-wrap;
     }
 </style>

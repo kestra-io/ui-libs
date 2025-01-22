@@ -1,26 +1,22 @@
 <template>
-    <li>
-        <strong>Type: </strong>
-        <mark v-if="property.type" class="type-mark type-mark-default">
+    <div class="d-flex gap-1">
+        <div class="border" v-if="property.type">
             {{ property.type }}
-        </mark>
+        </div>
         <a
-            aria-current="page"
             v-else-if="property['$ref']"
             :href="generateTaskHref(property['$ref'])"
-            class="router-link-active router-link-exact-active"
+            class="border"
         >
-            <mark class="type-mark type-mark-default">
-                {{ property['$ref']?.split('.').reverse()[0] }}
-            </mark>
+            {{ property['$ref']?.split('.').reverse()[0] }}
         </a>
-        <ul v-else-if="property.oneOf">
-            <li v-for="(oneOf, index) in property.oneOf" :key="index">
-                <mark class="type-mark type-mark-default">{{ oneOf.type }}</mark>
-            </li>
-        </ul>
-        <mark v-else class="type-mark type-mark-default">object</mark>
-    </li>
+        <div class="border" v-else-if="property.oneOf" v-for="(oneOf, index) in property.oneOf" :key="index">
+            {{ oneOf.type }}
+        </div>
+        <div v-else class="border">
+            object
+        </div>
+    </div><!--
 
     <li v-if="property.items ?? property.additionalProperties">
         <strong>SubType: </strong>
@@ -50,7 +46,7 @@
             </a>
             <mark v-else class="type-mark type-mark-default">{{ property.additionalProperties.type }}</mark>
         </template>
-    </li>
+    </li>-->
 </template>
 
 <script setup lang="ts">
