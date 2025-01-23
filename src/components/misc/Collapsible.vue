@@ -1,13 +1,15 @@
 <template>
-    <div :id="href" class="d-flex flex-column gap-2">
+    <div :id="href" class="d-flex flex-column" :class="{'gap-2': !collapsed}">
         <button @click="collapsed = !collapsed" class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button" :class="{collapsed}" data-toggle="collapse" :data-target="'#' + href + '-body'" aria-expanded="false" :aria-controls="href + '-body'">
             <span class="d-flex gap-2 align-items-center"><component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />{{ clickableText }}<slot name="additionalButtonText" /></span>
             <span v-if="$slots.buttonRight" class="d-flex flex-grow-1">
                 <slot name="buttonRight" :collapsed="collapsed" />
             </span>
         </button>
-        <div v-if="$slots.content" v-show="!collapsed" :id="href + '-body'" class="collapsible-body">
-            <slot name="content" />
+        <div v-if="$slots.content" :id="href + '-body'" class="collapsible-body" :class="{collapsed}">
+            <div>
+                <slot name="content" />
+            </div>
         </div>
     </div>
 </template>
@@ -63,6 +65,20 @@
         &:focus {
             outline:none;
             box-shadow: none;
+        }
+    }
+
+    .collapsible-body {
+        display: grid;
+        transition: grid-template-rows 150ms;
+        grid-template-rows: 1fr;
+
+        &.collapsed {
+            grid-template-rows: 0fr;
+        }
+
+        > div {
+            overflow: hidden;
         }
     }
 </style>
