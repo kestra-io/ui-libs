@@ -1,4 +1,5 @@
 import {createMarkdownParser, createShikiHighlighter, rehypeHighlight} from "@nuxtjs/mdc/runtime";
+import {createJavaScriptRegexEngine} from "shiki/engine/javascript"
 import type {MDCParserResult} from "@nuxtjs/mdc";
 import GithubLight from "shiki/themes/github-light.mjs";
 import GithubDark from "shiki/themes/github-dark.mjs";
@@ -65,11 +66,12 @@ const langsMap: Record<string, any> = {
 
 export type MDParser = (md: string) => Promise<MDCParserResult>
 
-export default function useMarkdownParser() {
+export default async function useMarkdownParser() {
     let parser: MDParser;
 
     return async (markdown:string) => {
         if (!parser) {
+            
             const {bundledLanguagesInfo} = await import("shiki/langs");
 
             
@@ -97,6 +99,7 @@ export default function useMarkdownParser() {
                                 highlighter: createShikiHighlighter({
                                     // Configure the bundled languages
                                     bundledLangs: langsMap,
+                                    engine: createJavaScriptRegexEngine() as any
                                 }),
                             },
                         }
