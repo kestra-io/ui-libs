@@ -16,14 +16,14 @@
                 <slot name="markdown" :content="schema.properties.description" />
             </div>
 
-            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" />
+            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
         </div>
 
         <div class="d-flex flex-column gap-3">
             <Collapsible class="plugin-section" v-if="examples" clickable-text="Examples" href="examples">
                 <template #content>
                     <div class="d-flex flex-column gap-4">
-                        <template v-for="(example, index) in examples" :key="index">
+                        <template v-for="(example, index) in examples" :key="pluginType + '-' + index">
                             <div class="d-flex flex-column gap-3">
                                 <slot v-if="example.title" :content="example.title" name="markdown" />
                                 <SchemaToCode
@@ -74,7 +74,7 @@
                             :section-name="definitionValue.title ?? definitionKey"
                             :href="definitionKey"
                             :show-dynamic="true"
-                            :key="definitionKey"
+                            :key="pluginType + '-' + definitionKey"
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true"
                         >
