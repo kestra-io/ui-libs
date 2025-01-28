@@ -16,7 +16,7 @@
                 <slot name="markdown" :content="schema.properties.description" />
             </div>
 
-            <SchemaToCode :highlighter="highlighter" language="yaml" :code="`type: &quot;${pluginType}&quot;`" />
+            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" />
         </div>
 
         <div class="d-flex flex-column gap-3">
@@ -29,6 +29,7 @@
                                 <SchemaToCode
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
+                                    :theme="codeTheme"
                                     :code="generateExampleCode(example)"
                                     v-if="example.code"
                                 />
@@ -118,10 +119,13 @@
         }
     }
 
-    const props = defineProps<{
+    const props = withDefaults(defineProps<{
         schema: JSONSchema,
-        pluginType: string
-    }>();
+        pluginType: string,
+        darkMode?: boolean
+    }>(), {
+        darkMode: true
+    });
 
     const definitionsExpanded = ref(false);
 
@@ -139,6 +143,7 @@
     const examples = computed(() => props.schema.properties?.["$examples"])
 
     const {
+        githubLight,
         githubDark,
         yaml,
         python,
@@ -149,7 +154,7 @@
 
     highlighter.value = await createHighlighterCore({
         themes: [
-            githubDark
+            props.darkMode ? githubDark : githubLight
         ],
         langs: [
             yaml,
@@ -158,6 +163,8 @@
         ],
         engine: createJavaScriptRegexEngine(),
     });
+
+    const codeTheme = "github-" + (props.darkMode ? "dark" : "light");
 
     onUnmounted(() => highlighter.value?.dispose());
 </script>

@@ -37,13 +37,15 @@
             language?: string | null
             filename?: string | null
             highlights?: string[]
-            meta?: string | null
+            meta?: string | null,
+            theme?: string
         }>(), {
             code: "",
             language: null,
             filename: null,
             highlights: () => [],
-            meta: null
+            meta: null,
+            theme: "github-dark"
         })
 
     const isHoveringCode = ref(false)
@@ -54,7 +56,7 @@
 
     const codeData = ref(props.highlighter.codeToHtml(props.code, {
         lang: props.language,
-        theme: "github-dark",
+        theme: props.theme,
     }))
 
     function hoverCode(){
@@ -100,7 +102,7 @@
             border: 0 !important;
         }
 
-        :deep(.github-dark) {
+        :deep(.shiki) {
             background-color: transparent !important;
             code {
                 display: flex;
