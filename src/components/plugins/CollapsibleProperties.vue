@@ -12,7 +12,9 @@
                     @expand="initiallyExpanded = true"
                 >
                     <template #additionalButtonText>
-                        <span v-if="property['$required']" class="text-danger"> *</span>
+                        <Tooltip v-if="property['$required']" class="d-flex" title="Required">
+                            <span class="text-danger"> *</span>
+                        </Tooltip>
                     </template>
                     <template #buttonRight="{collapsed}">
                         <span class="d-flex flex-grow-1 align-items-center justify-content-between">
