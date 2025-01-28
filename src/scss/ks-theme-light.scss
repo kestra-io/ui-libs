@@ -5,6 +5,7 @@
 	#{--ks-background-body}: $base-gray-50;
 	#{--ks-background-cancelled}: $base-red-100;
 	#{--ks-background-card}: $base-white;
+	#{--ks-background-card-hover}: $base-white;
 	#{--ks-background-card-opacity}: #1b1c23e5;
 	#{--ks-background-created}: $base-blue-50;
 	#{--ks-background-error}: $base-red-50;
@@ -112,7 +113,7 @@
 	#{--ks-content-secondary}: $base-gray-700;
 	#{--ks-content-skipped}: $base-gray-500;
 	#{--ks-content-success}: $base-green-700;
-	#{--ks-content-tertiary}: $base-gray-500;
+	#{--ks-content-tertiary}: $base-gray-400;
 	#{--ks-content-warning}: $base-orange-500;
 
 	/* dialog */
@@ -121,6 +122,11 @@
 	#{--ks-dialog-header}: $base-white;
 	#{--ks-dialog-headerbtn}: $base-gray-300;
 	#{--ks-dialog-headerbtn-hover}: $base-purple-300;
+
+	/* dropdown */
+	#{--ks-dropdown-background}: $base-white;
+	#{--ks-dropdown-background-active}: $base-gray-50;
+	#{--ks-dropdown-background-hover}: $base-gray-50;
 
 	/* editor */
 	#{--ks-editor-number}: $base-orange-600;
@@ -161,7 +167,8 @@
 	#{--ks-select-hover}: $base-gray-200;
 
 	/* tag */
-	#{--ks-tag-background}: $base-gray-50;
+	#{--ks-tag-background}: $base-gray-100;
+	#{--ks-tag-background-active}: $base-gray-50;
 	#{--ks-tag-background-hover}: $base-gray-200;
 	#{--ks-tag-content}: $base-gray-800;
 

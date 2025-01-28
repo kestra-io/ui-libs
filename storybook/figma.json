@@ -465,6 +465,12 @@
             "rootAlias": "base-color-palette/neutral/white"
           },
           {
+            "name": "ks/background-card-hover",
+            "value": "#ffffff",
+            "var": "base-color-palette/neutral/white",
+            "rootAlias": "base-color-palette/neutral/white"
+          },
+          {
             "name": "ks/background-card-opacity",
             "value": "#1b1c23e5",
             "var": "",
@@ -1048,9 +1054,9 @@
           },
           {
             "name": "ks/content-tertiary",
-            "value": "#2f3342",
-            "var": "base-color-palette/neutral/gray-500",
-            "rootAlias": "base-color-palette/neutral/gray-500"
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/content-warning",
@@ -1087,6 +1093,24 @@
             "value": "#9470ff",
             "var": "base-color-palette/purple/purple-300",
             "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dropdown-background",
+            "value": "#ffffff",
+            "var": "base-color-palette/neutral/white",
+            "rootAlias": "base-color-palette/neutral/white"
+          },
+          {
+            "name": "ks/dropdown-background-active",
+            "value": "#f9f9fa",
+            "var": "base-color-palette/neutral/gray-50",
+            "rootAlias": "base-color-palette/neutral/gray-50"
+          },
+          {
+            "name": "ks/dropdown-background-hover",
+            "value": "#f9f9fa",
+            "var": "base-color-palette/neutral/gray-50",
+            "rootAlias": "base-color-palette/neutral/gray-50"
           },
           {
             "name": "ks/editor-number",
@@ -1258,6 +1282,12 @@
           },
           {
             "name": "ks/tag-background",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
+          },
+          {
+            "name": "ks/tag-background-active",
             "value": "#f9f9fa",
             "var": "base-color-palette/neutral/gray-50",
             "rootAlias": "base-color-palette/neutral/gray-50"
@@ -1751,6 +1781,12 @@
             "value": "#2f3342",
             "var": "base-color-palette/neutral/gray-500",
             "rootAlias": "base-color-palette/neutral/gray-500"
+          },
+          {
+            "name": "ks/background-card-hover",
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/background-card-opacity",
@@ -2377,6 +2413,24 @@
             "rootAlias": "base-color-palette/purple/purple-200"
           },
           {
+            "name": "ks/dropdown-background",
+            "value": "#21242e",
+            "var": "base-color-palette/neutral/gray-700",
+            "rootAlias": "base-color-palette/neutral/gray-700"
+          },
+          {
+            "name": "ks/dropdown-background-active",
+            "value": "#1c1e27",
+            "var": "base-color-palette/neutral/gray-900",
+            "rootAlias": "base-color-palette/neutral/gray-900"
+          },
+          {
+            "name": "ks/dropdown-background-hover",
+            "value": "#2c303f",
+            "var": "base-color-palette/neutral/gray-600",
+            "rootAlias": "base-color-palette/neutral/gray-600"
+          },
+          {
             "name": "ks/editor-number",
             "value": "#f3c4a1",
             "var": "base-color-palette/orange/orange-100",
@@ -2546,9 +2600,15 @@
           },
           {
             "name": "ks/tag-background",
-            "value": "#2f3342",
-            "var": "base-color-palette/neutral/gray-500",
-            "rootAlias": "base-color-palette/neutral/gray-500"
+            "value": "#2c303f",
+            "var": "base-color-palette/neutral/gray-600",
+            "rootAlias": "base-color-palette/neutral/gray-600"
+          },
+          {
+            "name": "ks/tag-background-active",
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/tag-background-hover",

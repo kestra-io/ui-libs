@@ -83,7 +83,7 @@ function makePalettes(palette, paletteName, selector) {
     const scss = baseColorNames.map(color => `$base-${color.name.split("/").pop()}: ${color.value};`).join("\n")
 
     // write the scss file containing colors in the base palette
-    fs.writeFileSync(path.resolve(__dirname, "../src/scss/color-palette.scss"), scss, {encoding: "utf-8"})
+    fs.writeFileSync(path.resolve(__dirname, "../src/scss/_color-palette.scss"), scss, {encoding: "utf-8"})
 
     const {tokenScss, cssVariableNames} = getVariableScss(palette.filter(c => !c.name.startsWith("base-color-palette/")), colorIndex)
 

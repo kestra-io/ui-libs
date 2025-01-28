@@ -3,6 +3,7 @@
     "ks-background-body",
     "ks-background-cancelled",
     "ks-background-card",
+    "ks-background-card-hover",
     "ks-background-card-opacity",
     "ks-background-created",
     "ks-background-error",
@@ -120,6 +121,11 @@
     "ks-dialog-headerbtn",
     "ks-dialog-headerbtn-hover"
   ],
+  "dropdown": [
+    "ks-dropdown-background",
+    "ks-dropdown-background-active",
+    "ks-dropdown-background-hover"
+  ],
   "editor": [
     "ks-editor-number",
     "ks-editor-pabble",
@@ -160,6 +166,7 @@
   ],
   "tag": [
     "ks-tag-background",
+    "ks-tag-background-active",
     "ks-tag-background-hover",
     "ks-tag-content"
   ],

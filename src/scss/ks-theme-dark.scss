@@ -5,6 +5,7 @@ html.dark{
 	#{--ks-background-body}: $base-gray-800;
 	#{--ks-background-cancelled}: rgba($base-red-200, 0.2);
 	#{--ks-background-card}: $base-gray-500;
+	#{--ks-background-card-hover}: $base-gray-400;
 	#{--ks-background-card-opacity}: #121319e5;
 	#{--ks-background-created}: rgba($base-blue-400, 0.2);
 	#{--ks-background-error}: rgba($base-red-900, 0.2);
@@ -122,6 +123,11 @@ html.dark{
 	#{--ks-dialog-headerbtn}: $base-gray-300;
 	#{--ks-dialog-headerbtn-hover}: $base-purple-200;
 
+	/* dropdown */
+	#{--ks-dropdown-background}: $base-gray-700;
+	#{--ks-dropdown-background-active}: $base-gray-900;
+	#{--ks-dropdown-background-hover}: $base-gray-600;
+
 	/* editor */
 	#{--ks-editor-number}: $base-orange-100;
 	#{--ks-editor-pabble}: $base-orange-50;
@@ -161,7 +167,8 @@ html.dark{
 	#{--ks-select-hover}: $base-gray-600;
 
 	/* tag */
-	#{--ks-tag-background}: $base-gray-500;
+	#{--ks-tag-background}: $base-gray-600;
+	#{--ks-tag-background-active}: $base-gray-400;
 	#{--ks-tag-background-hover}: $base-gray-400;
 	#{--ks-tag-content}: $base-white;
 
