@@ -586,9 +586,9 @@
           },
           {
             "name": "ks/background-table-row-hover",
-            "value": "#ffffff",
-            "var": "base-color-palette/neutral/white",
-            "rootAlias": "base-color-palette/neutral/white"
+            "value": "#f9f9fa",
+            "var": "base-color-palette/neutral/gray-50",
+            "rootAlias": "base-color-palette/neutral/gray-50"
           },
           {
             "name": "ks/background-warning",
