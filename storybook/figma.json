@@ -591,12 +591,6 @@
             "rootAlias": "base-color-palette/neutral/white"
           },
           {
-            "name": "ks/background-tag",
-            "value": "#cfd3d6",
-            "var": "base-color-palette/neutral/gray-200",
-            "rootAlias": "base-color-palette/neutral/gray-200"
-          },
-          {
             "name": "ks/background-warning",
             "value": "#fff2ea",
             "var": "base-color-palette/orange/orange-50",
@@ -1352,7 +1346,7 @@
           },
           {
             "name": "base-color-palette/blue/blue-50",
-            "value": "#c7fdff",
+            "value": "#c7f0ff",
             "var": "",
             "rootAlias": ""
           },
@@ -1454,13 +1448,13 @@
           },
           {
             "name": "base-color-palette/neutral/gray-100",
-            "value": "#cfd3d6",
+            "value": "#ecebef",
             "var": "",
             "rootAlias": ""
           },
           {
             "name": "base-color-palette/neutral/gray-200",
-            "value": "#ecebef",
+            "value": "#cfd3d6",
             "var": "",
             "rootAlias": ""
           },
@@ -1907,12 +1901,6 @@
             "value": "#2f3342",
             "var": "ks/background-card",
             "rootAlias": "base-color-palette/neutral/gray-500"
-          },
-          {
-            "name": "ks/background-tag",
-            "value": "#404559",
-            "var": "base-color-palette/neutral/gray-400",
-            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/background-warning",
@@ -2600,9 +2588,9 @@
           },
           {
             "name": "ks/tag-background",
-            "value": "#2c303f",
-            "var": "base-color-palette/neutral/gray-600",
-            "rootAlias": "base-color-palette/neutral/gray-600"
+            "value": "#2f3342",
+            "var": "base-color-palette/neutral/gray-500",
+            "rootAlias": "base-color-palette/neutral/gray-500"
           },
           {
             "name": "ks/tag-background-active",

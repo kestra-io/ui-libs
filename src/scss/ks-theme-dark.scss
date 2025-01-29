@@ -26,7 +26,6 @@ html.dark{
 	#{--ks-background-table-header}: $base-gray-600;
 	#{--ks-background-table-row}: $base-gray-700;
 	#{--ks-background-table-row-hover}: #2f3342;
-	#{--ks-background-tag}: $base-gray-400;
 	#{--ks-background-warning}: rgba($base-orange-900, 0.2);
 
 	/* badge */
@@ -167,7 +166,7 @@ html.dark{
 	#{--ks-select-hover}: $base-gray-600;
 
 	/* tag */
-	#{--ks-tag-background}: $base-gray-600;
+	#{--ks-tag-background}: $base-gray-500;
 	#{--ks-tag-background-active}: $base-gray-400;
 	#{--ks-tag-background-hover}: $base-gray-400;
 	#{--ks-tag-content}: $base-white;
