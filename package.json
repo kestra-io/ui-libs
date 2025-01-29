@@ -77,7 +77,7 @@
     "vue-tsc": "^2.2.0"
   },
   "dependencies": {
-    "@nuxtjs/mdc": "^0.12.1",
+    "@nuxtjs/mdc": "^0.13.2",
     "@popperjs/core": "^2.11.8",
     "mermaid": "^11.4.1",
     "shiki": "^1.22.0",
