@@ -9,11 +9,9 @@
             {{ language }}
         </div>
         <template v-if="isHoveringCode">
-            <button ref="copyButton" class="copy">
-                <component
-                    :is="copyIcon"
-                    @click="copyToClipboard"
-                />
+            <button ref="copyButton" class="copy" @click="copyToClipboard" :disabled="copiedSuccessfully">
+                <CheckIcon v-if="copiedSuccessfully" />
+                <ContentCopy v-else />
             </button>
             <div ref="copyTooltip" v-if="!!copyIconResetTimer" id="copied-tooltip" role="tooltip">
                 Copied!
@@ -28,7 +26,7 @@
     import {createPopper} from "@popperjs/core";
 
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
-    import Check from "vue-material-design-icons/Check.vue";
+    import CheckIcon from "vue-material-design-icons/Check.vue";
     import {nextTick, Ref, ref} from "vue";
     import Mermaid from "./Mermaid.vue";
 
@@ -44,12 +42,8 @@
         meta: undefined,
     })
 
-    const icons = {
-        ContentCopy,
-        Check
-    }
+    const copiedSuccessfully = ref(false)
 
-    const copyIcon = ref(icons.ContentCopy)
     const copyIconResetTimer = ref()
     const isHoveringCode = ref(false)
 
@@ -74,10 +68,10 @@
 
         navigator.clipboard.writeText(props.code.trimEnd())
 
-        copyIcon.value = icons.Check;
+        copiedSuccessfully.value = true;
 
         copyIconResetTimer.value = setTimeout(() => {
-            copyIcon.value = icons.ContentCopy;
+            copiedSuccessfully.value = false;
             copyIconResetTimer.value = undefined;
         }, 2000)
     }
