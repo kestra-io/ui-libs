@@ -801,6 +801,12 @@
             "rootAlias": "base-color-palette/neutral/white"
           },
           {
+            "name": "ks/card-shadow",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
+          },
+          {
             "name": "ks/chart-cancelled",
             "value": "#fd9297",
             "var": "base-color-palette/red/red-200",
@@ -1135,12 +1141,6 @@
             "value": "#134ecc",
             "var": "base-color-palette/blue/blue-600",
             "rootAlias": "base-color-palette/blue/blue-600"
-          },
-          {
-            "name": "ks/ks-card-shadow",
-            "value": "#ecebef",
-            "var": "base-color-palette/neutral/gray-100",
-            "rootAlias": "base-color-palette/neutral/gray-100"
           },
           {
             "name": "ks/log-background-debug",
@@ -2113,6 +2113,12 @@
             "rootAlias": "base-color-palette/neutral/white"
           },
           {
+            "name": "ks/card-shadow",
+            "value": "#1c1e27",
+            "var": "base-color-palette/neutral/gray-900",
+            "rootAlias": "base-color-palette/neutral/gray-900"
+          },
+          {
             "name": "ks/chart-cancelled",
             "value": "#fd9297",
             "var": "base-color-palette/red/red-200",
@@ -2447,12 +2453,6 @@
             "value": "#5bb8ff",
             "var": "base-color-palette/blue/blue-300",
             "rootAlias": "base-color-palette/blue/blue-300"
-          },
-          {
-            "name": "ks/ks-card-shadow",
-            "value": "#1c1e27",
-            "var": "base-color-palette/neutral/gray-900",
-            "rootAlias": "base-color-palette/neutral/gray-900"
           },
           {
             "name": "ks/log-background-debug",

@@ -66,6 +66,9 @@
     "ks-button-background-success-hover",
     "ks-button-content-primary"
   ],
+  "card": [
+    "ks-card-shadow"
+  ],
   "chart": [
     "ks-chart-cancelled",
     "ks-chart-created",
@@ -131,9 +134,6 @@
     "ks-editor-property",
     "ks-editor-punctuation",
     "ks-editor-value"
-  ],
-  "ks": [
-    "ks-ks-card-shadow"
   ],
   "log": [
     "ks-log-background-debug",

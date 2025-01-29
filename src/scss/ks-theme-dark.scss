@@ -68,6 +68,9 @@ html.dark{
 	#{--ks-button-background-success-hover}: $base-green-300;
 	#{--ks-button-content-primary}: $base-white;
 
+	/* card */
+	#{--ks-card-shadow}: $base-gray-900;
+
 	/* chart */
 	#{--ks-chart-cancelled}: $base-red-200;
 	#{--ks-chart-created}: $base-blue-400;
@@ -133,9 +136,6 @@ html.dark{
 	#{--ks-editor-property}: $base-green-200;
 	#{--ks-editor-punctuation}: $base-gray-300;
 	#{--ks-editor-value}: $base-blue-300;
-
-	/* ks */
-	#{--ks-ks-card-shadow}: $base-gray-900;
 
 	/* log */
 	#{--ks-log-background-debug}: rgba($base-blue-300, 0.2);
