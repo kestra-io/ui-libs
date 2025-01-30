@@ -1246,9 +1246,9 @@
           },
           {
             "name": "ks/select-active",
-            "value": "#f9f9fa",
-            "var": "base-color-palette/neutral/gray-50",
-            "rootAlias": "base-color-palette/neutral/gray-50"
+            "value": "#ffffff",
+            "var": "base-color-palette/neutral/white",
+            "rootAlias": "base-color-palette/neutral/white"
           },
           {
             "name": "ks/select-active-icon",
@@ -1270,9 +1270,9 @@
           },
           {
             "name": "ks/select-hover",
-            "value": "#cfd3d6",
-            "var": "base-color-palette/neutral/gray-200",
-            "rootAlias": "base-color-palette/neutral/gray-200"
+            "value": "#f9f9fa",
+            "var": "base-color-palette/neutral/gray-50",
+            "rootAlias": "base-color-palette/neutral/gray-50"
           },
           {
             "name": "ks/tag-background",
