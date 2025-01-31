@@ -134,7 +134,7 @@
         </div>
 
         <div v-if="property.title !== undefined || property.description !== undefined">
-            <div class="property-description">
+            <div class="property-description markdown">
                 <slot v-if="property.title !== undefined" :content="codeSanitizer(property.title)" name="markdown" />
                 <slot v-if="property.description !== undefined" :content="codeSanitizer(property.description)" name="markdown" />
             </div>

@@ -9,10 +9,10 @@
                 </p>
             </div>
 
-            <div v-if="schema.properties?.title" class="plugin-title">
+            <div v-if="schema.properties?.title" class="plugin-title markdown">
                 <slot name="markdown" :content="schema.properties.title" />
             </div>
-            <div v-if="schema.properties?.description">
+            <div v-if="schema.properties?.description" class="markdown">
                 <slot name="markdown" :content="schema.properties.description" />
             </div>
 
@@ -177,6 +177,16 @@
     :deep(.nested-button-py-2) button {
         padding-top: 0.5rem !important;
         padding-bottom: 0.5rem !important;
+    }
+
+    :deep(.markdown pre) {
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &:not(:first-child) {
+            margin-top: calc(var(--spacer) * .75);
+        }
     }
 
     :deep(.plugin-section) {
