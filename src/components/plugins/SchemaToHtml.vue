@@ -179,13 +179,15 @@
         padding-bottom: 0.5rem !important;
     }
 
-    :deep(.markdown pre) {
-        &:last-child {
-            margin-bottom: 0;
-        }
+    :deep(.markdown) {
+        > pre, > .code-block {
+            &:last-child {
+                margin-bottom: 0;
+            }
 
-        &:not(:first-child) {
-            margin-top: calc(var(--spacer) * .75);
+            &:not(:first-child) {
+                margin-top: calc(var(--spacer) * .75);
+            }
         }
     }
 
