@@ -25,7 +25,9 @@
                     <div class="d-flex flex-column gap-4">
                         <template v-for="(example, index) in examples" :key="pluginType + '-' + index">
                             <div class="d-flex flex-column gap-3">
-                                <slot v-if="example.title" :content="example.title" name="markdown" />
+                                <div class="markdown">
+                                    <slot v-if="example.title" :content="example.title" name="markdown" />
+                                </div>
                                 <SchemaToCode
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
@@ -48,7 +50,9 @@
                 href="properties"
             >
                 <template #markdown="{content}">
-                    <slot name="markdown" :content="content" />
+                    <div class="markdown">
+                        <slot name="markdown" :content="content" />
+                    </div>
                 </template>
             </CollapsibleProperties>
 
@@ -61,7 +65,9 @@
                 :show-dynamic="false"
             >
                 <template #markdown="{content}">
-                    <slot name="markdown" :content="content" />
+                    <div class="markdown">
+                        <slot name="markdown" :content="content" />
+                    </div>
                 </template>
             </CollapsibleProperties>
 
@@ -79,7 +85,9 @@
                             @expand="definitionsExpanded = true"
                         >
                             <template #markdown="{content}">
-                                <slot name="markdown" :content="content" />
+                                <div class="markdown">
+                                    <slot name="markdown" :content="content" />
+                                </div>
                             </template>
                         </CollapsibleProperties>
                     </div>
@@ -180,7 +188,7 @@
     }
 
     :deep(.markdown) {
-        > pre, > .code-block {
+        pre, .code-block {
             &:last-child {
                 margin-bottom: 0;
             }
