@@ -1,5 +1,5 @@
 <template>
-    <Collapsible :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded">
+    <Collapsible :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded">
         <template v-if="Object.keys(properties ?? {}).length > 0" #content>
             <div class="border rounded">
                 <Collapsible
@@ -9,7 +9,7 @@
                     :arrow="false"
                     :clickable-text="propertyKey"
                     :href="href + '_' + propertyKey"
-                    @expand="initiallyExpanded = true"
+                    @expand="autoExpanded = true"
                 >
                     <template #additionalButtonText>
                         <Tooltip v-if="property['$required']" class="d-flex" title="Required">
@@ -69,18 +69,19 @@
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import {ref, watch} from "vue";
 
-    withDefaults(defineProps<{ href?: string, sectionName: string, properties?: Record<string, JSONProperty>, showDynamic?: boolean }>(), {
+    withDefaults(defineProps<{ href?: string, sectionName: string, properties?: Record<string, JSONProperty>, showDynamic?: boolean, initiallyExpanded?: boolean }>(), {
         properties: undefined,
         href: Math.random().toString(36).substring(2, 5),
-        showDynamic: true
+        showDynamic: true,
+        initiallyExpanded: false
     });
 
     const emit = defineEmits(["expand"]);
 
-    const initiallyExpanded = ref(false);
+    const autoExpanded = ref(false);
 
     watch(
-        initiallyExpanded,
+        autoExpanded,
         newInitiallyExpanded => {
             if (newInitiallyExpanded) {
                 emit("expand");

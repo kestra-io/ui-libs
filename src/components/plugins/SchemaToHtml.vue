@@ -19,7 +19,7 @@
             <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
         </div>
 
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column gap-3" :key="pluginType">
             <Collapsible class="plugin-section" v-if="examples" clickable-text="Examples" href="examples">
                 <template #content>
                     <div class="d-flex flex-column gap-4">
@@ -48,6 +48,7 @@
                 :properties="schema.properties.properties"
                 section-name="Properties"
                 href="properties"
+                :initially-expanded="propsInitiallyExpanded"
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -130,9 +131,11 @@
     const props = withDefaults(defineProps<{
         schema: JSONSchema,
         pluginType: string,
-        darkMode?: boolean
+        darkMode?: boolean,
+        propsInitiallyExpanded?: boolean
     }>(), {
-        darkMode: true
+        darkMode: true,
+        propsInitiallyExpanded: false
     });
 
     const definitionsExpanded = ref(false);
