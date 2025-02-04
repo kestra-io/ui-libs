@@ -69,7 +69,7 @@
             color = cssVariable(props.variable) ?? color;
         }
 
-        localIcon = localIcon.replaceAll("currentColor", color);
+        localIcon = localIcon.replace(/currentColor/g, color);
 
         return window.btoa(localIcon);
     })
