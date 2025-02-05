@@ -81,7 +81,7 @@
     "@popperjs/core": "^2.11.8",
     "mermaid": "^11.4.1",
     "shiki": "^1.22.0",
-    "vue-i18n": "^11.0.1"
+    "vue-i18n": "^11.1.0"
   },
   "optionalDependencies": {
     "@esbuild/darwin-arm64": "^0.24.2",
