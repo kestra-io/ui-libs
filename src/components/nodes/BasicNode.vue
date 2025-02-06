@@ -215,10 +215,6 @@
     .node-wrapper {
         background-color: var(--ks-background-card);
 
-        html.dark & {
-            background-color: var(--bs-gray-300);
-        }
-
         width: 184px;
         height: 44px;
         margin: 0;
@@ -229,21 +225,13 @@
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
 
         &.execution-no-taskrun, &.disabled {
-            background-color: var(--bs-gray-200);
-
-            html.dark & {
-                background-color: var(--bs-gray-500);
-            }
+            background-color: var(--ks-background-card);
         }
 
         &.disabled {
             .task-title {
-                color: var(--bs-gray-500);
+                color: var(--ks-content-secondary);
                 text-decoration: line-through;
-
-                html.dark & {
-                    color: var(--bs-gray-600);
-                }
             }
         }
 
@@ -267,7 +255,7 @@
     }
 
     .description-button {
-        color: var(--bs-gray-700);
+        color: var(--ks-content-secondary);
         cursor: pointer;
     }
 
@@ -283,12 +271,8 @@
     .task-title {
         font-size: 0.75rem;
         font-weight: 700;
-        color: var(--bs-black);
+        color: var(--ks-content-primary);
         flex-grow: 1;
-
-        html.dark & {
-            color: var(--bs-white);
-        }
     }
 
     .status-div {

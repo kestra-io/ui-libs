@@ -26,11 +26,11 @@ const base = {
             return () => <TopologyComponent {...args} source={source} flowGraph={flowGraph} />;
         },
     }),
-    // decorators: [() => ({
-    //     template: `<div style="outline: 1px solid var(--ks-select-border);width: calc(100vw - 2rem);height: calc(100vh - 2rem);">
-    //             <story />
-    //         </div>`
-    // })],
+    decorators: [() => ({
+        template: `<div style="outline: 1px solid var(--ks-select-border);width: calc(100vw - 2rem);height: calc(100vh - 2rem);">
+                <story />
+            </div>`
+    })],
     args: {
         id: "test",
         isHorizontal: true,
