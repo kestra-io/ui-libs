@@ -9,7 +9,7 @@ html.dark{
 	#{--ks-background-card-opacity}: #121319e5;
 	#{--ks-background-created}: rgba($base-blue-400, 0.2);
 	#{--ks-background-error}: rgba($base-red-900, 0.2);
-	#{--ks-background-info}: rgba($base-blue-700, 0.2);
+	#{--ks-background-info}: rgba($base-green-300, 0.2);
 	#{--ks-background-input}: $base-gray-900;
 	#{--ks-background-killed}: rgba($base-yellow-400, 0.1);
 	#{--ks-background-killing}: rgba($base-yellow-900, 0.2);
@@ -140,17 +140,17 @@ html.dark{
 	/* log */
 	#{--ks-log-background-debug}: rgba($base-blue-300, 0.2);
 	#{--ks-log-background-error}: rgba($base-red-300, 0.2);
-	#{--ks-log-background-info}: rgba($base-blue-700, 0.2);
+	#{--ks-log-background-info}: rgba($base-green-200, 0.2);
 	#{--ks-log-background-trace}: $base-gray-400;
 	#{--ks-log-background-warn}: rgba($base-orange-400, 0.2);
 	#{--ks-log-border-debug}: $base-blue-300;
 	#{--ks-log-border-error}: $base-red-300;
-	#{--ks-log-border-info}: $base-blue-500;
+	#{--ks-log-border-info}: $base-green-400;
 	#{--ks-log-border-trace}: $base-gray-300;
 	#{--ks-log-border-warn}: $base-orange-300;
 	#{--ks-log-content-debug}: $base-blue-100;
 	#{--ks-log-content-error}: $base-red-100;
-	#{--ks-log-content-info}: $base-blue-50;
+	#{--ks-log-content-info}: $base-green-200;
 	#{--ks-log-content-trace}: $base-gray-100;
 	#{--ks-log-content-warn}: $base-orange-100;
 

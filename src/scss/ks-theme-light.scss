@@ -140,17 +140,17 @@
 	/* log */
 	#{--ks-log-background-debug}: $base-blue-50;
 	#{--ks-log-background-error}: $base-red-50;
-	#{--ks-log-background-info}: #c7f0ff;
+	#{--ks-log-background-info}: $base-green-50;
 	#{--ks-log-background-trace}: $base-gray-50;
 	#{--ks-log-background-warn}: $base-orange-50;
 	#{--ks-log-border-debug}: $base-blue-400;
 	#{--ks-log-border-error}: $base-red-400;
-	#{--ks-log-border-info}: $base-blue-200;
+	#{--ks-log-border-info}: $base-green-400;
 	#{--ks-log-border-trace}: $base-gray-300;
 	#{--ks-log-border-warn}: $base-orange-400;
 	#{--ks-log-content-debug}: $base-blue-600;
 	#{--ks-log-content-error}: $base-red-500;
-	#{--ks-log-content-info}: $base-blue-600;
+	#{--ks-log-content-info}: $base-green-600;
 	#{--ks-log-content-trace}: $base-gray-500;
 	#{--ks-log-content-warn}: $base-orange-800;
 
