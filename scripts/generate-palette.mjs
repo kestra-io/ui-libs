@@ -12,8 +12,22 @@ const [{
     color:paletteDark
 }] = figma[0].values
 
-makePalettes(paletteLight, "light", ":root")
-makePalettes(paletteDark, "dark", "html.dark")
+
+const colorLight = makePalettes(paletteLight, "light", ":root")
+const colorDark = makePalettes(paletteDark, "dark", "html.dark")
+
+// check if the two color are the same
+function checkPalette(colorPalette1, colorPalette2) {
+    for(const color1 of colorPalette1){
+        const color2 = colorPalette2.find(c => c.name === color1.name)
+        if(!color2 || color2.value !== color1.value){
+            console.error(`Color ${color1.name} is different in the two palettes`)
+        }
+    }
+}
+
+checkPalette(colorLight, colorDark)
+checkPalette(colorDark, colorLight)
 
 function getValue(color, colorIndex) {
     if (color.var.startsWith("base-color-palette/")) {
@@ -93,4 +107,6 @@ function makePalettes(palette, paletteName, selector) {
     // write the css variables into an index for theme documentation
     // NOTE: we assume that all themes will have the same variables and write the same file over and over
     fs.writeFileSync(path.resolve(__dirname, "../storybook/css-variables.json"), JSON.stringify(cssVariableNames, null, 2), {encoding: "utf-8"})
+
+    return baseColorNames
 }

@@ -23,9 +23,9 @@ html.dark{
 	#{--ks-background-running}: rgba($base-blue-500, 0.2);
 	#{--ks-background-skipped}: $base-gray-500;
 	#{--ks-background-success}: rgba($base-green-900, 0.2);
-	#{--ks-background-table-header}: $base-gray-600;
+	#{--ks-background-table-header}: $base-gray-500;
 	#{--ks-background-table-row}: $base-gray-700;
-	#{--ks-background-table-row-hover}: #2f3342;
+	#{--ks-background-table-row-hover}: $base-gray-600;
 	#{--ks-background-warning}: rgba($base-orange-900, 0.2);
 
 	/* badge */
