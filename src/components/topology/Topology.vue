@@ -452,6 +452,7 @@
         border: 1px solid var(--ks-border-primary);
         box-shadow: 0 12px 12px rgba(130, 103, 158, 0.1019607843);
         border-radius: 5px;
+        text-align:left;
     }
 
     .cascader-item {
