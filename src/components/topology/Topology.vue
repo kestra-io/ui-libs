@@ -73,7 +73,7 @@
         </template>
 
         <Controls :show-interactive="false">
-            <ControlButton @click="emit('toggle-orientation', $event)">
+            <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <SplitCellsVertical :size="48" v-if="!isHorizontal" />
                 <SplitCellsHorizontal v-if="isHorizontal" />
             </ControlButton>
@@ -82,10 +82,10 @@
             </ControlButton>
             <ul v-if="isCascaderOpen" class="cascader">
                 <li @click="exportToPNG" class="cascader-item">
-                    Export to PNG
+                    Export to .PNG
                 </li>
                 <li class="cascader-item">
-                    Export to draw.io
+                    Export to .draw.io
                 </li>
             </ul>
         </Controls>
