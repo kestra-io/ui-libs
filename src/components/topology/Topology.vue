@@ -401,8 +401,8 @@
 
 </script>
 
-<style scoped lang="scss">
-    :deep(.unused-path) {
+<style lang="scss">
+    .unused-path {
         opacity: 0.3;
     }
 </style>
