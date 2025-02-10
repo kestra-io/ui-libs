@@ -535,7 +535,7 @@ export default {
               ? nodeByUid[cluster.cluster.taskNode.uid].unused
               : false,
           },
-          class: `bg-light-${clusterColor}-border rounded p-2`,
+          class: `ks-topology-${clusterColor}-border rounded p-2`,
         } as any);
       }
     }
@@ -606,7 +606,7 @@ export default {
           },
           class:
             node.type === "collapsedcluster"
-              ? `bg-light-${color}-border rounded`
+              ? `ks-topology-${color}-border rounded`
               : "",
         });
       }
