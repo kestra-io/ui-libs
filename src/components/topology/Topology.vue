@@ -77,6 +77,17 @@
                 <SplitCellsVertical :size="48" v-if="!isHorizontal" />
                 <SplitCellsHorizontal v-if="isHorizontal" />
             </ControlButton>
+            <ControlButton @click="toggleCascader"> 
+                <Download />
+            </ControlButton>
+            <ul v-if="isCascaderOpen" class="cascader">
+                <li @click="exportToPNG" class="cascader-item">
+                    Export to .PNG
+                </li>
+                <li class="cascader-item">
+                    Export to .draw.io
+                </li>
+            </ul>
         </Controls>
     </VueFlow>
 </template>
@@ -101,11 +112,14 @@
     import SplitCellsVertical from "../../assets/icons/SplitCellsVertical.vue";
     // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
+    import Download from "vue-material-design-icons/Download.vue";
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
-    import {YamlUtils} from "../../utils/YamlUtils"
+    import {YamlUtils} from "../../utils/YamlUtils";
+    import {useScreenshot} from "./screenshot/useScreenshot";
+
 
     const props = defineProps({
         id: {
@@ -167,11 +181,13 @@
 
     const dragging = ref(false);
     const lastPosition = ref<XYPosition | null>()
-    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements} = useVueFlow({id: props.id});
+    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow({id: props.id});
     const edgeReplacer = ref({});
     const hiddenNodes = ref<string[]>([]);
     const collapsed = ref(new Set<string>());
     const clusterToNode = ref([])
+    const {capture} = useScreenshot();
+
 
     const emit = defineEmits(
         [
@@ -399,11 +415,59 @@
 
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
+    const isCascaderOpen = ref(false);
+
+    const toggleCascader = () => {
+        isCascaderOpen.value = !isCascaderOpen.value;
+    };
+
+    function doScreenshot() {
+        if (!vueFlowRef.value) {
+            console.warn("Flow not found");
+            return;
+        }
+        capture(vueFlowRef.value, {shouldDownload: true});
+    }
+
+    const exportToPNG = () => {
+        doScreenshot();
+        isCascaderOpen.value = false;
+    };
 </script>
 
 <style lang="scss">
     .unused-path {
         opacity: 0.3;
+    }
+
+    .cascader {
+        position: absolute;
+        bottom: 0px;
+        left: 40px;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+        list-style-type: none;
+        background: var(--ks-background-card);
+        border: 1px solid var(--ks-border-primary);
+        box-shadow: 0 12px 12px rgba(130, 103, 158, 0.1019607843);
+        border-radius: 5px;
+        text-align:left;
+    }
+
+    .cascader-item {
+        padding: 5px 8px;
+        cursor: pointer;
+        color: var(--ks-content-primary);
+        font-size: 12px;
+
+        &:first-child{
+            border-bottom: 1px solid var(--ks-border-primary);
+        }
+
+        &:hover {
+            background: var(--ks-button-background-secondary-hover);;
+        }
     }
 </style>
 
