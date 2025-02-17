@@ -10,6 +10,7 @@ export {default as TaskIcon} from "./misc/TaskIcon.vue";
 
 // plugins
 export {default as SchemaToHtml} from "./plugins/SchemaToHtml.vue";
+export {default as PluginIndex} from "./plugins/PluginIndex.vue";
 
 // content
 export {default as MDCRenderer} from "./content/MDCRenderer.vue";

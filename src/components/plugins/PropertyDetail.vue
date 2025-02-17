@@ -160,7 +160,7 @@
     const subtype = ref(extractTypeInfo(props.property).subType);
 
     const codeSanitizer = (str: string): string => {
-        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3");
+        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replaceAll(/ *:(?! )/g, ": ");
     }
 </script>
 
