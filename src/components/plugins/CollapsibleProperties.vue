@@ -20,7 +20,7 @@
                         <span class="d-flex flex-grow-1 align-items-center justify-content-between">
                             <span class="d-flex gap-2">
                                 <Tooltip v-if="showDynamic && !isDynamic(property)" class="d-flex" title="Non-dynamic">
-                                    <SnowFlake class="text-info" />
+                                    <Snowflake class="text-info" />
                                 </Tooltip>
                                 <Tooltip v-if="property['$beta']" class="d-flex" title="Beta">
                                     <AlphaBBox class="text-warning" />
@@ -63,7 +63,7 @@
     import PropertyDetail from "./PropertyDetail.vue";
     import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
     import Alert from "vue-material-design-icons/Alert.vue";
-    import SnowFlake from "vue-material-design-icons/SnowFlake.vue";
+    import Snowflake from "vue-material-design-icons/Snowflake.vue";
     import AlphaBBox from "vue-material-design-icons/AlphaBBox.vue";
     import type {JSONSchema} from "./SchemaToHtml.vue";
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
