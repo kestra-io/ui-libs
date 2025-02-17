@@ -10,10 +10,10 @@
             </div>
 
             <div v-if="schema.properties?.title" class="plugin-title markdown">
-                <slot name="markdown" :content="schema.properties.title.replaceAll(/ *:(?! )/g, ': ')" />
+                <slot name="markdown" :content="schema.properties.title.replaceAll(/ *:(?![ /])/g, ': ')" />
             </div>
             <div v-if="schema.properties?.description" class="markdown">
-                <slot name="markdown" :content="schema.properties.description.replaceAll(/ *:(?! )/g, ': ')" />
+                <slot name="markdown" :content="schema.properties.description.replaceAll(/ *:(?![ /])/g, ': ')" />
             </div>
 
             <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
@@ -26,7 +26,7 @@
                         <template v-for="(example, index) in examples" :key="pluginType + '-' + index">
                             <div class="d-flex flex-column gap-3">
                                 <div class="markdown">
-                                    <slot v-if="example.title" :content="example.title.replaceAll(/ *:(?! )/g, ': ')" name="markdown" />
+                                    <slot v-if="example.title" :content="example.title.replaceAll(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
                                     :highlighter="highlighter"

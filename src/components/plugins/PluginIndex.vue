@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <slot v-if="description !== undefined" name="markdown" :content="description.replaceAll(/ *:(?! )/g, ': ')" />
+        <slot v-if="description !== undefined" name="markdown" :content="description.replaceAll(/ *:(?![ /])/g, ': ')" />
         <!-- Root plugin page with subgroups -->
         <template v-if="subGroup === undefined && plugins.length > 1">
             <div class="d-flex flex-column">
