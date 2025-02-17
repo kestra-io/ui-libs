@@ -68,6 +68,22 @@ export function className(anchor: string): string {
     return anchor.substring(anchor.lastIndexOf(".") + 1);
 }
 
+export function extractEnumValues(property: JSONProperty): string[] | undefined {
+    if (property.enum) {
+        return property.enum;
+    }
+
+    if (property.items?.enum) {
+        return property.items.enum;
+    }
+
+    if (property.additionalProperties?.enum) {
+        return property.additionalProperties.enum;
+    }
+
+    return undefined;
+}
+
 export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     const result: ExtractedTypes = {} as ExtractedTypes;
 
