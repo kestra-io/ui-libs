@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-    import {extractTypeInfo, className, type JSONProperty} from "../../utils/schemaUtils";
+    import {extractTypeInfo, className, type JSONProperty, type JSONSchema} from "../../utils/schemaUtils";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
     import Collapsible from "../misc/Collapsible.vue";
     import Tooltip from "../misc/Tooltip.vue";
@@ -65,7 +65,6 @@
     import Alert from "vue-material-design-icons/Alert.vue";
     import Snowflake from "vue-material-design-icons/Snowflake.vue";
     import AlphaBBox from "vue-material-design-icons/AlphaBBox.vue";
-    import type {JSONSchema} from "./SchemaToHtml.vue";
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import {ref, watch} from "vue";
 

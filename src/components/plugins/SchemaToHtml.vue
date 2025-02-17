@@ -102,31 +102,9 @@
     import {computed, onUnmounted, ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
-    import type {JSONProperty} from "../../utils/schemaUtils.ts";
+    import type {JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "../misc/Collapsible.vue";
     import CollapsibleProperties from "./CollapsibleProperties.vue";
-
-    export interface JSONSchema {
-        title?: string
-        description?: string
-        definitions?: Record<string, JSONSchema>
-        outputs?: {
-            properties: Record<string, JSONProperty>
-        }
-        properties?: Record<string, JSONProperty> & {
-            title?: string
-            description?: string
-            length?: number
-            properties?: Record<string, JSONProperty>
-            $beta?: boolean
-            $examples?: {
-                title?: string
-                code: string
-                lang?: string
-                full?: boolean
-            }[]
-        }
-    }
 
     const props = withDefaults(defineProps<{
         schema: JSONSchema,

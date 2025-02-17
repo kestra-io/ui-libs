@@ -26,6 +26,28 @@ export interface JSONProperty {
     enum?: string[];
 }
 
+export interface JSONSchema {
+    title?: string
+    description?: string
+    definitions?: Record<string, JSONSchema>
+    outputs?: {
+        properties: Record<string, JSONProperty>
+    }
+    properties?: Record<string, JSONProperty> & {
+        title?: string
+        description?: string
+        length?: number
+        properties?: Record<string, JSONProperty>
+        $beta?: boolean
+        $examples?: {
+            title?: string
+            code: string
+            lang?: string
+            full?: boolean
+        }[]
+    }
+}
+
 type ExtractedTypes = { types: string[], subType?: string };
 
 function extractTypeOrRef(propType: JSONProperty): string | undefined {
