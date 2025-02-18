@@ -7,6 +7,7 @@ export interface JSONProperty {
     $required?:boolean;
     $beta?: boolean;
     $deprecated?: boolean;
+    allOf?:JSONProperty[];
     oneOf?:JSONProperty[];
     items?: JSONProperty;
     additionalProperties?:JSONProperty;
@@ -82,6 +83,22 @@ export function extractEnumValues(property: JSONProperty): string[] | undefined 
     }
 
     return undefined;
+}
+
+export function aggregateAllOf(property: JSONProperty): JSONProperty {
+    if (property.allOf) {
+        property = property.allOf.reduce((acc, curr) => {
+            return {
+                ...acc,
+                ...curr,
+            };
+        }, {...property});
+
+        delete property.allOf;
+    }
+
+
+    return property;
 }
 
 export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
