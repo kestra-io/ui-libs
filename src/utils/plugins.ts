@@ -22,5 +22,5 @@ export function isEntryAPluginElementPredicate(key: string, value: any) {
 }
 
 export function subGroupName(subGroupWrapper: Plugin) {
-    return subGroupWrapper.title.replaceAll(/\.([a-zA-Z])/g, (_, capture) => ` ${capture.toUpperCase()}`).capitalize();
+    return subGroupWrapper.title.replaceAll(/\.([a-zA-Z])/g, (_, capture) => ` ${capture.toUpperCase()}`);
 }

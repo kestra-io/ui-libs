@@ -11,13 +11,14 @@
                     :text="subGroupName(subGroupWrapper)"
                     :href="subGroupHref(subGroupName(subGroupWrapper))"
                     :key="subGroupName(subGroupWrapper)"
-                    @click="$emit('goTo', {subGroup: subGroupName(subGroupWrapper)})"
+                    class="text-capitalize"
+                    @click="$emit('goTo', {subGroup: subGroupWrapper})"
                 />
             </div>
         </template>
         <template v-else>
             <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in elementsByType" :key="elementType">
-                <h4 :id="`section-${slugify(elementType)}`">
+                <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
                 </h4>
                 <div class="d-flex flex-column">
@@ -28,6 +29,7 @@
                         :text="elementName(element)"
                         :href="elementHref(element)"
                         :key="element"
+                        class="text-capitalize"
                         @click="$emit('goTo', {element})"
                     />
                 </div>
@@ -63,7 +65,7 @@
 
     const elementName = (qualifiedName: string) => {
         let split = qualifiedName.split(".");
-        return split?.[split.length - 1]?.capitalize();
+        return split?.[split.length - 1];
     }
 
     const {path} = useRoute();
@@ -75,13 +77,13 @@
     function extractPluginElements(plugin: Plugin): Record<string, string[]> {
         return Object.fromEntries(
             Object.entries(plugin).filter(([key, value]) => isEntryAPluginElementPredicate(key, value))
-                .map(([key, value]) => [key.replaceAll(/[A-Z]/g, match => ` ${match}`).capitalize(), value as string[]])
+                .map(([key, value]) => [key.replaceAll(/[A-Z]/g, match => ` ${match}`), value as string[]])
         );
     }
 
     const elementsByType = computed<Record<string, string[]>>(() => extractPluginElements(plugin.value));
 
     defineEmits<{
-        (e: "goTo", target: {subGroup?: string, element?: string}): void
+        (e: "goTo", target: {subGroup?: Plugin & Pick<Plugin, "subGroup">, element?: string}): void
     }>()
 </script>

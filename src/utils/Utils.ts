@@ -30,6 +30,7 @@ export const DATE_FORMAT_STORAGE_KEY = "dateFormat";
 export const TIMEZONE_STORAGE_KEY = "timezone";
 
 export default {
+    capitalize: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
     dateFilter: (dateString: string, format: string) => {
         const currentLocale = getCurrentInstance()?.appContext.config.globalProperties.$moment().locale();
         const momentInstance = getCurrentInstance()?.appContext.config.globalProperties.$moment(dateString).locale(currentLocale);
