@@ -12,7 +12,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": {
+        "types": "./dist/index.d.ts",
         "default": "./dist/kestra-ui.js"
       },
       "require": "./dist/kestra-ui.umd.cjs"
