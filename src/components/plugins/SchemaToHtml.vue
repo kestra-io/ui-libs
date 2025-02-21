@@ -78,7 +78,7 @@
                         <CollapsibleProperties
                             v-for="[definitionKey, definitionValue] in Object.entries(schema.definitions)"
                             :properties="definitionValue.properties"
-                            :section-name="definitionValue.title ?? definitionKey"
+                            :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
                             :show-dynamic="true"
                             :key="pluginType + '-' + definitionKey"

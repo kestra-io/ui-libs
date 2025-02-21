@@ -66,7 +66,8 @@ function extractTypeOrRef(propType: JSONProperty): string | undefined {
 
 // Can take a "#full.class.Name" format
 export function className(anchor: string): string {
-    return anchor.substring(anchor.lastIndexOf(".") + 1);
+    const noGenericType = anchor.split("_")[0];
+    return noGenericType.substring(noGenericType.lastIndexOf(".") + 1);
 }
 
 export function extractEnumValues(property: JSONProperty): string[] | undefined {
