@@ -10,10 +10,10 @@
             </div>
 
             <div v-if="schema.properties?.title" class="plugin-title markdown">
-                <slot name="markdown" :content="schema.properties.title" />
+                <slot name="markdown" :content="schema.properties.title.replaceAll(/ *:(?![ /])/g, ': ')" />
             </div>
             <div v-if="schema.properties?.description" class="markdown">
-                <slot name="markdown" :content="schema.properties.description" />
+                <slot name="markdown" :content="schema.properties.description.replaceAll(/ *:(?![ /])/g, ': ')" />
             </div>
 
             <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
@@ -26,7 +26,7 @@
                         <template v-for="(example, index) in examples" :key="pluginType + '-' + index">
                             <div class="d-flex flex-column gap-3">
                                 <div class="markdown">
-                                    <slot v-if="example.title" :content="example.title" name="markdown" />
+                                    <slot v-if="example.title" :content="example.title.replaceAll(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
                                     :highlighter="highlighter"
@@ -78,7 +78,7 @@
                         <CollapsibleProperties
                             v-for="[definitionKey, definitionValue] in Object.entries(schema.definitions)"
                             :properties="definitionValue.properties"
-                            :section-name="definitionValue.title ?? definitionKey"
+                            :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
                             :show-dynamic="true"
                             :key="pluginType + '-' + definitionKey"
@@ -102,31 +102,9 @@
     import {computed, onUnmounted, ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
-    import type {JSONProperty} from "../../utils/schemaUtils.ts";
+    import type {JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "../misc/Collapsible.vue";
     import CollapsibleProperties from "./CollapsibleProperties.vue";
-
-    export interface JSONSchema {
-        title?: string
-        description?: string
-        definitions?: Record<string, JSONSchema>
-        outputs?: {
-            properties: Record<string, JSONProperty>
-        }
-        properties?: Record<string, JSONProperty> & {
-            title?: string
-            description?: string
-            length?: number
-            properties?: Record<string, JSONProperty>
-            $beta?: boolean
-            $examples?: {
-                title?: string
-                code: string
-                lang?: string
-                full?: boolean
-            }[]
-        }
-    }
 
     const props = withDefaults(defineProps<{
         schema: JSONSchema,

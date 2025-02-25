@@ -4,7 +4,7 @@
             <div class="border rounded">
                 <Collapsible
                     class="property p-3"
-                    v-for="(property, propertyKey) in sortSchemaByRequired(properties)"
+                    v-for="(property, propertyKey) in sortedAndAggregated(properties)"
                     :key="propertyKey"
                     :arrow="false"
                     :clickable-text="propertyKey"
@@ -18,9 +18,9 @@
                     </template>
                     <template #buttonRight="{collapsed}">
                         <span class="d-flex flex-grow-1 align-items-center justify-content-between">
-                            <span class="d-flex gap-1">
+                            <span class="d-flex gap-2">
                                 <Tooltip v-if="showDynamic && !isDynamic(property)" class="d-flex" title="Non-dynamic">
-                                    <Cancel class="text-danger" />
+                                    <Snowflake class="text-info" />
                                 </Tooltip>
                                 <Tooltip v-if="property['$beta']" class="d-flex" title="Beta">
                                     <AlphaBBox class="text-warning" />
@@ -56,16 +56,20 @@
 </template>
 
 <script setup lang="ts">
-    import {extractTypeInfo, className, type JSONProperty} from "../../utils/schemaUtils";
+    import {
+        extractTypeInfo,
+        className,
+        type JSONProperty,
+        aggregateAllOf
+    } from "../../utils/schemaUtils";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
     import Collapsible from "../misc/Collapsible.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import PropertyDetail from "./PropertyDetail.vue";
     import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
     import Alert from "vue-material-design-icons/Alert.vue";
-    import Cancel from "vue-material-design-icons/Cancel.vue";
+    import Snowflake from "vue-material-design-icons/Snowflake.vue";
     import AlphaBBox from "vue-material-design-icons/AlphaBBox.vue";
-    import type {JSONSchema} from "./SchemaToHtml.vue";
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import {ref, watch} from "vue";
 
@@ -101,12 +105,13 @@
         return property.oneOf?.some(prop => prop["$dynamic"] === true) ?? false;
     };
 
-    function sortSchemaByRequired<T extends NonNullable<NonNullable<JSONSchema["properties"]>["properties"]>>(schema: T): T {
+    function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
         const requiredKeys = [];
         const nonRequiredKeys = [];
 
         for (const key in schema) {
             if (typeof schema[key] === "object") {
+                schema[key] = aggregateAllOf(schema[key]);
                 if (schema[key].$required) {
                     requiredKeys.push(key);
                 } else {
@@ -117,7 +122,7 @@
 
         const sortedKeys = [...requiredKeys.sort(), ...nonRequiredKeys.sort()];
 
-        const sortedSchema: T = {} as T;
+        const sortedSchema = {} as Record<string, JSONProperty>;
         sortedKeys.forEach(key => {
             sortedSchema[key] = schema[key];
         });

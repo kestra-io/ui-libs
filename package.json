@@ -9,8 +9,10 @@
   ],
   "main": "./dist/kestra-ui.umd.cjs",
   "module": "./dist/kestra-ui.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": {
         "types": "./dist/index.d.ts",
         "default": "./dist/kestra-ui.js"
@@ -29,7 +31,7 @@
     "lint": "eslint --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "watch": "vite build --watch"
+    "watch": "npx concurrently -k -n \"VITE,TYPES\" -c \"magenta,blue\" \"vite build --watch\" \"vue-tsc --watch --project ./tsconfig.build.json\""
   },
   "peerDependencies": {
     "@vue-flow/background": "^1.3.0",
@@ -67,6 +69,7 @@
     "@typescript-eslint/parser": "^8.19.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "concurrently": "^9.1.2",
     "eslint": "^9.17.0",
     "eslint-plugin-storybook": "^0.11.2",
     "eslint-plugin-vue": "^9.32.0",
@@ -82,6 +85,7 @@
     "html-to-image": "^1.11.11",
     "mermaid": "^11.4.1",
     "shiki": "^1.22.0",
+    "slugify": "^1.6.6",
     "vue-i18n": "^11.0.1"
   },
   "optionalDependencies": {

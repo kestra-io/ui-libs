@@ -122,12 +122,12 @@
             </span>
         </div>
 
-        <div v-if="property.enum !== undefined">
+        <div v-if="enumValues !== undefined">
             <span>
                 Possible Values
             </span>
             <div class="d-flex flex-wrap justify-content-end gap-7 p-0">
-                <span v-for="(possibleValue, index) in property.enum" class="border rounded px-2 py-1" :key="index">
+                <span v-for="(possibleValue, index) in enumValues" class="border rounded px-2 py-1" :key="index">
                     {{ possibleValue }}
                 </span>
             </div>
@@ -143,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-    import {className, extractTypeInfo, type JSONProperty} from "../../utils/schemaUtils.ts";
+    import {className, extractEnumValues, extractTypeInfo, type JSONProperty} from "../../utils/schemaUtils.ts";
     import {ref} from "vue";
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
 
@@ -159,8 +159,10 @@
 
     const subtype = ref(extractTypeInfo(props.property).subType);
 
+    const enumValues = ref(extractEnumValues(props.property));
+
     const codeSanitizer = (str: string): string => {
-        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3");
+        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replaceAll(/ *:(?![ /])/g, ": ");
     }
 </script>
 

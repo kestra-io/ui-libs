@@ -1,3 +1,5 @@
+@import "../../scss/color-palette";
+
 .circle-button {
     border-radius: 1rem;
     width: 1rem;
@@ -8,6 +10,14 @@
     margin-left: 0.25rem;
     z-index: 2000;
 }
+
+$node-colors: (
+    "success": $base-green-400,
+    "primary": $base-purple-500,
+    "danger": $base-red-500,
+    "blue": $base-blue-500,
+    "default": $base-gray-600
+);
 
 .button-icon {
     font-size: 0.66rem;
@@ -60,5 +70,12 @@
 
     .vue-flow__edge-path {
         stroke: var(--ks-topology-edge-color);
+    }
+
+    @each $color, $value in $node-colors {
+        .ks-topology-#{$color}-border {
+            background-color: rgba($value, 0.05);
+            border: 1px solid $value;
+        }
     }
 }
