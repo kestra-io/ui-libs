@@ -79,11 +79,11 @@
             <ControlButton @click="toggleDropdown"> 
                 <Download />
             </ControlButton>
-            <ul v-if="isDropdownOpen" class="dropdown">
-                <li @click="exportAsImage('jpeg')" class="dropdown-item">
+            <ul v-if="isDropdownOpen" class="exporting">
+                <li @click="exportAsImage('jpeg')" class="item">
                     Export as .JPEG
                 </li>
-                <li @click="exportAsImage('png')" class="dropdown-item">
+                <li @click="exportAsImage('png')" class="item">
                     Export as .PNG
                 </li>
             </ul>
@@ -430,7 +430,7 @@
         opacity: 0.3;
     }
 
-    .dropdown {
+    .exporting {
         position: absolute;
         bottom: 0px;
         left: 40px;
