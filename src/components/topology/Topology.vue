@@ -74,9 +74,19 @@
 
         <Controls :show-interactive="false">
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
-                <SplitCellsVertical :size="48" v-if="!isHorizontal" />
-                <SplitCellsHorizontal v-if="isHorizontal" />
+                <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
+            <ControlButton @click="toggleDropdown"> 
+                <Download />
+            </ControlButton>
+            <ul v-if="isDropdownOpen" class="dropdown">
+                <li @click="exportAsImage('jpeg')" class="dropdown-item">
+                    Export as .JPEG
+                </li>
+                <li @click="exportAsImage('png')" class="dropdown-item">
+                    Export as .PNG
+                </li>
+            </ul>
         </Controls>
     </VueFlow>
 </template>
@@ -101,11 +111,13 @@
     import SplitCellsVertical from "../../assets/icons/SplitCellsVertical.vue";
     // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
+    import Download from "vue-material-design-icons/Download.vue";
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
-    import {YamlUtils} from "../../utils/YamlUtils"
+    import {YamlUtils} from "../../utils/YamlUtils";
+    import {useScreenshot} from "./export/useScreenshot";
 
     const props = defineProps({
         id: {
@@ -167,11 +179,12 @@
 
     const dragging = ref(false);
     const lastPosition = ref<XYPosition | null>()
-    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements} = useVueFlow({id: props.id});
+    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow({id: props.id});
     const edgeReplacer = ref({});
     const hiddenNodes = ref<string[]>([]);
     const collapsed = ref(new Set<string>());
     const clusterToNode = ref([])
+    const {capture} = useScreenshot();
 
     const emit = defineEmits(
         [
@@ -399,12 +412,52 @@
 
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
+    const isDropdownOpen = ref(false);
+    const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
+    function exportAsImage(type: "jpeg" | "png") {
+        if (!vueFlowRef.value) {
+            console.warn("Flow not found");
+            return;
+        }
+        capture(vueFlowRef.value, {type, shouldDownload: true});
+        isDropdownOpen.value = false;
+    }
 </script>
 
-<style lang="scss">
-    .unused-path {
+<style lang="scss" src="./topology.scss" />
+<style scoped lang="scss">
+    :deep(.unused-path) {
         opacity: 0.3;
     }
-</style>
 
-<style lang="scss" src="./topology.scss" />
+    .dropdown {
+        position: absolute;
+        bottom: 0px;
+        left: 40px;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+        list-style-type: none;
+        background: var(--ks-background-card);
+        border: 1px solid var(--ks-border-primary);
+        box-shadow: 0 12px 12px rgba(130, 103, 158, 0.1019607843);
+        border-radius: 5px;
+        text-align:left;
+
+        & .item {
+            padding: 5px 8px;
+            cursor: pointer;
+            color: var(--ks-content-primary);
+            font-size: 12px;
+            width: 110px;
+
+            &:first-child{
+                border-bottom: 1px solid var(--ks-border-primary);
+            }
+
+            &:hover {
+                background: var(--ks-button-background-secondary-hover);;
+            }
+        }
+    }
+</style>
