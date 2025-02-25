@@ -64,7 +64,7 @@
     "@types/dagre": "^0.7.52",
     "@types/humanize-duration": "^3.27.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/lodash": "^4.17.14",
+    "@types/lodash": "^4.17.15",
     "@types/moment-timezone": "^0.5.30",
     "@typescript-eslint/parser": "^8.19.1",
     "@vitejs/plugin-vue": "^5.2.1",
