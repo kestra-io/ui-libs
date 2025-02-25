@@ -18,108 +18,108 @@
             <span>
                 Dynamic
             </span>
-            <span class="border rounded px-2 py-1" :class="{'border-red': !isDynamic}">
+            <code class="border rounded px-2 py-1" :class="{'border-red': !isDynamic}">
                 {{ isDynamic ? "YES" : "NO" }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.default !== undefined">
             <span>
                 Default
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.default }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.pattern !== undefined">
             <span>
                 Validation RegExp
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.pattern }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.minLength !== undefined">
             <span>
                 Min length
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.minLength }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.maxLength !== undefined">
             <span>
                 Max length
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.maxLength }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.minItems !== undefined">
             <span>
                 Min items
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.minItems }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.maxItems !== undefined">
             <span>
                 Max items
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.maxItems }}
-            </span>
+            </code>
         </div>
 
         <div v-if="property.minimum !== undefined">
             <span>
                 Minimum
             </span>
-            <span class="border rounded px-2 py-1">
-                &rsaquo;= {{ property.minimum }}
-            </span>
+            <code class="border rounded px-2 py-1">
+                &gt;= {{ property.minimum }}
+            </code>
         </div>
 
         <div v-if="property.exclusiveMinimum !== undefined">
             <span>
                 Minimum
             </span>
-            <span class="border rounded px-2 py-1">
-                &rsaquo; {{ property.minimum }}
-            </span>
+            <code class="border rounded px-2 py-1">
+                &gt; {{ property.minimum }}
+            </code>
         </div>
 
         <div v-if="property.maximum !== undefined">
             <span>
                 Maximum
             </span>
-            <span class="border rounded px-2 py-1">
-                &lsaquo;= {{ property.maximum }}
-            </span>
+            <code class="border rounded px-2 py-1">
+                &lt;= {{ property.maximum }}
+            </code>
         </div>
 
         <div v-if="property.exclusiveMaximum !== undefined">
             <span>
                 Maximum
             </span>
-            <span class="border rounded px-2 py-1">
-                &lsaquo; {{ property.maximum }}
-            </span>
+            <code class="border rounded px-2 py-1">
+                &lt; {{ property.maximum }}
+            </code>
         </div>
 
         <div v-if="property.format !== undefined">
             <span>
                 Format
             </span>
-            <span class="border rounded px-2 py-1">
+            <code class="border rounded px-2 py-1">
                 {{ property.format }}
-            </span>
+            </code>
         </div>
 
         <div v-if="enumValues !== undefined">
@@ -127,9 +127,9 @@
                 Possible Values
             </span>
             <div class="d-flex flex-wrap justify-content-end gap-7 p-0">
-                <span v-for="(possibleValue, index) in enumValues" class="border rounded px-2 py-1" :key="index">
+                <code v-for="(possibleValue, index) in enumValues" class="border rounded px-2 py-1" :key="index">
                     {{ possibleValue }}
-                </span>
+                </code>
             </div>
         </div>
 
@@ -172,12 +172,31 @@
     .property-detail > * {
         display: flex;
         justify-content: space-between;
-        padding: 1rem 0;
         border-top: 1px solid var(--ks-border-primary);
         align-items: center;
+        padding: 1rem 0;
+
+        span, .property-description:deep(p) {
+            line-height: 1.5rem;
+            font-size: .875rem !important;
+        }
+
+        .property-description {
+            color: var(--ks-content-secondary);
+        }
+
+        code {
+            color: var(--ks-content-primary);
+            background: var(--ks-background-body);
+        }
 
         .border-red {
             border-color: color-palette.$base-red-400 !important;
+        }
+
+        &:first-child {
+            padding-top: 0;
+            border-top: none !important;
         }
 
         &:last-child {

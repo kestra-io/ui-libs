@@ -36,7 +36,7 @@
                                     v-if="example.code"
                                 />
                             </div>
-                            <hr class="w-75 align-self-center" v-if="index < examples.length - 1">
+                            <hr class="w-100 align-self-center" v-if="index < examples.length - 1">
                         </template>
                     </div>
                 </template>
@@ -185,6 +185,7 @@
             &, & * {
                 height: 1.5rem;
                 width: 1.5rem;
+                bottom: 0;
             }
         }
 

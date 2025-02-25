@@ -1,9 +1,9 @@
 <template>
-    <Collapsible :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded">
+    <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded">
         <template v-if="Object.keys(properties ?? {}).length > 0" #content>
-            <div class="border rounded">
+            <div class="border overflow-hidden">
                 <Collapsible
-                    class="property p-3"
+                    class="property"
                     v-for="(property, propertyKey) in sortedAndAggregated(properties)"
                     :key="propertyKey"
                     :arrow="false"
@@ -147,7 +147,38 @@
         }
     }
 
-    .property:not(:first-child) {
-        border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    .border {
+        border-radius: .5rem;
+    }
+
+    .property {
+        gap: 0 !important;
+
+        &:deep(> button) {
+            font-size: 1rem !important;
+            line-height: 1.5rem;
+        }
+
+        &:not(:first-child) {
+            border-top: var(--bs-border-width) var(--bs-border-style) var(--collapsible-border-color);
+        }
+
+        :deep(> .collapse-button) {
+            padding: .75rem 1rem;
+
+            &:not(.collapsed) {
+                border-bottom: var(--bs-border-width) var(--bs-border-style) var(--collapsible-border-color);
+            }
+        }
+
+        :deep(> .collapsible-body:not(.collapsed)) {
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+        }
+
+        :deep(.property-detail > *) {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
     }
 </style>
