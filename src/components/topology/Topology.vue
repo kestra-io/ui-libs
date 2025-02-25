@@ -81,11 +81,11 @@
                 <Download />
             </ControlButton>
             <ul v-if="isCascaderOpen" class="cascader">
-                <li @click="exportToPNG" class="cascader-item">
-                    Export to .PNG
+                <li @click="exportAsImage('jpeg')" class="cascader-item">
+                    Export as .JPEG
                 </li>
-                <li class="cascader-item">
-                    Export to .draw.io
+                <li @click="exportAsImage('png')" class="cascader-item">
+                    Export as .PNG
                 </li>
             </ul>
         </Controls>
@@ -118,8 +118,7 @@
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
     import {YamlUtils} from "../../utils/YamlUtils";
-    import {useScreenshot} from "./screenshot/useScreenshot";
-
+    import {useScreenshot} from "./export/useScreenshot";
 
     const props = defineProps({
         id: {
@@ -187,7 +186,6 @@
     const collapsed = ref(new Set<string>());
     const clusterToNode = ref([])
     const {capture} = useScreenshot();
-
 
     const emit = defineEmits(
         [
@@ -416,23 +414,16 @@
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
     const isCascaderOpen = ref(false);
+    const toggleCascader = () => isCascaderOpen.value = !isCascaderOpen.value;
 
-    const toggleCascader = () => {
-        isCascaderOpen.value = !isCascaderOpen.value;
-    };
-
-    function doScreenshot() {
+    function exportAsImage(type: "jpeg" | "png") {
         if (!vueFlowRef.value) {
             console.warn("Flow not found");
             return;
         }
-        capture(vueFlowRef.value, {shouldDownload: true});
-    }
-
-    const exportToPNG = () => {
-        doScreenshot();
+        capture(vueFlowRef.value, {type, shouldDownload: true});
         isCascaderOpen.value = false;
-    };
+    }
 </script>
 
 <style scoped lang="scss">
@@ -460,6 +451,7 @@
         cursor: pointer;
         color: var(--ks-content-primary);
         font-size: 12px;
+        width: 110px;
 
         &:first-child{
             border-bottom: 1px solid var(--ks-border-primary);
