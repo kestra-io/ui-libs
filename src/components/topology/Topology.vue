@@ -74,17 +74,16 @@
 
         <Controls :show-interactive="false">
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
-                <SplitCellsVertical :size="48" v-if="!isHorizontal" />
-                <SplitCellsHorizontal v-if="isHorizontal" />
+                <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
-            <ControlButton @click="toggleCascader"> 
+            <ControlButton @click="toggleDropdown"> 
                 <Download />
             </ControlButton>
-            <ul v-if="isCascaderOpen" class="cascader">
-                <li @click="exportAsImage('jpeg')" class="cascader-item">
+            <ul v-if="isDropdownOpen" class="dropdown">
+                <li @click="exportAsImage('jpeg')" class="dropdown-item">
                     Export as .JPEG
                 </li>
-                <li @click="exportAsImage('png')" class="cascader-item">
+                <li @click="exportAsImage('png')" class="dropdown-item">
                     Export as .PNG
                 </li>
             </ul>
@@ -413,8 +412,8 @@
 
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
-    const isCascaderOpen = ref(false);
-    const toggleCascader = () => isCascaderOpen.value = !isCascaderOpen.value;
+    const isDropdownOpen = ref(false);
+    const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
     function exportAsImage(type: "jpeg" | "png") {
         if (!vueFlowRef.value) {
@@ -422,16 +421,17 @@
             return;
         }
         capture(vueFlowRef.value, {type, shouldDownload: true});
-        isCascaderOpen.value = false;
+        isDropdownOpen.value = false;
     }
 </script>
 
+<style lang="scss" src="./topology.scss" />
 <style scoped lang="scss">
     :deep(.unused-path) {
         opacity: 0.3;
     }
 
-    .cascader {
+    .dropdown {
         position: absolute;
         bottom: 0px;
         left: 40px;
@@ -444,23 +444,21 @@
         box-shadow: 0 12px 12px rgba(130, 103, 158, 0.1019607843);
         border-radius: 5px;
         text-align:left;
-    }
 
-    .cascader-item {
-        padding: 5px 8px;
-        cursor: pointer;
-        color: var(--ks-content-primary);
-        font-size: 12px;
-        width: 110px;
+        & .item {
+            padding: 5px 8px;
+            cursor: pointer;
+            color: var(--ks-content-primary);
+            font-size: 12px;
+            width: 110px;
 
-        &:first-child{
-            border-bottom: 1px solid var(--ks-border-primary);
-        }
+            &:first-child{
+                border-bottom: 1px solid var(--ks-border-primary);
+            }
 
-        &:hover {
-            background: var(--ks-button-background-secondary-hover);;
+            &:hover {
+                background: var(--ks-button-background-secondary-hover);;
+            }
         }
     }
 </style>
-
-<style lang="scss" src="./topology.scss" />
