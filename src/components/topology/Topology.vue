@@ -414,7 +414,6 @@
 
     const isDropdownOpen = ref(false);
     const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
-
     function exportAsImage(type: "jpeg" | "png") {
         if (!vueFlowRef.value) {
             console.warn("Flow not found");
