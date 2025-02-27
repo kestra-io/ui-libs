@@ -170,13 +170,12 @@
 
     :deep(.markdown) {
         pre, .code-block {
-            &:last-child {
-                margin-bottom: 0;
-            }
+            margin: 0;
+        }
 
-            &:not(:first-child) {
-                margin-top: calc(var(--spacer) * .75);
-            }
+        > ol, > ul, > dl {
+            margin-top: 0;
+            margin-bottom: 0;
         }
     }
 
