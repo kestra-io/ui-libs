@@ -162,7 +162,7 @@
     const enumValues = ref(extractEnumValues(props.property));
 
     const codeSanitizer = (str: string): string => {
-        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replaceAll(/ *:(?![ /])/g, ": ");
+        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replaceAll(/(?<!:):(?![: /])/g, ": ");
     }
 </script>
 
@@ -175,6 +175,7 @@
         border-top: 1px solid var(--ks-border-primary);
         align-items: center;
         padding: 1rem 0;
+        gap: var(--spacer);
 
         span, .property-description:deep(p) {
             line-height: 1.5rem;
