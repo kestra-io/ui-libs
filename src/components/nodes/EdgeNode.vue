@@ -19,7 +19,7 @@
                 transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
             }"
         >
-            <tooltip :title="$t('add task')">
+            <tooltip :title>
                 <AddTaskButton
                     v-if="data.haveAdd"
                     :add-task="true"
@@ -102,6 +102,10 @@
                     "unused-path": this.data.unused
                 }
             },
+            title() {
+                const {haveAdd} = this.data;
+                return `${this.$t("add task")} ${haveAdd?.length === 2 ? `${this.$t(haveAdd[1])} ${haveAdd[0]}` : ""}`.trim();
+            }
         },
         setup(props) {
             const path = computed(() => getSmoothStepPath(props));
