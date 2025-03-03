@@ -249,7 +249,6 @@ export default {
   },
 
   isTaskNode(node: MinimalNode) {
-    console.log(node)
     return ["GraphTask", "SubflowGraphTask$1"].some((t) => node.type.endsWith(t));
   },
 
