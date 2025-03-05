@@ -616,7 +616,7 @@ export const YamlUtils = {
   flowHaveTasks(source:string) {
     const tasks = (yaml
       .parseDocument(source) as any)
-      .contents.items.find((item:any) => item.key.value === "tasks");
+      .contents?.items?.find((item:any) => item.key.value === "tasks");
     return tasks && tasks.value.items && tasks.value.items.length >= 1;
   },
 
