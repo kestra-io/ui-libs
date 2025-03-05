@@ -55,7 +55,7 @@
     "@eslint/js": "^9.17.0",
     "@storybook/addon-essentials": "^8.4.7",
     "@storybook/addon-interactions": "^8.4.7",
-    "@storybook/addon-themes": "^8.4.7",
+    "@storybook/addon-themes": "^8.6.3",
     "@storybook/blocks": "^8.4.7",
     "@storybook/test": "^8.4.7",
     "@storybook/vue3": "^8.4.7",
