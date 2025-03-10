@@ -14,6 +14,7 @@ export default defineConfig({
         },
         rollupOptions: {
             external: [
+                "@nuxtjs/mdc/runtime",
                 "shiki",
                 "vue",
                 "vue-router",
@@ -49,6 +50,7 @@ export default defineConfig({
                     "@vue-flow/controls": "VueFlowControls",
                     "@popperjs/core": "PopperCore",
                     "moment-timezone": "MomentTimezone",
+                    "@nuxtjs/mdc/runtime": "NuxtMdcRuntime",
                 },
             }
         },
