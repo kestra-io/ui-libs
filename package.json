@@ -84,7 +84,7 @@
     "@popperjs/core": "^2.11.8",
     "html-to-image": "^1.11.11",
     "mermaid": "^11.4.1",
-    "shiki": "^1.22.0",
+    "shiki": "^3.2.1",
     "slugify": "^1.6.6",
     "vue-i18n": "^11.0.1"
   },
