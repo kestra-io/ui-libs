@@ -8,7 +8,8 @@ const TRIGGERS_NODE_UID = "root.Triggers";
 
 enum BranchType {
     ERROR = "ERROR",
-    FINALLY = "FINALLY"
+    FINALLY = "FINALLY",
+    AFTER_EXECUTION = "AFTER_EXECUTION"
 }
 
 interface MinimalNode {
@@ -415,6 +416,7 @@ export default {
     enableSubflowInteraction: boolean
   ):Elements | undefined{
     const elements:Elements = [];
+    console.log("generate graph")
 
     const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
@@ -666,7 +668,7 @@ export default {
   },
 
   isClusterRootOrEnd(node:MinimalNode) {
-    return ["GraphClusterRoot", "GraphClusterFinally", "GraphClusterEnd"].some((s) =>
+    return ["GraphClusterRoot", "GraphClusterFinally", "GraphClusterAfterExecution", "GraphClusterEnd"].some((s) =>
       node.type.endsWith(s)
     );
   },
