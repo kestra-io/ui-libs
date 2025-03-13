@@ -416,7 +416,6 @@ export default {
     enableSubflowInteraction: boolean
   ):Elements | undefined{
     const elements:Elements = [];
-    console.log("generate graph")
 
     const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
