@@ -56,7 +56,7 @@
     });
 
     const filteredHistories = computed(() => {
-        return props.histories.filter((h) => h.date && h.state);
+        return props.histories.filter((h) => h.date.isValid() && h.date && h.state);
     });
 
     function paint() {
