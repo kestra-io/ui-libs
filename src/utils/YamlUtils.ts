@@ -32,8 +32,15 @@ export const YamlUtils = {
     });
   },
 
-  parse(item:string) {
-    return JsYaml.load(item);
+  parse(item: string, throwIfError = true) {
+    if (item === undefined) return undefined;
+
+    try {
+        return JsYaml.load(item);
+    } catch (e) {
+        if (throwIfError) throw e;
+        return undefined;
+    }
   },
 
   extractTask(source:string, taskId:string) {
