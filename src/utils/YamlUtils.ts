@@ -50,20 +50,20 @@ export const YamlUtils = {
     }
   },
 
-  pairsToMap(pairs) {
+  pairsToMap(pairs: any) {
     const map = new YAMLMap();
     if (!isPair(pairs?.[0])) {
       return map;
     }
 
-    pairs.forEach((pair) => {
+    pairs.forEach((pair: any) => {
       map.add(pair);
     });
     return map;
   },
 
   extractTask(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     const taskNode = this._extractTask(yamlDoc, taskId);
     return taskNode === undefined
       ? undefined
@@ -125,7 +125,7 @@ export const YamlUtils = {
   },
 
   replaceTaskInDocument(source: string, taskId: string, newContent: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     const newItem = yamlDoc.createNode(yaml.parseDocument(newContent));
 
     this._extractTask(yamlDoc, taskId, (oldValue: any) => {
@@ -227,25 +227,25 @@ export const YamlUtils = {
   extractFieldFromMaps(
     source: any,
     fieldName: any,
-    parentPathPredicate = (_, __) => true,
-    valuePredicate = (_) => true
+    parentPathPredicate = (_: any, __?: any) => true,
+    valuePredicate = (_: any) => true
   ) {
-    const yamlDoc = yaml.parseDocument(source);
-    const maps = [];
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const maps: any = [];
     yaml.visit(yamlDoc, {
       Map(_, map, parent) {
         if (
           parentPathPredicate(
             parent
               .filter((p) => yaml.isPair(p))
-              .map((p) => p.key.value)
+              .map((p: any) => p?.key?.value)
               .join(".")
           ) &&
           map.items
         ) {
-          for (const item of map.items) {
-            if (item.key.value === fieldName) {
-              const fieldValue = item.value?.value ?? item.value?.items;
+          for (const item of map.items as any[]) {
+            if (item?.key?.value === fieldName) {
+              const fieldValue = item?.value?.value ?? item.value?.items;
               if (valuePredicate(fieldValue)) {
                 maps.push({
                   [fieldName]: fieldValue,
@@ -267,22 +267,22 @@ export const YamlUtils = {
     parents: Record<string, any>[];
     key: string;
     map: Record<string, any>;
-    range: FixedLengthArray<[number, number, number]>;
+    range: [number, number, number];
   }[] {
     if (source.match(/^\s*{{/)) {
       return [];
     }
 
-    const yamlDoc = yaml.parseDocument(source);
-    const maps = [];
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const maps: any = [];
     yaml.visit(yamlDoc, {
-      Map(_, yamlMap, parents: any[]) {
+      Map(_, yamlMap, parents: readonly any[]) {
         if (yamlMap.items) {
           const map = yamlMap.toJS(yamlDoc);
           for (const [fieldName, condition] of Object.entries(
             fieldConditions ?? {}
-          )) {
-            if (condition.present) {
+          ) as [any, any][]) {
+            if (condition?.present) {
               if (map[fieldName] === undefined) {
                 return;
               }
@@ -291,7 +291,7 @@ export const YamlUtils = {
                 map[fieldName] = undefined;
               }
             }
-            if (condition.populated) {
+            if (condition?.populated) {
               if (
                 map[fieldName] === undefined ||
                 map[fieldName] === null ||
@@ -344,15 +344,15 @@ export const YamlUtils = {
     };
   },
 
-  getAllCharts(source) {
-    const yamlDoc = yaml.parseDocument(source);
-    const charts = [];
+  getAllCharts(source: any) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const charts: any = [];
 
     yaml.visit(yamlDoc, {
       Map(_, map) {
         if (map.items) {
-          for (const item of map.items) {
-            if (item.key.value === "charts" && item.value.items) {
+          for (const item of map.items as any[]) {
+            if (item?.key?.value === "charts" && item?.value?.items) {
               for (const chartItem of item.value.items) {
                 charts.push(chartItem.toJSON());
               }
@@ -365,20 +365,20 @@ export const YamlUtils = {
     return charts;
   },
 
-  getChartAtPosition(source, position) {
-    const yamlDoc = yaml.parseDocument(source);
+  getChartAtPosition(source: any, position: any) {
+    const yamlDoc = yaml.parseDocument(source) as any;
     const lineCounter = new LineCounter();
     yaml.parseDocument(source, {lineCounter});
     const cursorIndex =
       lineCounter.lineStarts[position.lineNumber - 1] + position.column;
 
-    let chart = null;
+    let chart: any = null;
     yaml.visit(yamlDoc, {
       Map(_, map) {
         if (map.items) {
-          for (const item of map.items) {
-            if (item.key.value === "charts") {
-              if (item.value.items) {
+          for (const item of map.items as any[]) {
+            if (item?.key?.value === "charts") {
+              if (item?.value?.items) {
                 for (const chartItem of item.value.items) {
                   if (
                     chartItem.range[0] <= cursorIndex &&
@@ -410,11 +410,11 @@ export const YamlUtils = {
       return undefined;
     }
 
-    const [, stringBeforeValue, indent, yamlKey]: [
+    const [stringBeforeValue, indent, yamlKey]: [
       string,
       string,
       string | undefined
-    ] = [...exec];
+    ] = [exec[1], exec[2], exec[3]];
     return {
       indent: indent.length,
       yamlKey,
@@ -428,7 +428,7 @@ export const YamlUtils = {
   localizeElementAtIndex(source: string, indexInSource: number): YamlElement {
     const tillCursor = source.substring(0, indexInSource);
 
-    const indentAndYamlKey = this.extractIndentAndMaybeYamlKey(tillCursor);
+    const indentAndYamlKey: any = this.extractIndentAndMaybeYamlKey(tillCursor);
     let {yamlKey} = indentAndYamlKey;
     const {indent} = indentAndYamlKey;
     // We search in previous keys to find the parent key
@@ -445,11 +445,11 @@ export const YamlUtils = {
         tillCursor.lastIndexOf(yamlKey + ":") + yamlKey.length + 1;
     }
 
-    const yamlDoc = yaml.parseDocument(source);
-    const elements = [];
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const elements: any = [];
 
     yaml.visit(yamlDoc, {
-      Pair(_, pair, parents: any[]) {
+      Pair(_: any, pair: any, parents: readonly any[]) {
         if (pair.value?.range !== undefined && pair.key.value === yamlKey) {
           const beforeElement = source.substring(0, pair.value.range[0]);
           elements.push({
@@ -470,22 +470,22 @@ export const YamlUtils = {
     });
 
     const filter = elements.filter(
-      (map) =>
+      (map: any) =>
         map.range[0] <= valueStartIndex && valueStartIndex <= map.range[2]
     );
-    return filter.sort((a, b) => b.range[0] - a.range[0])?.[0];
+    return filter.sort((a: any, b: any) => b.range[0] - a.range[0])?.[0];
   },
 
   // Find map a cursor position, optionally filtering by a property name that the map must contain
-  getMapAtPosition(source, position, fieldName = null) {
-    const yamlDoc = yaml.parseDocument(source);
+  getMapAtPosition(source: any, position: any, fieldName = null) {
+    const yamlDoc = yaml.parseDocument(source) as any;
     const lineCounter = new yaml.LineCounter();
     yaml.parseDocument(source, {lineCounter});
     const cursorIndex =
       lineCounter.lineStarts[position.lineNumber - 1] + position.column - 1;
-    let targetMap = null;
+    let targetMap: any = null;
     yaml.visit(yamlDoc, {
-      Map(_, map) {
+      Map(_, map: any) {
         if (map.range[0] <= cursorIndex && map.range[1] >= cursorIndex) {
           for (const item of map.items) {
             if (fieldName === null || item.key.value === fieldName) {
@@ -526,7 +526,7 @@ export const YamlUtils = {
   },
 
   swapTasks(source: string, taskId1: string, taskId2: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
 
     const task1 = this._extractTask(yamlDoc, taskId1);
     const task2 = this._extractTask(yamlDoc, taskId2);
@@ -608,13 +608,13 @@ export const YamlUtils = {
     return yamlDoc.toString(TOSTRING_OPTIONS);
   },
 
-  insertSection(sectionType, source, task) {
-    const yamlDoc = yaml.parseDocument(source);
+  insertSection(sectionType: string, source: any, task: any) {
+    const yamlDoc = yaml.parseDocument(source) as any;
     const newNode = yamlDoc.createNode(yaml.parseDocument(task));
 
     // Find the section in the YAML document
     const section = yamlDoc.contents.items.find(
-      (item) => item.key.value === sectionType
+      (item: any) => item.key.value === sectionType
     );
 
     if (section) {
@@ -628,7 +628,7 @@ export const YamlUtils = {
         new yaml.Scalar(sectionType),
         sectionSeq
       );
-      yamlDoc.contents.items.push(newSection);
+      yamlDoc?.contents?.items?.push(newSection);
     }
 
     return this.cleanMetadata(yamlDoc.toString(TOSTRING_OPTIONS));
@@ -636,7 +636,7 @@ export const YamlUtils = {
 
   // FIXME: flowableTask could have a better type
   insertErrorInFlowable(source: string, errorTask: string, flowableTask: any) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     const newErrorNode = yamlDoc.createNode(yaml.parseDocument(errorTask));
     let added = false;
     yaml.visit(yamlDoc, {
@@ -667,7 +667,7 @@ export const YamlUtils = {
   deleteTask(source: string, taskId: string, section: string) {
     const inSection =
       section === SECTIONS.TASKS ? ["tasks", "errors"] : ["triggers"];
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     yaml.visit(yamlDoc, {
       Pair(_, pair: any) {
         if (inSection.includes(pair.key.value)) {
@@ -699,13 +699,13 @@ export const YamlUtils = {
   },
 
   getLastTask(source: string): string | undefined {
-    const parse = this.parse(source);
+    const parse: any = this.parse(source);
 
-    return parse?.tasks && parse.tasks[parse.tasks.length - 1].id;
+    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1].id;
   },
 
   checkTaskAlreadyExist(source: string, taskYaml: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     const parsedTask = this.parse(taskYaml) as any;
     let taskExist = false;
     yaml.visit(yamlDoc, {
@@ -762,7 +762,7 @@ export const YamlUtils = {
   },
 
   getParentTask(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     let parentTask = null;
     yaml.visit(yamlDoc, {
       Map(_, map) {
@@ -782,7 +782,7 @@ export const YamlUtils = {
   },
 
   isTaskError(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     let isTaskError = false;
     yaml.visit(yamlDoc, {
       Pair(_, pair: any) {
@@ -802,7 +802,7 @@ export const YamlUtils = {
   },
 
   isTrigger(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source);
+    const yamlDoc = yaml.parseDocument(source) as any;
     let isTrigger = false;
     yaml.visit(yamlDoc, {
       Pair(_, pair: any) {
@@ -921,7 +921,7 @@ export const YamlUtils = {
       return source;
     }
 
-    const item = yamlDoc.contents.items.find((e) => e.key.value === metadata);
+    const item = yamlDoc.contents.items.find((e: any) => e.key.value === metadata);
     if (item) {
       yamlDoc.contents.items.splice(yamlDoc.contents.items.indexOf(item), 1);
     }

@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import ChevronRight from "vue-material-design-icons/ChevronRight.vue"
+    import ChevronRight from "vue-material-design-icons/ChevronRight.vue"
 </script>
 
 <style lang="scss" scoped>

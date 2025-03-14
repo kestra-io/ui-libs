@@ -76,7 +76,7 @@ export const FinallySequential = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: FinallySequentialData,
                     source: "",
@@ -93,7 +93,7 @@ export const FinallyParallel = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: FinallyParallelData,
                     source: "",
@@ -109,7 +109,7 @@ export const FinallyForeach = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: FinallyForeachData,
                     source: "",
@@ -125,7 +125,7 @@ export const Pause = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: PauseData,
                     source: "",
@@ -141,7 +141,7 @@ export const SwitchSchedule = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: SwitchScheduleData,
                     source: "",
@@ -158,7 +158,7 @@ export const Error = lodash.merge({},
     base,
     {
         loaders: [
-            async ({args}) => {
+            async ({_args}) => {
                 return {
                     flowGraph: ErrorData,
                     source: "",
