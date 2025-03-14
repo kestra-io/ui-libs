@@ -16,16 +16,13 @@ import {SECTIONS} from "./constants";
 const TOSTRING_OPTIONS = {lineWidth: 0};
 
 export const YamlUtils = {
-  stringify(value:any) {
-    if (typeof value === "undefined") {
-      return "";
-    }
+  stringify(value: any) {
+    if (value === undefined) return "";
 
-    if (value.deleted !== undefined) {
-      delete value.deleted;
-    }
+    const clonedValue = cloneDeep(value);
+    delete clonedValue.deleted;
 
-    return JsYaml.dump(this._transform(cloneDeep(value)), {
+    return JsYaml.dump(this._transform(clonedValue), {
       lineWidth: -1,
       noCompatMode: true,
       quotingType: "\"",
@@ -36,10 +33,10 @@ export const YamlUtils = {
     if (item === undefined) return undefined;
 
     try {
-        return JsYaml.load(item);
+      return JsYaml.load(item);
     } catch (e) {
-        if (throwIfError) throw e;
-        return undefined;
+      if (throwIfError) throw e;
+      return undefined;
     }
   },
 
@@ -557,6 +554,11 @@ export const YamlUtils = {
   updateMetadata(source:string, metadata:Record<string, any>) {
     // TODO: check how to keep comments
     const yamlDoc = yaml.parseDocument(source) as any;
+
+    if (!yamlDoc?.contents?.items) {
+      return source;
+  }
+
     for (const property in metadata) {
       if (yamlDoc.contents.items.find((item:any) => item.key.value === property)) {
         yamlDoc.contents.items.find(
