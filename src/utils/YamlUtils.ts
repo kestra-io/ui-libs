@@ -622,6 +622,21 @@ export const YamlUtils = {
     return metadata;
   },
 
+  deleteMetadata(source: any, metadata: any) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+
+    if (!yamlDoc.contents.items) {
+        return source;
+    }
+
+    const item = yamlDoc.contents.items.find(e => e.key.value === metadata);
+    if (item) {
+        yamlDoc.contents.items.splice(yamlDoc.contents.items.indexOf(item), 1);
+    }
+
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+  },
+
   flowHaveTasks(source:string) {
     const tasks = (yaml
       .parseDocument(source) as any)
