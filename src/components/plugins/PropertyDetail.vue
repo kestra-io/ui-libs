@@ -137,6 +137,11 @@
             <div class="property-description markdown">
                 <slot v-if="property.title !== undefined" :content="codeSanitizer(property.title)" name="markdown" />
                 <slot v-if="property.description !== undefined" :content="codeSanitizer(property.description)" name="markdown" />
+                <div v-if="property['$internalStorageURI']">
+                  <Alert type="info">
+                    <slot content="Pebble expression referencing an Internal Storage URI e.g. `{{ outputs.mytask.uri }}`." name="markdown"/>
+                  </Alert>
+                </div>
             </div>
         </div>
     </div>

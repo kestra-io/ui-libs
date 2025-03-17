@@ -7,6 +7,7 @@ export interface JSONProperty {
     $required?:boolean;
     $beta?: boolean;
     $deprecated?: boolean;
+    $internalStorageURI?: boolean;
     allOf?:JSONProperty[];
     oneOf?:JSONProperty[];
     items?: JSONProperty;
