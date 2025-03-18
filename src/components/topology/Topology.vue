@@ -72,7 +72,7 @@
             />
         </template>
 
-        <Controls :show-interactive="false">
+        <Controls v-if="controlsShown" :show-interactive="false">
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
@@ -412,6 +412,7 @@
 
     const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
 
+    const controlsShown = ref(true);
     const isDropdownOpen = ref(false);
     const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
     function exportAsImage(type: "jpeg" | "png") {
@@ -419,13 +420,20 @@
             console.warn("Flow not found");
             return;
         }
-        capture(vueFlowRef.value, {type, shouldDownload: true});
-        isDropdownOpen.value = false;
+        
+        controlsShown.value = false
+        capture(vueFlowRef.value, {type, shouldDownload: true})
+            .then(() => controlsShown.value = true)
+            .finally(() => isDropdownOpen.value = false);
     }
 </script>
 
 <style lang="scss" src="./topology.scss" />
 <style scoped lang="scss">
+    .material-design-icon.download-icon {
+        max-width: 12px;
+    }
+
     :deep(.unused-path) {
         opacity: 0.3;
     }
