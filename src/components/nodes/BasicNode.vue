@@ -240,6 +240,8 @@
             width: 25px;
             height: 25px;
             border: 0.4px solid var(--ks-border-primary);
+            min-width: 25px;
+            min-height: 25px;
         }
     }
 

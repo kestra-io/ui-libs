@@ -103,6 +103,7 @@
             width: 100%;
             height: 100%;
             display: block;
+            border-radius: 3px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
