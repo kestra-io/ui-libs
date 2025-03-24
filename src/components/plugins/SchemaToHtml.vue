@@ -49,6 +49,7 @@
                 section-name="Properties"
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
+                :show-dynamic="false"
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -80,7 +81,7 @@
                             :properties="definitionValue.properties"
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
-                            :show-dynamic="true"
+                            :show-dynamic="false"
                             :key="pluginType + '-' + definitionKey"
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true"
