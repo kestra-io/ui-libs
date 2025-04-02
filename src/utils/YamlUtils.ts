@@ -17,6 +17,7 @@ export type YamlElement = {
   key?: string;
   value: Record<string, any>;
   parents: Record<string, any>[];
+  range?: [number, number, number];
 };
 
 const yamlKeyCapture = "([^:\\n]+): *";
