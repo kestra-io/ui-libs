@@ -9,7 +9,7 @@ export interface JSONProperty {
     $deprecated?: boolean;
     $internalStorageURI?: boolean;
     allOf?:JSONProperty[];
-    oneOf?:JSONProperty[];
+    anyOf?:JSONProperty[];
     items?: JSONProperty;
     additionalProperties?:JSONProperty;
     title?:string;
@@ -109,8 +109,8 @@ export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     const extractedType = extractTypeOrRef(property);
     if (extractedType) {
         result.types = [extractedType];
-    } else if (property.oneOf) {
-        result.types = property.oneOf.map(extractTypeOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
+    } else if (property.anyOf) {
+        result.types = property.anyOf.map(extractTypeOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
     } else {
         result.types = ["object"];
     }

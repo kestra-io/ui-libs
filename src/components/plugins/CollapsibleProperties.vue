@@ -102,7 +102,7 @@
             return false;
         }
 
-        return property.oneOf?.some(prop => prop["$dynamic"] === true) ?? false;
+        return property.anyOf?.some(prop => prop["$dynamic"] === true) ?? false;
     };
 
     function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
