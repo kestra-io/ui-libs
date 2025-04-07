@@ -8,6 +8,7 @@ export * from "./utils/constants";
 export * from "./utils/url";
 export * from "./utils/plugins";
 
+export type {YamlElement} from "./utils/YamlUtils";
 export type {Plugin} from "./utils/plugins";
 export type {JSONSchema, JSONProperty} from "./utils/schemaUtils";
 
