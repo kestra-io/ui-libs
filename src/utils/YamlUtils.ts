@@ -40,11 +40,11 @@ export const YamlUtils = {
     });
   },
 
-  parse(item: string, throwIfError = true) {
+  parse<T = any>(item: string, throwIfError = true): T | undefined {
     if (item === undefined) return undefined;
 
     try {
-      return JsYaml.load(item);
+      return JsYaml.load(item) as any;
     } catch (e) {
       if (throwIfError) throw e;
       return undefined;
