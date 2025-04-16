@@ -17,7 +17,7 @@ const base = {
             const vueflowId = ref(Math.random().toString());
             const {
                 fitView
-            } = useVueFlow({id: vueflowId.value});
+            } = useVueFlow(vueflowId.value);
 
             nextTick(() => {
                 fitView();
