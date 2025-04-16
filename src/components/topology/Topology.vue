@@ -179,7 +179,7 @@
 
     const dragging = ref(false);
     const lastPosition = ref<XYPosition | null>()
-    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow({id: props.id});
+    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
     const edgeReplacer = ref({});
     const hiddenNodes = ref<string[]>([]);
     const collapsed = ref(new Set<string>());
