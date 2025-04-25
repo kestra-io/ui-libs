@@ -29,6 +29,7 @@
     "build": "vite build",
     "build:types": "vue-tsc --project ./tsconfig.build.json",
     "lint": "eslint --fix",
+    "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "watch": "npx concurrently -k -n \"VITE,TYPES\" -c \"magenta,blue\" \"vite build --watch\" \"vue-tsc --watch --project ./tsconfig.build.json\""
@@ -77,6 +78,7 @@
     "storybook": "^8.4.7",
     "typescript-eslint": "^8.19.1",
     "vite": "^6.0.7",
+    "vitest": "^3.1.2",
     "vue-tsc": "^2.2.0"
   },
   "dependencies": {
