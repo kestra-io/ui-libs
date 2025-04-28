@@ -641,6 +641,48 @@ describe("getNextTaskId", () => {
         tasks:
           - id: task1
           - id: task2
+          - id: finalTask
+        `;
+        const flowGraph = {
+            edges: [
+                {source: "task1", target: "task2"},
+                {source: "task2", target: "finalTask"}
+            ]
+        };
+        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task2");
+    });
+
+    test("returns null when no next task exists", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+        `;
+        const flowGraph = {
+            edges: []
+        };
+        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBeNull();
+    });
+
+    test("skips non-existent intermediate tasks", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+          - id: finalTask
+        `;
+        const flowGraph = {
+            edges: [
+                {source: "task1", target: "intermediateTask"},
+                {source: "intermediateTask", target: "finalTask"}
+            ]
+        };
+        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("finalTask");
+    });
+
+    test("returns next task in flow graph", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+          - id: task2
         `.trim();
         const flowGraph = {
             edges: [
@@ -686,50 +728,6 @@ describe("flowHaveTasks", () => {
         tasks: []
         `;
         expect(YamlUtils.flowHaveTasks(yaml)).toBe(false);
-    });
-});
-
-describe("getNextTaskId", () => {
-    test("returns next task in flow graph", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-          - id: task2
-          - id: finalTask
-        `;
-        const flowGraph = {
-            edges: [
-                {source: "task1", target: "task2"},
-                {source: "task2", target: "finalTask"}
-            ]
-        };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task2");
-    });
-
-    test("returns null when no next task exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-        `;
-        const flowGraph = {
-            edges: []
-        };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBeNull();
-    });
-
-    test("skips non-existent intermediate tasks", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-          - id: finalTask
-        `;
-        const flowGraph = {
-            edges: [
-                {source: "task1", target: "intermediateTask"},
-                {source: "intermediateTask", target: "finalTask"}
-            ]
-        };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("finalTask");
     });
 });
 
@@ -923,7 +921,7 @@ describe("deleteMetadata", () => {
         const yaml = `
 id: test
 tasks:
-    - id: task1
+  - id: task1
         `;
         const result = YamlUtils.deleteMetadata(yaml, "nonexistent");
         expect(result).toBe(yaml.trim() + "\n");
