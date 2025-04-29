@@ -208,31 +208,29 @@ export const YamlUtils = {
   },
 
   nextDelimiterIndex(content: any, currentIndex: any) {
-    if (currentIndex === content.length - 1) {
-      return currentIndex;
-    }
+    const RE = /[ .}]/g
 
-    const remainingContent = content.substring(currentIndex + 1);
+    RE.lastIndex = currentIndex + 1;
 
-    const nextDelimiterMatcher = remainingContent.match(/[ .}]/);
-    if (!nextDelimiterMatcher) {
-      return content.length - 1;
-    } else {
-      return currentIndex + nextDelimiterMatcher.index;
-    }
+    const nextDelimiterMatcher = RE.exec(content);
+   
+    return nextDelimiterMatcher?.index ?? content.length - 1;
   },
 
-  // Specify a source yaml doc, the field to extract recursively in every map of the doc and optionally a predicate to define which paths should be taken into account
-  // parentPathPredicate will take a single argument which is the path of each parent property starting from the root doc (joined with ".")
-  // "my.parent.task" will mean that the field was retrieved in my -> parent -> task path.
-  extractFieldFromMaps(
-    source: any,
-    fieldName: any,
+  /**
+   * Specify a source yaml doc, the field to extract recursively in every map of the doc and optionally 
+   * a predicate to define which paths should be taken into account `parentPathPredicate` 
+   * will take a single argument which is the path of each parent property starting from the root doc (joined with ".")
+   * "my.parent.task" will mean that the field was retrieved in my -> parent -> task path.
+   */
+  extractFieldFromMaps<T extends string>(
+    source: string,
+    fieldName: T,
     parentPathPredicate = (_: any, __?: any) => true,
     valuePredicate = (_: any) => true
-  ) {
+  ): any[] {
     const yamlDoc = yaml.parseDocument(source) as any;
-    const maps: any = [];
+    const maps: any[] = [];
     yaml.visit(yamlDoc, {
       Map(_, map, parent) {
         if (
@@ -261,9 +259,19 @@ export const YamlUtils = {
     return maps;
   },
 
+  /**
+   * Make a flat array of all elements in the yaml doc that are maps
+   * NOTE: in each item, there seems to be a key property.
+   * It's empty form what I see.
+   */
   extractMaps(
-    source: any,
-    fieldConditions: any
+    source: string,
+    fieldConditions?: {
+        [field: string]: {
+            present?: boolean,
+            populated?: boolean
+        }
+    }
   ): {
     parents: Record<string, any>[];
     key: string;
