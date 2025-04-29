@@ -162,11 +162,8 @@ describe("insertTask", () => {
     test("insert in empty sub tasks", () => {
         const newTask1 = {
             id: "t0-added-1",
+            type: "io.kestra.plugin.core.log.Log",
             name: "newTask",
-            command: "echo hello",
-            args: ["arg1", "arg2"],
-            env: {ENV_VAR: "value"},
-            cwd: "/path/to/dir",
         };
 
         const newTask2 = {
@@ -176,7 +173,7 @@ describe("insertTask", () => {
 
         const updatedYaml = YamlUtils.insertTask(yamlString, "", YamlUtils.stringify(newTask1), "after", "t1");
         expect(updatedYaml).toContain("t0-added-1");
-        const finalYaml = YamlUtils.insertTask(updatedYaml, "", YamlUtils.stringify(newTask2), "after", "t0-added-1");
+        const finalYaml = YamlUtils.insertTask(updatedYaml, "t0-added-1", YamlUtils.stringify(newTask2), "after", "t1");
         expect(finalYaml).toMatchInlineSnapshot(`
           "id: full
           namespace: io.kestra.tests
@@ -198,22 +195,10 @@ describe("insertTask", () => {
               message: "{{ task.id }}"
               tasks:
                 - id: t0-added-1
-                  args:
-                    - arg1
-                    - arg2
-                  command: echo hello
-                  cwd: /path/to/dir
-                  env:
-                    ENV_VAR: value
+                  type: io.kestra.plugin.core.log.Log
                   name: newTask
                 - id: t0-added-2
-                  args:
-                    - arg1
-                    - arg2
-                  command: echo hello
-                  cwd: /path/to/dir
-                  env:
-                    ENV_VAR: value
+                  type: io.kestra.plugin.core.log.Log
                   name: newTask
 
             - id: t2

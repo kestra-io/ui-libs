@@ -577,24 +577,35 @@ export const YamlUtils = {
   ) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const newTaskNode = yamlDoc.createNode(yaml.parseDocument(newTask));
-    const tasksNode = yamlDoc.contents.items.find(
+
+    const parentTask = parentTaskId ? this._extractTask(
+      yamlDoc,
+      parentTaskId,
+    ) : yamlDoc;
+    if(!parentTask && parentTaskId) {
+        console.log(source)
+        throw new Error(`Parent task with ID ${parentTaskId} not found`);
+    }
+
+    const tasksNode = parentTask.contents.items.find(
       (e: any) => e.key.value === "tasks"
     );
+
     if (!tasksNode || tasksNode?.value.value === null) {
       if (tasksNode) {
-        yamlDoc.contents.items.splice(
-          yamlDoc.contents.items.indexOf(tasksNode),
+        parentTask.contents.items.splice(
+            parentTask.contents.items.indexOf(tasksNode),
           1
         );
       }
       const taskList = new YAMLSeq();
       taskList.items.push(newTaskNode);
       const tasks = new Pair(new Scalar("tasks"), taskList);
-      yamlDoc.contents.items.push(tasks);
+      parentTask.contents.items.push(tasks);
       return yamlDoc.toString(TOSTRING_OPTIONS);
     }
     let added = false;
-    yaml.visit(yamlDoc, {
+    yaml.visit(parentTask, {
       Seq(_, seq) {
         for (const map of seq.items) {
           if (isMap(map)) {
@@ -974,4 +985,18 @@ export const YamlUtils = {
       ? clusterTask
       : undefined;
   },
+
+  idExists(source: string, id: string) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    let idExists = false;
+    yaml.visit(yamlDoc, {
+      Map(_, map) {
+        if (map.get("id") === id) {
+          idExists = true;
+          return yaml.visit.BREAK;
+        }
+      },
+    });
+    return idExists;
+  }
 };
