@@ -246,7 +246,6 @@ export const YamlUtils = {
                 if (item?.key?.value === fieldName) {
 
               const fieldValue = item?.value?.value ?? item.value?.items;
-              console.log(fieldValue);
               if (valuePredicate(fieldValue)) {
                 maps.push({
                   [fieldName]: fieldValue,
