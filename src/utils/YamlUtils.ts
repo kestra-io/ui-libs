@@ -40,7 +40,7 @@ export const YamlUtils = {
     });
   },
 
-  parse<T = any>(item: string, throwIfError = true): T | undefined {
+  parse<T = any>(item?: string, throwIfError = true): T | undefined {
     if (item === undefined) return undefined;
 
     try {
@@ -208,31 +208,29 @@ export const YamlUtils = {
   },
 
   nextDelimiterIndex(content: any, currentIndex: any) {
-    if (currentIndex === content.length - 1) {
-      return currentIndex;
-    }
+    const RE = /[ .}]/g
 
-    const remainingContent = content.substring(currentIndex + 1);
+    RE.lastIndex = currentIndex + 1;
 
-    const nextDelimiterMatcher = remainingContent.match(/[ .}]/);
-    if (!nextDelimiterMatcher) {
-      return content.length - 1;
-    } else {
-      return currentIndex + nextDelimiterMatcher.index;
-    }
+    const nextDelimiterMatcher = RE.exec(content);
+   
+    return nextDelimiterMatcher?.index ?? content.length - 1;
   },
 
-  // Specify a source yaml doc, the field to extract recursively in every map of the doc and optionally a predicate to define which paths should be taken into account
-  // parentPathPredicate will take a single argument which is the path of each parent property starting from the root doc (joined with ".")
-  // "my.parent.task" will mean that the field was retrieved in my -> parent -> task path.
-  extractFieldFromMaps(
-    source: any,
-    fieldName: any,
+  /**
+   * Specify a source yaml doc, the field to extract recursively in every map of the doc and optionally 
+   * a predicate to define which paths should be taken into account `parentPathPredicate` 
+   * will take a single argument which is the path of each parent property starting from the root doc (joined with ".")
+   * "my.parent.task" will mean that the field was retrieved in my -> parent -> task path.
+   */
+  extractFieldFromMaps<T extends string>(
+    source: string,
+    fieldName:  T,
     parentPathPredicate = (_: any, __?: any) => true,
     valuePredicate = (_: any) => true
-  ) {
+  ): any[] {
     const yamlDoc = yaml.parseDocument(source) as any;
-    const maps: any = [];
+    const maps: any[] = [];
     yaml.visit(yamlDoc, {
       Map(_, map, parent) {
         if (
@@ -244,8 +242,9 @@ export const YamlUtils = {
           ) &&
           map.items
         ) {
-          for (const item of map.items as any[]) {
-            if (item?.key?.value === fieldName) {
+            for (const item of map.items as any[]) {
+                if (item?.key?.value === fieldName) {
+
               const fieldValue = item?.value?.value ?? item.value?.items;
               if (valuePredicate(fieldValue)) {
                 maps.push({
@@ -261,9 +260,19 @@ export const YamlUtils = {
     return maps;
   },
 
+  /**
+   * Make a flat array of all elements in the yaml doc that are maps
+   * NOTE: in each item, there seems to be a key property.
+   * It's empty form what I see.
+   */
   extractMaps(
-    source: any,
-    fieldConditions: any
+    source: string,
+    fieldConditions?: {
+        [field: string]: {
+            present?: boolean,
+            populated?: boolean
+        }
+    }
   ): {
     parents: Record<string, any>[];
     key: string;
@@ -478,7 +487,7 @@ export const YamlUtils = {
   },
 
   // Find map a cursor position, optionally filtering by a property name that the map must contain
-  getMapAtPosition(source: any, position: any, fieldName = null) {
+  getMapAtPosition(source: any, position: any, fieldName: string | null = null) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const lineCounter = new yaml.LineCounter();
     yaml.parseDocument(source, {lineCounter});
@@ -500,12 +509,19 @@ export const YamlUtils = {
     return targetMap ? targetMap.toJSON() : null;
   },
 
-  extractAllTypes(source: string, validTypes = []) {
-    return this.extractFieldFromMaps(source, "type", undefined, (value) =>
+  extractAllTypes(source: string, validTypes:string[] = []): {
+    type: string; 
+    range: [number, number, number]
+  }[] {
+    return this.extractFieldFromMaps(source, "type", () => true, (value) =>
       validTypes.some((t) => t === value)
     );
   },
 
+  /**
+   * Get task type at cursor position.
+   * Useful to display/update the live docs
+   */
   getTaskType(
     source: string,
     position: { lineNumber: number; column: number },
@@ -556,28 +572,40 @@ export const YamlUtils = {
     source: string,
     taskId: string,
     newTask: string,
-    insertPosition: "before" | "after"
+    insertPosition: "before" | "after",
+    parentTaskId?: string
   ) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const newTaskNode = yamlDoc.createNode(yaml.parseDocument(newTask));
-    const tasksNode = yamlDoc.contents.items.find(
+
+    const parentTask = parentTaskId ? this._extractTask(
+      yamlDoc,
+      parentTaskId,
+    ) : yamlDoc;
+    if(!parentTask && parentTaskId) {
+        console.log(source)
+        throw new Error(`Parent task with ID ${parentTaskId} not found`);
+    }
+
+    const tasksNode = parentTask.contents.items.find(
       (e: any) => e.key.value === "tasks"
     );
+
     if (!tasksNode || tasksNode?.value.value === null) {
       if (tasksNode) {
-        yamlDoc.contents.items.splice(
-          yamlDoc.contents.items.indexOf(tasksNode),
+        parentTask.contents.items.splice(
+            parentTask.contents.items.indexOf(tasksNode),
           1
         );
       }
       const taskList = new YAMLSeq();
       taskList.items.push(newTaskNode);
       const tasks = new Pair(new Scalar("tasks"), taskList);
-      yamlDoc.contents.items.push(tasks);
+      parentTask.contents.items.push(tasks);
       return yamlDoc.toString(TOSTRING_OPTIONS);
     }
     let added = false;
-    yaml.visit(yamlDoc, {
+    yaml.visit(parentTask, {
       Seq(_, seq) {
         for (const map of seq.items) {
           if (isMap(map)) {
@@ -636,7 +664,7 @@ export const YamlUtils = {
   },
 
   // FIXME: flowableTask could have a better type
-  insertErrorInFlowable(source: string, errorTask: string, flowableTask: any) {
+  insertErrorInFlowable(source: string, errorTask: string, flowableTask: string) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const newErrorNode = yamlDoc.createNode(yaml.parseDocument(errorTask));
     let added = false;
@@ -702,7 +730,7 @@ export const YamlUtils = {
   getLastTask(source: string): string | undefined {
     const parse: any = this.parse(source);
 
-    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1].id;
+    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1]?.id;
   },
 
   checkTaskAlreadyExist(source: string, taskYaml: string) {
@@ -751,11 +779,11 @@ export const YamlUtils = {
 
   getChildrenTasks(source: string, taskId: string) {
     const yamlDoc = yaml.parseDocument(this.extractTask(source, taskId) ?? "");
-    const children: any[] = [];
+    const children: string[] = [];
     yaml.visit(yamlDoc, {
       Map(_, map) {
         if (map.get("id") !== taskId) {
-          children.push(map.get("id"));
+          children.push(map.get("id") as any);
         }
       },
     });
@@ -957,4 +985,18 @@ export const YamlUtils = {
       ? clusterTask
       : undefined;
   },
+
+  idExists(source: string, id: string) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    let idExists = false;
+    yaml.visit(yamlDoc, {
+      Map(_, map) {
+        if (map.get("id") === id) {
+          idExists = true;
+          return yaml.visit.BREAK;
+        }
+      },
+    });
+    return idExists;
+  }
 };
