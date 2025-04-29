@@ -158,6 +158,80 @@ describe("insertTask", () => {
           "
         `)
     })
+
+    test("insert in empty sub tasks", () => {
+        const newTask1 = {
+            id: "t0-added-1",
+            name: "newTask",
+            command: "echo hello",
+            args: ["arg1", "arg2"],
+            env: {ENV_VAR: "value"},
+            cwd: "/path/to/dir",
+        };
+
+        const newTask2 = {
+            ...newTask1,
+            id: "t0-added-2",
+        }
+
+        const updatedYaml = YamlUtils.insertTask(yamlString, "", YamlUtils.stringify(newTask1), "after", "t1");
+        expect(updatedYaml).toContain("t0-added-1");
+        const finalYaml = YamlUtils.insertTask(updatedYaml, "", YamlUtils.stringify(newTask2), "after", "t0-added-1");
+        expect(finalYaml).toMatchInlineSnapshot(`
+          "id: full
+          namespace: io.kestra.tests
+          labels:
+            key1: value1
+            key2: value2
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
+
+          tasks:
+            - id: t1
+              type: io.kestra.plugin.core.log.Log
+              message: "{{ task.id }}"
+              tasks:
+                - id: t0-added-1
+                  args:
+                    - arg1
+                    - arg2
+                  command: echo hello
+                  cwd: /path/to/dir
+                  env:
+                    ENV_VAR: value
+                  name: newTask
+                - id: t0-added-2
+                  args:
+                    - arg1
+                    - arg2
+                  command: echo hello
+                  cwd: /path/to/dir
+                  env:
+                    ENV_VAR: value
+                  name: newTask
+
+            - id: t2
+              type: io.kestra.plugin.core.debug.Return
+              format: second {{ labels.key1 }}
+
+          errors:
+            - id: alert_on_failure
+              type: io.kestra.plugin.notifications.slack.SlackIncomingWebhook
+              url: secret('SLACK_WEBHOOK')
+              payload: |
+                {
+                    "channel": "#alerts",
+                    "text": "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
+                }
+          "
+        `)
+    })
 })
 
 test("insertSection", () => {
@@ -1736,4 +1810,24 @@ describe("getMapAtPosition", () => {
                                 key2: "value2"
                             });
     })
+})
+
+describe("idExists", () => {
+    test("returns true if id exists", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        expect(YamlUtils.idExists(yaml, "task1")).toBe(true);
+    });
+
+    test("returns false if id does not exist", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        expect(YamlUtils.idExists(yaml, "task2")).toBe(false);
+    });
 })

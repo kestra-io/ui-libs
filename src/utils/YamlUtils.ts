@@ -572,7 +572,8 @@ export const YamlUtils = {
     source: string,
     taskId: string,
     newTask: string,
-    insertPosition: "before" | "after"
+    insertPosition: "before" | "after",
+    parentTaskId?: string
   ) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const newTaskNode = yamlDoc.createNode(yaml.parseDocument(newTask));
