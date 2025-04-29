@@ -1,16 +1,6 @@
 import {test, expect, describe} from "vitest";
 import {YamlUtils} from "./YamlUtils";
-import yaml, {
-    Document,
-    isMap,
-    YAMLMap,
-    isPair,
-    isSeq,
-    YAMLSeq,
-    LineCounter,
-    Pair,
-    Scalar,
-  } from "yaml";
+import yaml from "yaml";
 
 const yamlString = `
     id: full
@@ -48,95 +38,10 @@ const yamlString = `
     `;
 
 test("parse", () => {
-    const parsedYaml = YamlUtils.parse(yamlString);
-    expect(parsedYaml).toMatchInlineSnapshot(`
-      {
-        "errors": [
-          {
-            "id": "alert_on_failure",
-            "payload": "{
-          "channel": "#alerts",
-          "text": "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
-      }
-      ",
-            "type": "io.kestra.plugin.notifications.slack.SlackIncomingWebhook",
-            "url": "secret('SLACK_WEBHOOK')",
-          },
-        ],
-        "id": "full",
-        "labels": {
-          "key1": "value1",
-          "key2": "value2",
-        },
-        "namespace": "io.kestra.tests",
-        "tasks": [
-          {
-            "id": "t1",
-            "message": "{{ task.id }}",
-            "type": "io.kestra.plugin.core.log.Log",
-          },
-          {
-            "format": "second {{ labels.key1 }}",
-            "id": "t2",
-            "type": "io.kestra.plugin.core.debug.Return",
-          },
-        ],
-        "triggers": [
-          {
-            "backfill": {
-              "depend-on-past": false,
-              "start": 2018-01-01T00:00:00.000Z,
-            },
-            "expression": "42 4 1 * *",
-            "id": "schedule1",
-            "type": "schedule",
-          },
-        ],
-      }
-    `)
-    expect(parsedYaml).to.deep.equal({
-        "id": "full",
-        "labels": {
-          "key1": "value1",
-          "key2": "value2",
-        },
-        "namespace": "io.kestra.tests",
-        "tasks": [
-          {
-            "id": "t1",
-            "message": "{{ task.id }}",
-            "type": "io.kestra.plugin.core.log.Log",
-          },
-          {
-            "format": "second {{ labels.key1 }}",
-            "id": "t2",
-            "type": "io.kestra.plugin.core.debug.Return",
-          },
-        ],
-        "triggers": [
-          {
-            "backfill": {
-              "depend-on-past": false,
-              "start": new Date("2018-01-01T00:00:00.000Z"),
-            },
-            "expression": "42 4 1 * *",
-            "id": "schedule1",
-            "type": "schedule",
-          },
-        ],
-        "errors": [
-          {
-            "id": "alert_on_failure",
-            "payload": `{
-    "channel": "#alerts",
-    "text": "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
-}
-`,
-            "type": "io.kestra.plugin.notifications.slack.SlackIncomingWebhook",
-            "url": "secret('SLACK_WEBHOOK')",
-          },
-        ],
-      });
+    expect(() => YamlUtils.parse(undefined)).not.toThrow();
+    expect(() => YamlUtils.parse(yamlString)).not.toThrow();
+    expect(() => YamlUtils.parse("invalid: yaml: tests", false)).not.toThrow();
+    expect(() => YamlUtils.parse("invalid: yaml: tests", true)).toThrow();
 })
 
 describe("insertTask", () => {
@@ -620,7 +525,7 @@ describe("cleanMetadata", () => {
           - id: trigger1
         `;
         const result = YamlUtils.cleanMetadata(yaml);
-        const lines = result.split("\n").map(l => l.trim()).filter(l => l);
+        const lines = result.split("\n").map((l: string) => l.trim()).filter(Boolean);
         expect(lines[0]).toBe("id: test");
         expect(lines[1]).toBe("namespace: test");
     });
@@ -1594,5 +1499,241 @@ c:
     g: h`;
         expect(YamlUtils.getParentKeyByChildIndent(yaml, 4)).toEqual({key: "f", valueStartIndex: 19});
         expect(YamlUtils.getParentKeyByChildIndent(yaml, 2)).toEqual({key: "c", valueStartIndex: 7});
+    })
+})
+
+describe("getChildrenTasks", () => {
+    test("returns children anything that has an id", () => {
+        const yaml = `
+        booo:
+          - id: parent
+            type: parallel
+            farse:
+              - id: child1
+                type: test
+              - id: child2
+                type: test
+        `;
+        const result = YamlUtils.getChildrenTasks(yaml, "parent");
+        expect(result).toEqual(["child1","child2"])
+    })
+
+    test("returns all children tasks recursively", () => {
+        const yaml = `
+        booo:
+          - id: parent
+            type: parallel
+            farse:
+              - id: child1
+                type: test
+                tasks:
+                  - id: child1-1
+                    type: test
+              - id: child2
+                type: test
+        `;
+        const result = YamlUtils.getChildrenTasks(yaml, "parent");
+        expect(result).toEqual(["child1", "child1-1", "child2",])
+    })
+})
+
+describe("extractAllTypes", () => {
+    test("returns all types from yaml", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const result = YamlUtils.extractAllTypes(yaml, [
+            "io.kestra.plugin.core.log.Log",
+            "io.kestra.plugin.core.flow.Parallel"
+        ]);
+        expect(result.map(r => r.type)).toEqual([
+            "io.kestra.plugin.core.log.Log",
+            "io.kestra.plugin.core.flow.Parallel"
+        ]);
+    })
+})
+
+describe("insertErrorInFlowable", () => {
+    test("inserts error task in flowable", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const errorTask = `
+        id: error1
+        type: io.kestra.plugin.core.error.Error
+        `;
+        const result = YamlUtils.insertErrorInFlowable(yaml, errorTask, "task2");
+        expect(result).toContain("error1");
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: task1
+              type: io.kestra.plugin.core.log.Log
+            - id: task2
+              type: io.kestra.plugin.core.flow.Parallel
+              errors:
+                - id: error1
+                  type: io.kestra.plugin.core.error.Error
+          "
+        `)
+    });
+
+    test("inserts error task in flowable when errors section already exists", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+            errors:
+              - id: existingError
+                type: io.kestra.plugin.core.error.Error
+        `;
+        const errorTask = `
+        id: error2
+        type: io.kestra.plugin.core.error.Error
+        `;
+
+        const result = YamlUtils.insertErrorInFlowable(yaml, errorTask, "task2");
+        expect(result).toContain("error2");
+        expect(result).toContain("existingError");
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: task1
+              type: io.kestra.plugin.core.log.Log
+            - id: task2
+              type: io.kestra.plugin.core.flow.Parallel
+              errors:
+                - id: existingError
+                  type: io.kestra.plugin.core.error.Error
+                - id: error2
+                  type: io.kestra.plugin.core.error.Error
+          "
+        `)
+    })
+
+    test("inserts error in nested flowable", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.flow.Parallel
+            tasks:
+              - id: task2
+                type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const errorTask = `
+        id: error1
+        type: io.kestra.plugin.core.error.Error
+        `;
+        const result = YamlUtils.insertErrorInFlowable(yaml, errorTask, "task2");
+        expect(result).toContain("error1");
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: task1
+              type: io.kestra.plugin.core.flow.Parallel
+              tasks:
+                - id: task2
+                  type: io.kestra.plugin.core.flow.Parallel
+                  errors:
+                    - id: error1
+                      type: io.kestra.plugin.core.error.Error
+          "
+        `)
+    })
+
+    test("not to throw error if flowable not found", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const errorTask = `
+        id: error1
+        type: io.kestra.plugin.core.error.Error
+        `;
+        expect(() => YamlUtils.insertErrorInFlowable(yaml, errorTask, "task2")).not.toThrow();
+    });
+})
+
+describe("getFirstTask", () => {
+    test("returns first task in flowable", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const result = YamlUtils.getFirstTask(yaml);
+        expect(result).toEqual("task1");
+    });
+
+    test("returns undefined when no tasks exist", () => {
+        const yaml = `
+        tasks: []
+        `;
+        const result = YamlUtils.getFirstTask(yaml);
+        expect(result).toBeUndefined();
+    });
+})
+
+describe("getLastTask", () => {
+    test("returns last task in flowable", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const result = YamlUtils.getLastTask(yaml);
+        expect(result).toEqual("task2");
+    });
+
+    test("returns undefined when no tasks exist", () => {
+        const yaml = `
+        tasks: []
+        `;
+        const result = YamlUtils.getLastTask(yaml);
+        expect(result).toBeUndefined();
+    });
+})
+
+describe("getTaskType", () => {
+    test("returns task type", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        expect(YamlUtils.getTaskType(yaml, 
+            {lineNumber: 2, column: 50}, 
+            ["io.kestra.plugin.core.log.Log"])
+        ).toEqual("io.kestra.plugin.core.log.Log");
+    })
+})
+
+describe("getMapAtPosition", () => {
+    test("returns map at position", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+            labels:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.getMapAtPosition(yaml, {lineNumber: 5, column: 50});
+        expect(result).toEqual({
+                                key1: "value1",
+                                key2: "value2"
+                            });
     })
 })

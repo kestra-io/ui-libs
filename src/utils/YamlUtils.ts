@@ -40,7 +40,7 @@ export const YamlUtils = {
     });
   },
 
-  parse<T = any>(item: string, throwIfError = true): T | undefined {
+  parse<T = any>(item?: string, throwIfError = true): T | undefined {
     if (item === undefined) return undefined;
 
     try {
@@ -225,7 +225,7 @@ export const YamlUtils = {
    */
   extractFieldFromMaps<T extends string>(
     source: string,
-    fieldName: T,
+    fieldName:  T,
     parentPathPredicate = (_: any, __?: any) => true,
     valuePredicate = (_: any) => true
   ): any[] {
@@ -242,9 +242,11 @@ export const YamlUtils = {
           ) &&
           map.items
         ) {
-          for (const item of map.items as any[]) {
-            if (item?.key?.value === fieldName) {
+            for (const item of map.items as any[]) {
+                if (item?.key?.value === fieldName) {
+
               const fieldValue = item?.value?.value ?? item.value?.items;
+              console.log(fieldValue);
               if (valuePredicate(fieldValue)) {
                 maps.push({
                   [fieldName]: fieldValue,
@@ -486,7 +488,7 @@ export const YamlUtils = {
   },
 
   // Find map a cursor position, optionally filtering by a property name that the map must contain
-  getMapAtPosition(source: any, position: any, fieldName = null) {
+  getMapAtPosition(source: any, position: any, fieldName: string | null = null) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const lineCounter = new yaml.LineCounter();
     yaml.parseDocument(source, {lineCounter});
@@ -508,12 +510,19 @@ export const YamlUtils = {
     return targetMap ? targetMap.toJSON() : null;
   },
 
-  extractAllTypes(source: string, validTypes = []) {
-    return this.extractFieldFromMaps(source, "type", undefined, (value) =>
+  extractAllTypes(source: string, validTypes:string[] = []): {
+    type: string; 
+    range: [number, number, number]
+  }[] {
+    return this.extractFieldFromMaps(source, "type", () => true, (value) =>
       validTypes.some((t) => t === value)
     );
   },
 
+  /**
+   * Get task type at cursor position.
+   * Useful to display/update the live docs
+   */
   getTaskType(
     source: string,
     position: { lineNumber: number; column: number },
@@ -644,7 +653,7 @@ export const YamlUtils = {
   },
 
   // FIXME: flowableTask could have a better type
-  insertErrorInFlowable(source: string, errorTask: string, flowableTask: any) {
+  insertErrorInFlowable(source: string, errorTask: string, flowableTask: string) {
     const yamlDoc = yaml.parseDocument(source) as any;
     const newErrorNode = yamlDoc.createNode(yaml.parseDocument(errorTask));
     let added = false;
@@ -710,7 +719,7 @@ export const YamlUtils = {
   getLastTask(source: string): string | undefined {
     const parse: any = this.parse(source);
 
-    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1].id;
+    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1]?.id;
   },
 
   checkTaskAlreadyExist(source: string, taskYaml: string) {
@@ -759,11 +768,11 @@ export const YamlUtils = {
 
   getChildrenTasks(source: string, taskId: string) {
     const yamlDoc = yaml.parseDocument(this.extractTask(source, taskId) ?? "");
-    const children: any[] = [];
+    const children: string[] = [];
     yaml.visit(yamlDoc, {
       Map(_, map) {
         if (map.get("id") !== taskId) {
-          children.push(map.get("id"));
+          children.push(map.get("id") as any);
         }
       },
     });
