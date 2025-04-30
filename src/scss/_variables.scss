@@ -33,17 +33,17 @@ $black: #26282D !default;
 $light: $gray-200 !default;
 $dark: $gray-900 !default;
 
-$white-3:  #B9B9BA;
+$white-3: #B9B9BA;
 
-$black-2 : #161617;
-$black-3 : #252526;
+$black-2: #161617;
+$black-3: #252526;
 
 // fonts
 $font-size-base: 1rem !default;
 $font-family-sans-serif: "Public Sans", sans-serif;
 $font-family-monospace: "Source Code Pro", monospace;
 $font-size-xs: $font-size-base * 0.75 !default;
-$font-size-md : $font-size-base * 1;
+$font-size-md: $font-size-base * 1;
 $font-size-xl: $font-size-base * 1.375;
 
 // border
@@ -112,8 +112,7 @@ $popper-margin: .2rem;
 
 $baseline-max-width: 730px;
 
-$statusList: created, restarted, success, running, killing, 
-    killed, warning, error, paused, cancelled, skipped, queued, retrying, retried;
+$statusList: created, restarted, success, running, killing, killed, warning, failed, paused, cancelled, skipped, queued, retrying, retried;
 
 // bootstrap
 @import "bootstrap/scss/functions";

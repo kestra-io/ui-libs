@@ -103,6 +103,7 @@
 	#{--ks-content-cancelled}: $base-red-500;
 	#{--ks-content-created}: $base-blue-500;
 	#{--ks-content-error}: $base-red-500;
+	#{--ks-content-failed}: var(--ks-content-error);
 	#{--ks-content-id}: $base-purple-500;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-600;
@@ -123,6 +124,7 @@
 	#{--ks-content-success}: $base-green-700;
 	#{--ks-content-tertiary}: $base-gray-400;
 	#{--ks-content-warning}: $base-orange-500;
+	#{--ks-content-warn}: var(--ks-content-warning);
 
 	/* dialog */
 	#{--ks-dialog-background}: $base-white;

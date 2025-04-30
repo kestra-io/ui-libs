@@ -15,6 +15,7 @@ html.dark{
 	#{--ks-background-card-opacity}: #121319e5;
 	#{--ks-background-created}: rgba($base-blue-400, 0.2);
 	#{--ks-background-error}: rgba($base-red-900, 0.2);
+	#{--ks-background-failed}: var(--ks-background-error);
 	#{--ks-background-info}: rgba($base-blue-700, 0.2);
 	#{--ks-background-input}: $base-gray-900;
 	#{--ks-background-killed}: rgba($base-yellow-400, 0.1);
@@ -33,6 +34,7 @@ html.dark{
 	#{--ks-background-table-row}: $base-gray-700;
 	#{--ks-background-table-row-hover}: $base-gray-600;
 	#{--ks-background-warning}: rgba($base-orange-900, 0.2);
+	#{--ks-background-warn}: var(--ks-background-warning);
 
 	/* badge */
 	#{--ks-badge-background}: rgba($base-blue-300, 0.2);
@@ -44,6 +46,7 @@ html.dark{
 	#{--ks-border-cancelled}: $base-red-200;
 	#{--ks-border-created}: $base-blue-500;
 	#{--ks-border-error}: $base-red-400;
+	#{--ks-border-failed}: var(--ks-border-error);
 	#{--ks-border-inactive}: $base-gray-400;
 	#{--ks-border-info}: $base-blue-500;
 	#{--ks-border-killed}: $base-yellow-900;
@@ -60,6 +63,7 @@ html.dark{
 	#{--ks-border-success}: $base-green-400;
 	#{--ks-border-system}: $base-blue-300;
 	#{--ks-border-warning}: $base-orange-300;
+	#{--ks-border-warn}: var(--ks-border-warning);
 
 	/* button */
 	#{--ks-button-background-inactive}: $base-gray-600;
@@ -103,6 +107,7 @@ html.dark{
 	#{--ks-content-cancelled}: $base-red-50;
 	#{--ks-content-created}: $base-blue-100;
 	#{--ks-content-error}: $base-red-200;
+	#{--ks-content-failed}: var(--ks-content-error);
 	#{--ks-content-id}: $base-purple-100;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-50;
@@ -123,6 +128,7 @@ html.dark{
 	#{--ks-content-success}: $base-green-100;
 	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-200;
+	#{--ks-content-warn}: var(--ks-content-warning);
 
 	/* dialog */
 	#{--ks-dialog-background}: $base-gray-500;

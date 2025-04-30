@@ -95,12 +95,8 @@
                 : Utils.humanDuration(delta() / 1000);
     }
 
-    const STATE_REMAPPING: Record<string, string> = {
-        "FAILED": "error",
-    }
-
     function squareClass(state: string) {
-        const remappedState = STATE_REMAPPING[state] ?? state.toLowerCase();
+        const remappedState = state.toLowerCase();
         return "ks-duration-tt-square-" + remappedState;
     }
 
