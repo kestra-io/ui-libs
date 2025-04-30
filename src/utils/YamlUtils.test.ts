@@ -1796,7 +1796,26 @@ describe("getLastTask", () => {
             type: io.kestra.plugin.core.flow.Parallel
         `;
         const result = YamlUtils.getLastTask(yaml);
-        expect(result).toEqual("task2");
+        expect(result).toBe("task2");
+    });
+
+    test("returns last subtask in flowable", () => {
+        const yaml = `
+        id: test
+        namespace: test
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+            tasks:
+              - id: task3
+                type: foo
+              - id: task4
+                type: baz
+        `;
+        const result = YamlUtils.getLastTask(yaml, "task2");
+        expect(result).toBe("task4");
     });
 
     test("returns undefined when no tasks exist", () => {

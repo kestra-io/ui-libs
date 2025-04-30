@@ -583,7 +583,6 @@ export const YamlUtils = {
       parentTaskId,
     ) : yamlDoc;
     if(!parentTask && parentTaskId) {
-        console.log(source)
         throw new Error(`Parent task with ID ${parentTaskId} not found`);
     }
 
@@ -727,10 +726,27 @@ export const YamlUtils = {
     return parse?.tasks?.[0]?.id;
   },
 
-  getLastTask(source: string): string | undefined {
-    const parse: any = this.parse(source);
+  getLastTask(source: string, parentTaskId?: string): string | undefined {
+    if (parentTaskId) {
+      const parsed = yaml.parseDocument(source);
+      const parentTask = this._extractTask(parsed, parentTaskId) as any;
+    
+      if(!parentTask?.contents?.items) {
+        throw new Error(`Parent task with ID ${parentTaskId} not found`);
+      }
 
-    return parse?.tasks && parse.tasks?.[parse?.tasks?.length - 1]?.id;
+      const tasksNode = parentTask.contents.items.find((pair:any) => pair.key.value === "tasks");
+
+      if(!tasksNode || tasksNode?.value.value === null) {
+        return undefined;
+      }
+    
+      return tasksNode.value.items[tasksNode.value.items.length - 1].get("id");
+    }
+
+    const parsed = yaml.parse(source);
+
+    return parsed?.tasks && parsed.tasks?.[parsed?.tasks?.length - 1]?.id;
   },
 
   checkTaskAlreadyExist(source: string, taskYaml: string) {
