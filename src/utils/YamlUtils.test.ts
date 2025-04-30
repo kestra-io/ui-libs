@@ -47,7 +47,7 @@ test("parse", () => {
 describe("insertTask", () => {
     test("after", () => {
         const newTask = {
-            id: "t0",
+            id: "t1.1",
             name: "newTask",
             command: "echo hello",
             args: ["arg1", "arg2"],
@@ -56,6 +56,8 @@ describe("insertTask", () => {
         };
 
         const updatedYaml = YamlUtils.insertTask(yamlString, "t1", YamlUtils.stringify(newTask), "after");
+        expect(updatedYaml).toContain("- id: t1.1");
+        expect(updatedYaml.indexOf("- id: t1.1")).toBeGreaterThan(updatedYaml.indexOf("- id: t1"));
         expect(updatedYaml).toMatchInlineSnapshot(`
           "id: full
           namespace: io.kestra.tests
@@ -75,7 +77,7 @@ describe("insertTask", () => {
             - id: t1
               type: io.kestra.plugin.core.log.Log
               message: "{{ task.id }}"
-            - id: t0
+            - id: t1.1
               args:
                 - arg1
                 - arg2
@@ -113,6 +115,8 @@ describe("insertTask", () => {
         };
 
         const updatedYaml = YamlUtils.insertTask(yamlString, "t1", YamlUtils.stringify(newTask), "before");
+        expect(updatedYaml).toContain("- id: t0");
+        expect(updatedYaml.indexOf("- id: t0")).toBeLessThan(updatedYaml.indexOf("- id: t1"));
         expect(updatedYaml).toMatchInlineSnapshot(`
           "id: full
           namespace: io.kestra.tests
@@ -163,17 +167,49 @@ describe("insertTask", () => {
         const newTask1 = {
             id: "t0-added-1",
             type: "io.kestra.plugin.core.log.Log",
-            name: "newTask",
+            message: "newTask",
         };
 
-        const newTask2 = {
-            ...newTask1,
-            id: "t0-added-2",
-        }
+        
 
         const updatedYaml = YamlUtils.insertTask(yamlString, "", YamlUtils.stringify(newTask1), "after", "t1");
-        expect(updatedYaml).toContain("t0-added-1");
-        const finalYaml = YamlUtils.insertTask(updatedYaml, "t0-added-1", YamlUtils.stringify(newTask2), "after", "t1");
+        expect(updatedYaml).toContain("t0-added-1");  
+    })
+
+    test("insert subtasks after", () => {
+        const subTask = {
+            id: "t1-added-1",
+            type: "io.kestra.plugin.core.log.Log",
+            message: "newTask",
+        };
+
+        const addedSubTask = {
+            ...subTask,
+            id: "t1-added-2",
+        }
+
+        const updatedYaml = YamlUtils.insertTask(yamlString, "", YamlUtils.stringify(subTask), "after", "t1");
+        const finalYaml = YamlUtils.insertTask(updatedYaml, "t1-added-1", YamlUtils.stringify(addedSubTask), "after", "t1");
+        expect(finalYaml).toContain("t1-added-2");
+        expect(finalYaml.indexOf("t1-added-2")).toBeGreaterThan(updatedYaml.indexOf("t1-added-1"));
+    })
+
+    test("insert subtasks before", () => {
+        const subTask = {
+            id: "t1-added-1",
+            type: "io.kestra.plugin.core.log.Log",
+            message: "newTask",
+        };
+
+        const addedSubTask = {
+            ...subTask,
+            id: "t1-added-0",
+        }
+
+        const updatedYaml = YamlUtils.insertTask(yamlString, "", YamlUtils.stringify(subTask), "before", "t1");
+        const finalYaml = YamlUtils.insertTask(updatedYaml, "t1-added-1", YamlUtils.stringify(addedSubTask), "before", "t1");
+        expect(finalYaml).toContain("t1-added-0");
+        expect(finalYaml.indexOf("t1-added-0")).toBeLessThan(finalYaml.indexOf("t1-added-1"));
         expect(finalYaml).toMatchInlineSnapshot(`
           "id: full
           namespace: io.kestra.tests
@@ -194,12 +230,12 @@ describe("insertTask", () => {
               type: io.kestra.plugin.core.log.Log
               message: "{{ task.id }}"
               tasks:
-                - id: t0-added-1
+                - id: t1-added-0
                   type: io.kestra.plugin.core.log.Log
-                  name: newTask
-                - id: t0-added-2
+                  message: newTask
+                - id: t1-added-1
                   type: io.kestra.plugin.core.log.Log
-                  name: newTask
+                  message: newTask
 
             - id: t2
               type: io.kestra.plugin.core.debug.Return
@@ -611,54 +647,61 @@ describe("flowHaveTasks", () => {
 });
 
 // is this function even used
-describe.skip("getNextTaskId", () => {
+describe("getNextTaskId", () => {
     test("returns next task in flow graph", () => {
         const yaml = `
         tasks:
           - id: task1
+            type: io.kestra.core.tasks.scripts.Shell
           - id: task2
+            type: io.kestra.core.tasks.scripts.Shell
           - id: finalTask
+            type: io.kestra.core.tasks.scripts.Shell
         `;
         const flowGraph = {
             edges: [
-                {source: "task1", target: "task2"},
-                {source: "task2", target: "finalTask"}
+                {source: "task0", target: "task2"}
             ]
         };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task2");
+        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBe("task2");
     });
 
     test("returns null when no next task exists", () => {
         const yaml = `
         tasks:
           - id: task1
+            type: io.kestra.core.tasks.scripts.Shell
         `;
         const flowGraph = {
             edges: []
         };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBeNull();
+        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBeNull();
     });
 
     test("skips non-existent intermediate tasks", () => {
         const yaml = `
         tasks:
           - id: task1
+            type: io.kestra.core.tasks.scripts.Shell
           - id: finalTask
+            type: io.kestra.core.tasks.scripts.Shell
         `;
         const flowGraph = {
             edges: [
-                {source: "task1", target: "intermediateTask"},
+                {source: "task0", target: "intermediateTask"},
                 {source: "intermediateTask", target: "finalTask"}
             ]
         };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("finalTask");
+        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBe("finalTask");
     });
 
-    test("returns next task in flow graph", () => {
+    test("returns task if task asked explicitly exists", () => {
         const yaml = `
         tasks:
           - id: task1
+            type: io.kestra.core.tasks.scripts.Shell
           - id: task2
+            type: io.kestra.core.tasks.scripts.Shell
         `.trim();
         const flowGraph = {
             edges: [
@@ -672,7 +715,7 @@ describe.skip("getNextTaskId", () => {
                 }
             ]
         };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task2");
+        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task1");
     });
 
     test("returns null when no next task exists", () => {

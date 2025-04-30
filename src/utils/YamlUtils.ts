@@ -965,9 +965,21 @@ export const YamlUtils = {
     return tasks && tasks.value.items && tasks.value.items.length >= 1;
   },
 
-  getNextTaskId(target: string, flowSource: string, flowGraph: any) {
+  /**
+   * Gets aliased task id from the flow graph
+   * @param target the task whose id we want to get 
+   * @param flowSource the source of the flow
+   * @param flowGraph the flow graph to follow to the source
+   * @returns the targetId if the task is found, then, following 
+   * the graph, the first taskId who can be extracted (that has a type)
+  */
+  getNextTaskId(target: string, flowSource: string, flowGraph: { 
+        edges: {
+            source: string, 
+            target: string 
+        }[] }) {
     while (this.extractTask(flowSource, target) === undefined) {
-      const edge = flowGraph.edges.find((e: any) => e.source === target);
+      const edge = flowGraph.edges.find((e) => e.source === target);
       if (!edge) {
         return null;
       }
