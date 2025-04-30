@@ -103,6 +103,7 @@ html.dark{
 	#{--ks-content-cancelled}: $base-red-50;
 	#{--ks-content-created}: $base-blue-100;
 	#{--ks-content-error}: $base-red-200;
+	#{--ks-content-failed}: var(--ks-content-error);
 	#{--ks-content-id}: $base-purple-100;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-50;
@@ -123,6 +124,7 @@ html.dark{
 	#{--ks-content-success}: $base-green-100;
 	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-200;
+	#{--ks-content-warn}: var(--ks-content-warning);
 
 	/* dialog */
 	#{--ks-dialog-background}: $base-gray-500;
