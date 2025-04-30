@@ -1858,23 +1858,3 @@ describe("getMapAtPosition", () => {
                             });
     })
 })
-
-describe("idExists", () => {
-    test("returns true if id exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-        `;
-        expect(YamlUtils.idExists(yaml, "task1")).toBe(true);
-    });
-
-    test("returns false if id does not exist", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-        `;
-        expect(YamlUtils.idExists(yaml, "task2")).toBe(false);
-    });
-})

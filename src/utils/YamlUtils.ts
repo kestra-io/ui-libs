@@ -1013,18 +1013,4 @@ export const YamlUtils = {
       ? clusterTask
       : undefined;
   },
-
-  idExists(source: string, id: string) {
-    const yamlDoc = yaml.parseDocument(source) as any;
-    let idExists = false;
-    yaml.visit(yamlDoc, {
-      Map(_, map) {
-        if (map.get("id") === id) {
-          idExists = true;
-          return yaml.visit.BREAK;
-        }
-      },
-    });
-    return idExists;
-  }
 };
