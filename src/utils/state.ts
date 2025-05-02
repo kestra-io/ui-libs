@@ -22,7 +22,7 @@ interface StateModel {
     isFailed: boolean;
 }
 
-const STATE:Record<string, StateModel> = Object.freeze({
+export const STATE:Record<string, StateModel> = Object.freeze({
     CREATED: {
         name: "CREATED",
         color: "#1761FD",
