@@ -22,7 +22,7 @@ interface StateModel {
     isFailed: boolean;
 }
 
-const STATE:Record<string, StateModel> = Object.freeze({
+export const STATES:Record<string, StateModel> = Object.freeze({
     CREATED: {
         name: "CREATED",
         color: "#1761FD",
@@ -153,79 +153,79 @@ const STATE:Record<string, StateModel> = Object.freeze({
 
 export default class State {
     static get CREATED() {
-        return STATE.CREATED.name;
+        return STATES.CREATED.name;
     }
 
     static get RESTARTED() {
-        return STATE.RESTARTED.name;
+        return STATES.RESTARTED.name;
     }
 
     static get SUCCESS() {
-        return STATE.SUCCESS.name;
+        return STATES.SUCCESS.name;
     }
 
     static get RUNNING() {
-        return STATE.RUNNING.name;
+        return STATES.RUNNING.name;
     }
 
     static get KILLING() {
-        return STATE.KILLING.name;
+        return STATES.KILLING.name;
     }
 
     static get KILLED() {
-        return STATE.KILLED.name;
+        return STATES.KILLED.name;
     }
 
     static get FAILED() {
-        return STATE.FAILED.name;
+        return STATES.FAILED.name;
     }
 
     static get WARNING() {
-        return STATE.WARNING.name;
+        return STATES.WARNING.name;
     }
 
     static get PAUSED() {
-        return STATE.PAUSED.name;
+        return STATES.PAUSED.name;
     }
 
     static get CANCELLED() {
-        return STATE.CANCELLED.name;
+        return STATES.CANCELLED.name;
     }
 
     static get QUEUED() {
-        return STATE.QUEUED.name;
+        return STATES.QUEUED.name;
     }
 
     static get RETRYING() {
-        return STATE.RETRYING.name;
+        return STATES.RETRYING.name;
     }
 
     static get RETRIED() {
-        return STATE.RETRIED.name;
+        return STATES.RETRIED.name;
     }
 
     static isRunning(state:string) {
-        return STATE[state] && STATE[state].isRunning;
+        return STATES[state] && STATES[state].isRunning;
     }
 
     static isKillable(state:string) {
-        return STATE[state] && STATE[state].isKillable;
+        return STATES[state] && STATES[state].isKillable;
     }
 
     static isPaused(state:string) {
-        return STATE[state] && STATE[state] === STATE.PAUSED;
+        return STATES[state] && STATES[state] === STATES.PAUSED;
     }
 
     static isFailed(state:string) {
-        return STATE[state] && STATE[state].isFailed;
+        return STATES[state] && STATES[state].isFailed;
     }
 
     static isQueued(state:string) {
-        return STATE[state] && STATE[state] === STATE.QUEUED;
+        return STATES[state] && STATES[state] === STATES.QUEUED;
     }
 
     static allStates() {
-        return mapValues(STATE, (state:StateModel) => {
+        return mapValues(STATES, (state:StateModel) => {
             return {
                 key: state.name,
                 icon: state.icon,
@@ -235,28 +235,28 @@ export default class State {
     }
 
     static arrayAllStates() {
-        return Object.values(STATE);
+        return Object.values(STATES);
     }
 
     static colorClass() {
-        return mapValues(STATE, (state) => state.colorClass);
+        return mapValues(STATES, (state) => state.colorClass);
     }
 
     static color() {
-        return mapValues(STATE, (state) =>
+        return mapValues(STATES, (state) =>
             cssVariable("--bs-" + state.colorClass),
         );
     }
 
     static getStateColor(state:string) {
-        return STATE[state].color;
+        return STATES[state].color;
     }
 
     static icon() {
-        return mapValues(STATE, (state) => state.icon);
+        return mapValues(STATES, (state) => state.icon);
     }
 
     static getTerminatedStates() {
-        return Object.values(STATE).filter(state => !state.isRunning).map(state => state.name);
+        return Object.values(STATES).filter(state => !state.isRunning).map(state => state.name);
     }
 }
