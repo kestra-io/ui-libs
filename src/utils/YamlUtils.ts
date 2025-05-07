@@ -12,7 +12,6 @@ import yaml, {
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 import {SECTIONS} from "./constants";
-import _ from "lodash";
 
 export type YamlElement = {
   key?: string;
@@ -1077,6 +1076,25 @@ export const YamlUtils = {
     }
 
     pluginDefaults.value.items.splice(indexOfOldValue, 1, newItem);
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+  },
+
+  deletePluginDefaults(source: string, taskType: string) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const pluginDefaults = this._extractPluginDefaults(yamlDoc) as yaml.Pair<Scalar, yaml.YAMLMap<{value: string}, {value: {items: any[]}}>> | undefined;
+    if (!pluginDefaults) {
+      return source;
+    }
+
+    let index = -1;
+    for(const def of pluginDefaults.value?.items ?? []){
+        index++;
+        if((def as any).get("type") === taskType){
+            pluginDefaults.value?.items.splice(index, 1);
+            break;
+        }
+    }
+
     return yamlDoc.toString(TOSTRING_OPTIONS);
   }
 };

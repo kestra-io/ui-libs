@@ -1936,3 +1936,38 @@ describe("replacePluginDefaultsInDocument", () => {
         expect(() => YamlUtils.replacePluginDefaultsInDocument(yaml, "io.kestra.plugin.core.flow.Parallel", newPluginDefault)).not.toThrow();
     });
 })
+
+describe("deletePluginDefaults", () => {
+    test("removes specified plugin default", () => {
+        const yaml = `
+        pluginDefaults:
+          - type: io.kestra.plugin.core.log.Log
+            values:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.deletePluginDefaults(yaml, "io.kestra.plugin.core.log.Log");
+        expect(result).not.toContain("io.kestra.plugin.core.log.Log");
+    });
+
+    test("returns unchanged yaml when plugin default doesn't exist", () => {
+        const yaml = `
+pluginDefaults:
+  - type: io.kestra.plugin.core.log.Log
+    values:
+      key1: value1
+      key2: value2
+        `;
+        const result = YamlUtils.deletePluginDefaults(yaml, "io.kestra.plugin.core.flow.Parallel");
+        expect(result).toBe(yaml.trim() + "\n");
+    });
+    test("returns unchanged yaml when no plugin defaults exist", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.deletePluginDefaults(yaml, "io.kestra.plugin.core.log.Log");
+        expect(result).toBe(yaml);
+    })
+})
