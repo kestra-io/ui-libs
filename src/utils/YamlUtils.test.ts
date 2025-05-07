@@ -1858,3 +1858,81 @@ describe("getMapAtPosition", () => {
                             });
     })
 })
+
+describe("extractPluginDefault", () => {
+    test("returns plugin default with task type", () => {
+        const yaml = `
+        pluginDefaults:
+          - type: io.kestra.plugin.core.log.Log
+            values:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.extractPluginDefault(yaml, "io.kestra.plugin.core.log.Log") ?? "";
+        expect(YamlUtils.parse(result)).toEqual({
+            type: "io.kestra.plugin.core.log.Log",
+            values: {
+                key1: "value1",
+                key2: "value2"
+            }
+        });
+    })
+
+    test("returns null if type not found", () => {
+        const yaml = `
+        pluginDefaults:
+          - type: io.kestra.plugin.core.log.Log
+            values:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.extractPluginDefault(yaml, "io.kestra.plugin.core.flow.Parallel");
+        expect(result).toBeUndefined();
+    })
+})
+
+describe("replacePluginDefaultsInDocument", () => {
+    test("replaces plugin defaults in yaml document", () => {
+        const yaml = `
+        pluginDefaults:
+          - type: io.kestra.plugin.core.log.Log
+            values:
+              key1: value1
+              key2: value2
+        `;
+        const newPluginDefault = `
+        type: io.kestra.plugin.core.log.Log
+        values:
+          key1: newValue1
+          key2: newValue2
+        `;
+        const result = YamlUtils.replacePluginDefaultsInDocument(yaml, "io.kestra.plugin.core.log.Log", newPluginDefault);
+        expect(result).toMatchInlineSnapshot(`
+          "pluginDefaults:
+            - type: io.kestra.plugin.core.log.Log
+              values:
+                key1: newValue1
+                key2: newValue2
+          "
+        `)
+        expect(result).toContain("key1: newValue1");
+        expect(result).toContain("key2: newValue2");
+    });
+
+    test("does not throw error when plugin default not found", () => {
+        const yaml = `
+        pluginDefaults:
+          - type: io.kestra.plugin.core.log.Log
+            values:
+              key1: value1
+              key2: value2
+        `;
+        const newPluginDefault = `
+        type: io.kestra.plugin.core.flow.Parallel
+        values:
+          key1: newValue1
+          key2: newValue2
+        `;
+        expect(() => YamlUtils.replacePluginDefaultsInDocument(yaml, "io.kestra.plugin.core.flow.Parallel", newPluginDefault)).not.toThrow();
+    });
+})
