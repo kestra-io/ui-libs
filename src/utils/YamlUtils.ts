@@ -923,6 +923,7 @@ export const YamlUtils = {
       "errors",
       "finally",
       "afterExecution",
+      "pluginDefaults",
       "taskDefaults",
       "concurrency",
       "outputs",
