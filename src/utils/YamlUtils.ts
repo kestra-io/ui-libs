@@ -12,7 +12,6 @@ import yaml, {
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 import {SECTIONS} from "./constants";
-import _ from "lodash";
 
 export type YamlElement = {
   key?: string;
