@@ -12,6 +12,7 @@ import yaml, {
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 import {SECTIONS} from "./constants";
+import _ from "lodash";
 
 export type YamlElement = {
   key?: string;
@@ -64,7 +65,7 @@ export const YamlUtils = {
   },
 
   extractTask(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source) as any;
+    const yamlDoc = yaml.parseDocument(source);
     const taskNode = this._extractTask(yamlDoc, taskId);
     return taskNode === undefined
       ? undefined
@@ -98,6 +99,7 @@ export const YamlUtils = {
           if (result) {
             if (callback) {
               if (element instanceof YAMLMap) {
+                // replace value in the map
                 element.set(item.key.value, result);
               } else {
                 element.items[key] = result;
@@ -138,6 +140,11 @@ export const YamlUtils = {
     return yamlDoc.toString(TOSTRING_OPTIONS);
   },
 
+  /**
+   * keep comments from oldTask in the newTask
+   * @param oldTask 
+   * @param newTask 
+   */
   replaceCommentInTask(oldTask: any, newTask: any) {
     for (const oldProp of oldTask.items) {
       for (const newProp of newTask.items) {
@@ -917,7 +924,6 @@ export const YamlUtils = {
       "errors",
       "finally",
       "afterExecution",
-      "pluginDefaults",
       "taskDefaults",
       "concurrency",
       "outputs",
@@ -1013,4 +1019,64 @@ export const YamlUtils = {
       ? clusterTask
       : undefined;
   },
+
+  _extractPluginDefaults(
+    yamlDoc: ReturnType<typeof yaml.parseDocument>,
+  ) {
+    return (yamlDoc.contents as yaml.YAMLMap<{value: string}, unknown>)?.items.find(
+        (item) => item.key.value === "pluginDefaults"
+    );
+  },
+
+  _extractPluginDefault(
+    yamlDoc: ReturnType<typeof yaml.parseDocument>,
+    taskType: string,
+) {
+    // first, find the pluginDefaults section
+    const pluginDefaults: any = this._extractPluginDefaults(yamlDoc);
+    if (!pluginDefaults) {
+        return undefined;
+    }
+    let pluginDefault: any;
+    yaml.visit(pluginDefaults, {
+      Map(_, map) {
+        if (map.get("type") === taskType) {
+          pluginDefault = map;
+          return yaml.visit.BREAK;
+        }
+      },
+    });
+    return pluginDefault;
+  },
+
+  extractPluginDefault(source: string, taskType: string){
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const pluginDefault = this._extractPluginDefault(yamlDoc, taskType);
+    if (!pluginDefault) {
+      return undefined;
+    }
+    return new yaml.Document(pluginDefault).toString(TOSTRING_OPTIONS);
+  },
+
+  replacePluginDefaultsInDocument(source: string, taskType: string, newContent: string) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    const newItem = yamlDoc.createNode(yaml.parseDocument(newContent));
+
+    const oldValue = this._extractPluginDefault(yamlDoc, taskType);
+    if (!oldValue) {
+      return source;
+    }
+    const pluginDefaults: any = this._extractPluginDefaults(yamlDoc);
+    if (!pluginDefaults) {
+      return source;
+    }
+    const indexOfOldValue = pluginDefaults.value.items.indexOf(oldValue);
+    this.replaceCommentInTask(oldValue, newItem);
+    if (indexOfOldValue < 0) {
+        return source;
+    }
+
+    pluginDefaults.value.items.splice(indexOfOldValue, 1, newItem);
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+  }
 };
