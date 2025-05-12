@@ -1971,3 +1971,40 @@ pluginDefaults:
         expect(result).toBe(yaml);
     })
 })
+
+describe("deleteSection", () => {
+    test("removes specified section", () => {
+        const yaml = `
+        finally:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+          - id: task2
+            type: io.kestra.plugin.core.flow.Parallel
+        `;
+        const result = YamlUtils.deleteSection(yaml, "finally", "task1");
+        expect(result).not.toContain("- id: task1");
+    });
+
+    test("returns unchanged yaml when section doesn't exist", () => {
+        const yaml = `
+tasks:
+  - id: task1
+    type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.deleteSection(yaml, "triggers", "task1");
+        expect(result).toBe(yaml.trim() + "\n");
+    });
+
+    test("removes section where last item was deleted", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        finally:
+          - id: finally1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.deleteSection(yaml, "finally", "finally1");
+        expect(result).not.toContain("finally");
+    })
+})

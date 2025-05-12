@@ -697,6 +697,39 @@ export const YamlUtils = {
     });
     return yamlDoc.toString(TOSTRING_OPTIONS);
   },
+  
+  /**
+   * Delete an item in any section by matching it's id
+   * @param source the full yaml source
+   * @param section the yaml identifier of the section to delete from
+   * @param id the id of the item to delete
+   * @returns yaml (source) without the item
+   */
+  deleteSection(source: string, section: string, id: string) {
+    const yamlDoc = yaml.parseDocument(source) as any;
+    yaml.visit(yamlDoc, {
+      Pair(_, pair: any) {
+        if (pair.key.value === section) {
+          yaml.visit(pair.value, {
+            Map(_, map) {
+              if (map.get("id") === id) {
+                return yaml.visit.REMOVE;
+              }
+            },
+          });
+        }
+      },
+    });
+    // delete empty sections
+    yaml.visit(yamlDoc, {
+      Pair(_, pair) {
+        if (isSeq(pair.value) && pair.value.items.length === 0) {
+          return yaml.visit.REMOVE;
+        }
+      },
+    });
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+  },
 
   deleteTask(source: string, taskId: string, section: string) {
     const inSection =
