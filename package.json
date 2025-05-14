@@ -75,7 +75,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-storybook": "^0.11.2",
     "eslint-plugin-vue": "^9.32.0",
-    "sass": "^1.83.1",
+    "sass": "^1.88.0",
     "storybook": "^8.4.7",
     "typescript-eslint": "^8.19.1",
     "vite": "^6.0.7",
