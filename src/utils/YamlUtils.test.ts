@@ -1076,7 +1076,7 @@ describe("extractTask" , () => {
           - id: task1
             type: test
         `;
-        const result = YamlUtils.extractTask(yaml, "task1");
+        const result = YamlUtils.extractTask(yaml, "task1", "tasks");
         expect(result).toMatchInlineSnapshot(`
           "id: task1
           type: test
@@ -1094,7 +1094,7 @@ describe("extractTask" , () => {
           - id: task1
             type: test
         `;
-        const result = YamlUtils.extractTask(yaml, "task2");
+        const result = YamlUtils.extractTask(yaml, "task2", "tasks");
         expect(result).toBeFalsy();
     });
 })
@@ -1492,26 +1492,26 @@ describe("Yaml Utils", () => {
     })
 
     test("extractTask from a flat flow", () => {
-        const doc = YamlUtils.extractTask(flat, "1-1")!;
+        const doc = YamlUtils.extractTask(flat, "1-1", "tasks")!;
 
         expect(doc.toString()).toContain("\"1-1\"");
         expect(doc.toString()).toContain("# comment to keep");
     })
 
     test("extractTask from a flowable flow", () => {
-        const doc = YamlUtils.extractTask(flowable, "1-2")!;
+        const doc = YamlUtils.extractTask(flowable, "1-2", "tasks")!;
 
         expect(doc.toString()).toContain("\"1-2\"");
     })
 
     test("extractTask from a plugin flow", () => {
-        const doc = YamlUtils.extractTask(plugins, "1-1")!;
+        const doc = YamlUtils.extractTask(plugins, "1-1", "tasks")!;
 
         expect(doc.toString()).toContain("\"1-1\"");
     })
 
     test("extractTask undefined from a flowable flow", () => {
-        const doc = YamlUtils.extractTask(flowable, "X-X")!;
+        const doc = YamlUtils.extractTask(flowable, "X-X", "tasks")!;
 
         expect(doc).toBe(undefined);
     })
@@ -1528,17 +1528,17 @@ describe("Yaml Utils", () => {
     test("replace from a flowable flow", () => {
         const doc = YamlUtils.replaceTaskInDocument(flowable, "1-2", replace);
 
-        expect(doc.toString()).toContain("\"replaced\"");
-        expect(doc.toString()).toContain("echo \"1-1\"");
-        expect(doc.toString()).toContain("# comment to add");
+        expect(doc?.toString()).toContain("\"replaced\"");
+        expect(doc?.toString()).toContain("echo \"1-1\"");
+        expect(doc?.toString()).toContain("# comment to add");
     })
 
     test("replace from a plugin flow", () => {
         const doc = YamlUtils.replaceTaskInDocument(plugins, "1-1", replace);
 
-        expect(doc.toString()).toContain("\"replaced\"");
-        expect(doc.toString()).toContain("unittest.Example");
-        expect(doc.toString()).toContain("# comment to add");
+        expect(doc?.toString()).toContain("\"replaced\"");
+        expect(doc?.toString()).toContain("unittest.Example");
+        expect(doc?.toString()).toContain("# comment to add");
     })
 
     test("localize cursor parent", () => {

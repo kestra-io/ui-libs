@@ -12,6 +12,7 @@ import yaml, {
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 import {SECTIONS} from "./constants";
+import {deleteMetadata, extractPluginProperty, getMetadata, pairsToMap, parse, replacePluginPropertyInDocument, sort, stringify} from "./YamlUtilsEsm";
 
 export type YamlElement = {
   key?: string;
@@ -27,49 +28,13 @@ const indentAndYamlKeyCapture = new RegExp(
 const TOSTRING_OPTIONS = {lineWidth: 0};
 
 export const YamlUtils = {
-  stringify(value: any) {
-    if (value === undefined) return "";
+  stringify,
 
-    const clonedValue = cloneDeep(value);
-    delete clonedValue.deleted;
+  parse,
 
-    return JsYaml.dump(this._transform(clonedValue), {
-      lineWidth: -1,
-      noCompatMode: true,
-      quotingType: "\"",
-    });
-  },
+  pairsToMap,
 
-  parse<T = any>(item?: string, throwIfError = true): T | undefined {
-    if (item === undefined) return undefined;
-
-    try {
-      return JsYaml.load(item) as any;
-    } catch (e) {
-      if (throwIfError) throw e;
-      return undefined;
-    }
-  },
-
-  pairsToMap(pairs: any) {
-    const map = new YAMLMap();
-    if (!isPair(pairs?.[0])) {
-      return map;
-    }
-
-    pairs.forEach((pair: any) => {
-      map.add(pair);
-    });
-    return map;
-  },
-
-  extractTask(source: string, taskId: string) {
-    const yamlDoc = yaml.parseDocument(source);
-    const taskNode = this._extractTask(yamlDoc, taskId);
-    return taskNode === undefined
-      ? undefined
-      : new yaml.Document(taskNode).toString(TOSTRING_OPTIONS);
-  },
+  extractTask: extractPluginProperty,
 
   _extractTask(
     yamlDoc: ReturnType<typeof yaml.parseDocument>,
@@ -126,36 +91,14 @@ export const YamlUtils = {
     }
   },
 
-  replaceTaskInDocument(source: string, taskId: string, newContent: string) {
-    const yamlDoc = yaml.parseDocument(source) as any;
-    const newItem = yamlDoc.createNode(yaml.parseDocument(newContent));
-
-    this._extractTask(yamlDoc, taskId, (oldValue: any) => {
-      this.replaceCommentInTask(oldValue, newItem);
-
-      return newItem;
-    });
-
-    return yamlDoc.toString(TOSTRING_OPTIONS);
-  },
-
-  /**
-   * keep comments from oldTask in the newTask
-   * @param oldTask 
-   * @param newTask 
-   */
-  replaceCommentInTask(oldTask: any, newTask: any) {
-    for (const oldProp of oldTask.items) {
-      for (const newProp of newTask.items) {
-        if (
-          oldProp.key.value === newProp.key.value &&
-          newProp.value.comment === undefined
-        ) {
-          newProp.value.comment = oldProp.value.comment;
-          break;
-        }
-      }
-    }
+  replaceTaskInDocument(source: string, taskId: string, newContent: string, block: string = "tasks", keyName: string = "id") {
+    return replacePluginPropertyInDocument(
+        source,
+        block,
+        keyName,
+        taskId,
+        newContent
+    )
   },
 
   _transform(value: any): any {
@@ -185,33 +128,7 @@ export const YamlUtils = {
     return value;
   },
 
-  sort(value: Record<string, any>) {
-    const SORT_FIELDS = [
-      "id",
-      "type",
-      "namespace",
-      "description",
-      "revision",
-      "inputs",
-      "variables",
-      "tasks",
-      "errors",
-      "triggers",
-      "listeners",
-    ];
-
-    return Object.keys(value)
-      .sort()
-      .sort((a, b) => {
-        return this.index(SORT_FIELDS, a) - this.index(SORT_FIELDS, b);
-      });
-  },
-
-  index(based: string[], value: string) {
-    const index = based.indexOf(value);
-
-    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-  },
+  sort,
 
   nextDelimiterIndex(content: any, currentIndex: any) {
     const RE = /[ .}]/g
@@ -816,6 +733,8 @@ export const YamlUtils = {
     );
   },
 
+
+  /** @private */
   isChildrenOf(source: string, parentTask: string, childTask: string) {
     const yamlDoc = yaml.parseDocument(
       this.extractTask(source, parentTask) ?? ""
@@ -832,6 +751,8 @@ export const YamlUtils = {
     return isChildrenOf;
   },
 
+
+  /** @private */
   getChildrenTasks(source: string, taskId: string) {
     const yamlDoc = yaml.parseDocument(this.extractTask(source, taskId) ?? "");
     const children: string[] = [];
@@ -845,6 +766,7 @@ export const YamlUtils = {
     return children;
   },
 
+  /** @private */
   getParentTask(source: string, taskId: string) {
     const yamlDoc = yaml.parseDocument(source) as any;
     let parentTask = null;
@@ -865,6 +787,7 @@ export const YamlUtils = {
     return parentTask;
   },
 
+  /** @private */
   isTaskError(source: string, taskId: string) {
     const yamlDoc = yaml.parseDocument(source) as any;
     let isTaskError = false;
@@ -980,38 +903,9 @@ export const YamlUtils = {
     return yamlDoc.toString(TOSTRING_OPTIONS);
   },
 
-  getMetadata(source: string) {
-    const yamlDoc = yaml.parseDocument(source) as any;
-    const metadata: Record<string, any> = {};
-    for (const item of yamlDoc.contents.items) {
-      if (
-        item.key.value !== "tasks" &&
-        item.key.value !== "triggers" &&
-        item.key.value !== "errors"
-      ) {
-        metadata[item.key.value] =
-          isMap(item.value) || isSeq(item.value)
-            ? item.value.toJSON()
-            : item.value.value;
-      }
-    }
-    return metadata;
-  },
+  getMetadata,
 
-  deleteMetadata(source: any, metadata: any) {
-    const yamlDoc = yaml.parseDocument(source) as any;
-
-    if (!yamlDoc.contents.items) {
-      return source;
-    }
-
-    const item = yamlDoc.contents.items.find((e: any) => e.key.value === metadata);
-    if (item) {
-      yamlDoc.contents.items.splice(yamlDoc.contents.items.indexOf(item), 1);
-    }
-
-    return yamlDoc.toString(TOSTRING_OPTIONS);
-  },
+  deleteMetadata,
 
   flowHaveTasks(source: string) {
     const tasks = (yaml.parseDocument(source) as any).contents?.items?.find(
