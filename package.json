@@ -19,6 +19,14 @@
       },
       "require": "./dist/kestra-ui.umd.cjs"
     },
+    "./yaml-utils": {
+      "types": "./dist/utils/YamlUtils.d.ts",
+      "import": {
+        "types": "./dist/utils/YamlUtils.d.ts",
+        "default": "./dist/kestra-yamlutils.es.js"
+      },
+      "require": "./dist/kestra-yamlutils.cjs.js"
+    },
     "./style.css": "./dist/kestra-ui.css",
     "./src/*": "./src/*"
   },

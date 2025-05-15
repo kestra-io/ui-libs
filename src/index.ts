@@ -1,4 +1,4 @@
-export {YamlUtils} from "./utils/YamlUtils";
+export {YamlUtils} from "./utils/YamlUtilsLegacy";
 export {cssVariable} from "./utils/global";
 export {default as State, STATES} from "./utils/state";
 export {default as Utils} from "./utils/Utils";

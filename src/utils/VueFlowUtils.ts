@@ -1,6 +1,6 @@
 import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow, Elements} from "@vue-flow/core";
 import dagre from "dagre";
-import {YamlUtils} from "./YamlUtils";
+import {YamlUtils} from "./YamlUtilsLegacy";
 import Utils from "./Utils";
 import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
 

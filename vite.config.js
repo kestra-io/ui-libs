@@ -8,9 +8,12 @@ export default defineConfig({
     build: {
         sourcemap: true,
         lib: {
-            entry: path.resolve(__dirname, "src/index.ts"),
+            entry: [
+                path.resolve(__dirname, "src/index.ts"), 
+                path.resolve(__dirname, "src/utils/YamlUtils.ts")
+            ],
             name: "KestraUI",
-            fileName: "kestra-ui",
+            fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format}.js`,
         },
         rollupOptions: {
             external: [
