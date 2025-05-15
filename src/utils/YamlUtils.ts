@@ -1,4 +1,4 @@
-import JsYaml from "js-yaml";
+import {dump, load} from "js-yaml";
 import {
     Scalar,
     YAMLMap,
@@ -18,7 +18,7 @@ export function parse<T = any>(item?: string, throwIfError = true): T | undefine
     if (item === undefined) return undefined;
 
     try {
-        return JsYaml.load(item) as any;
+        return load(item) as any;
     } catch (e) {
         if (throwIfError) throw e;
         return undefined;
@@ -31,7 +31,7 @@ export function stringify(item: any) {
     const clonedValue = structuredClone(item);
     delete clonedValue.deleted;
 
-    return JsYaml.dump(transform(clonedValue), {
+    return dump(transform(clonedValue), {
         lineWidth: -1,
         noCompatMode: true,
         quotingType: "\"",

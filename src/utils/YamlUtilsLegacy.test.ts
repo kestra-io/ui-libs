@@ -620,26 +620,6 @@ describe("flowHaveTasks", () => {
     });
 });
 
-describe("isTrigger", () => {
-    test("returns true for trigger task", () => {
-        const yaml = `
-        triggers:
-          - id: trigger1
-            type: schedule
-        `;
-        expect(YamlUtils.isTrigger(yaml, "trigger1")).toBe(true);
-    });
-
-    test("returns false for non-trigger task", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-        `;
-        expect(YamlUtils.isTrigger(yaml, "task1")).toBe(false);
-    });
-});
-
 describe("replaceIdAndNamespace", () => {
     test("replaces id and namespace in yaml", () => {
         const yaml = `

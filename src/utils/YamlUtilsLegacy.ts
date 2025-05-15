@@ -14,6 +14,7 @@ import {
     getTypeAtPosition as getTaskType,
     insertErrorInFlowable,
     insertPluginProperty,
+    isParentChildrenRelation,
     localizeElementAtIndex,
     pairsToMap, parse,
     replaceIdAndNamespace,
@@ -31,6 +32,15 @@ export type YamlElement = {
 
 const TOSTRING_OPTIONS = {lineWidth: 0};
 
+const BLOCKS = [
+            "tasks",
+            "triggers",
+            "errors",
+            "finally",
+            "afterExecution",
+            "pluginDefaults",
+        ]
+
 export const YamlUtils = {
     stringify,
 
@@ -39,15 +49,8 @@ export const YamlUtils = {
     pairsToMap,
 
     extractTask(source: string, taskId: string) {
-        const blocks = [
-            "tasks",
-            "triggers",
-            "errors",
-            "finally",
-            "afterExecution",
-            "pluginDefaults",
-        ]
-        for (const block of blocks) {
+        
+        for (const block of BLOCKS) {
             const task = extractPluginProperty(source, block, taskId)
             if (task) {
                 return task
@@ -199,47 +202,7 @@ export const YamlUtils = {
     },
 
     isParentChildrenRelation(source: string, task1: string, task2: string) {
-        return (
-            this.isChildrenOf(source, task2, task1) ||
-            this.isChildrenOf(source, task1, task2)
-        );
-    },
-
-
-    /** @private */
-    isChildrenOf(source: string, parentTask: string, childTask: string) {
-        const yamlDoc = yaml.parseDocument(source)
-        const yamlDocParentTask = this._extractTask(yamlDoc, parentTask) as any
-        let isChildrenOf = false;
-        yaml.visit(yamlDocParentTask, {
-            Map(_, map) {
-                if (map.get("id") === childTask) {
-                    isChildrenOf = true;
-                    return yaml.visit.BREAK;
-                }
-            },
-        });
-        return isChildrenOf;
-    },
-
-    isTrigger(source: string, taskId: string) {
-        const yamlDoc = yaml.parseDocument(source) as any;
-        let isTrigger = false;
-        yaml.visit(yamlDoc, {
-            Pair(_, pair: any) {
-                if (pair.key.value === "triggers") {
-                    yaml.visit(pair, {
-                        Map(_, map) {
-                            if (map.get("id") === taskId) {
-                                isTrigger = true;
-                                return yaml.visit.BREAK;
-                            }
-                        },
-                    });
-                }
-            },
-        });
-        return isTrigger;
+        return isParentChildrenRelation(source, BLOCKS, task1, task2);
     },
 
     replaceIdAndNamespace,
