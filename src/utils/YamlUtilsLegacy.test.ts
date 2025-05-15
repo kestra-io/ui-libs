@@ -9,14 +9,6 @@ const yamlString = `
         key1: value1
         key2: value2
 
-    triggers:
-      - id: schedule1
-        type: schedule
-        expression: 42 4 1 * *
-        backfill:
-          start: 2018-01-01
-          depend-on-past: false
-
     tasks:
       - id: t1
         type: io.kestra.plugin.core.log.Log
@@ -25,6 +17,14 @@ const yamlString = `
       - id: t2
         type: io.kestra.plugin.core.debug.Return
         format: second {{ labels.key1 }}
+
+    triggers:
+      - id: schedule1
+        type: schedule
+        expression: 42 4 1 * *
+        backfill:
+          start: 2018-01-01
+          depend-on-past: false
 
     errors:
       - id: alert_on_failure
@@ -65,14 +65,6 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -90,6 +82,14 @@ describe("insertTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -124,14 +124,6 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t0
               name: newTask
@@ -149,6 +141,14 @@ describe("insertTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -217,14 +217,6 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -240,6 +232,14 @@ describe("insertTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -315,6 +315,12 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
+          tasks:
+
+            - id: t2
+              type: io.kestra.plugin.core.debug.Return
+              format: second {{ labels.key1 }}
+
           triggers:
             - id: schedule1
               type: schedule
@@ -322,12 +328,6 @@ describe("deleteTask", () => {
               backfill:
                 start: 2018-01-01
                 depend-on-past: false
-
-          tasks:
-            
-            - id: t2
-              type: io.kestra.plugin.core.debug.Return
-              format: second {{ labels.key1 }}
 
           errors:
             - id: alert_on_failure
@@ -382,14 +382,6 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -398,6 +390,14 @@ describe("deleteTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
           "
         `)
     })
@@ -411,14 +411,6 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -427,6 +419,14 @@ describe("deleteTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure

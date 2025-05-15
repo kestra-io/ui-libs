@@ -1,22 +1,19 @@
 import yaml, {
     Document,
-    isMap,
     YAMLMap,
-    isSeq,
-    YAMLSeq,
-    Pair,
-    Scalar,
 } from "yaml";
 import {SECTIONS} from "./constants";
 import {
     checkPluginPropertyAlreadyExists,
     cleanMetadata, deleteMetadata,
     deletePluginDefaults,
+    deletePluginProperty,
     extractPluginDefault,
     extractPluginProperty,
     flowHaveTasks, getAllCharts, getChartAtPosition, getLastPluginProperty, getMetadata,
     getTypeAtPosition as getTaskType,
     insertErrorInFlowable,
+    insertPluginProperty,
     localizeElementAtIndex,
     pairsToMap, parse,
     replaceIdAndNamespace,
@@ -167,91 +164,11 @@ export const YamlUtils = {
         insertPosition: "before" | "after",
         parentTaskId?: string
     ) {
-        const yamlDoc = yaml.parseDocument(source) as any;
-        const newTaskNode = yamlDoc.createNode(yaml.parseDocument(newTask));
-
-        const parentTask = parentTaskId ? this._extractTask(
-            yamlDoc,
-            parentTaskId,
-        ) : yamlDoc;
-        if (!parentTask && parentTaskId) {
-            throw new Error(`Parent task with ID ${parentTaskId} not found`);
-        }
-
-        const tasksNode = parentTask.contents.items.find(
-            (e: any) => e.key.value === "tasks"
-        );
-
-        if (!tasksNode || tasksNode?.value.value === null) {
-            if (tasksNode) {
-                parentTask.contents.items.splice(
-                    parentTask.contents.items.indexOf(tasksNode),
-                    1
-                );
-            }
-            const taskList = new YAMLSeq();
-            taskList.items.push(newTaskNode);
-            const tasks = new Pair(new Scalar("tasks"), taskList);
-            parentTask.contents.items.push(tasks);
-            return yamlDoc.toString(TOSTRING_OPTIONS);
-        }
-        let added = false;
-        yaml.visit(parentTask, {
-            Seq(_, seq) {
-                for (const map of seq.items) {
-                    if (isMap(map)) {
-                        if (added) {
-                            return yaml.visit.BREAK;
-                        }
-                        if (map.get("id") === taskId) {
-                            const index = seq.items.indexOf(map);
-                            if (insertPosition === "before") {
-                                if (index === 0) {
-                                    seq.items.unshift(newTaskNode);
-                                } else {
-                                    seq.items.splice(index, 0, newTaskNode);
-                                }
-                            } else {
-                                if (index === seq.items.length - 1) {
-                                    seq.items.push(newTaskNode);
-                                } else {
-                                    seq.items.splice(index + 1, 0, newTaskNode);
-                                }
-                            }
-                            added = true;
-                            return seq;
-                        }
-                    }
-                }
-            },
-        });
-        return yamlDoc.toString(TOSTRING_OPTIONS);
+        return insertPluginProperty(source, "tasks", newTask, taskId, insertPosition, parentTaskId);
     },
 
-    insertSection(sectionType: string, source: any, task: any) {
-        const yamlDoc = yaml.parseDocument(source) as any;
-        const newNode = yamlDoc.createNode(yaml.parseDocument(task));
-
-        // Find the section in the YAML document
-        const section = yamlDoc.contents.items.find(
-            (item: any) => item.key.value === sectionType
-        );
-
-        if (section) {
-            // If the section exists, append the new node
-            section.value.items.push(newNode);
-        } else {
-            // If the section does not exist, create a new one
-            const sectionSeq = new yaml.YAMLSeq();
-            sectionSeq.items.push(newNode);
-            const newSection = new yaml.Pair(
-                new yaml.Scalar(sectionType),
-                sectionSeq
-            );
-            yamlDoc?.contents?.items?.push(newSection);
-        }
-
-        return this.cleanMetadata(yamlDoc.toString(TOSTRING_OPTIONS));
+    insertSection(sectionType: string, source: string, task: string) {
+        return insertPluginProperty(source, sectionType, task);
     },
 
     insertErrorInFlowable,
@@ -264,57 +181,13 @@ export const YamlUtils = {
      * @returns yaml (source) without the item
      */
     deleteSection(source: string, section: string, id: string) {
-        const yamlDoc = yaml.parseDocument(source) as any;
-        yaml.visit(yamlDoc, {
-            Pair(_, pair: any) {
-                if (pair.key.value === section) {
-                    yaml.visit(pair.value, {
-                        Map(_, map) {
-                            if (map.get("id") === id) {
-                                return yaml.visit.REMOVE;
-                            }
-                        },
-                    });
-                }
-            },
-        });
-        // delete empty sections
-        yaml.visit(yamlDoc, {
-            Pair(_, pair) {
-                if (isSeq(pair.value) && pair.value.items.length === 0) {
-                    return yaml.visit.REMOVE;
-                }
-            },
-        });
-        return yamlDoc.toString(TOSTRING_OPTIONS);
+        return deletePluginProperty(source, section, id);
     },
 
     deleteTask(source: string, taskId: string, section: string) {
         const inSection =
             section === SECTIONS.TASKS ? ["tasks", "errors"] : ["triggers"];
-        const yamlDoc = yaml.parseDocument(source) as any;
-        yaml.visit(yamlDoc, {
-            Pair(_, pair: any) {
-                if (inSection.includes(pair.key.value)) {
-                    yaml.visit(pair.value, {
-                        Map(_, map) {
-                            if (map.get("id") === taskId) {
-                                return yaml.visit.REMOVE;
-                            }
-                        },
-                    });
-                }
-            },
-        });
-        // delete empty sections
-        yaml.visit(yamlDoc, {
-            Pair(_, pair) {
-                if (isSeq(pair.value) && pair.value.items.length === 0) {
-                    return yaml.visit.REMOVE;
-                }
-            },
-        });
-        return yamlDoc.toString(TOSTRING_OPTIONS);
+        return inSection.reduce((src, sec) => deletePluginProperty(src, sec, taskId), source);
     },
 
     getLastTask(source: string, parentTaskId?: string): string | undefined {

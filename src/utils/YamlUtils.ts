@@ -222,7 +222,7 @@ function restoreCommentsInPluginProperty(oldProperty: YAMLMap<{ value: string },
     }
 }
 
-export function swapPluginPropertyInDocument(source: string, block: string, key1: string, key2: string, keyName: string = "id") {
+export function swapPluginProperties(source: string, block: string, key1: string, key2: string, keyName: string = "id") {
     const {yamlDoc, blockNode} = getBlockNodeAndDocumentFromSource(source, block);
     if (!blockNode) {
         return source;
@@ -257,8 +257,8 @@ export function swapPluginPropertyInDocument(source: string, block: string, key1
 export function insertPluginProperty(
     source: string,
     block: string,
-    referenceKey: string,
     newProperty: string,
+    referenceKey?: string,
     insertPosition: "before" | "after" = "after",
     parentPropertyKey?: string,
     keyName: string = "id",
@@ -266,26 +266,36 @@ export function insertPluginProperty(
     const {yamlDoc, blockNode} = getBlockNodeAndDocumentFromSource(source, block);
     const newPropNode = yamlDoc.createNode(parseDocument(newProperty));
 
-    if (!blockNode) return source
-
-    const parentNode: any = parentPropertyKey ? extractPluginPropertyFromDocument(blockNode, keyName, parentPropertyKey) : blockNode;
+    const parentNode: any = parentPropertyKey && blockNode ? extractPluginPropertyFromDocument(blockNode, keyName, parentPropertyKey)?.contents : blockNode;
     if (!parentNode && parentPropertyKey) {
         throw new Error(`Parent task with ID ${parentPropertyKey} not found`);
     }
 
-    if (!parentNode || parentNode?.value.value === null) {
-        if (parentNode) {
-            parentNode.contents.items.splice(
-                parentNode.contents.items.indexOf(parentNode),
-                1
-            );
+    // if the container (parentNode) is missing
+    //  - an entire block
+    //  - a tasks entry in a flowable task
+    //  - a condition block in a trigger
+    if (!parentNode || (parentPropertyKey && !parentNode.get(block))) {
+        const propertyList = new YAMLSeq();
+        propertyList.items.push(newPropNode);
+        const pluginProperties = new Pair(new Scalar(block), propertyList);
+        if(!parentPropertyKey){
+            yamlDoc.contents?.items.push(pluginProperties);
+            return yamlDoc.toString(TOSTRING_OPTIONS);
         }
-        const taskList = new YAMLSeq();
-        taskList.items.push(newPropNode);
-        const tasks = new Pair(new Scalar("tasks"), taskList);
-        parentNode?.contents.items.push(tasks);
-        return yamlDoc.toString(TOSTRING_OPTIONS);
+
+        if(parentNode && !parentNode.get(block)){
+            parentNode.items.push(pluginProperties);
+            return yamlDoc.toString(TOSTRING_OPTIONS);
+        }
     }
+
+    const protectedReferenceKey = referenceKey
+        ? referenceKey
+        : insertPosition === "after" 
+            ? getLastPluginProperty(source, block, parentPropertyKey, keyName)
+            : parentNode.items?.[0]?.get(keyName);
+
     let added = false;
     visit(parentNode, {
         Seq(_, seq) {
@@ -294,7 +304,7 @@ export function insertPluginProperty(
                     if (added) {
                         return visit.BREAK;
                     }
-                    if (map.get(keyName) === referenceKey) {
+                    if (map.get(keyName) === protectedReferenceKey) {
                         const index = seq.items.indexOf(map);
                         if (insertPosition === "before") {
                             if (index === 0) {
@@ -310,7 +320,6 @@ export function insertPluginProperty(
                             }
                         }
                         added = true;
-                        return seq;
                     }
                 }
             }
@@ -370,11 +379,12 @@ function isChildrenOf(source: string, block: string, parent: string, child: stri
     return isChildrenOf;
 }
 
-export function isParentChildrenRelation(source: string, block: string, prop1: string, prop2: string, keyName: string = "id") {
-    return (
-        isChildrenOf(source, block, prop2, prop1, keyName) ||
-        isChildrenOf(source, block, prop1, prop2, keyName)
-    );
+export function isParentChildrenRelation(source: string, blocks: string[], prop1: string, prop2: string, keyName: string = "id") {
+    return blocks.reduce((acc, block) => (
+        acc 
+        || isChildrenOf(source, block, prop2, prop1, keyName) 
+        || isChildrenOf(source, block, prop1, prop2, keyName)
+    ), false);
 }
 
 export function replaceIdAndNamespace(source: string, id: string, namespace: string) {
