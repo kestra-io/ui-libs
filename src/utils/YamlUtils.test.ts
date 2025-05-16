@@ -14,10 +14,10 @@ describe("extractPluginProperty", () => {
             name: Plugin 2
         `;
 
-        const block = "triggers";
+        const section = "triggers";
         const key = "plugin1";
 
-        const result = YamlUtils.extractPluginProperty(yamlString, block, key);
+        const result = YamlUtils.extractPluginProperty(yamlString, section, key);
 
         expect(result).toMatchInlineSnapshot(`
           "id: plugin1
@@ -38,10 +38,10 @@ describe("extractPluginProperty", () => {
             name: Plugin 2
         `;
 
-        const block = "tasks";
+        const section = "tasks";
         const key = "plugin1";
 
-        const result = YamlUtils.extractPluginProperty(yamlString, block, key);
+        const result = YamlUtils.extractPluginProperty(yamlString, section, key);
 
         expect(result).toMatchInlineSnapshot(`
           "id: plugin1
@@ -67,10 +67,10 @@ describe("extractPluginProperty", () => {
             name: Plugin Default 2
         `;
 
-        const block = "pluginDefaults";
+        const section = "pluginDefaults";
         const key = "type1";
 
-        const result = YamlUtils.extractPluginProperty(yamlString, block, key, "type");
+        const result = YamlUtils.extractPluginProperty(yamlString, section, key, "type");
 
         expect(result).toMatchInlineSnapshot(`
           "type: type1
@@ -95,11 +95,11 @@ describe("swapPluginProperties", () => {
             name: Plugin 2
         `;
 
-        const block = "triggers";
+        const section = "triggers";
         const key = "plugin1";
         const newValue = "plugin2";
 
-        const result = YamlUtils.swapPluginProperties(yamlString, block, key, newValue);
+        const result = YamlUtils.swapPluginProperties(yamlString, section, key, newValue);
 
         expect(result).toMatchInlineSnapshot(`
           "triggers:
@@ -128,14 +128,14 @@ describe("insertPluginProperty", () => {
             type: type2
             name: Plugin 2
         `;
-        const block = "tasks";
+        const section = "tasks";
         const key = "plugin1";
         const newValue = `
             id: plugin3
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertPluginProperty(srcWithTasks, block, newValue, key);
+        const result = YamlUtils.insertPluginProperty(srcWithTasks, section, newValue, key);
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin1
@@ -161,14 +161,14 @@ describe("insertPluginProperty", () => {
             type: type2
             name: Plugin 2
         `;
-        const block = "tasks";
+        const section = "tasks";
         const key = "plugin1";
         const newValue = `
             id: plugin3
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertPluginProperty(srcWithTriggers, block, newValue, key);
+        const result = YamlUtils.insertPluginProperty(srcWithTriggers, section, newValue, key);
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: plugin1
@@ -195,13 +195,13 @@ describe("insertPluginProperty", () => {
             type: type2
             name: Plugin 2
         `;
-        const block = "tasks";
+        const section = "tasks";
         const newValue = `
             id: plugin3
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertPluginProperty(srcWithTasks, block, newValue);
+        const result = YamlUtils.insertPluginProperty(srcWithTasks, section, newValue);
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin1
@@ -227,13 +227,13 @@ describe("insertPluginProperty", () => {
             type: type2
             name: Plugin 2
         `;
-        const block = "tasks";
+        const section = "tasks";
         const newValue = `
             id: plugin3
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertPluginProperty(srcWithTasks, block, newValue, undefined, "before");
+        const result = YamlUtils.insertPluginProperty(srcWithTasks, section, newValue, undefined, "before");
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin3
@@ -259,14 +259,14 @@ describe("insertPluginProperty", () => {
             type: type2
             name: Plugin 2
         `;
-        const block = "triggers";
+        const section = "triggers";
         const key = "plugin1";
         const newValue = `
             id: plugin3
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertPluginProperty(srcWithTriggers, block, newValue, key);
+        const result = YamlUtils.insertPluginProperty(srcWithTriggers, section, newValue, key);
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: plugin1
