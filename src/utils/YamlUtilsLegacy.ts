@@ -4,22 +4,22 @@ import yaml, {
 } from "yaml";
 import {SECTIONS} from "./constants";
 import {
-    checkPluginPropertyAlreadyExists,
+    checkBlockAlreadyExists,
     cleanMetadata, deleteMetadata,
     deletePluginDefaults,
-    deletePluginProperty,
+    deleteBlock,
     extractPluginDefault,
-    extractPluginProperty,
-    flowHaveTasks, getAllCharts, getChartAtPosition, getLastPluginProperty, getMetadata,
+    extractBlock,
+    flowHaveTasks, getAllCharts, getChartAtPosition, getLastBlock, getMetadata,
     getTypeAtPosition as getTaskType,
     insertErrorInFlowable,
-    insertPluginProperty,
+    insertBlock,
     isParentChildrenRelation,
     localizeElementAtIndex,
     pairsToMap, parse,
     replaceIdAndNamespace,
     replacePluginDefaultsInDocument,
-    replacePluginPropertyInDocument,
+    replaceBlockInDocument,
     sort, stringify, updateMetadata
 } from "./YamlUtils";
 
@@ -43,15 +43,12 @@ const BLOCKS = [
 
 export const YamlUtils = {
     stringify,
-
     parse,
-
     pairsToMap,
-
     extractTask(source: string, taskId: string) {
         
         for (const block of BLOCKS) {
-            const task = extractPluginProperty(source, block, taskId)
+            const task = extractBlock(source, block, taskId)
             if (task) {
                 return task
             }
@@ -115,7 +112,7 @@ export const YamlUtils = {
     },
 
     replaceTaskInDocument(source: string, taskId: string, newContent: string, block: string = "tasks", keyName: string = "id") {
-        return replacePluginPropertyInDocument(
+        return replaceBlockInDocument(
             source,
             block,
             keyName,
@@ -167,11 +164,11 @@ export const YamlUtils = {
         insertPosition: "before" | "after",
         parentTaskId?: string
     ) {
-        return insertPluginProperty(source, "tasks", newTask, taskId, insertPosition, parentTaskId);
+        return insertBlock(source, "tasks", newTask, taskId, insertPosition, parentTaskId);
     },
 
     insertSection(sectionType: string, source: string, task: string) {
-        return insertPluginProperty(source, sectionType, task);
+        return insertBlock(source, sectionType, task);
     },
 
     insertErrorInFlowable,
@@ -184,21 +181,21 @@ export const YamlUtils = {
      * @returns yaml (source) without the item
      */
     deleteSection(source: string, section: string, id: string) {
-        return deletePluginProperty(source, section, id);
+        return deleteBlock(source, section, id);
     },
 
     deleteTask(source: string, taskId: string, section: string) {
         const inSection =
             section === SECTIONS.TASKS ? ["tasks", "errors"] : ["triggers"];
-        return inSection.reduce((src, sec) => deletePluginProperty(src, sec, taskId), source);
+        return inSection.reduce((src, sec) => deleteBlock(src, sec, taskId), source);
     },
 
     getLastTask(source: string, parentTaskId?: string): string | undefined {
-        return getLastPluginProperty(source, "tasks", parentTaskId);
+        return getLastBlock(source, "tasks", parentTaskId);
     },
 
     checkTaskAlreadyExist(source: string, taskYaml: string) {
-        return checkPluginPropertyAlreadyExists(source, "tasks", taskYaml, "id")
+        return checkBlockAlreadyExists(source, "tasks", taskYaml, "id")
     },
 
     isParentChildrenRelation(source: string, task1: string, task2: string) {

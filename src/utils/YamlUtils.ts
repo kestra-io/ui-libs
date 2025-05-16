@@ -110,13 +110,13 @@ function getSectionFromDocument(yamlDoc: Document<YAMLMap<{ value: string }, Nod
     return sectionNode?.value;
 }
 
-export function extractPluginProperty(source: string, section: string, key: string, keyName: string = "id") {
+export function extractBlock(source: string, section: string, key: string, keyName: string = "id") {
     const {sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     if (!sectionNode) {
         return undefined;
     }
 
-    const pluginPropertyNode = extractPluginPropertyFromDocument(
+    const pluginPropertyNode = extractBlockFromDocument(
         sectionNode,
         keyName,
         key,
@@ -127,7 +127,7 @@ export function extractPluginProperty(source: string, section: string, key: stri
         : new Document(pluginPropertyNode).toString(TOSTRING_OPTIONS);
 }
 
-function extractPluginPropertyFromDocument(
+function extractBlockFromDocument(
     yamlDoc: Node,
     keyName: string,
     key: string,
@@ -182,15 +182,15 @@ function extractPluginPropertyFromDocument(
     }
 }
 
-export function replacePluginPropertyInDocument(source: string, section: string, keyName: string, key: string, newContent: string) {
+export function replaceBlockInDocument(source: string, section: string, keyName: string, key: string, newContent: string) {
     const {yamlDoc, sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     const newItem = yamlDoc.createNode(parseDocument(newContent));
     if (!sectionNode) {
         return undefined;
     }
 
-    extractPluginPropertyFromDocument(sectionNode, keyName, key, (oldValue) => {
-        restoreCommentsInPluginProperty(
+    extractBlockFromDocument(sectionNode, keyName, key, (oldValue) => {
+        restoreCommentsInBlock(
             oldValue as YAMLMap<{ value: string }, Node>,
             newItem as YAMLMap<{ value: string }, Node>
         );
@@ -207,7 +207,7 @@ export function replacePluginPropertyInDocument(source: string, section: string,
  * @param oldProperty 
  * @param newProperty 
  */
-function restoreCommentsInPluginProperty(oldProperty: YAMLMap<{ value: string }, Node>, newProperty: YAMLMap<{ value: string }, Node>) {
+function restoreCommentsInBlock(oldProperty: YAMLMap<{ value: string }, Node>, newProperty: YAMLMap<{ value: string }, Node>) {
     for (const oldProp of oldProperty.items) {
         for (const newProp of newProperty.items) {
             if (
@@ -222,13 +222,13 @@ function restoreCommentsInPluginProperty(oldProperty: YAMLMap<{ value: string },
     }
 }
 
-export function swapPluginProperties(source: string, section: string, key1: string, key2: string, keyName: string = "id") {
+export function swapBlocks(source: string, section: string, key1: string, key2: string, keyName: string = "id") {
     const {yamlDoc, sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     if (!sectionNode) {
         return source;
     }
-    const task1 = extractPluginPropertyFromDocument(sectionNode, keyName, key1);
-    const task2 = extractPluginPropertyFromDocument(sectionNode, keyName, key2);
+    const task1 = extractBlockFromDocument(sectionNode, keyName, key1);
+    const task2 = extractBlockFromDocument(sectionNode, keyName, key2);
 
     if (!task1 || !task2) {
         return source;
@@ -248,13 +248,13 @@ export function swapPluginProperties(source: string, section: string, key1: stri
         },
     });
 
-    extractPluginPropertyFromDocument(sectionNode, keyName, key1, () => task2);
-    extractPluginPropertyFromDocument(sectionNode, keyName, key2, () => task1);
+    extractBlockFromDocument(sectionNode, keyName, key1, () => task2);
+    extractBlockFromDocument(sectionNode, keyName, key2, () => task1);
 
     return yamlDoc.toString(TOSTRING_OPTIONS);
 }
 
-export function insertPluginProperty(
+export function insertBlock(
     source: string,
     section: string,
     newProperty: string,
@@ -266,7 +266,7 @@ export function insertPluginProperty(
     const {yamlDoc, sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     const newPropNode = yamlDoc.createNode(parseDocument(newProperty));
 
-    const parentNode: any = parentPropertyKey && sectionNode ? extractPluginPropertyFromDocument(sectionNode, keyName, parentPropertyKey)?.contents : sectionNode;
+    const parentNode: any = parentPropertyKey && sectionNode ? extractBlockFromDocument(sectionNode, keyName, parentPropertyKey)?.contents : sectionNode;
     if (!parentNode && parentPropertyKey) {
         throw new Error(`Parent task with ID ${parentPropertyKey} not found`);
     }
@@ -278,14 +278,14 @@ export function insertPluginProperty(
     if (!parentNode || (parentPropertyKey && !parentNode.get(section))) {
         const propertyList = new YAMLSeq();
         propertyList.items.push(newPropNode);
-        const pluginProperties = new Pair(new Scalar(section), propertyList);
+        const blocks = new Pair(new Scalar(section), propertyList);
         if(!parentPropertyKey){
-            yamlDoc.contents?.items.push(pluginProperties);
+            yamlDoc.contents?.items.push(blocks);
             return yamlDoc.toString(TOSTRING_OPTIONS);
         }
 
         if(parentNode && !parentNode.get(section)){
-            parentNode.items.push(pluginProperties);
+            parentNode.items.push(blocks);
             return yamlDoc.toString(TOSTRING_OPTIONS);
         }
     }
@@ -293,7 +293,7 @@ export function insertPluginProperty(
     const protectedReferenceKey = referenceKey
         ? referenceKey
         : insertPosition === "after" 
-            ? getLastPluginProperty(source, section, parentPropertyKey, keyName)
+            ? getLastBlock(source, section, parentPropertyKey, keyName)
             : parentNode.items?.[0]?.get(keyName);
 
     let added = false;
@@ -328,7 +328,7 @@ export function insertPluginProperty(
     return cleanMetadataDocument(yamlDoc).toString(TOSTRING_OPTIONS);
 }
 
-export function deletePluginProperty(source: string, section: string, key: string, keyName: string = "id") {
+export function deleteBlock(source: string, section: string, key: string, keyName: string = "id") {
     const yamlDoc = parseDocument(source) as any;
     visit(yamlDoc, {
         Pair(_, pair: any) {
@@ -361,7 +361,7 @@ function isChildrenOf(source: string, section: string, parent: string, child: st
         return false;
     }
 
-    const parentDoc = extractPluginPropertyFromDocument(sectionNode, keyName, parent);
+    const parentDoc = extractBlockFromDocument(sectionNode, keyName, parent);
 
     if (!parentDoc) {
         return false;
@@ -393,7 +393,7 @@ export function replaceIdAndNamespace(source: string, id: string, namespace: str
         .replace(/^(namespace\s*:\s*(["']?))\S*/m, "$1" + namespace + "$2");
 }
 
-export function checkPluginPropertyAlreadyExists(source: string, section: string, newContent: string, keyName: string) {
+export function checkBlockAlreadyExists(source: string, section: string, newContent: string, keyName: string) {
     const {sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     const parsedProp = parse(newContent);
     if (!sectionNode) {
@@ -411,13 +411,13 @@ export function checkPluginPropertyAlreadyExists(source: string, section: string
     return propExists ? parsedProp[keyName] : undefined
 }
 
-export function getLastPluginProperty(source: string, section: string, parentKey?: string, keyName: string = "id"): string | undefined {
+export function getLastBlock(source: string, section: string, parentKey?: string, keyName: string = "id"): string | undefined {
     if (parentKey) {
         const {sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
         if (!sectionNode) {
             return undefined
         }
-        const parentProperty = extractPluginPropertyFromDocument(sectionNode, keyName, parentKey) as Document<YAMLMap<{
+        const parentProperty = extractBlockFromDocument(sectionNode, keyName, parentKey) as Document<YAMLMap<{
             value: string;
         }, YAMLSeq<YAMLMap>>>;
 
@@ -559,16 +559,16 @@ export function flowHaveTasks(source: string) {
     return isSeq(sectionNode) && sectionNode.items.length > 0;
 }
 
-export function extractPluginDefault(source: string, pluginPropType: string) {
-    return extractPluginProperty(source, "pluginDefaults", pluginPropType, "type");
+export function extractPluginDefault(source: string, pluginType: string) {
+    return extractBlock(source, "pluginDefaults", pluginType, "type");
 }
 
-export function replacePluginDefaultsInDocument(source: string, pluginPropType: string, newContent: string) {
-    return replacePluginPropertyInDocument(source, "pluginDefaults", "type", pluginPropType, newContent);
+export function replacePluginDefaultsInDocument(source: string, pluginType: string, newContent: string) {
+    return replaceBlockInDocument(source, "pluginDefaults", "type", pluginType, newContent);
 }
 
-export function deletePluginDefaults(source: string, pluginPropType: string) {
-    return deletePluginProperty(source, "pluginDefaults", pluginPropType, "type");
+export function deletePluginDefaults(source: string, pluginType: string) {
+    return deleteBlock(source, "pluginDefaults", pluginType, "type");
 }
 
 export function insertErrorInFlowable(source: string, errorTask: string, flowableTask: string) {
