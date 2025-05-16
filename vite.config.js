@@ -10,7 +10,7 @@ export default defineConfig({
         lib: {
             entry: [
                 path.resolve(__dirname, "src/index.ts"), 
-                path.resolve(__dirname, "src/utils/YamlUtils.ts")
+                path.resolve(__dirname, "src/utils/FlowYamlUtils.ts")
             ],
             name: "KestraUI",
             fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format}.js`,
