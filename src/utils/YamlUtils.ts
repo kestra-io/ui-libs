@@ -262,39 +262,41 @@ export function insertBlock(
     insertPosition: "before" | "after" = "after",
     parentPropertyKey?: string,
     keyName: string = "id",
+    subBlockName: string = section,
 ) {
     const {yamlDoc, sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
     const newPropNode = yamlDoc.createNode(parseDocument(newProperty));
 
-    const parentNode: any = parentPropertyKey && sectionNode ? extractBlockFromDocument(sectionNode, keyName, parentPropertyKey)?.contents : sectionNode;
+    const parentNode: any = parentPropertyKey && sectionNode 
+        ? extractBlockFromDocument(sectionNode, keyName, parentPropertyKey)?.contents 
+        : sectionNode;
     if (!parentNode && parentPropertyKey) {
-        throw new Error(`Parent task with ID ${parentPropertyKey} not found`);
+        throw new Error(`Parent block with ID ${parentPropertyKey} not found in ${section}`);
     }
 
     // if the container (parentNode) is missing
     //  - an entire section
     //  - a tasks entry in a flowable task
     //  - a condition section in a trigger
-    if (!parentNode || (parentPropertyKey && !parentNode.get(section))) {
+    if (!parentNode || (parentPropertyKey && !parentNode.get(subBlockName))) {
         const propertyList = new YAMLSeq();
         propertyList.items.push(newPropNode);
-        const blocks = new Pair(new Scalar(section), propertyList);
+        const blocks = new Pair(new Scalar(subBlockName), propertyList);
         if(!parentPropertyKey){
             yamlDoc.contents?.items.push(blocks);
             return yamlDoc.toString(TOSTRING_OPTIONS);
         }
 
-        if(parentNode && !parentNode.get(section)){
+        if(parentNode && !parentNode.get(subBlockName)){
             parentNode.items.push(blocks);
             return yamlDoc.toString(TOSTRING_OPTIONS);
         }
     }
 
     const protectedReferenceKey = referenceKey
-        ? referenceKey
-        : insertPosition === "after" 
-            ? getLastBlock(source, section, parentPropertyKey, keyName)
-            : parentNode.items?.[0]?.get(keyName);
+        ?? (insertPosition === "after" 
+            ? getLastBlock(source, section, parentPropertyKey, keyName, subBlockName)
+            : parentNode.items?.[0]?.get(keyName));
 
     let added = false;
     visit(parentNode, {
@@ -411,7 +413,13 @@ export function checkBlockAlreadyExists(source: string, section: string, newCont
     return propExists ? parsedProp[keyName] : undefined
 }
 
-export function getLastBlock(source: string, section: string, parentKey?: string, keyName: string = "id"): string | undefined {
+export function getLastBlock(
+    source: string, 
+    section: string, 
+    parentKey?: string, 
+    keyName: string = "id",
+    subBlockName: string = section
+): string | undefined {
     if (parentKey) {
         const {sectionNode} = getSectionNodeAndDocumentFromSource(source, section);
         if (!sectionNode) {
@@ -425,13 +433,13 @@ export function getLastBlock(source: string, section: string, parentKey?: string
             throw new Error(`Parent with ID ${parentKey} not found`);
         }
 
-        const tasksNode = parentProperty.contents.items.find((pair: any) => pair.key.value === section);
+        const subBlocksNode = parentProperty.contents.items.find((pair: any) => pair.key.value === subBlockName);
 
-        if (!tasksNode || (tasksNode.value && "value" in tasksNode.value && tasksNode.value.value === null)) {
+        if (!subBlocksNode || (subBlocksNode.value && "value" in subBlocksNode.value && subBlocksNode.value.value === null)) {
             return undefined;
         }
 
-        return tasksNode.value?.items[tasksNode.value.items.length - 1].get(keyName) as string;
+        return subBlocksNode.value?.items[subBlocksNode.value.items.length - 1].get(keyName) as string;
     }
 
     const parsed = parse(source);
