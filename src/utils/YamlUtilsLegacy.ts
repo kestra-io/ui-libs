@@ -21,7 +21,7 @@ import {
     replacePluginDefaultsInDocument,
     replaceBlockInDocument,
     sort, stringify, updateMetadata
-} from "./YamlUtils";
+} from "./FlowYamlUtils";
 
 export type YamlElement = {
     key?: string;

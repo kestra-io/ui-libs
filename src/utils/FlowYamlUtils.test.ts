@@ -1,5 +1,5 @@
 import {test, expect, describe} from "vitest";
-import * as YamlUtils from "./YamlUtils";
+import * as YamlUtils from "./FlowYamlUtils";
 
 
 describe("extractBlock", () => {

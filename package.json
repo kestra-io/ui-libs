@@ -20,14 +20,14 @@
       "require": "./dist/kestra-ui.umd.cjs"
     },
     "./yaml-utils": {
-      "types": "./dist/utils/YamlUtils.d.ts",
+      "types": "./dist/utils/FlowYamlUtils.d.ts",
       "import": {
-        "types": "./dist/utils/YamlUtils.d.ts",
-        "default": "./dist/kestra-yamlutils.es.js"
+        "types": "./dist/utils/FlowYamlUtils.d.ts",
+        "default": "./dist/kestra-flowyamlutils.es.js"
       },
-      "require": "./dist/kestra-yamlutils.cjs.js"
+      "require": "./dist/kestra-flowyamlutils.cjs.js"
     },
-    "./style.css": "./dist/kestra-ui.css",
+    "./style.css": "./dist/ui-libs.css",
     "./src/*": "./src/*"
   },
   "scripts": {
