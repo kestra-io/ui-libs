@@ -1,30 +1,32 @@
 import Utils from "./Utils.ts";
 
 export interface JSONProperty {
-    type:string;
+    type: string;
+    name?: string;
+    unit?: string;
     $dynamic?: boolean;
-    $ref?:string;
-    $required?:boolean;
+    $ref?: string;
+    $required?: boolean;
     $beta?: boolean;
     $deprecated?: boolean;
     $internalStorageURI?: boolean;
-    allOf?:JSONProperty[];
-    anyOf?:JSONProperty[];
+    allOf?: JSONProperty[];
+    anyOf?: JSONProperty[];
     items?: JSONProperty;
-    additionalProperties?:JSONProperty;
-    title?:string;
-    description?:string;
-    default?:string;
-    pattern?:string;
-    minLength?:number;
-    maxLength?:number;
-    minItems?:number;
-    maxItems?:number;
-    minimum?:number;
-    exclusiveMinimum?:number;
-    maximum?:number;
-    exclusiveMaximum?:number;
-    format?:string;
+    additionalProperties?: JSONProperty;
+    title?: string;
+    description?: string;
+    default?: string;
+    pattern?: string;
+    minLength?: number;
+    maxLength?: number;
+    minItems?: number;
+    maxItems?: number;
+    minimum?: number;
+    exclusiveMinimum?: number;
+    maximum?: number;
+    exclusiveMaximum?: number;
+    format?: string;
     enum?: string[];
 }
 
@@ -47,6 +49,7 @@ export interface JSONSchema {
             lang?: string
             full?: boolean
         }[]
+        $metrics?: JSONProperty[];
     }
 }
 

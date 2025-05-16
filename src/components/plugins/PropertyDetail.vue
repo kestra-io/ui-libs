@@ -6,7 +6,8 @@
             </span>
             <a v-if="subtype.startsWith('#')" :href="subtype" @click.stop>
                 <button class="d-flex fw-bold type-box rounded fs-7 px-2 py-1">
-                    <span class="ref-type">{{ className(subtype) }}</span><eye-outline />
+                    <span class="ref-type">{{ className(subtype) }}</span>
+                    <EyeOutline />
                 </button>
             </a>
             <span v-else class="type-box rounded fs-7 px-2 py-1">
@@ -38,6 +39,15 @@
             </span>
             <code class="border rounded px-2 py-1">
                 {{ property.pattern }}
+            </code>
+        </div>
+
+        <div v-if="property.unit !== undefined && property.unit.trim().length > 0">
+            <span>
+                Unit
+            </span>
+            <code class="border rounded px-2 py-1">
+                {{ property.unit }}
             </code>
         </div>
 
@@ -138,9 +148,9 @@
                 <slot v-if="property.title !== undefined" :content="codeSanitizer(property.title)" name="markdown" />
                 <slot v-if="property.description !== undefined" :content="codeSanitizer(property.description)" name="markdown" />
                 <div v-if="property['$internalStorageURI']">
-                  <Alert type="info">
-                    <slot content="Pebble expression referencing an Internal Storage URI e.g. `{{ outputs.mytask.uri }}`." name="markdown"/>
-                  </Alert>
+                    <Alert type="info">
+                        <slot content="Pebble expression referencing an Internal Storage URI e.g. `{{ outputs.mytask.uri }}`." name="markdown" />
+                    </Alert>
                 </div>
             </div>
         </div>
@@ -151,6 +161,7 @@
     import {className, extractEnumValues, extractTypeInfo, type JSONProperty} from "../../utils/schemaUtils.ts";
     import {ref} from "vue";
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
+    import Alert from "../content/Alert.vue";
 
     const props = withDefaults(
         defineProps<{
