@@ -116,7 +116,7 @@
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
-    import {isParentChildrenRelation, swapPluginProperties} from "../../utils/FlowYamlUtils";
+    import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
 
     const props = defineProps({
@@ -295,7 +295,7 @@
                 try {
                     if(props.source){
                         emit("swapped-task", {
-                            newSource: swapPluginProperties(props.source, "tasks", Utils.afterLastDot(taskNode1.id) ?? "", Utils.afterLastDot(taskNode2.id) ?? ""),
+                            newSource: swapBlocks(props.source, "tasks", Utils.afterLastDot(taskNode1.id) ?? "", Utils.afterLastDot(taskNode2.id) ?? ""),
                             swappedTasks: [taskNode1.id, taskNode2.id]
                         })
                     }
