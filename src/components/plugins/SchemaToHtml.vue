@@ -73,6 +73,21 @@
                 </template>
             </CollapsibleProperties>
 
+            <CollapsibleProperties
+                v-if="schema.properties?.$metrics"
+                class="plugin-section"
+                :properties="metrics"
+                section-name="Metrics"
+                href="metrics"
+                :show-dynamic="false"
+            >
+                <template #markdown="{content}">
+                    <div class="markdown">
+                        <slot name="markdown" :content="content" />
+                    </div>
+                </template>
+            </CollapsibleProperties>
+
             <Collapsible v-if="schema.definitions && Object.keys(schema.definitions).length > 0" class="plugin-section" clickable-text="Definitions" href="definitions" :initially-expanded="definitionsExpanded">
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
@@ -103,7 +118,7 @@
     import {computed, onUnmounted, ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
-    import type {JSONSchema} from "../../utils/schemaUtils.ts";
+    import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "../misc/Collapsible.vue";
     import CollapsibleProperties from "./CollapsibleProperties.vue";
 
@@ -130,7 +145,11 @@
 
     const highlighter = ref<HighlighterCore | null>(null);
 
-    const examples = computed(() => props.schema.properties?.["$examples"])
+    const examples = computed(() => props.schema.properties?.["$examples"]);
+
+    const metrics = computed(() => Object.fromEntries(
+        props.schema.properties?.["$metrics"]?.map(metric => ([metric.name, {...metric, name: undefined}])) as [string, JSONProperty][]
+    ));
 
     const {
         githubLight,
@@ -200,7 +219,7 @@
     :deep(.type-box) {
         color: buttontext;
 
-        & .material-design-icon{
+        & .material-design-icon {
             &, & * {
                 height: 1rem;
                 width: 1rem;
