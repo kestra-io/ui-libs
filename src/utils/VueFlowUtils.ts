@@ -1,8 +1,8 @@
 import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow, Elements} from "@vue-flow/core";
 import dagre from "dagre";
-import {YamlUtils} from "./YamlUtils";
 import Utils from "./Utils";
 import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
+import {flowHaveTasks} from "./FlowYamlUtils";
 
 const TRIGGERS_NODE_UID = "root.Triggers";
 
@@ -290,7 +290,7 @@ export default {
   },
 
   flowHaveTasks(source:string) {
-    return source ? YamlUtils.flowHaveTasks(source) : false;
+    return source ? flowHaveTasks(source) : false;
   },
 
   nodeColor(node:MinimalNode, collapsed: Set<string>) {
