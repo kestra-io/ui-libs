@@ -19,7 +19,7 @@
       },
       "require": "./dist/kestra-ui.umd.cjs"
     },
-    "./yaml-utils": {
+    "./flow-yaml-utils": {
       "types": "./dist/utils/FlowYamlUtils.d.ts",
       "import": {
         "types": "./dist/utils/FlowYamlUtils.d.ts",

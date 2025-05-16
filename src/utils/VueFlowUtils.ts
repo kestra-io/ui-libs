@@ -2,7 +2,7 @@ import {GraphNode, GraphEdge, MarkerType, Position, useVueFlow, Elements} from "
 import dagre from "dagre";
 import Utils from "./Utils";
 import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
-import {flowHaveTasks} from "./YamlUtils";
+import {flowHaveTasks} from "./FlowYamlUtils";
 
 const TRIGGERS_NODE_UID = "root.Triggers";
 

@@ -116,7 +116,7 @@
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
-    import {isParentChildrenRelation, swapPluginProperties} from "../../utils/YamlUtils";
+    import {isParentChildrenRelation, swapPluginProperties} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
 
     const props = defineProps({
