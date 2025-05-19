@@ -1325,3 +1325,42 @@ tasks:
         expect(result).not.toContain("finally");
     })
 })
+
+describe("extractFieldFromMaps", () => {
+    test("extracts field from maps", () => {
+        const yamlSrc = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+            labels:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yamlSrc, "labels");
+        expect(new yaml.Document(result).toJS()[0].labels).toMatchObject(
+            [{
+                key1: "value1",
+            },{
+                key2: "value2"
+            }]);
+    });
+
+    test("returns empty object if field not found", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
+        expect(result).toEqual([]);
+    });
+    test("returns empty object if no maps found", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
+        expect(result).toEqual([]);
+    })
+})

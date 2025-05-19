@@ -13,6 +13,7 @@ import {
     isSeq,
     visit,
 } from "yaml";
+import cloneDeep from "lodash/cloneDeep";
 
 export function parse<T = any>(item?: string, throwIfError = true): T | undefined {
     if (item === undefined) return undefined;
@@ -28,7 +29,7 @@ export function parse<T = any>(item?: string, throwIfError = true): T | undefine
 export function stringify(item: any) {
     if (item === undefined) return "";
 
-    const clonedValue = structuredClone(item);
+    const clonedValue = cloneDeep(item);
     delete clonedValue.deleted;
 
     return dump(transform(clonedValue), {
@@ -705,7 +706,6 @@ export function extractFieldFromMaps<T extends string>(
             ) {
                 for (const item of map.items as any[]) {
                     if (item?.key?.value === fieldName) {
-
                         const fieldValue = item?.value?.value ?? item.value?.items;
                         if (valuePredicate(fieldValue)) {
                             maps.push({

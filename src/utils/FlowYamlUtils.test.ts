@@ -1,5 +1,6 @@
 import {test, expect, describe} from "vitest";
 import * as YamlUtils from "./FlowYamlUtils";
+import * as yaml from "yaml";
 
 
 describe("extractBlock", () => {
@@ -426,5 +427,142 @@ describe("insertBlock", () => {
                   name: Plugin 3
           "
         `)
+    })
+})
+
+describe("deleteBlock", () => {
+    test("deleting a trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlock({
+            source: yamlString,
+            section: "triggers",
+            key: "plugin1"
+        });
+        expect(result).not.toContain("- id: plugin1");
+    })
+
+    test("deleting a task", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlock({
+            source: yamlString,
+            section: "tasks",
+            key: "plugin1"
+        });
+        expect(result).not.toContain("- id: plugin1");
+    })
+
+    test("deleting a task with subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+          - id: plugin3
+            type: type3
+            name: Plugin 3
+        `;
+        const result = YamlUtils.deleteBlock({
+            source: yamlString,
+            section: "tasks",
+            key: "plugin1"
+        });
+        expect(result).not.toContain("- id: plugin1");
+    })
+    
+    test("deleting a pluginDefaults", () => {
+        const yamlString = `
+        pluginDefaults:
+          - type: type1
+            name: Plugin 1
+          - type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlock({
+            source: yamlString,
+            section: "pluginDefaults",
+            key: "type1",
+            keyName: "type"
+        });
+        expect(result).not.toContain("- type: type1");
+    })
+
+    test("deleting a pluginDefaults", () => {
+        const yamlString = `
+        pluginDefaults:
+          - type: type1
+            values:
+              - going: nuts
+              - going: bananas
+                
+          - type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlock({
+            source: yamlString,
+            section: "pluginDefaults",
+            key: "type1",
+            keyName: "type"
+        });
+        expect(result).not.toContain("- type: type1");
+    })
+})
+
+
+describe("extractFieldFromMaps", () => {
+    test("extracts field from maps", () => {
+        const yamlSrc = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+            labels:
+              key1: value1
+              key2: value2
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yamlSrc, "labels");
+        expect(new yaml.Document(result).toJS()[0].labels).toMatchObject(
+            [{
+                key1: "value1",
+            },{
+                key2: "value2"
+            }]);
+    });
+
+    test("returns empty object if field not found", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
+        expect(result).toEqual([]);
+    });
+    test("returns empty object if no maps found", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
+        expect(result).toEqual([]);
     })
 })
