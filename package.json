@@ -7,17 +7,17 @@
     "src",
     "stub-mdc-imports.js"
   ],
-  "main": "./dist/kestra-ui.umd.cjs",
-  "module": "./dist/kestra-ui.js",
+  "main": "./dist/kestra-index.cjs.js",
+  "module": "./dist/kestra-index.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/kestra-ui.js"
+        "default": "./dist/kestra-index.es.js"
       },
-      "require": "./dist/kestra-ui.umd.cjs"
+      "require": "./dist/kestra-index.cjs.js"
     },
     "./flow-yaml-utils": {
       "types": "./dist/utils/FlowYamlUtils.d.ts",
