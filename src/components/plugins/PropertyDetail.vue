@@ -15,15 +15,6 @@
             </span>
         </div>
 
-        <div v-if="showDynamic">
-            <span>
-                Dynamic
-            </span>
-            <code class="border rounded px-2 py-1" :class="{'border-red': !isDynamic}">
-                {{ isDynamic ? "YES" : "NO" }}
-            </code>
-        </div>
-
         <div v-if="property.default !== undefined">
             <span>
                 Default
@@ -163,15 +154,9 @@
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import Alert from "../content/Alert.vue";
 
-    const props = withDefaults(
-        defineProps<{
-            property: JSONProperty,
-            isDynamic: boolean
-            showDynamic?: boolean
-        }>(), {
-            showDynamic: true
-        }
-    );
+    const props = defineProps<{
+        property: JSONProperty
+    }>();
 
     const subtype = ref(extractTypeInfo(props.property).subType);
 

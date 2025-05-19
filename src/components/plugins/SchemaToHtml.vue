@@ -49,7 +49,6 @@
                 section-name="Properties"
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
-                :show-dynamic="false"
             >
                 <template #markdown="{content}">
                     <div class="markdown">
