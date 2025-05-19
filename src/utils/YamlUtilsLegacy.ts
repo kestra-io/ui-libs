@@ -40,7 +40,9 @@ const SECTIONS = [
             "afterExecution",
             "pluginDefaults",
         ]
-
+/**
+ * @deprecated prefer using FlowYamlUtils directly for tree shaking
+ */
 export const YamlUtils = {
     stringify,
     parse,

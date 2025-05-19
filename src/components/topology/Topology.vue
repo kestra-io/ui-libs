@@ -295,7 +295,12 @@
                 try {
                     if(props.source){
                         emit("swapped-task", {
-                            newSource: swapBlocks(props.source, "tasks", Utils.afterLastDot(taskNode1.id) ?? "", Utils.afterLastDot(taskNode2.id) ?? ""),
+                            newSource: swapBlocks({
+                                source:props.source, 
+                                section: "tasks", 
+                                key1: Utils.afterLastDot(taskNode1.id) ?? "",
+                                key2: Utils.afterLastDot(taskNode2.id) ?? ""
+                            }),
                             swappedTasks: [taskNode1.id, taskNode2.id]
                         })
                     }
@@ -355,7 +360,13 @@
         }
         try {
             if (tasksMeet.length === 1 && props.source 
-                && isParentChildrenRelation(props.source, ["tasks", "triggers"], Utils.afterLastDot(tasksMeet[0]) ?? "", Utils.afterLastDot(node.id) ?? "") 
+                && isParentChildrenRelation({
+                    source:props.source, 
+                    sections:["tasks", "triggers"], 
+                    key1: Utils.afterLastDot(tasksMeet[0]) ?? "", 
+                    key2: Utils.afterLastDot(node.id) ?? "",
+                    keyName: "id"
+                }) 
             ) {
                 return "parentchildrenerror";
             }
