@@ -43,7 +43,7 @@
                         </span>
                     </template>
                     <template #content>
-                        <PropertyDetail :show-dynamic="showDynamic" :is-dynamic="showDynamic && isDynamic(property)" :property="property">
+                        <PropertyDetail :property="property">
                             <template #markdown="{content}">
                                 <slot :content="content" name="markdown" />
                             </template>
@@ -94,6 +94,7 @@
     );
 
     const isDynamic = (property: JSONProperty): boolean => {
+        console.log("DYNAMIC: " + property["$dynamic"]);
         if (property["$dynamic"] === true) {
             return true;
         }
