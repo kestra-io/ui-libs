@@ -1335,14 +1335,47 @@ describe("extractFieldFromMaps", () => {
             labels:
               key1: value1
               key2: value2
+          - id: task2
+            type: io.kestra.plugin.core.log.Log
+            labels:
+              key1: value3
+              key2: value4
         `;
         const result = YamlUtils.extractFieldFromMaps(yamlSrc, "labels");
-        expect(new yaml.Document(result).toJS()[0].labels).toMatchObject(
-            [{
-                key1: "value1",
-            },{
-                key2: "value2"
-            }]);
+        expect(result).toMatchInlineSnapshot(`
+          [
+            {
+              "labels": [
+                {
+                  "key1": "value1",
+                },
+                {
+                  "key2": "value2",
+                },
+              ],
+              "range": [
+                28,
+                160,
+                160,
+              ],
+            },
+            {
+              "labels": [
+                {
+                  "key1": "value3",
+                },
+                {
+                  "key2": "value4",
+                },
+              ],
+              "range": [
+                172,
+                304,
+                304,
+              ],
+            },
+          ]
+        `);
     });
 
     test("returns empty object if field not found", () => {

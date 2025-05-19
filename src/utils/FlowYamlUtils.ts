@@ -12,6 +12,7 @@ import {
     isMap,
     isSeq,
     visit,
+    Range,
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 
@@ -690,7 +691,7 @@ export function extractFieldFromMaps<T extends string>(
     fieldName: T,
     parentPathPredicate = (_: any, __?: any) => true,
     valuePredicate = (_: any) => true
-): any[] {
+): (Record<T, any> & {range: Range})[] {
     const yamlDoc = parseDocument(source) as any;
     const maps: any[] = [];
     visit(yamlDoc, {
@@ -721,10 +722,7 @@ export function extractFieldFromMaps<T extends string>(
     return maps;
 }
 
-function extractAllTypes(source: string, validTypes: string[] = []): {
-    type: string;
-    range: [number, number, number]
-}[] {
+function extractAllTypes(source: string, validTypes: string[] = []){
     return extractFieldFromMaps(source, "type", () => true, (value) =>
         validTypes.some((t) => t === value)
     );

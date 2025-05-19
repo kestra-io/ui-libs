@@ -1,6 +1,5 @@
 import {test, expect, describe} from "vitest";
 import * as YamlUtils from "./FlowYamlUtils";
-import * as yaml from "yaml";
 
 
 describe("extractBlock", () => {
@@ -531,21 +530,54 @@ describe("deleteBlock", () => {
 describe("extractFieldFromMaps", () => {
     test("extracts field from maps", () => {
         const yamlSrc = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-            labels:
-              key1: value1
-              key2: value2
-        `;
-        const result = YamlUtils.extractFieldFromMaps(yamlSrc, "labels");
-        expect(new yaml.Document(result).toJS()[0].labels).toMatchObject(
-            [{
-                key1: "value1",
-            },{
-                key2: "value2"
-            }]);
-    });
+            tasks:
+              - id: task1
+                type: io.kestra.plugin.core.log.Log
+                labels:
+                  key1: value1
+                  key2: value2
+              - id: task2
+                type: io.kestra.plugin.core.log.Log
+                labels:
+                  key1: value3
+                  key2: value4
+            `;
+            const result = YamlUtils.extractFieldFromMaps(yamlSrc, "labels");
+            expect(result).toMatchInlineSnapshot(`
+              [
+                {
+                  "labels": [
+                    {
+                      "key1": "value1",
+                    },
+                    {
+                      "key2": "value2",
+                    },
+                  ],
+                  "range": [
+                    36,
+                    184,
+                    184,
+                  ],
+                },
+                {
+                  "labels": [
+                    {
+                      "key1": "value3",
+                    },
+                    {
+                      "key2": "value4",
+                    },
+                  ],
+                  "range": [
+                    200,
+                    348,
+                    348,
+                  ],
+                },
+              ]
+            `);
+            })
 
     test("returns empty object if field not found", () => {
         const yaml = `
