@@ -20,7 +20,8 @@ import {
     replaceIdAndNamespace,
     replacePluginDefaultsInDocument,
     replaceBlockInDocument,
-    sort, stringify, updateMetadata
+    sort, stringify, updateMetadata,
+    extractFieldFromMaps
 } from "./FlowYamlUtils";
 
 export type YamlElement = {
@@ -233,4 +234,6 @@ export const YamlUtils = {
     replacePluginDefaultsInDocument,
 
     deletePluginDefaults,
+
+    extractFieldFromMaps,
 };

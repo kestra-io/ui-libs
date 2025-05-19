@@ -684,7 +684,7 @@ export function insertErrorInFlowable(source: string, errorTask: string, flowabl
  * will take a single argument which is the path of each parent property starting from the root doc (joined with ".")
  * "my.parent.task" will mean that the field was retrieved in my -> parent -> task path.
  */
-function extractFieldFromMaps<T extends string>(
+export function extractFieldFromMaps<T extends string>(
     source: string,
     fieldName: T,
     parentPathPredicate = (_: any, __?: any) => true,
