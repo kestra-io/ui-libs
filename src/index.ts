@@ -1,4 +1,4 @@
-export {YamlUtils} from "./utils/YamlUtils";
+export {YamlUtils} from "./utils/YamlUtilsLegacy";
 export {cssVariable} from "./utils/global";
 export {default as State, STATES} from "./utils/state";
 export {default as Utils} from "./utils/Utils";
@@ -8,7 +8,7 @@ export * from "./utils/constants";
 export * from "./utils/url";
 export * from "./utils/plugins";
 
-export type {YamlElement} from "./utils/YamlUtils";
+export type {YamlElement} from "./utils/YamlUtilsLegacy";
 export type {Plugin} from "./utils/plugins";
 export type {JSONSchema, JSONProperty} from "./utils/schemaUtils";
 

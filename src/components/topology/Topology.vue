@@ -116,7 +116,7 @@
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
-    import {YamlUtils} from "../../utils/YamlUtils";
+    import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
 
     const props = defineProps({
@@ -295,7 +295,12 @@
                 try {
                     if(props.source){
                         emit("swapped-task", {
-                            newSource: YamlUtils.swapTasks(props.source, Utils.afterLastDot(taskNode1.id) ?? "", Utils.afterLastDot(taskNode2.id) ?? ""),
+                            newSource: swapBlocks({
+                                source:props.source, 
+                                section: "tasks", 
+                                key1: Utils.afterLastDot(taskNode1.id) ?? "",
+                                key2: Utils.afterLastDot(taskNode2.id) ?? ""
+                            }),
                             swappedTasks: [taskNode1.id, taskNode2.id]
                         })
                     }
@@ -354,7 +359,15 @@
             return "toomuchtaskerror";
         }
         try {
-            if (tasksMeet.length === 1 && props.source && YamlUtils.isParentChildrenRelation(props.source, Utils.afterLastDot(tasksMeet[0]) ?? "", Utils.afterLastDot(node.id) ?? "")) {
+            if (tasksMeet.length === 1 && props.source 
+                && isParentChildrenRelation({
+                    source:props.source, 
+                    sections:["tasks", "triggers"], 
+                    key1: Utils.afterLastDot(tasksMeet[0]) ?? "", 
+                    key2: Utils.afterLastDot(node.id) ?? "",
+                    keyName: "id"
+                }) 
+            ) {
                 return "parentchildrenerror";
             }
         } catch {

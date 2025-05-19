@@ -1,5 +1,5 @@
 import {test, expect, describe} from "vitest";
-import {YamlUtils} from "./YamlUtils";
+import {YamlUtils} from "./YamlUtilsLegacy";
 import yaml from "yaml";
 
 const yamlString = `
@@ -9,14 +9,6 @@ const yamlString = `
         key1: value1
         key2: value2
 
-    triggers:
-      - id: schedule1
-        type: schedule
-        expression: 42 4 1 * *
-        backfill:
-          start: 2018-01-01
-          depend-on-past: false
-
     tasks:
       - id: t1
         type: io.kestra.plugin.core.log.Log
@@ -25,6 +17,14 @@ const yamlString = `
       - id: t2
         type: io.kestra.plugin.core.debug.Return
         format: second {{ labels.key1 }}
+
+    triggers:
+      - id: schedule1
+        type: schedule
+        expression: 42 4 1 * *
+        backfill:
+          start: 2018-01-01
+          depend-on-past: false
 
     errors:
       - id: alert_on_failure
@@ -65,6 +65,24 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
+          tasks:
+            - id: t1
+              type: io.kestra.plugin.core.log.Log
+              message: "{{ task.id }}"
+            - id: t1.1
+              name: newTask
+              command: echo hello
+              args:
+                - arg1
+                - arg2
+              env:
+                ENV_VAR: value
+              cwd: /path/to/dir
+
+            - id: t2
+              type: io.kestra.plugin.core.debug.Return
+              format: second {{ labels.key1 }}
+
           triggers:
             - id: schedule1
               type: schedule
@@ -72,24 +90,6 @@ describe("insertTask", () => {
               backfill:
                 start: 2018-01-01
                 depend-on-past: false
-
-          tasks:
-            - id: t1
-              type: io.kestra.plugin.core.log.Log
-              message: "{{ task.id }}"
-            - id: t1.1
-              args:
-                - arg1
-                - arg2
-              command: echo hello
-              cwd: /path/to/dir
-              env:
-                ENV_VAR: value
-              name: newTask
-
-            - id: t2
-              type: io.kestra.plugin.core.debug.Return
-              format: second {{ labels.key1 }}
 
           errors:
             - id: alert_on_failure
@@ -124,24 +124,16 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t0
+              name: newTask
+              command: echo hello
               args:
                 - arg1
                 - arg2
-              command: echo hello
-              cwd: /path/to/dir
               env:
                 ENV_VAR: value
-              name: newTask
+              cwd: /path/to/dir
             - id: t1
               type: io.kestra.plugin.core.log.Log
               message: "{{ task.id }}"
@@ -149,6 +141,14 @@ describe("insertTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -217,14 +217,6 @@ describe("insertTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -240,6 +232,14 @@ describe("insertTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -315,6 +315,12 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
+          tasks:
+
+            - id: t2
+              type: io.kestra.plugin.core.debug.Return
+              format: second {{ labels.key1 }}
+
           triggers:
             - id: schedule1
               type: schedule
@@ -322,12 +328,6 @@ describe("deleteTask", () => {
               backfill:
                 start: 2018-01-01
                 depend-on-past: false
-
-          tasks:
-            
-            - id: t2
-              type: io.kestra.plugin.core.debug.Return
-              format: second {{ labels.key1 }}
 
           errors:
             - id: alert_on_failure
@@ -382,14 +382,6 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -398,6 +390,14 @@ describe("deleteTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
           "
         `)
     })
@@ -411,14 +411,6 @@ describe("deleteTask", () => {
             key1: value1
             key2: value2
 
-          triggers:
-            - id: schedule1
-              type: schedule
-              expression: 42 4 1 * *
-              backfill:
-                start: 2018-01-01
-                depend-on-past: false
-
           tasks:
             - id: t1
               type: io.kestra.plugin.core.log.Log
@@ -427,6 +419,14 @@ describe("deleteTask", () => {
             - id: t2
               type: io.kestra.plugin.core.debug.Return
               format: second {{ labels.key1 }}
+
+          triggers:
+            - id: schedule1
+              type: schedule
+              expression: 42 4 1 * *
+              backfill:
+                start: 2018-01-01
+                depend-on-past: false
 
           errors:
             - id: alert_on_failure
@@ -552,52 +552,6 @@ describe("isParentChildrenRelation", () => {
     });
 });
 
-describe("getParentTask", () => {
-    test("returns parent task id", () => {
-        const yaml = `
-        tasks:
-          - id: parent
-            type: parallel
-            tasks:
-              - id: child
-                type: test
-        `;
-        expect(YamlUtils.getParentTask(yaml, "child")).toBe("parent");
-    });
-
-    test("returns null when no parent exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: test
-        `;
-        expect(YamlUtils.getParentTask(yaml, "task1")).toBeUndefined();
-    });
-});
-
-describe("isTaskError", () => {
-    test("returns true for error task", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: test
-        errors:
-          - id: error1
-            type: error
-        `;
-        expect(YamlUtils.isTaskError(yaml, "error1")).toBe(true);
-    });
-
-    test("returns false for regular task", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: test
-        `;
-        expect(YamlUtils.isTaskError(yaml, "task1")).toBe(false);
-    });
-});
-
 describe("cleanMetadata", () => {
     test("removes empty sections", () => {
         const yaml = `
@@ -646,90 +600,6 @@ describe("flowHaveTasks", () => {
     });
 });
 
-// is this function even used
-describe("getNextTaskId", () => {
-    test("returns next task in flow graph", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-          - id: task2
-            type: io.kestra.core.tasks.scripts.Shell
-          - id: finalTask
-            type: io.kestra.core.tasks.scripts.Shell
-        `;
-        const flowGraph = {
-            edges: [
-                {source: "task0", target: "task2"}
-            ]
-        };
-        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBe("task2");
-    });
-
-    test("returns null when no next task exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-        `;
-        const flowGraph = {
-            edges: []
-        };
-        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBeNull();
-    });
-
-    test("skips non-existent intermediate tasks", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-          - id: finalTask
-            type: io.kestra.core.tasks.scripts.Shell
-        `;
-        const flowGraph = {
-            edges: [
-                {source: "task0", target: "intermediateTask"},
-                {source: "intermediateTask", target: "finalTask"}
-            ]
-        };
-        expect(YamlUtils.getNextTaskId("task0", yaml, flowGraph)).toBe("finalTask");
-    });
-
-    test("returns task if task asked explicitly exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-          - id: task2
-            type: io.kestra.core.tasks.scripts.Shell
-        `.trim();
-        const flowGraph = {
-            edges: [
-                {
-                    source: "task1", 
-                    target: "task2"
-                },
-                {
-                    source: "task2", 
-                    target: "finalTask"
-                }
-            ]
-        };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBe("task1");
-    });
-
-    test("returns null when no next task exists", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-        `;
-        const flowGraph = {
-            edges: []
-        };
-        expect(YamlUtils.getNextTaskId("task1", yaml, flowGraph)).toBeNull();
-    });
-});
-
 describe("flowHaveTasks", () => {
     test("returns true when flow has tasks", () => {
         const yaml = `
@@ -747,87 +617,6 @@ describe("flowHaveTasks", () => {
         tasks: []
         `;
         expect(YamlUtils.flowHaveTasks(yaml)).toBe(false);
-    });
-});
-
-describe("isTaskParallel", () => {
-    test("returns task config when task is EachParallel", () => {
-        const yaml = `
-        tasks:
-          - id: parallel
-            type: io.kestra.core.tasks.flows.EachParallel
-            value: [1, 2, 3]
-            tasks:
-              - id: subtask
-                type: io.kestra.core.tasks.scripts.Shell
-                commands:
-                  - echo "{{ value }}"
-        `;
-        const result = YamlUtils.isTaskParallel("parallel", yaml);
-        expect(result).toEqual({
-            id: "parallel",
-            type: "io.kestra.core.tasks.flows.EachParallel",
-            value: [1, 2, 3],
-            tasks: [{
-                id: "subtask",
-                type: "io.kestra.core.tasks.scripts.Shell",
-                commands: ["echo \"{{ value }}\""]
-            }]
-        });
-    });
-
-    test("returns task config when task is Parallel", () => {
-        const yaml = `
-        tasks:
-          - id: parallel
-            type: io.kestra.core.tasks.flows.Parallel
-            tasks:
-              - id: subtask1
-                type: io.kestra.core.tasks.scripts.Shell
-                commands:
-                  - echo "1"
-        `;
-        const result = YamlUtils.isTaskParallel("parallel", yaml);
-        expect(result).toEqual({
-            id: "parallel",
-            type: "io.kestra.core.tasks.flows.Parallel",
-            tasks: [{
-                id: "subtask1",
-                type: "io.kestra.core.tasks.scripts.Shell",
-                commands: ["echo \"1\""]
-            }]
-        });
-    });
-
-    test("returns undefined when task is not parallel", () => {
-        const yaml = `
-        tasks:
-          - id: regular
-            type: io.kestra.core.tasks.scripts.Shell
-            commands:
-              - echo "hello"
-        `;
-        expect(YamlUtils.isTaskParallel("regular", yaml)).toBeUndefined();
-    });
-});
-
-describe("isTrigger", () => {
-    test("returns true for trigger task", () => {
-        const yaml = `
-        triggers:
-          - id: trigger1
-            type: schedule
-        `;
-        expect(YamlUtils.isTrigger(yaml, "trigger1")).toBe(true);
-    });
-
-    test("returns false for non-trigger task", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.core.tasks.scripts.Shell
-        `;
-        expect(YamlUtils.isTrigger(yaml, "task1")).toBe(false);
     });
 });
 
@@ -971,7 +760,7 @@ describe("checkTaskAlreadyExist", () => {
         id: new
         type: test
         `;
-        expect(YamlUtils.checkTaskAlreadyExist(yaml, newTask)).toBeNull();
+        expect(YamlUtils.checkTaskAlreadyExist(yaml, newTask)).toBeUndefined();
     });
 });
 
@@ -1035,21 +824,6 @@ describe("replaceTaskInDocument", () => {
     })
 })
 
-
-describe("nextDelimiterIndex", () => {
-    test("returns index of next delimiter", () => {
-        const yaml = "io.kestra.core.tasks.scripts.Shell";
-        const result = YamlUtils.nextDelimiterIndex(yaml, 0);
-        expect(result).toBe(2); 
-    });
-
-    test("returns content length - 1 if no delimiter found", () => {
-        const yaml = "baboulinet";
-        const result = YamlUtils.nextDelimiterIndex(yaml, 100);
-        expect(result).toBe(yaml.length - 1);
-    });
-})
-
 describe("pairsToMap", () => {
     test("converts pairs to map", () => {
         const pairs = [
@@ -1077,11 +851,6 @@ describe("extractTask" , () => {
             type: test
         `;
         const result = YamlUtils.extractTask(yaml, "task1");
-        expect(result).toMatchInlineSnapshot(`
-          "id: task1
-          type: test
-          "
-        `)
         expect(YamlUtils.parse(result ?? "")).toEqual({
             id: "task1",
             type: "test"
@@ -1097,298 +866,6 @@ describe("extractTask" , () => {
         const result = YamlUtils.extractTask(yaml, "task2");
         expect(result).toBeFalsy();
     });
-})
-
-describe("extractFieldFromMaps", () => {
-    const yaml = `
-        tasks:
-          - id: task1
-            type: test
-            labels:
-              key1: value1
-              key2: value2
-            tasks:
-                - id: task1.1
-                  type: test
-                  labels:
-                    key1: value1
-                    key2: value2
-                - id: task1.2
-                  type: test
-                  labels:
-                    key1: value1
-                    key2: value2
-          - id: task2
-            type: test
-        `;
-
-    test("extracts id field from maps", () => {
-        const result = YamlUtils.extractFieldFromMaps(yaml, "id");
-        expect(result.map((i: any) => i.id)).toEqual([
-            "task1",
-            "task1.1",
-            "task1.2",
-            "task2"
-        ]);
-    })
-
-    test("extracts label field from maps", () => {
-        const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
-        expect(result.map((i: any) => JSON.stringify(i.labels))).toEqual(
-          [
-            "[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]",
-            "[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]",
-            "[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]",
-          ]
-        )
-    })
-})
-
-describe("extractMaps", () => {
-    test("extracts maps from yaml", () => {
-        const yaml = `
-        id: testFlow
-        tasks:
-          - id: task1
-            type: test
-            labels:
-              key1: value1
-              key2: value2
-            tasks:
-              - id: task1.1
-                type: test-1.1
-              - id: task1.2
-                type: test-1.2
-                tasks:
-                    - id: task1.2.1
-                      type: test-1.2.1
-                    - id: task1.2.2
-                      type: test-1.2.2
-          - id: task2
-            type: test
-        `;
-        const result = YamlUtils.extractMaps(yaml, {
-            "tasks": {
-                present: true,
-                populated: true
-            }
-        });
-        expect(result).toMatchInlineSnapshot(`
-          [
-            {
-              "key": undefined,
-              "map": {
-                "id": "testFlow",
-                "tasks": [
-                  {
-                    "id": "task1",
-                    "labels": {
-                      "key1": "value1",
-                      "key2": "value2",
-                    },
-                    "tasks": [
-                      {
-                        "id": "task1.1",
-                        "type": "test-1.1",
-                      },
-                      {
-                        "id": "task1.2",
-                        "tasks": [
-                          {
-                            "id": "task1.2.1",
-                            "type": "test-1.2.1",
-                          },
-                          {
-                            "id": "task1.2.2",
-                            "type": "test-1.2.2",
-                          },
-                        ],
-                        "type": "test-1.2",
-                      },
-                    ],
-                    "type": "test",
-                  },
-                  {
-                    "id": "task2",
-                    "type": "test",
-                  },
-                ],
-              },
-              "parents": [],
-              "range": [
-                9,
-                511,
-                511,
-              ],
-            },
-            {
-              "key": undefined,
-              "map": {
-                "id": "task1",
-                "labels": {
-                  "key1": "value1",
-                  "key2": "value2",
-                },
-                "tasks": [
-                  {
-                    "id": "task1.1",
-                    "type": "test-1.1",
-                  },
-                  {
-                    "id": "task1.2",
-                    "tasks": [
-                      {
-                        "id": "task1.2.1",
-                        "type": "test-1.2.1",
-                      },
-                      {
-                        "id": "task1.2.2",
-                        "type": "test-1.2.2",
-                      },
-                    ],
-                    "type": "test-1.2",
-                  },
-                ],
-                "type": "test",
-              },
-              "parents": [
-                {
-                  "id": "testFlow",
-                  "tasks": [
-                    {
-                      "id": "task1",
-                      "labels": {
-                        "key1": "value1",
-                        "key2": "value2",
-                      },
-                      "tasks": [
-                        {
-                          "id": "task1.1",
-                          "type": "test-1.1",
-                        },
-                        {
-                          "id": "task1.2",
-                          "tasks": [
-                            {
-                              "id": "task1.2.1",
-                              "type": "test-1.2.1",
-                            },
-                            {
-                              "id": "task1.2.2",
-                              "type": "test-1.2.2",
-                            },
-                          ],
-                          "type": "test-1.2",
-                        },
-                      ],
-                      "type": "test",
-                    },
-                    {
-                      "id": "task2",
-                      "type": "test",
-                    },
-                  ],
-                },
-              ],
-              "range": [
-                49,
-                466,
-                466,
-              ],
-            },
-            {
-              "key": undefined,
-              "map": {
-                "id": "task1.2",
-                "tasks": [
-                  {
-                    "id": "task1.2.1",
-                    "type": "test-1.2.1",
-                  },
-                  {
-                    "id": "task1.2.2",
-                    "type": "test-1.2.2",
-                  },
-                ],
-                "type": "test-1.2",
-              },
-              "parents": [
-                {
-                  "id": "testFlow",
-                  "tasks": [
-                    {
-                      "id": "task1",
-                      "labels": {
-                        "key1": "value1",
-                        "key2": "value2",
-                      },
-                      "tasks": [
-                        {
-                          "id": "task1.1",
-                          "type": "test-1.1",
-                        },
-                        {
-                          "id": "task1.2",
-                          "tasks": [
-                            {
-                              "id": "task1.2.1",
-                              "type": "test-1.2.1",
-                            },
-                            {
-                              "id": "task1.2.2",
-                              "type": "test-1.2.2",
-                            },
-                          ],
-                          "type": "test-1.2",
-                        },
-                      ],
-                      "type": "test",
-                    },
-                    {
-                      "id": "task2",
-                      "type": "test",
-                    },
-                  ],
-                },
-                {
-                  "id": "task1",
-                  "labels": {
-                    "key1": "value1",
-                    "key2": "value2",
-                  },
-                  "tasks": [
-                    {
-                      "id": "task1.1",
-                      "type": "test-1.1",
-                    },
-                    {
-                      "id": "task1.2",
-                      "tasks": [
-                        {
-                          "id": "task1.2.1",
-                          "type": "test-1.2.1",
-                        },
-                        {
-                          "id": "task1.2.2",
-                          "type": "test-1.2.2",
-                        },
-                      ],
-                      "type": "test-1.2",
-                    },
-                  ],
-                  "type": "test",
-                },
-              ],
-              "range": [
-                250,
-                466,
-                466,
-              ],
-            },
-          ]
-        `)
-        expect(result).toHaveLength(3);
-    })
 })
 
 export const flat = `
@@ -1458,56 +935,24 @@ type: io.kestra.plugin.core.log.Log
 message: "replaced"
 `
 
-const extractMapsSample = `
-firstMap:
-  populatedField:
-  presentField:
-  extraField: "firstMap"
-secondMap:
-  populatedField: "populated"
-  presentField:
-  extraField: "secondMap"
-thirdMap:
-  populatedField: "populated"
-  extraField: "thirdMap"
-`
-
 describe("Yaml Utils", () => {
-    test("extractMaps with field conditions", () => {
-        const extractMaps = YamlUtils.extractMaps(extractMapsSample, {
-            populatedField: {
-                populated: true
-            },
-            presentField: {
-                present: true
-            }
-        });
-
-        expect(extractMaps.length).toBe(1);
-        const map = extractMaps[0].map;
-        expect(map.populatedField).toBe("populated");
-        expect(map.presentField).toBe(undefined);
-        expect(map.extraField).toBe("secondMap");
-        expect(extractMaps[0].range).toStrictEqual([83, 153, 153]);
-    })
-
     test("extractTask from a flat flow", () => {
         const doc = YamlUtils.extractTask(flat, "1-1")!;
 
-        expect(doc.toString()).toContain("\"1-1\"");
-        expect(doc.toString()).toContain("# comment to keep");
+        expect(doc).toContain("\"1-1\"");
+        expect(doc).toContain("# comment to keep");
     })
 
     test("extractTask from a flowable flow", () => {
         const doc = YamlUtils.extractTask(flowable, "1-2")!;
 
-        expect(doc.toString()).toContain("\"1-2\"");
+        expect(doc).toContain("\"1-2\"");
     })
 
     test("extractTask from a plugin flow", () => {
         const doc = YamlUtils.extractTask(plugins, "1-1")!;
 
-        expect(doc.toString()).toContain("\"1-1\"");
+        expect(doc).toContain("\"1-1\"");
     })
 
     test("extractTask undefined from a flowable flow", () => {
@@ -1519,26 +964,26 @@ describe("Yaml Utils", () => {
     test("replace from a flat flow", () => {
         const doc = YamlUtils.replaceTaskInDocument(flat, "1-1", replace)!;
 
-        expect(doc.toString()).toContain("\"replaced\"");
-        expect(doc.toString()).toContain("echo \"1-2\"");
-        expect(doc.toString()).toContain("# comment to add");
-        expect(doc.toString()).not.toContain("# comment to keep");
+        expect(doc).toContain("\"replaced\"");
+        expect(doc).toContain("echo \"1-2\"");
+        expect(doc).toContain("# comment to add");
+        expect(doc).not.toContain("# comment to keep");
     })
 
     test("replace from a flowable flow", () => {
         const doc = YamlUtils.replaceTaskInDocument(flowable, "1-2", replace);
 
-        expect(doc.toString()).toContain("\"replaced\"");
-        expect(doc.toString()).toContain("echo \"1-1\"");
-        expect(doc.toString()).toContain("# comment to add");
+        expect(doc).toContain("\"replaced\"");
+        expect(doc).toContain("echo \"1-1\"");
+        expect(doc).toContain("# comment to add");
     })
 
     test("replace from a plugin flow", () => {
         const doc = YamlUtils.replaceTaskInDocument(plugins, "1-1", replace);
 
-        expect(doc.toString()).toContain("\"replaced\"");
-        expect(doc.toString()).toContain("unittest.Example");
-        expect(doc.toString()).toContain("# comment to add");
+        expect(doc).toContain("\"replaced\"");
+        expect(doc).toContain("unittest.Example");
+        expect(doc).toContain("# comment to add");
     })
 
     test("localize cursor parent", () => {
@@ -1568,94 +1013,6 @@ c:
                 15,
             ]
         });
-    })
-
-    test("extract indent and yaml key", () => {
-        const fourCharsIndent = `a: b
-c:
-  d: e
-  f:
-    `;
-        expect(YamlUtils.extractIndentAndMaybeYamlKey(fourCharsIndent)).toEqual({
-            indent: 4,
-            yamlKey: undefined,
-            valueStartIndex: undefined
-        });
-        expect(YamlUtils.extractIndentAndMaybeYamlKey(fourCharsIndent + "g: h")).toEqual({
-            indent: 4,
-            yamlKey: "g",
-            valueStartIndex: 27
-        });
-        expect(YamlUtils.extractIndentAndMaybeYamlKey(fourCharsIndent + "g:\n      h: i")).toEqual({
-            indent: 6,
-            yamlKey: "h",
-            valueStartIndex: 36
-        });
-    })
-
-    test("parent key by child indent", () => {
-        const yaml = `a: b
-c:
-  d: e
-  f:
-    g: h`;
-        expect(YamlUtils.getParentKeyByChildIndent(yaml, 4)).toEqual({key: "f", valueStartIndex: 19});
-        expect(YamlUtils.getParentKeyByChildIndent(yaml, 2)).toEqual({key: "c", valueStartIndex: 7});
-    })
-})
-
-describe("getChildrenTasks", () => {
-    test("returns children anything that has an id", () => {
-        const yaml = `
-        booo:
-          - id: parent
-            type: parallel
-            farse:
-              - id: child1
-                type: test
-              - id: child2
-                type: test
-        `;
-        const result = YamlUtils.getChildrenTasks(yaml, "parent");
-        expect(result).toEqual(["child1","child2"])
-    })
-
-    test("returns all children tasks recursively", () => {
-        const yaml = `
-        booo:
-          - id: parent
-            type: parallel
-            farse:
-              - id: child1
-                type: test
-                tasks:
-                  - id: child1-1
-                    type: test
-              - id: child2
-                type: test
-        `;
-        const result = YamlUtils.getChildrenTasks(yaml, "parent");
-        expect(result).toEqual(["child1", "child1-1", "child2",])
-    })
-})
-
-describe("extractAllTypes", () => {
-    test("returns all types from yaml", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-          - id: task2
-            type: io.kestra.plugin.core.flow.Parallel
-        `;
-        const result = YamlUtils.extractAllTypes(yaml, [
-            "io.kestra.plugin.core.log.Log",
-            "io.kestra.plugin.core.flow.Parallel"
-        ]);
-        expect(result.map(r => r.type)).toEqual([
-            "io.kestra.plugin.core.log.Log",
-            "io.kestra.plugin.core.flow.Parallel"
-        ]);
     })
 })
 
@@ -1764,28 +1121,6 @@ describe("insertErrorInFlowable", () => {
     });
 })
 
-describe("getFirstTask", () => {
-    test("returns first task in flowable", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-          - id: task2
-            type: io.kestra.plugin.core.flow.Parallel
-        `;
-        const result = YamlUtils.getFirstTask(yaml);
-        expect(result).toEqual("task1");
-    });
-
-    test("returns undefined when no tasks exist", () => {
-        const yaml = `
-        tasks: []
-        `;
-        const result = YamlUtils.getFirstTask(yaml);
-        expect(result).toBeUndefined();
-    });
-})
-
 describe("getLastTask", () => {
     test("returns last task in flowable", () => {
         const yaml = `
@@ -1838,24 +1173,6 @@ describe("getTaskType", () => {
             {lineNumber: 2, column: 50}, 
             ["io.kestra.plugin.core.log.Log"])
         ).toEqual("io.kestra.plugin.core.log.Log");
-    })
-})
-
-describe("getMapAtPosition", () => {
-    test("returns map at position", () => {
-        const yaml = `
-        tasks:
-          - id: task1
-            type: io.kestra.plugin.core.log.Log
-            labels:
-              key1: value1
-              key2: value2
-        `;
-        const result = YamlUtils.getMapAtPosition(yaml, {lineNumber: 5, column: 50});
-        expect(result).toEqual({
-                                key1: "value1",
-                                key2: "value2"
-                            });
     })
 })
 
@@ -1968,7 +1285,7 @@ pluginDefaults:
             type: io.kestra.plugin.core.log.Log
         `;
         const result = YamlUtils.deletePluginDefaults(yaml, "io.kestra.plugin.core.log.Log");
-        expect(result).toBe(yaml);
+        expect(YamlUtils.parse(result)).toEqual(YamlUtils.parse(yaml));
     })
 })
 
