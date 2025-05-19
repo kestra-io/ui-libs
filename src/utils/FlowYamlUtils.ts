@@ -13,7 +13,7 @@ import {
     isSeq,
     visit,
 } from "yaml";
-import cloneDeep from "lodash/cloneDeep";
+import {toRaw} from "vue";
 
 export function parse<T = any>(item?: string, throwIfError = true): T | undefined {
     if (item === undefined) return undefined;
@@ -29,7 +29,7 @@ export function parse<T = any>(item?: string, throwIfError = true): T | undefine
 export function stringify(item: any) {
     if (item === undefined) return "";
 
-    const clonedValue = cloneDeep(item);
+    const clonedValue = structuredClone(toRaw(item));
     delete clonedValue.deleted;
 
     return dump(transform(clonedValue), {
