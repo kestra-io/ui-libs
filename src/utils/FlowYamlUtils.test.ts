@@ -598,3 +598,108 @@ describe("extractFieldFromMaps", () => {
         expect(result).toEqual([]);
     })
 })
+
+describe("getLastBlock", () => {
+    test("get last task", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.getLastBlock({
+            source: yamlString,
+            section: "tasks"
+        });
+        expect(result).toBe("plugin2");
+    })
+
+    test("get last trigger", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+        triggers:
+          - id: plugin1
+            type: trigger1
+            name: Trigger 1
+          - id: plugin2
+            type: trigger2
+            name: Trigger 2
+        `;
+        const result = YamlUtils.getLastBlock({
+            source: yamlString,
+            section: "triggers"
+        });
+        expect(result).toBe("plugin2");
+    })
+
+    test("get last pluginDefaults", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+        pluginDefaults:
+          - type: type1
+            name: Plugin Default 1
+          - type: type2
+            name: Plugin Default 2
+        `;
+        const result = YamlUtils.getLastBlock({
+            source: yamlString,
+            section: "pluginDefaults",
+            keyName: "type"
+        });
+        expect(result).toBe("type2");
+    })
+
+    test("get last subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+        `;
+        const result = YamlUtils.getLastBlock({
+            source: yamlString,
+            section: "tasks",
+            parentKey: "plugin1"
+        });
+        expect(result).toBe("plugin3");
+    })
+
+    test("get last condition in trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: trigger1
+            name: Trigger 1
+            conditions:
+              - id: plugin2
+                type: condition1
+                name: Condition 1
+              - id: plugin3
+                type: condition2
+                name: Condition 2
+        `;
+        const result = YamlUtils.getLastBlock({
+            source: yamlString,
+            section: "triggers",
+            parentKey: "plugin1",
+            subBlockName: "conditions"
+        });
+        expect(result).toBe("plugin3");
+    })
+})

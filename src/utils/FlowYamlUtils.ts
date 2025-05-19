@@ -516,7 +516,7 @@ export function getLastBlock({source, section, parentKey, keyName, subBlockName}
 
     const parsed = parse(source);
 
-    return parsed.tasks?.[parsed?.tasks?.length - 1]?.id;
+    return parsed[section]?.[parsed?.[section]?.length - 1]?.[keyName];
 }
 
 export function updateMetadata(source: string, metadata: Record<string, any>) {
