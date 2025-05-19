@@ -14,10 +14,11 @@ describe("extractBlock", () => {
             name: Plugin 2
         `;
 
-        const section = "triggers";
-        const key = "plugin1";
-
-        const result = YamlUtils.extractBlock(yamlString, section, key);
+        const result = YamlUtils.extractBlock({
+            source: yamlString, 
+            section: "triggers", 
+            key: "plugin1"
+        });
 
         expect(result).toMatchInlineSnapshot(`
           "id: plugin1
@@ -38,10 +39,11 @@ describe("extractBlock", () => {
             name: Plugin 2
         `;
 
-        const section = "tasks";
-        const key = "plugin1";
-
-        const result = YamlUtils.extractBlock(yamlString, section, key);
+        const result = YamlUtils.extractBlock({
+            source: yamlString, 
+            section: "tasks", 
+            key: "plugin1"
+        });
 
         expect(result).toMatchInlineSnapshot(`
           "id: plugin1
@@ -67,10 +69,12 @@ describe("extractBlock", () => {
             name: Plugin Default 2
         `;
 
-        const section = "pluginDefaults";
-        const key = "type1";
-
-        const result = YamlUtils.extractBlock(yamlString, section, key, "type");
+        const result = YamlUtils.extractBlock({
+            source: yamlString, 
+            section: "pluginDefaults", 
+            key: "type1",
+            keyName: "type",
+        });
 
         expect(result).toMatchInlineSnapshot(`
           "type: type1
@@ -95,11 +99,12 @@ describe("swapPluginProperties", () => {
             name: Plugin 2
         `;
 
-        const section = "triggers";
-        const key = "plugin1";
-        const newValue = "plugin2";
-
-        const result = YamlUtils.swapBlocks(yamlString, section, key, newValue);
+        const result = YamlUtils.swapBlocks({
+            source: yamlString, 
+            section: "triggers", 
+            key1: "plugin1", 
+            key2: "plugin2"
+        });
 
         expect(result).toMatchInlineSnapshot(`
           "triggers:
@@ -134,11 +139,13 @@ describe("insertBlock", () => {
         `;
 
     test("inserting a task", () => {
-        
-        const section = "tasks";
-        const key = "plugin1";
-        
-        const result = YamlUtils.insertBlock(srcWithTasks, section, newValue, key);
+               
+        const result = YamlUtils.insertBlock({
+            source: srcWithTasks, 
+            section: "tasks", 
+            newBlock: newValue, 
+            refKey: "plugin1"
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin1
@@ -164,9 +171,13 @@ describe("insertBlock", () => {
             type: type2
             name: Plugin 2
         `;
-        const section = "tasks";
-        const key = "plugin1";
-        const result = YamlUtils.insertBlock(srcWithTriggers, section, newValue, key);
+
+        const result = YamlUtils.insertBlock({
+            source: srcWithTriggers, 
+            section: "tasks", 
+            newBlock: newValue, 
+            refKey: "plugin1"
+        });;
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: plugin1
@@ -184,8 +195,11 @@ describe("insertBlock", () => {
     })
 
     test("inserting a task omitting the refKey", () => {
-        const section = "tasks";
-        const result = YamlUtils.insertBlock(srcWithTasks, section, newValue);
+        const result = YamlUtils.insertBlock({
+            source: srcWithTasks, 
+            section: "tasks", 
+            newBlock: newValue, 
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin1
@@ -202,8 +216,13 @@ describe("insertBlock", () => {
     })
 
     test("insert a task before everything", () => {
-        const section = "tasks";
-        const result = YamlUtils.insertBlock(srcWithTasks, section, newValue, undefined, "before");
+        
+        const result = YamlUtils.insertBlock({
+            source: srcWithTasks, 
+            section: "tasks", 
+            newBlock: newValue, 
+            position: "before"
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin3
@@ -220,8 +239,13 @@ describe("insertBlock", () => {
     })
 
     test("insert a task before plugin2", () => {
-        const section = "tasks";
-        const result = YamlUtils.insertBlock(srcWithTasks, section, newValue, "plugin2", "before");
+        const result = YamlUtils.insertBlock({
+            source: srcWithTasks, 
+            section: "tasks", 
+            newBlock: newValue,
+            refKey: "plugin2", 
+            position: "before"
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: plugin1
@@ -237,7 +261,7 @@ describe("insertBlock", () => {
         `)
     })
 
-    test("inserting a trigger", () => {
+    test("inserting before a trigger", () => {
         const srcWithTriggers = `
         triggers:
           - id: plugin1
@@ -247,14 +271,13 @@ describe("insertBlock", () => {
             type: type2
             name: Plugin 2
         `;
-        const section = "triggers";
-        const key = "plugin1";
-        const newValue = `
-            id: plugin3
-            type: type3
-            name: Plugin 3
-        `;
-        const result = YamlUtils.insertBlock(srcWithTriggers, section, newValue, key);
+        const result = YamlUtils.insertBlock({
+            source: srcWithTriggers, 
+            section: "triggers", 
+            newBlock: newValue,
+            refKey: "plugin2", 
+            position: "before"
+        });
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: plugin1
@@ -286,7 +309,13 @@ describe("insertBlock", () => {
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertBlock(srcWithSubTasks, "tasks", newValue, undefined, "after", "t1");
+        const result = YamlUtils.insertBlock({
+            source:srcWithSubTasks, 
+            section: "tasks", 
+            newBlock: newValue, 
+            position:"after", 
+            parentKey:"t1"
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: t1
@@ -316,7 +345,13 @@ describe("insertBlock", () => {
             type: type3
             name: Plugin 3
         `;
-        const result = YamlUtils.insertBlock(srcWithTasksButNoSubTasks, "tasks", newValue, undefined, "after", "t1");
+        const result = YamlUtils.insertBlock({
+            source: srcWithTasksButNoSubTasks, 
+            section: "tasks", 
+            newBlock: newValue, 
+            position: "after", 
+            parentKey: "t1"
+        });
         expect(result).toMatchInlineSnapshot(`
           "tasks:
             - id: t1
@@ -337,7 +372,14 @@ describe("insertBlock", () => {
           type: type1
           name: Plugin 1
         `
-        const result = YamlUtils.insertBlock(srcWIthTriggers, "triggers", newValue, undefined, "after", "trigger1", "id", "conditions");
+        const result = YamlUtils.insertBlock({
+            source: srcWIthTriggers, 
+            section: "triggers", 
+            newBlock: newValue, 
+            parentKey: "trigger1", 
+            position: "after", 
+            subBlockName: "conditions"
+        });
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: trigger1
@@ -362,7 +404,14 @@ describe("insertBlock", () => {
               type: type2
               name: Plugin 2
         `
-        const result = YamlUtils.insertBlock(srcWIthTriggers, "triggers", newValue, undefined, "after", "trigger1", "id", "conditions");
+        const result = YamlUtils.insertBlock({
+            source: srcWIthTriggers, 
+            section: "triggers", 
+            newBlock: newValue, 
+            parentKey: "trigger1", 
+            position: "after", 
+            subBlockName: "conditions"
+        });
         expect(result).toMatchInlineSnapshot(`
           "triggers:
             - id: trigger1

@@ -2,7 +2,7 @@ import yaml, {
     Document,
     YAMLMap,
 } from "yaml";
-import {SECTIONS} from "./constants";
+import {SECTIONS as BE_SECTIONS} from "./constants";
 import {
     checkBlockAlreadyExists,
     cleanMetadata, deleteMetadata,
@@ -32,7 +32,7 @@ export type YamlElement = {
 
 const TOSTRING_OPTIONS = {lineWidth: 0};
 
-const BLOCKS = [
+const SECTIONS = [
             "tasks",
             "triggers",
             "errors",
@@ -47,8 +47,8 @@ export const YamlUtils = {
     pairsToMap,
     extractTask(source: string, taskId: string) {
         
-        for (const block of BLOCKS) {
-            const task = extractBlock(source, block, taskId)
+        for (const section of SECTIONS) {
+            const task = extractBlock({source, section, key: taskId})
             if (task) {
                 return task
             }
@@ -112,13 +112,13 @@ export const YamlUtils = {
     },
 
     replaceTaskInDocument(source: string, taskId: string, newContent: string, block: string = "tasks", keyName: string = "id") {
-        return replaceBlockInDocument(
+        return replaceBlockInDocument({
             source,
-            block,
+            section: block,
             keyName,
-            taskId,
+            key: taskId,
             newContent
-        )
+        })
     },
 
     sort,
@@ -164,11 +164,12 @@ export const YamlUtils = {
         insertPosition: "before" | "after",
         parentTaskId?: string
     ) {
-        return insertBlock(source, "tasks", newTask, taskId, insertPosition, parentTaskId);
+        return insertBlock({
+            source, section: "tasks", newBlock: newTask, refKey: taskId, position: insertPosition, parentKey: parentTaskId});
     },
 
     insertSection(sectionType: string, source: string, task: string) {
-        return insertBlock(source, sectionType, task);
+        return insertBlock({source, section: sectionType, newBlock: task});
     },
 
     insertErrorInFlowable,
@@ -181,25 +182,36 @@ export const YamlUtils = {
      * @returns yaml (source) without the item
      */
     deleteSection(source: string, section: string, id: string) {
-        return deleteBlock(source, section, id);
+        return deleteBlock({source, section, key: id});
     },
 
     deleteTask(source: string, taskId: string, section: string) {
         const inSection =
-            section === SECTIONS.TASKS ? ["tasks", "errors"] : ["triggers"];
-        return inSection.reduce((src, sec) => deleteBlock(src, sec, taskId), source);
+            section === BE_SECTIONS.TASKS ? ["tasks", "errors"] : ["triggers"];
+        return inSection.reduce((src, sec) => deleteBlock({source:src, section:sec, key:taskId}), source);
     },
 
     getLastTask(source: string, parentTaskId?: string): string | undefined {
-        return getLastBlock(source, "tasks", parentTaskId);
+        return getLastBlock({source, section: "tasks", parentKey:parentTaskId});
     },
 
     checkTaskAlreadyExist(source: string, taskYaml: string) {
-        return checkBlockAlreadyExists(source, "tasks", taskYaml, "id")
+        return checkBlockAlreadyExists({
+            source, 
+            section:"tasks", 
+            newContent: taskYaml, 
+            keyName: "id"
+        })
     },
 
     isParentChildrenRelation(source: string, task1: string, task2: string) {
-        return isParentChildrenRelation(source, BLOCKS, task1, task2);
+        return isParentChildrenRelation({
+            source, 
+            sections: SECTIONS, 
+            key1: task1, 
+            key2: task2,
+            keyName: "id"
+        });
     },
 
     replaceIdAndNamespace,
