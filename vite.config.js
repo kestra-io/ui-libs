@@ -14,6 +14,7 @@ export default defineConfig({
             ],
             name: "KestraUI",
             fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format}.js`,
+            cssFileName: "ui-libs",
         },
         rollupOptions: {
             external: [
