@@ -703,3 +703,289 @@ describe("getLastBlock", () => {
         expect(result).toBe("plugin3");
     })
 })
+
+describe("insertBlockWithPath", () => {
+    const srcWithTasks = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+    const newValue = `
+            id: plugin3
+            type: type3
+            name: Plugin 3
+        `;
+
+    test("inserting a task", () => {
+               
+        const result = YamlUtils.insertBlockWithPath({
+            source: srcWithTasks, 
+            parentPath: "tasks", 
+            newBlock: newValue, 
+            refPath: 0,
+            position: "after"
+        });
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+            - id: plugin3
+              type: type3
+              name: Plugin 3
+            - id: plugin2
+              type: type2
+              name: Plugin 2
+          "
+        `)
+    })
+
+    test("inserting a task when no tasks section is present", () => {
+        const srcWithTriggers = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const result = YamlUtils.insertBlockWithPath({
+            source: srcWithTriggers, 
+            parentPath: "tasks",
+            newBlock: newValue, 
+        });;
+        expect(result).toMatchInlineSnapshot(`
+          "triggers:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+            - id: plugin2
+              type: type2
+              name: Plugin 2
+          tasks:
+            - id: plugin3
+              type: type3
+              name: Plugin 3
+          "
+        `)
+    })
+
+    test("inserting a task as a subBlock of another task", () => {
+        const srcWithSubTasks = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin5
+                type: type5
+                name: Plugin 5
+          - id: plugin3
+            type: type3
+            name: Plugin 3
+        `;
+        const newValue = `
+            id: plugin4
+            type: type4
+            name: Plugin 4
+        `;
+        const result = YamlUtils.insertBlockWithPath({
+            source: srcWithSubTasks, 
+            newBlock: newValue, 
+            parentPath: "tasks[0].tasks",
+            refPath: 0,
+            position: "before"
+        });
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+              tasks:
+                - id: plugin4
+                  type: type4
+                  name: Plugin 4
+                - id: plugin2
+                  type: type2
+                  name: Plugin 2
+                - id: plugin5
+                  type: type5
+                  name: Plugin 5
+            - id: plugin3
+              type: type3
+              name: Plugin 3
+          "
+        `)
+    })
+
+    test("inserting a condition on a trigger", () => {
+        const srcWithTriggers = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const result = YamlUtils.insertBlockWithPath({
+            source: srcWithTriggers, 
+            parentPath: "triggers[0].conditions",
+            newBlock: newValue, 
+        });;
+        expect(result).toMatchInlineSnapshot(`
+          "triggers:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+              conditions:
+                - id: plugin3
+                  type: type3
+                  name: Plugin 3
+            - id: plugin2
+              type: type2
+              name: Plugin 2
+          "
+        `)
+    })
+})
+
+describe("deleteBlockWithPath", () => {
+    test("deleting a trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlockWithPath({
+            source: yamlString,
+            path: "triggers[0]"
+        });
+        expect(result).not.toContain("- id: plugin1");
+    })
+
+    test("deleting a task", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlockWithPath({
+            source: yamlString,
+            path: "tasks[1]",
+        });
+        expect(result).not.toContain("- id: plugin2");
+    })
+
+    test("deleting a task with subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+          - id: plugin3
+            type: type3
+            name: Plugin 3
+        `;
+        const result = YamlUtils.deleteBlockWithPath({
+            source: yamlString,
+            path:"tasks[0].tasks[0]",
+        });
+        expect(result).not.toContain("- id: plugin2");
+    })
+    
+    test("deleting a pluginDefaults", () => {
+        const yamlString = `
+        pluginDefaults:
+          - type: type1
+            name: Plugin 1
+          - type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.deleteBlockWithPath({
+            source: yamlString,
+            path:"pluginDefaults[0]",
+        });
+        expect(result).not.toContain("- type: type1");
+    })
+})
+
+describe("extractBlockWithPath", () => {
+    test("extracting a trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const result = YamlUtils.extractBlockWithPath({
+            source: yamlString,
+            path: "triggers[1]",
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "id: plugin2
+          type: type2
+          name: Plugin 2
+          "
+        `);
+    })
+    test("extracting a sub-subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+                tasks:
+                  - id: plugin4
+                    type: type4
+                    name: Plugin 4
+                  - id: plugin5
+                    type: type5
+                    name: Plugin 5
+        `;
+
+        const result = YamlUtils.extractBlockWithPath({
+            source: yamlString,
+            path: "tasks[0].tasks[1].tasks[0]",
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "id: plugin4
+          type: type4
+          name: Plugin 4
+          "
+          `)
+    })
+})

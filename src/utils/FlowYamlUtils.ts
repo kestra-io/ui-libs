@@ -152,7 +152,7 @@ function extractBlockFromDocument({yamlDoc, keyName, key, callback}: {
      * Callback function to modify the found element
      * @param element The found YAMLMap element
      */
-    callback?: (element: YAMLMap<{ value: string }, string | Node>) => void,
+    callback?: (element: YAMLMap<{ value: string }, string | Node>) => any,
 }) {
     function find(element?: Node): Node | void {
         if (!element) {
@@ -197,6 +197,38 @@ function extractBlockFromDocument({yamlDoc, keyName, key, callback}: {
     } else {
         return new Document(result);
     }
+}
+
+export function extractBlockWithPath({source, path}: {
+    source: string,
+    path: string
+}) {
+    const doc = extractBlockWithPathFromDocument({
+        yamlDoc: parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>, 
+        path
+    });
+    if (!doc) {
+        return undefined;
+    }
+    return new Document(doc).toString(TOSTRING_OPTIONS);
+}
+
+function extractBlockWithPathFromDocument({yamlDoc, path, callback}: {
+    yamlDoc: Document<YAMLMap<{ value: string }, Node>>,
+    path: string,
+    callback?: (element: YAMLMap<{ value: string }, Node>) => any
+}) {
+    const parsedPath = parsePath(path);
+    const element = yamlDoc.getIn(parsedPath) as YAMLMap<{ value: string }, Node>;
+    if (element === undefined) {
+        return undefined;
+    }
+    if (callback) {
+        const replacedEl = callback(element);
+        yamlDoc.setIn(parsedPath, replacedEl);
+        return new Document(replacedEl);
+    }
+    return new Document(element);
 }
 
 export function replaceBlockInDocument({source, section, keyName, key, newContent}: {
@@ -381,6 +413,90 @@ export function insertBlock({source,
     return cleanMetadataDocument(yamlDoc).toString(TOSTRING_OPTIONS);
 }
 
+function getNodeIndexInParent(
+    yamlDoc: Document<YAMLMap<{ value: string }, Node>>,
+    patentNode: YAMLMap<{ value: string }, Node>, 
+    parentPath: (string|number)[],
+    refPath?: string | number, 
+    position: "before" | "after" = "after"
+) {
+    if (refPath === undefined) {
+        return position === "before" ? 0 : patentNode.items.length - 1;
+    }
+
+    const indexNode = yamlDoc.getIn([...parentPath, refPath]) as any;
+
+    return patentNode.items.indexOf(indexNode);
+}
+
+export function parsePath(path: string) {
+    const pathParts = path.split(".");
+    return pathParts.reduce((acc: (string|number)[], part) => {
+        // if the path has a number, it will look like this 
+        // path[0]
+
+        const numberPath = part.match(/\[(\d+)\]$/)
+        if (numberPath?.[0]) {
+            acc.push(part.slice(0, numberPath.index));
+            acc.push(parseInt(numberPath[1], 10));
+        } else {
+            acc.push(part);
+        }
+        return acc;
+    }, [])
+}
+
+export function insertBlockWithPath({
+    source,
+    newBlock,
+    refPath,
+    position,
+    parentPath,
+}: {
+    source: string,
+    parentPath: string,
+    newBlock: string,
+    refPath?: string | number,
+    position?: "before" | "after",
+}){
+    if (!position) {
+        position = "after";
+    }
+    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const newPropNode = yamlDoc.createNode(parseDocument(newBlock)) as any;
+
+    const parsedPath = parsePath(parentPath);
+
+    const parentNode = yamlDoc.getIn(parsedPath) as YAMLMap<{ value: string }, Node>;
+    if (!parentNode) {
+        const newParentNode = new YAMLSeq();
+        newParentNode.add(newPropNode);
+        const parentKey = parentPath.split(".").pop() as string;
+        const parentKeyNode = new Pair(new Scalar(parentKey), newParentNode);
+        if(parentKey.length === parentPath.length){
+            yamlDoc.contents?.items.push(parentKeyNode);
+            return yamlDoc.toString(TOSTRING_OPTIONS);
+        } else {
+            const parentPathWithoutKey = parentPath.substring(0, parentPath.length - parentKey.length - 1);
+            const parentNode = yamlDoc.getIn(parsePath(parentPathWithoutKey)) as YAMLMap<{ value: string }, Node>;
+            if (!parentNode) {
+                throw new Error(`Parent block with path ${parentPathWithoutKey} not found`);
+            }
+            parentNode.items.push(parentKeyNode);
+            return yamlDoc.toString(TOSTRING_OPTIONS);
+        }
+    }
+    const index = getNodeIndexInParent(yamlDoc, parentNode, parsedPath, refPath);
+    if (position === "before") {
+        parentNode.items.splice(index, 0, newPropNode);
+    } else {
+        parentNode.items.splice(index + 1, 0, newPropNode);
+    }
+
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+}
+
+
 export function deleteBlock({source, section, key, keyName}: {
     source: string,
     section: string,
@@ -413,6 +529,22 @@ export function deleteBlock({source, section, key, keyName}: {
             }
         },
     });
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+}
+
+
+export function deleteBlockWithPath({source, path}: {
+    source: string,
+    path: string,
+}) {
+    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const parsedPath = parsePath(path)
+    const parentNode = yamlDoc.getIn(parsedPath.slice(0, -1)) as YAMLMap<{ value: string }, Node>;
+    if (!parentNode) {
+        return source;
+    }
+    const index = getNodeIndexInParent(yamlDoc, parentNode, parsedPath.slice(0, -1), parsedPath[parsedPath.length - 1]);
+    parentNode.items.splice(index, 1);
     return yamlDoc.toString(TOSTRING_OPTIONS);
 }
 
@@ -483,8 +615,7 @@ export function getLastBlock({source, section, parentKey, keyName, subBlockName}
     parentKey?: string,
     keyName?: string,
     subBlockName?: string
-}
-): string | undefined {
+}): string | undefined {
     if (!keyName) {
         keyName = "id";
     }
