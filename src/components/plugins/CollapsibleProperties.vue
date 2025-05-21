@@ -94,7 +94,6 @@
     );
 
     const isDynamic = (property: JSONProperty): boolean => {
-        console.log("DYNAMIC: " + property["$dynamic"]);
         if (property["$dynamic"] === true) {
             return true;
         }
