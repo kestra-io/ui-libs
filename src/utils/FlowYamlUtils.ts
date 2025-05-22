@@ -231,6 +231,19 @@ function extractBlockWithPathFromDocument({yamlDoc, path, callback}: {
     return new Document(element);
 }
 
+export function replaceBlockWithPath({source, path, newContent}: {
+    source: string,
+    path: string,
+    newContent: string
+}) {
+    const {yamlDoc} = getSectionNodeAndDocumentFromSource({source, section: ""});
+    const newItem = yamlDoc.createNode(parseDocument(newContent));
+
+    yamlDoc.setIn(parsePath(path), newItem);
+
+    return yamlDoc.toString(TOSTRING_OPTIONS);
+}
+
 export function replaceBlockInDocument({source, section, keyName, key, newContent}: {
     source: string,
     section: string,
