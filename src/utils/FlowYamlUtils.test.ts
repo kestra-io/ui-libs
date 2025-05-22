@@ -989,3 +989,156 @@ describe("extractBlockWithPath", () => {
           `)
     })
 })
+
+describe("replaceBlockWithPath", () => {
+    test("replacing a trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const newValue = `
+        id: plugin3
+        type: type3
+        name: Plugin 3
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "triggers[1]",
+            newContent: newValue
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "triggers:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+            - id: plugin3
+              type: type3
+              name: Plugin 3
+          "
+        `);
+    })
+    test("replacing a task", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const newValue = `
+        id: plugin3
+        type: type3
+        name: Plugin 3
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString, 
+            path: "tasks[1]",
+            newContent: newValue
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+            - id: plugin3
+              type: type3
+              name: Plugin 3
+          "
+        `)
+    })
+
+    test("replacing a task with subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+        `;
+
+        const newValue = `
+        id: plugin4
+        type: type4
+        name: Plugin 4
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "tasks[0].tasks[1]",
+            newContent: newValue    
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+              tasks:
+                - id: plugin2
+                  type: type2
+                  name: Plugin 2
+                - id: plugin4
+                  type: type4
+                  name: Plugin 4
+          "
+        `)
+    })
+
+    test("replace a condition in a trigger", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            conditions:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+        `;
+
+        const newValue = `
+        id: plugin4
+        type: type4
+        name: Plugin 4
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "triggers[0].conditions[1]",
+            newContent: newValue
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "triggers:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+              conditions:
+                - id: plugin2
+                  type: type2
+                  name: Plugin 2
+                - id: plugin4
+                  type: type4
+                  name: Plugin 4
+          "
+        `)
+    })
+})
