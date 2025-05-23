@@ -930,6 +930,20 @@ describe("deleteBlockWithPath", () => {
         });
         expect(result).not.toContain("- type: type1");
     })
+
+    test("deleting a section when empty", () => {
+        const yamlString = `
+        tasks:
+          - type: type1
+            name: Plugin 1
+        `;
+        const result = YamlUtils.deleteBlockWithPath({
+            source: yamlString,
+            path:"tasks[0]",
+        });
+        expect(result).not.toContain("tasks:");
+    })
+
 })
 
 describe("extractBlockWithPath", () => {

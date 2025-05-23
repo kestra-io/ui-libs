@@ -103,9 +103,13 @@ function getSectionNodeAndDocumentFromSource({source, section}: {
     source: string,
     section: string
 }) {
-    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const yamlDoc = parseDocumentTyped(source);
     const sectionNode = getSectionFromDocument({yamlDoc, section});
     return {yamlDoc, sectionNode};
+}
+
+function parseDocumentTyped(source: string) {
+    return parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
 }
 
 function getSectionFromDocument({yamlDoc, section}:
@@ -204,7 +208,7 @@ export function extractBlockWithPath({source, path}: {
     path: string
 }) {
     const doc = extractBlockWithPathFromDocument({
-        yamlDoc: parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>, 
+        yamlDoc: parseDocumentTyped(source), 
         path
     });
     if (!doc) {
@@ -236,7 +240,7 @@ export function replaceBlockWithPath({source, path, newContent}: {
     path: string,
     newContent: string
 }) {
-    const {yamlDoc} = getSectionNodeAndDocumentFromSource({source, section: ""});
+    const yamlDoc = parseDocumentTyped(source);
     const newItem = yamlDoc.createNode(parseDocument(newContent));
 
     yamlDoc.setIn(parsePath(path), newItem);
@@ -475,7 +479,7 @@ export function insertBlockWithPath({
     if (!position) {
         position = "after";
     }
-    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const yamlDoc = parseDocumentTyped(source);
     const newPropNode = yamlDoc.createNode(parseDocument(newBlock)) as any;
 
     const parsedPath = parsePath(parentPath);
@@ -519,7 +523,7 @@ export function deleteBlock({source, section, key, keyName}: {
     if (!keyName) {
         keyName = "id";
     }
-    const yamlDoc = parseDocument(source) as any;
+    const yamlDoc = parseDocumentTyped(source);
     visit(yamlDoc, {
         Pair(_, pair: any) {
             if (pair.key.value === section) {
@@ -550,14 +554,19 @@ export function deleteBlockWithPath({source, path}: {
     source: string,
     path: string,
 }) {
-    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const yamlDoc = parseDocumentTyped(source);
     const parsedPath = parsePath(path)
-    const parentNode = yamlDoc.getIn(parsedPath.slice(0, -1)) as YAMLMap<{ value: string }, Node>;
+    const parsedParentPath = parsedPath.slice(0, -1);
+    const parentNode = yamlDoc.getIn(parsedParentPath) as YAMLMap<{ value: string }, Node>;
     if (!parentNode) {
         return source;
     }
     const index = getNodeIndexInParent(yamlDoc, parentNode, parsedPath.slice(0, -1), parsedPath[parsedPath.length - 1]);
-    parentNode.items.splice(index, 1);
+    if (parentNode.items.length === 1) {
+        yamlDoc.deleteIn(parsedParentPath);
+    } else {
+        parentNode.items.splice(index, 1);
+    }
     return yamlDoc.toString(TOSTRING_OPTIONS);
 }
 
@@ -741,7 +750,7 @@ function cleanMetadataDocument(yamlDoc: Document<YAMLMap<{ value: string }, Node
 }
 
 export function cleanMetadata(source: string) {
-    const yamlDoc = parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    const yamlDoc = parseDocumentTyped(source);
     const cleanedYamlDoc = cleanMetadataDocument(yamlDoc);
     return cleanedYamlDoc.toString(TOSTRING_OPTIONS);
 }
