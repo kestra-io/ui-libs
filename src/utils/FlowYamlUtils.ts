@@ -834,7 +834,8 @@ export function extractFieldFromMaps<T extends string>(
     source: string,
     fieldName: T,
     parentPathPredicate = (_: any, __?: any) => true,
-    valuePredicate = (_: any) => true
+    valuePredicate = (_: any) => true,
+    keepEmptyFields: boolean = false,
 ): (Record<T, any> & {range: Range})[] {
     const yamlDoc = parseDocument(source) as any;
     const maps: any[] = [];
@@ -849,6 +850,7 @@ export function extractFieldFromMaps<T extends string>(
                 ) &&
                 map.items
             ) {
+                let matched = false;
                 for (const item of map.items as any[]) {
                     if (item?.key?.value === fieldName) {
                         const fieldValue = item?.value?.value ?? item.value?.items;
@@ -857,8 +859,16 @@ export function extractFieldFromMaps<T extends string>(
                                 [fieldName]: fieldValue,
                                 range: map.range,
                             });
+                            matched = true;
                         }
                     }
+                }
+                if (!matched && keepEmptyFields) {
+                    // add an empty entry if the field cannot be matched (i.e., optional property).
+                    maps.push({
+                        [fieldName]: undefined,
+                        range: map.range,
+                    });
                 }
             }
         },
@@ -895,6 +905,32 @@ export function getTypeAtPosition(
         }
     }
     return null;
+}
+
+/**
+ * Get task version at cursor position.
+ * Useful to display/update the live docs
+ */
+export function getVersionAtPosition(
+    source: string,
+    position: { lineNumber: number; column: number }
+) {
+    const versions = extractAllVersions(source);
+    const lineCounter = new LineCounter();
+    parseDocument(source, {lineCounter});
+    const cursorIndex =
+        lineCounter.lineStarts[position.lineNumber - 1] + position.column;
+
+    for (const version of versions.reverse()) {
+        if (cursorIndex >= version.range[0]) {
+            return version.version;
+        }
+    }
+    return null;
+}
+
+function extractAllVersions(source: string){
+    return extractFieldFromMaps(source, "version", () => true, () => true, true);
 }
 
 const TOSTRING_OPTIONS = {lineWidth: 0};

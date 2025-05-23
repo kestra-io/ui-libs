@@ -596,6 +596,56 @@ describe("extractFieldFromMaps", () => {
         `;
         const result = YamlUtils.extractFieldFromMaps(yaml, "labels");
         expect(result).toEqual([]);
+    });
+    test("extract fields given keepEmptyFields equals true", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+            type: io.kestra.plugin.core.log.Log
+            version: 0.0.1
+          - id: task2
+            type: io.kestra.plugin.core.log.Log
+          - id: task3
+            type: io.kestra.plugin.core.log.Log
+            version: 0.0.2
+        `;
+        const result = YamlUtils.extractFieldFromMaps(yaml, "version", () => true, () => true, true);
+        expect(result).toMatchInlineSnapshot(`
+            [
+              {
+                "range": [
+                  9,
+                  280,
+                  280,
+                ],
+                "version": undefined,
+              },
+              {
+                "range": [
+                  28,
+                  113,
+                  113,
+                ],
+                "version": "0.0.1",
+              },
+              {
+                "range": [
+                  125,
+                  183,
+                  183,
+                ],
+                "version": undefined,
+              },
+              {
+                "range": [
+                  195,
+                  280,
+                  280,
+                ],
+                "version": "0.0.2",
+              },
+            ]
+        `);
     })
 })
 
