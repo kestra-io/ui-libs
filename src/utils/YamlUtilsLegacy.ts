@@ -10,7 +10,7 @@ import {
     deleteBlock,
     extractPluginDefault,
     extractBlock,
-    flowHaveTasks, getAllCharts, getChartAtPosition, getLastBlock, getMetadata,
+    flowHaveTasks, getAllCharts, getChartAtPosition, getLastBlock, getMetadata, getVersionAtPosition,
     getTypeAtPosition as getTaskType,
     insertErrorInFlowable,
     insertBlock,
@@ -236,4 +236,7 @@ export const YamlUtils = {
     deletePluginDefaults,
 
     extractFieldFromMaps,
+
+    getVersionAtPosition
+
 };
