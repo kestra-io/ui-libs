@@ -117,7 +117,7 @@ function getSectionFromDocument({yamlDoc, section}:
         yamlDoc: Document<YAMLMap<{ value: string }, Node>>,
         section: string
     }) {
-    const sectionNode = yamlDoc.contents?.items.find(
+    const sectionNode = yamlDoc.contents?.items?.find(
         (e) => e.key.value === section
     ) as { value: YAMLSeq<YAMLMap<{ value: string }, Node>> } | undefined;
     return sectionNode?.value;
