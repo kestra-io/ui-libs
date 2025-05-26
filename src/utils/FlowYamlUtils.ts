@@ -123,6 +123,76 @@ function getSectionFromDocument({yamlDoc, section}:
     return sectionNode?.value;
 }
 
+function getPathFromId({node, id} : {
+    node: Node,
+    id: string
+}): (string | number)[] {
+    // recursively search for the id in the node
+    if (isSeq<{ value: Node }>(node)) {
+        let index = 0
+        for (const item of node.items) {
+            if (isMap<{ value: string }, Node>(item)) {
+                const itemId = item.get("id") as string | undefined;
+                if (itemId === id) {
+                    return [index];
+                } else {
+                    const path = getPathFromId({node: item, id});
+                    if (path.length > 0) {
+                        return [index, ...path];
+                    }
+                }
+            }
+            index++;
+        }
+    }
+
+    if( isMap<{ value: string }, Node>(node)) {
+        const itemId = node.get("id") as string | undefined;
+        if (itemId === id) {
+            return [];
+        } else {
+            for (const item of node.items) {
+                if(item.value) {        
+                    const path = getPathFromId({node: item.value, id});
+                    if (path.length > 0) {
+                        return [item.key.value, ...path];
+                    }
+                }
+            }
+        }
+    }
+
+    return []
+}
+
+export function getPathFromSectionAndId({
+    source,
+    section,
+    id,
+}: {
+    source: string,
+    section: string,
+    id: string
+}): string | undefined {
+    const {sectionNode} = getSectionNodeAndDocumentFromSource({source, section});
+    if (!sectionNode) {
+        return undefined;
+    }
+
+    const pathArray = getPathFromId({node: sectionNode, id})
+    const path = pathArray.map((e) => {
+        if (typeof e === "string") {
+            return `.${e}`;
+        } else {
+            return `[${e}]`;
+        }
+    }).join("");
+
+    return `${section}${path}`;
+}
+
+
+
 export function extractBlock({source, section, key, keyName}: {
     source: string,
     section: string,
