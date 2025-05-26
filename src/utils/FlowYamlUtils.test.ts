@@ -1206,3 +1206,72 @@ describe("replaceBlockWithPath", () => {
         `)
     })
 })
+
+describe("getPathFromSectionAndId", () => {  
+    test("get path from id", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+        const result = YamlUtils.getPathFromSectionAndId({
+            source: yamlString,
+            section: "tasks",
+            id: "plugin2"
+        });
+        expect(result).toBe("tasks[1]");
+    })
+
+    test("get path from id with subtask", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            tasks:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+        `;
+        const result = YamlUtils.getPathFromSectionAndId({
+            source: yamlString,
+            section: "tasks",
+            id: "plugin3"
+        });
+        expect(result).toBe("tasks[0].tasks[1]");
+    })
+
+    test("get path from id with subCondition", () => {
+        const yamlString = `
+        triggers:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            conditions:
+              - id: plugin2
+                type: type2
+                name: Plugin 2
+              - id: plugin3
+                type: type3
+                name: Plugin 3
+          - id: plugin4
+            type: type4
+            name: Plugin 4
+        
+        `;
+        const result = YamlUtils.getPathFromSectionAndId({
+            source: yamlString,
+            section: "triggers",
+            id: "plugin3"
+        });
+        expect(result).toBe("triggers[0].conditions[1]");
+    })
+
+})
