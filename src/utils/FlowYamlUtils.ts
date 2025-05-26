@@ -788,6 +788,7 @@ export const ORDERED_FLOW_ROOT_KEYS = [
     ...FLOW_SECTION_KEYS,
     "taskDefaults",
     "concurrency",
+    "sla",
     "outputs",
     "disabled",
 ] as const
