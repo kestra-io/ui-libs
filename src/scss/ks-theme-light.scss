@@ -9,11 +9,12 @@
 :root{
 	/* background */
 	#{--ks-background-body}: $base-gray-50;
+	#{--ks-background-box}: $base-gray-50;
 	#{--ks-background-cancelled}: $base-red-100;
 	#{--ks-background-card}: $base-white;
 	#{--ks-background-card-hover}: $base-white;
 	#{--ks-background-card-opacity}: #1b1c23e5;
-	#{--ks-background-created}: $base-blue-50;
+	#{--ks-background-created}: rgba($base-blue-50, 0.39);
 	#{--ks-background-error}: $base-red-50;
 	#{--ks-background-info}: #c7f0ff;
 	#{--ks-background-input}: $base-white;
@@ -21,6 +22,7 @@
 	#{--ks-background-killing}: $base-yellow-50;
 	#{--ks-background-left-menu}: $base-white;
 	#{--ks-background-logo}: #2c0059;
+	#{--ks-background-panel}: $base-white;
 	#{--ks-background-paused}: #b2b2b542;
 	#{--ks-background-queued}: $base-yellow-50;
 	#{--ks-background-restarted}: $base-blue-50;
@@ -42,14 +44,14 @@
 	/* border */
 	#{--ks-border-active}: $base-purple-500;
 	#{--ks-border-cancelled}: $base-red-300;
-	#{--ks-border-created}: $base-blue-300;
+	#{--ks-border-created}: $base-blue-200;
 	#{--ks-border-error}: $base-red-300;
 	#{--ks-border-inactive}: $base-gray-100;
 	#{--ks-border-info}: $base-blue-200;
 	#{--ks-border-killed}: $base-yellow-600;
 	#{--ks-border-killing}: $base-yellow-400;
 	#{--ks-border-paused}: $base-gray-200;
-	#{--ks-border-primary}: $base-gray-100;
+	#{--ks-border-primary}: #e1e3e5;
 	#{--ks-border-queued}: $base-yellow-600;
 	#{--ks-border-restarted}: $base-blue-100;
 	#{--ks-border-retried}: $base-blue-600;
@@ -103,7 +105,6 @@
 	#{--ks-content-cancelled}: $base-red-500;
 	#{--ks-content-created}: $base-blue-500;
 	#{--ks-content-error}: $base-red-500;
-	#{--ks-content-failed}: var(--ks-content-error);
 	#{--ks-content-id}: $base-purple-500;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-600;
@@ -122,9 +123,8 @@
 	#{--ks-content-secondary}: $base-gray-700;
 	#{--ks-content-skipped}: $base-gray-500;
 	#{--ks-content-success}: $base-green-700;
-	#{--ks-content-tertiary}: $base-gray-400;
+	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-500;
-	#{--ks-content-warn}: var(--ks-content-warning);
 
 	/* dialog */
 	#{--ks-dialog-background}: $base-white;
@@ -141,15 +141,15 @@
 	/* editor */
 	#{--ks-editor-number}: $base-orange-600;
 	#{--ks-editor-pabble}: $base-orange-400;
-	#{--ks-editor-property}: $base-green-600;
+	#{--ks-editor-property}: $base-purple-500;
 	#{--ks-editor-punctuation}: $base-gray-400;
-	#{--ks-editor-value}: $base-blue-600;
+	#{--ks-editor-value}: $base-black;
 
 	/* log */
 	#{--ks-log-background-debug}: $base-blue-50;
 	#{--ks-log-background-error}: $base-red-50;
 	#{--ks-log-background-info}: #c7f0ff;
-	#{--ks-log-background-trace}: $base-gray-50;
+	#{--ks-log-background-trace}: $base-gray-100;
 	#{--ks-log-background-warn}: $base-orange-50;
 	#{--ks-log-border-debug}: $base-blue-400;
 	#{--ks-log-border-error}: $base-red-400;
