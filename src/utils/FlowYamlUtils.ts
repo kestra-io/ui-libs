@@ -109,7 +109,7 @@ function getSectionNodeAndDocumentFromSource({source, section}: {
 }
 
 function parseDocumentTyped(source: string) {
-    return parseDocument(source) as Document<YAMLMap<{ value: string }, Node>>;
+    return parseDocument(source) as Document<YAMLMap<Scalar<string>, Node>>;
 }
 
 function getSectionFromDocument({yamlDoc, section}:
@@ -677,9 +677,23 @@ export function isParentChildrenRelation({source, sections, key1, key2, keyName}
 }
 
 export function replaceIdAndNamespace(source: string, id: string, namespace: string) {
-    return source
-        .replace(/^(id\s*:\s*(["']?))\S*/m, "$1" + id + "$2")
-        .replace(/^(namespace\s*:\s*(["']?))\S*/m, "$1" + namespace + "$2");
+    const yamlDoc = parseDocumentTyped(source);
+
+    const existingNamespace = yamlDoc.getIn(["namespace"], true) as Scalar | undefined;
+    if(existingNamespace){
+        existingNamespace.value = namespace;
+    }else{
+        yamlDoc.contents?.items.unshift(new Pair(new Scalar("namespace"), new Scalar(namespace)));
+    }
+
+    const existingId = yamlDoc.getIn(["id"], true) as Scalar | undefined;
+    if(existingId){
+        existingId.value = id;
+    }else{
+        yamlDoc.contents?.items.unshift(new Pair(new Scalar("id"), new Scalar(id)));
+    }
+
+    return yamlDoc.toString(TOSTRING_OPTIONS);
 }
 
 export function checkBlockAlreadyExists({source, section, newContent, keyName}:
@@ -779,6 +793,7 @@ export type FlowSectionKeys = typeof FLOW_SECTION_KEYS[number];
 
 export const ORDERED_FLOW_ROOT_KEYS = [
     "id",
+    "type",
     "namespace",
     "description",
     "retry",
@@ -803,14 +818,14 @@ function isItemTruthy(item: Node) {
     }
 }
 
-function cleanMetadataDocument(yamlDoc: Document<YAMLMap<{ value: string }, Node | YAMLSeq>>) {
+function cleanMetadataDocument(yamlDoc: Document<YAMLMap<Scalar<string>, Node | YAMLSeq>>) {
     if (!yamlDoc?.contents?.items) {
         return yamlDoc;
     }
-    const updatedItems = [];
+    const updatedItems: Pair<Scalar<string>, Node>[] = [];
     for (const prop of ORDERED_FLOW_ROOT_KEYS) {
         const item = yamlDoc.contents?.items.find(
-            (e: any) => e.key.value === prop
+            (e: any) => (e.key.value ?? e.key) === prop
         );
         if (item?.value && isItemTruthy(item.value)) {
             updatedItems.push(item);
