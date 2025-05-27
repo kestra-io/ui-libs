@@ -495,6 +495,12 @@
             "rootAlias": "base-color-palette/red/red-50"
           },
           {
+            "name": "ks/background-failed",
+            "value": "#fff2f3",
+            "var": "base-color-palette/red/red-50",
+            "rootAlias": "base-color-palette/red/red-50"
+          },
+          {
             "name": "ks/background-info",
             "value": "#c7f0ff",
             "var": "",
@@ -646,6 +652,12 @@
           },
           {
             "name": "ks/border-error",
+            "value": "#fd7278",
+            "var": "base-color-palette/red/red-300",
+            "rootAlias": "base-color-palette/red/red-300"
+          },
+          {
+            "name": "ks/border-failed",
             "value": "#fd7278",
             "var": "base-color-palette/red/red-300",
             "rootAlias": "base-color-palette/red/red-300"
@@ -952,6 +964,12 @@
           },
           {
             "name": "ks/content-error",
+            "value": "#ab0009",
+            "var": "base-color-palette/red/red-500",
+            "rootAlias": "base-color-palette/red/red-500"
+          },
+          {
+            "name": "ks/content-failed",
             "value": "#ab0009",
             "var": "base-color-palette/red/red-500",
             "rootAlias": "base-color-palette/red/red-500"
@@ -1819,6 +1837,12 @@
             "rootAlias": ""
           },
           {
+            "name": "ks/background-failed",
+            "value": "#26000233",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
             "name": "ks/background-info",
             "value": "#0e3b9a33",
             "var": "",
@@ -1970,6 +1994,12 @@
           },
           {
             "name": "ks/border-error",
+            "value": "#e3262f",
+            "var": "base-color-palette/red/red-400",
+            "rootAlias": "base-color-palette/red/red-400"
+          },
+          {
+            "name": "ks/border-failed",
             "value": "#e3262f",
             "var": "base-color-palette/red/red-400",
             "rootAlias": "base-color-palette/red/red-400"
@@ -2276,6 +2306,12 @@
           },
           {
             "name": "ks/content-error",
+            "value": "#fd9297",
+            "var": "base-color-palette/red/red-200",
+            "rootAlias": "base-color-palette/red/red-200"
+          },
+          {
+            "name": "ks/content-failed",
             "value": "#fd9297",
             "var": "base-color-palette/red/red-200",
             "rootAlias": "base-color-palette/red/red-200"

@@ -16,6 +16,7 @@ html.dark{
 	#{--ks-background-card-opacity}: #121319e5;
 	#{--ks-background-created}: rgba($base-blue-400, 0.2);
 	#{--ks-background-error}: rgba($base-red-900, 0.2);
+	#{--ks-background-failed}: rgba($base-red-900, 0.2);
 	#{--ks-background-info}: rgba($base-blue-700, 0.2);
 	#{--ks-background-input}: $base-gray-950;
 	#{--ks-background-killed}: rgba($base-yellow-400, 0.1);
@@ -46,6 +47,7 @@ html.dark{
 	#{--ks-border-cancelled}: $base-red-200;
 	#{--ks-border-created}: $base-blue-500;
 	#{--ks-border-error}: $base-red-400;
+	#{--ks-border-failed}: $base-red-400;
 	#{--ks-border-inactive}: $base-gray-400;
 	#{--ks-border-info}: $base-blue-500;
 	#{--ks-border-killed}: $base-yellow-900;
@@ -105,6 +107,7 @@ html.dark{
 	#{--ks-content-cancelled}: $base-red-50;
 	#{--ks-content-created}: $base-blue-100;
 	#{--ks-content-error}: $base-red-200;
+	#{--ks-content-failed}: $base-red-200;
 	#{--ks-content-id}: $base-purple-100;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-50;
