@@ -16,6 +16,7 @@
 	#{--ks-background-card-opacity}: #1b1c23e5;
 	#{--ks-background-created}: rgba($base-blue-50, 0.39);
 	#{--ks-background-error}: $base-red-50;
+	#{--ks-background-failed}: $base-red-50;
 	#{--ks-background-info}: #c7f0ff;
 	#{--ks-background-input}: $base-white;
 	#{--ks-background-killed}: $base-yellow-50;
@@ -46,6 +47,7 @@
 	#{--ks-border-cancelled}: $base-red-300;
 	#{--ks-border-created}: $base-blue-200;
 	#{--ks-border-error}: $base-red-300;
+	#{--ks-border-failed}: $base-red-300;
 	#{--ks-border-inactive}: $base-gray-100;
 	#{--ks-border-info}: $base-blue-200;
 	#{--ks-border-killed}: $base-yellow-600;
@@ -105,6 +107,7 @@
 	#{--ks-content-cancelled}: $base-red-500;
 	#{--ks-content-created}: $base-blue-500;
 	#{--ks-content-error}: $base-red-500;
+	#{--ks-content-failed}: $base-red-500;
 	#{--ks-content-id}: $base-purple-500;
 	#{--ks-content-inactive}: $base-gray-300;
 	#{--ks-content-info}: $base-blue-600;
