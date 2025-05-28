@@ -1273,5 +1273,69 @@ describe("getPathFromSectionAndId", () => {
         });
         expect(result).toBe("triggers[0].conditions[1]");
     })
-
 })
+
+describe("replaceIdAndNamespace", () => {
+    test("replaces id and namespace in yaml", () => {
+        const yaml = `
+id: old-id
+namespace: old.namespace
+tasks:
+  - id: task1
+        `;
+        const result = YamlUtils.replaceIdAndNamespace(yaml, "new-id", "new.namespace");
+        expect(result).toContain("id: new-id");
+        expect(result).toContain("namespace: new.namespace");
+    });
+
+    test("handles quoted values", () => {
+        const yaml = `
+id: "old-id"
+namespace: 'old.namespace'
+        `;
+        const result = YamlUtils.replaceIdAndNamespace(yaml, "new-id", "new.namespace");
+        expect(result).toContain("id: \"new-id\"");
+        expect(result).toContain("namespace: 'new.namespace'");
+    });
+
+    test("handles empty yaml", () => {
+        const yaml = `
+tasks: 
+  - id: t1
+    type: plugin1
+        `;
+        const result = YamlUtils.replaceIdAndNamespace(yaml, "new-id", "new.namespace");
+        const lines = result.split("\n").map((l: string) => l.trim()).filter(Boolean);
+        expect(result).toContain("id: new-id");
+        expect(lines[0]).toBe("id: new-id");
+        expect(result).toContain("namespace: new.namespace");
+    });
+});
+
+describe("cleanMetadata", () => {
+    test("removes empty sections", () => {
+        const yaml = `
+        id: test
+        tasks: []
+        triggers: []
+        errors: []
+        `;
+        const result = YamlUtils.cleanMetadata(yaml);
+        expect(result).toBe("id: test\n");
+    });
+
+    test("maintains correct order of sections", () => {
+        const yaml = `
+        tasks:
+          - id: task1
+        namespace: test
+        id: test
+        triggers:
+          - id: trigger1
+        `;
+        const result = YamlUtils.cleanMetadata(yaml);
+        const lines = result.split("\n").map((l: string) => l.trim()).filter(Boolean);
+        expect(lines[0]).toBe("id: test");
+        expect(lines[1]).toBe("namespace: test");
+    });
+});
