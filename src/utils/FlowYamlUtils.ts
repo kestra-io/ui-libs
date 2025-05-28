@@ -678,19 +678,20 @@ export function isParentChildrenRelation({source, sections, key1, key2, keyName}
 
 export function replaceIdAndNamespace(source: string, id: string, namespace: string) {
     const yamlDoc = parseDocumentTyped(source);
+    yamlDoc.contents = yamlDoc.contents || new YAMLMap();
 
     const existingNamespace = yamlDoc.getIn(["namespace"], true) as Scalar | undefined;
     if(existingNamespace){
         existingNamespace.value = namespace;
     }else{
-        yamlDoc.contents?.items.unshift(new Pair(new Scalar("namespace"), new Scalar(namespace)));
+        yamlDoc.contents.items.unshift(new Pair(new Scalar("namespace"), new Scalar(namespace)));
     }
 
     const existingId = yamlDoc.getIn(["id"], true) as Scalar | undefined;
     if(existingId){
         existingId.value = id;
     }else{
-        yamlDoc.contents?.items.unshift(new Pair(new Scalar("id"), new Scalar(id)));
+        yamlDoc.contents.items.unshift(new Pair(new Scalar("id"), new Scalar(id)));
     }
 
     return yamlDoc.toString(TOSTRING_OPTIONS);
@@ -841,9 +842,11 @@ export function cleanMetadata(source: string) {
     return cleanedYamlDoc.toString(TOSTRING_OPTIONS);
 }
 
-export function getMetadata(source: string) {
+export function getMetadata(source: string): Record<string, any> {
     const yamlDoc = parseDocument(source) as any;
+    if(!yamlDoc.contents?.items) return {};
     const metadata: Record<string, any> = {};
+    
     for (const item of yamlDoc.contents.items) {
         if (!FLOW_SECTION_KEYS.includes(item.key.value)) {
             metadata[item.key.value] =

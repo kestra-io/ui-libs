@@ -1298,7 +1298,7 @@ namespace: 'old.namespace'
         expect(result).toContain("namespace: 'new.namespace'");
     });
 
-    test("handles empty yaml", () => {
+    test("handles yaml with only tasks and sets it on top", () => {
         const yaml = `
 tasks: 
   - id: t1
@@ -1310,6 +1310,68 @@ tasks:
         expect(lines[0]).toBe("id: new-id");
         expect(result).toContain("namespace: new.namespace");
     });
+
+    test("handles empty yaml", () => {
+        const yaml = `
+
+        `;
+        const result = YamlUtils.replaceIdAndNamespace(yaml, "new-id", "new.namespace");
+        expect(result).toContain("id: new-id");
+        expect(result).toContain("namespace: new.namespace");
+    });
+});
+
+describe("getMetadata", () => {
+    test("returns all metadata except tasks, triggers, and errors", () => {
+        const yaml = `
+        id: test
+        namespace: test.ns
+        description: Test flow
+
+        tasks:
+          - id: task1
+        triggers:
+          - id: trigger1
+        errors:
+          - id: error1
+        finally:
+          - id: finally1
+        `;
+        const metadata = YamlUtils.getMetadata(yaml);
+        expect(metadata).toEqual({
+            id: "test",
+            namespace: "test.ns",
+            description: "Test flow"
+        });
+    });
+
+    test("handles complex metadata values", () => {
+        const yaml = `
+        id: test
+        labels:
+          env: prod
+          team: dev
+        variables:
+          var1: value1
+        `;
+        const metadata = YamlUtils.getMetadata(yaml);
+        expect(metadata).toEqual({
+            id: "test",
+            labels: {
+                env: "prod",
+                team: "dev"
+            },
+            variables: {
+                var1: "value1"
+            }
+        });
+    });
+
+    test("does not fail on empty yaml", () => {
+        const yaml = "";
+        const metadata = YamlUtils.getMetadata(yaml);
+        expect(metadata).toEqual({});
+    })
 });
 
 describe("cleanMetadata", () => {
