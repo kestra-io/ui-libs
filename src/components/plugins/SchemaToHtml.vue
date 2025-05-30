@@ -87,7 +87,14 @@
                 </template>
             </CollapsibleProperties>
 
-            <Collapsible v-if="schema.definitions && Object.keys(schema.definitions).length > 0" class="plugin-section" clickable-text="Definitions" href="definitions" :initially-expanded="definitionsExpanded">
+            <Collapsible 
+                v-if="schema.definitions && Object.keys(schema.definitions).length > 0" 
+                class="plugin-section" 
+                clickable-text="Definitions" 
+                href="definitions" 
+                :initially-expanded="definitionsExpanded"
+                :key="`definitions-${pluginType}-${forceExpandKey}`"
+            >
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
                         <CollapsibleProperties
@@ -96,9 +103,10 @@
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
                             :show-dynamic="false"
+                            :initially-expanded="expandedDefinitions.has(definitionKey)"
                             :key="pluginType + '-' + definitionKey"
                             class="plugin-section nested-button-py-2"
-                            @expand="definitionsExpanded = true"
+                            @expand="definitionsExpanded = true; expandedDefinitions.add(definitionKey)"
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
@@ -114,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-    import {computed, onUnmounted, ref} from "vue";
+    import {computed, onMounted, onUnmounted, ref, watch, nextTick} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
     import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
@@ -132,6 +140,53 @@
     });
 
     const definitionsExpanded = ref(false);
+    const expandedDefinitions = ref<Set<string>>(new Set());
+    const forceExpandKey = ref(0);
+
+    const checkHashAndExpand = async () => {
+        const hash = window.location.hash.slice(1);
+        if (!hash || !props.schema.definitions) {
+            expandedDefinitions.value.clear();
+            return;
+        }
+
+        const definitionKey = hash.includes("#") ? hash.split("#").pop()?.split(".").pop() : hash;
+
+        if (definitionKey && definitionKey in props.schema.definitions) {
+            definitionsExpanded.value = true;
+            forceExpandKey.value += 1;
+            expandedDefinitions.value.clear();
+            expandedDefinitions.value.add(definitionKey);
+
+            await nextTick();
+
+            let attempts = 0;
+            const maxAttempts = 30;
+
+            const attemptScroll = () => {
+                const element = document.getElementById(definitionKey);
+                if (element) {
+                    element.scrollIntoView({behavior: "smooth", block: "start"});
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    requestAnimationFrame(attemptScroll);
+                }
+            };
+        
+            requestAnimationFrame(attemptScroll);
+        } else {
+            expandedDefinitions.value.clear();
+        }
+    };
+
+    watch([() => props.schema, () => props.pluginType], ([newSchema, newType], [oldSchema, oldType]) => {
+        if (newSchema !== oldSchema || newType !== oldType) {
+            if (props.schema.definitions) {
+                checkHashAndExpand();
+            }
+        }
+    }, {immediate: true});
+
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
         if (!example?.full) {
@@ -174,7 +229,15 @@
 
     const codeTheme = "github-" + (props.darkMode ? "dark" : "light");
 
-    onUnmounted(() => highlighter.value?.dispose());
+    onMounted(() => {
+        checkHashAndExpand();
+        window.addEventListener("hashchange", checkHashAndExpand);
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener("hashchange", checkHashAndExpand);
+        highlighter.value?.dispose();
+    });
 </script>
 
 <style scoped lang="scss">
