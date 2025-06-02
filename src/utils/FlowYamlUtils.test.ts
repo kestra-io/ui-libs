@@ -147,13 +147,16 @@ describe("insertBlock", () => {
             refKey: "plugin1"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -201,13 +204,16 @@ describe("insertBlock", () => {
             newBlock: newValue, 
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin2
               type: type2
               name: Plugin 2
+
             - id: plugin3
               type: type3
               name: Plugin 3
@@ -224,13 +230,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -247,13 +256,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -279,13 +291,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "triggers:
+          "
+          triggers:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -317,7 +332,8 @@ describe("insertBlock", () => {
             parentKey:"t1"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: t1
               type: type1
               name: Plugin 1
@@ -413,7 +429,8 @@ describe("insertBlock", () => {
             subBlockName: "conditions"
         });
         expect(result).toMatchInlineSnapshot(`
-          "triggers:
+          "
+          triggers:
             - id: trigger1
               type: type1
               name: Plugin 1

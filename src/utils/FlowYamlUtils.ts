@@ -830,6 +830,23 @@ function cleanMetadataDocument(yamlDoc: Document<YAMLMap<Scalar<string>, Node | 
         );
         if (item?.value && isItemTruthy(item.value)) {
             updatedItems.push(item);
+            if(isSeq(item.value)) {
+                if (!item.key.commentBefore) {
+                    item.key.spaceBefore = true;
+                }
+                // add whitespace between items
+                item.value.items.forEach((seqItem: any, index: number) => {
+                    if(index === 0) {
+                        return
+                    }
+                    if (seqItem.commentBefore) {
+                        seqItem.commentBefore.spaceBefore = true;
+                    } else {
+                        seqItem.spaceBefore = true;
+                    }
+                });
+                
+            }
         }
     }
     yamlDoc.contents.items = updatedItems;
