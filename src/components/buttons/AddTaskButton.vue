@@ -23,6 +23,7 @@
         height: 25px;
         border: 0.4px solid var(--ks-border-primary);
         background-color: var(--ks-background-card);
+        cursor: pointer;
 
         &.text-danger {
             border-color: $red;
