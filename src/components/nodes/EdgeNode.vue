@@ -119,6 +119,10 @@
 </script>
 
 <style scoped>
+    .stroke-danger {
+        stroke: var(--ks-border-error);
+    }
+
     .stroke-error {
         stroke: var(--ks-border-error);
     }
