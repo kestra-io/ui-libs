@@ -385,19 +385,23 @@ export default {
     return [Utils.afterLastDot(edge.target), "before"];
   },
 
-  getEdgeColor(edge:GraphEdge, nodeByUid:Record<string, MinimalNode>,) {
-    const sourceNode = nodeByUid[edge.source];
-    const targetNode = nodeByUid[edge.target];
+  getEdgeColor(edge: GraphEdge, nodeByUid: Record<string, MinimalNode>, clusterByNodeUid: Record<string, Cluster>) {
+    const findRootBranchType = (nodeId: string): BranchType | null => {
+      const uidParts = nodeId.split(".");
+      for (let i = 1; i <= uidParts.length; i++) {
+        const parentUid = uidParts.slice(0, i).join(".");
+        const branchType = clusterByNodeUid[parentUid]?.branchType;
+        if (branchType) return branchType;
+      }
+      return nodeByUid[nodeId]?.branchType ?? null;
+    };
 
-    if (targetNode.branchType === BranchType.ERROR || sourceNode.branchType === BranchType.ERROR) {
-      return "error";
-    }
+    const sourceBranchType = findRootBranchType(edge.source);
+    const targetBranchType = findRootBranchType(edge.target);
 
-    if (targetNode.branchType === BranchType.FINALLY || sourceNode.branchType === BranchType.FINALLY) {
-      return "warning";
-    }
-
-    return null;
+    return [sourceBranchType, targetBranchType].includes(BranchType.ERROR) ? "danger" 
+      : [sourceBranchType, targetBranchType].includes(BranchType.FINALLY) ? "warning" 
+      : null;
   },
 
   generateGraph(
@@ -626,7 +630,7 @@ export default {
         hiddenNodes
       );
       if (newEdge) {
-        const edgeColor = this.getEdgeColor(edge, nodeByUid);
+        const edgeColor = this.getEdgeColor(edge, nodeByUid, clusterByNodeUid);
         elements.push({
           id: newEdge.source + "|" + newEdge.target,
           source: newEdge.source,
