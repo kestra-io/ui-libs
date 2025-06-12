@@ -1105,6 +1105,7 @@ describe("replaceBlockWithPath", () => {
           "
         `);
     })
+
     test("replacing a task", () => {
         const yamlString = `
         tasks:
@@ -1219,6 +1220,59 @@ describe("replaceBlockWithPath", () => {
                 - id: plugin4
                   type: type4
                   name: Plugin 4
+          "
+        `)
+    })
+
+    test("replace a subtask with subtask", () => {
+        const yamlString = `
+tasks:
+  - id: test
+    type: io.kestra.plugin.core.flow.Dag
+    tasks:
+      - dependsOn:
+          - tweeb
+        task:
+          id: foo
+          type: io.kestra.plugin.core.log.Log
+          message: foow
+      - task:
+          id: tweeb
+          type: io.kestra.plugin.core.log.Log
+          message: tweeb
+`;
+
+        const newValue = `
+            id: plugin4
+            type: type4
+            name: Plugin 4
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "tasks[0].tasks[2].task",
+            newContent: newValue
+        })
+
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: test
+              type: io.kestra.plugin.core.flow.Dag
+              tasks:
+                - dependsOn:
+                    - tweeb
+                  task:
+                    id: foo
+                    type: io.kestra.plugin.core.log.Log
+                    message: foow
+                - task:
+                    id: tweeb
+                    type: io.kestra.plugin.core.log.Log
+                    message: tweeb
+                - task:
+                    id: plugin4
+                    type: type4
+                    name: Plugin 4
           "
         `)
     })
