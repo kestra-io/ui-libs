@@ -1,33 +1,28 @@
 <template>
-    <div :id="href" class="d-flex flex-column" :class="{'gap-2': !collapsed}">
-        <button
-            type="button"
+    <details :id="href" @toggle="handleToggle" ref="collapsible">
+        <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
-            data-toggle="collapse"
-            :data-target="getHash"
-            aria-expanded="false"
-            :aria-controls="href + '-body'"
-            @click="handleClick"
         >
             <span class="d-flex gap-2 align-items-center">
-                <component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />{{ clickableText }}
+                <component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />
+                {{ clickableText }}
                 <slot name="additionalButtonText" />
             </span>
             <span v-if="$slots.buttonRight" class="d-flex flex-grow-1">
                 <slot name="buttonRight" :collapsed="collapsed" />
             </span>
-        </button>
-        <div v-if="$slots.content" :id="href + '-body'" class="collapsible-body" :class="{collapsed}">
+        </summary>
+        <div v-if="$slots.content" :id="href + '-body'">
             <div>
                 <slot name="content" />
             </div>
         </div>
-    </div>
+    </details>
 </template>
 
 <script setup lang="ts">
-    import {ref, watch, computed} from "vue";
+    import {ref, watch, computed, useTemplateRef, onMounted} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
     import {useRoute, useRouter} from "vue-router";
@@ -43,15 +38,18 @@
         initiallyExpanded: false
     });
 
-    const collapsed = ref(!props.initiallyExpanded);
+    const collapsed = ref(true);
+    const collapsible = useTemplateRef("collapsible");
 
     const route = useRoute();
     const router = useRouter();
 
     const getHash = computed(() => `#${props.href}-body`);
-    const handleClick = () => {
+    const handleToggle = () => {
         collapsed.value = !collapsed.value;
-        router.replace({hash: collapsed.value ? "" : getHash.value});
+        router.replace({
+            hash: collapsed.value ? "" : getHash.value
+        });
     };
 
     const emit = defineEmits(["expand"]);
@@ -72,15 +70,35 @@
     watch(
         () => props.initiallyExpanded,
         initiallyExpanded => {
-            if (initiallyExpanded) {
+            if (initiallyExpanded !== undefined) {
                 collapsed.value = !initiallyExpanded;
             }
-        },
-        {immediate: true}
+        }
     );
+
+    onMounted(() => {
+        if (collapsible.value && props.initiallyExpanded !== undefined) {
+            collapsible.value.open = props.initiallyExpanded;
+        }
+    });
 </script>
 
 <style scoped lang="scss">
+details{
+    overflow: hidden;
+}
+
+details::details-content{
+    block-size: 0%;
+    transition: block-size 150ms, 
+        content-visibility 150ms;
+    transition-behavior: allow-discrete;
+}
+
+details[open]::details-content{
+    block-size: auto;
+}
+
 .collapse-button {
     padding: 0;
     border: none;
@@ -89,20 +107,6 @@
     &:focus {
         outline: none;
         box-shadow: none;
-    }
-}
-
-.collapsible-body {
-    display: grid;
-    transition: grid-template-rows 150ms;
-    grid-template-rows: 1fr;
-
-    &.collapsed {
-        grid-template-rows: 0fr;
-    }
-
-    >div {
-        overflow: hidden;
     }
 }
 </style>
