@@ -2,13 +2,13 @@
     <div :id="href" class="d-flex flex-column" :class="{'gap-2': !collapsed}">
         <button
             type="button"
-            @click="handleClick"
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
             data-toggle="collapse"
             :data-target="getHash"
             aria-expanded="false"
             :aria-controls="href + '-body'"
+            @click="handleClick"
         >
             <span class="d-flex gap-2 align-items-center">
                 <component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />{{ clickableText }}
