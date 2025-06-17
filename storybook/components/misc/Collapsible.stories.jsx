@@ -19,7 +19,7 @@ const Template = (args) => ({
   setup() {
     return () => <Collapsible {...args}>
         {{
-            content: () => <>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc</>
+            content: () => <div style="width:200px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc</div>
         }}
     </Collapsible>
   }

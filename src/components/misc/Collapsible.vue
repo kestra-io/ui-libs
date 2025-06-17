@@ -1,5 +1,5 @@
 <template>
-    <details :id="href" class="d-flex flex-column gap-2" @toggle="handleToggle" ref="collapsible">
+    <details :id="href" @toggle="handleToggle" ref="collapsible">
         <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
@@ -13,7 +13,7 @@
                 <slot name="buttonRight" :collapsed="collapsed" />
             </span>
         </summary>
-        <div v-if="$slots.content" :id="href + '-body'" class="collapsible-body">
+        <div v-if="$slots.content" :id="href + '-body'">
             <div>
                 <slot name="content" />
             </div>
@@ -84,6 +84,21 @@
 </script>
 
 <style scoped lang="scss">
+details{
+    overflow: hidden;
+}
+
+details::details-content{
+    block-size: 0%;
+    transition: block-size 150ms, 
+        content-visibility 150ms;
+    transition-behavior: allow-discrete;
+}
+
+details[open]::details-content{
+    block-size: auto;
+}
+
 .collapse-button {
     padding: 0;
     border: none;
@@ -92,20 +107,6 @@
     &:focus {
         outline: none;
         box-shadow: none;
-    }
-}
-
-.collapsible-body {
-    display: grid;
-    transition: grid-template-rows 150ms;
-    grid-template-rows: 1fr;
-
-    &.collapsed {
-        grid-template-rows: 0fr;
-    }
-
-    >div {
-        overflow: hidden;
     }
 }
 </style>
