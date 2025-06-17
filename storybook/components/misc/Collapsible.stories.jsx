@@ -1,8 +1,18 @@
+import {vueRouter} from "storybook-vue3-router";
 import Collapsible from "../../../src/components/misc/Collapsible.vue";
 
 export default {
   title: "Components/Misc/Collapsible",
   component: Collapsible,
+  decorators: [
+        vueRouter([
+            {
+                path: "/",
+                name: "home",
+                component: Collapsible
+            }
+        ])
+    ],
 };
 
 const Template = (args) => ({

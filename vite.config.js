@@ -75,6 +75,7 @@ export default defineConfig({
             "#build/mdc-image-component.mjs": path.resolve(__dirname, "./stub-mdc-imports.js"),
             "#mdc-imports": path.resolve(__dirname, "./stub-mdc-imports.js"),
             "#mdc-configs": path.resolve(__dirname, "./stub-mdc-imports.js"),
+            "@storybook/addon-actions": "storybook/actions",
         }
     }
 })
