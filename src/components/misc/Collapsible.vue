@@ -1,6 +1,6 @@
 <template>
     <div :id="href" class="d-flex flex-column" :class="{'gap-2': !collapsed}">
-        <button @click="handleClick" class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button" :class="{collapsed}" data-toggle="collapse" :data-target="getHash" aria-expanded="false" :aria-controls="href + '-body'">
+        <button type="button" @click="handleClick" class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button" :class="{collapsed}" data-toggle="collapse" :data-target="getHash" aria-expanded="false" :aria-controls="href + '-body'">
             <span class="d-flex gap-2 align-items-center"><component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />{{ clickableText }}<slot name="additionalButtonText" /></span>
             <span v-if="$slots.buttonRight" class="d-flex flex-grow-1">
                 <slot name="buttonRight" :collapsed="collapsed" />
@@ -20,7 +20,12 @@
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
     import {useRoute, useRouter} from "vue-router";
 
-    const props = withDefaults(defineProps<{ href?: string, clickableText: string, arrow?: boolean, initiallyExpanded?: boolean }>(), {
+    const props = withDefaults(defineProps<{ 
+        href?: string, 
+        clickableText: string, 
+        arrow?: boolean, 
+        initiallyExpanded?: boolean 
+    }>(), {
         href: Math.random().toString(36).substring(2, 5),
         arrow: true,
         initiallyExpanded: false
