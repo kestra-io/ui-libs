@@ -183,7 +183,7 @@
                 return {
                     "unused-path": this.data.unused,
                     [`border-${this.borderColor}`]: this.borderColor,
-                    "disabled": this.data.node.task?.disabled,
+                    "disabled": this.data.node.task?.disabled || this.data.parent?.taskNode?.task?.disabled,
                     [this.$attrs.class]: true
                 }
             },
