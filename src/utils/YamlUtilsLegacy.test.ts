@@ -69,6 +69,7 @@ describe("insertTask", () => {
             - id: t1
               type: io.kestra.plugin.core.log.Log
               message: "{{ task.id }}"
+
             - id: t1.1
               name: newTask
               command: echo hello
@@ -134,6 +135,7 @@ describe("insertTask", () => {
               env:
                 ENV_VAR: value
               cwd: /path/to/dir
+
             - id: t1
               type: io.kestra.plugin.core.log.Log
               message: "{{ task.id }}"

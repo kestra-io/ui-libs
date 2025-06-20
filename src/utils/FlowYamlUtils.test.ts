@@ -147,13 +147,16 @@ describe("insertBlock", () => {
             refKey: "plugin1"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -201,13 +204,16 @@ describe("insertBlock", () => {
             newBlock: newValue, 
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin2
               type: type2
               name: Plugin 2
+
             - id: plugin3
               type: type3
               name: Plugin 3
@@ -224,13 +230,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -247,13 +256,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -279,13 +291,16 @@ describe("insertBlock", () => {
             position: "before"
         });
         expect(result).toMatchInlineSnapshot(`
-          "triggers:
+          "
+          triggers:
             - id: plugin1
               type: type1
               name: Plugin 1
+
             - id: plugin3
               type: type3
               name: Plugin 3
+
             - id: plugin2
               type: type2
               name: Plugin 2
@@ -317,7 +332,8 @@ describe("insertBlock", () => {
             parentKey:"t1"
         });
         expect(result).toMatchInlineSnapshot(`
-          "tasks:
+          "
+          tasks:
             - id: t1
               type: type1
               name: Plugin 1
@@ -413,7 +429,8 @@ describe("insertBlock", () => {
             subBlockName: "conditions"
         });
         expect(result).toMatchInlineSnapshot(`
-          "triggers:
+          "
+          triggers:
             - id: trigger1
               type: type1
               name: Plugin 1
@@ -1088,6 +1105,7 @@ describe("replaceBlockWithPath", () => {
           "
         `);
     })
+
     test("replacing a task", () => {
         const yamlString = `
         tasks:
@@ -1202,6 +1220,59 @@ describe("replaceBlockWithPath", () => {
                 - id: plugin4
                   type: type4
                   name: Plugin 4
+          "
+        `)
+    })
+
+    test("replace a subtask with subtask", () => {
+        const yamlString = `
+tasks:
+  - id: test
+    type: io.kestra.plugin.core.flow.Dag
+    tasks:
+      - dependsOn:
+          - tweeb
+        task:
+          id: foo
+          type: io.kestra.plugin.core.log.Log
+          message: foow
+      - task:
+          id: tweeb
+          type: io.kestra.plugin.core.log.Log
+          message: tweeb
+`;
+
+        const newValue = `
+            id: plugin4
+            type: type4
+            name: Plugin 4
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "tasks[0].tasks[2].task",
+            newContent: newValue
+        })
+
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: test
+              type: io.kestra.plugin.core.flow.Dag
+              tasks:
+                - dependsOn:
+                    - tweeb
+                  task:
+                    id: foo
+                    type: io.kestra.plugin.core.log.Log
+                    message: foow
+                - task:
+                    id: tweeb
+                    type: io.kestra.plugin.core.log.Log
+                    message: tweeb
+                - task:
+                    id: plugin4
+                    type: type4
+                    name: Plugin 4
           "
         `)
     })

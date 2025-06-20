@@ -1,6 +1,6 @@
 import moment from "moment";
 import {createStore} from "vuex";
-import {setup} from "@storybook/vue3";
+import {setup} from "@storybook/vue3-vite";
 import {withThemeByClassName} from "@storybook/addon-themes";
 
 import "../src/scss/vendor.scss";
@@ -8,7 +8,7 @@ import "../src/scss/ks-theme-light.scss";
 import "../src/scss/ks-theme-dark.scss";
 import "./app.scss";
 
-/** @type { import('@storybook/vue3').Preview } */
+/** @type { import('@storybook/vue3-vite').Preview } */
 const preview = {
     parameters: {
         controls: {
