@@ -587,6 +587,7 @@ export default {
           draggable: nodeType === "task" ? !isReadOnlyTask : false,
           data: {
             node: node,
+            parent: clusterByNodeUid[node.uid] ? clusterByNodeUid[node.uid] : undefined,
             namespace:
               clusterByNodeUid[node.uid]?.taskNode?.task?.namespace ??
               namespace,

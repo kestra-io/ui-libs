@@ -7,7 +7,7 @@
                 <RowLink
                     v-for="subGroupWrapper in subGroupsWrappers"
                     :id="`group-${slugify(subGroupName(subGroupWrapper))}`"
-                    :icon-b64-svg="'data:image/svg+xml;base64,' + icons[subGroupWrapper.subGroup]"
+                    :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
                     :text="subGroupName(subGroupWrapper)"
                     :href="subGroupHref(subGroupName(subGroupWrapper))"
                     :key="subGroupName(subGroupWrapper)"
@@ -25,7 +25,7 @@
                     <RowLink
                         v-for="element in Object.keys(elements)"
                         :id="slugify(element)"
-                        :icon-b64-svg="'data:image/svg+xml;base64,' + icons[elements[element][0]]"
+                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elements[element][0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
                         :text="elementName(element)"
                         :is-actions="elements[element]"
                         :key="element"
