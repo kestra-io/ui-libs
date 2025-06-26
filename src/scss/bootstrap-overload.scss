@@ -8,6 +8,10 @@ $custom-colors: (
 
 $theme-colors: $custom-colors;
 
+:root {
+    interpolate-size: allow-keywords;
+}
+
 @each $color, $value in $theme-colors {
     .bg-light-#{$color}-border {
         background-color: rgba($value, 0.05);
