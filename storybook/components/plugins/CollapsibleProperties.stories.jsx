@@ -1,8 +1,16 @@
 import CollapsibleProperties from "../../../src/components/plugins/CollapsibleProperties.vue";
+import {vueRouter} from "storybook-vue3-router";
 
 export default {
   title: "Components/plugins/CollapsibleProperties",
   component: CollapsibleProperties,
+  decorators: [vueRouter([
+    {
+        path: "/",
+        name: "home",
+        component: {template: "<div>home</div>"}
+    }])
+  ],
 };
 
 const Template = (args) => ({
