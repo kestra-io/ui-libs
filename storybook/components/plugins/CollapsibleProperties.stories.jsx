@@ -14,7 +14,6 @@ export default {
 };
 
 const Template = (args) => ({
-    components: {CollapsibleProperties},
     setup() {
         return () =>
             <CollapsibleProperties {...args} />
