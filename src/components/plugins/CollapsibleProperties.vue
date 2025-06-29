@@ -29,7 +29,7 @@
                                     <Alert class="text-warning" />
                                 </Tooltip>
                             </span>
-                            <span class="d-flex gap-2">
+                            <span class="d-flex flex-wrap gap-2">
                                 <template v-for="type in extractTypeInfo(property).types" :key="type">
                                     <a v-if="type.startsWith('#')" class="d-flex fw-bold type-box rounded fs-7 px-2 py-1" :href="type" @click.stop>
                                         <span class="ref-type">{{ className(type) }}</span><eye-outline />
