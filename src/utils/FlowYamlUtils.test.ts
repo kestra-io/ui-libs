@@ -1344,6 +1344,28 @@ describe("getPathFromSectionAndId", () => {
         });
         expect(result).toBe("triggers[0].conditions[1]");
     })
+
+    test("get path from dag", () => {
+        const yamlString = `
+            tasks:
+              - dependency: t1
+                task:
+                    id: t2
+                    type: type2
+                    name: Plugin 2
+              - task:
+                    id: t3
+                    type: type3
+                    name: Plugin 3
+        
+        `;
+        const result = YamlUtils.getPathFromSectionAndId({
+            source: yamlString,
+            section: "tasks",
+            id: "t2"
+        });
+        expect(result).toBe("tasks[0].task");
+    })
 })
 
 describe("replaceIdAndNamespace", () => {
