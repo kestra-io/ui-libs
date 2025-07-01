@@ -123,10 +123,11 @@ function getSectionFromDocument({yamlDoc, section}:
     return sectionNode?.value;
 }
 
-function getPathFromId({node, id} : {
+function getPathFromId({node, id, key} : {
     node: Node,
     id: string
-}): (string | number)[] {
+    key?: string
+}): (string | number)[] | undefined {
     // recursively search for the id in the node
     if (isSeq<{ value: Node }>(node)) {
         let index = 0
@@ -137,7 +138,7 @@ function getPathFromId({node, id} : {
                     return [index];
                 } else {
                     const path = getPathFromId({node: item, id});
-                    if (path.length > 0) {
+                    if (path) {
                         return [index, ...path];
                     }
                 }
@@ -153,8 +154,8 @@ function getPathFromId({node, id} : {
         } else {
             for (const item of node.items) {
                 if(item.value) {        
-                    const path = getPathFromId({node: item.value, id});
-                    if (path.length > 0) {
+                    const path = getPathFromId({node: item.value, id, key: item.key.value});
+                    if (path) {
                         return [item.key.value, ...path];
                     }
                 }
@@ -162,7 +163,7 @@ function getPathFromId({node, id} : {
         }
     }
 
-    return []
+    return undefined
 }
 
 export function getPathFromSectionAndId({
@@ -179,7 +180,7 @@ export function getPathFromSectionAndId({
         return undefined;
     }
 
-    const pathArray = getPathFromId({node: sectionNode, id})
+    const pathArray = getPathFromId({node: sectionNode, id}) ?? []
     const path = pathArray.map((e) => {
         if (typeof e === "string") {
             return `.${e}`;
