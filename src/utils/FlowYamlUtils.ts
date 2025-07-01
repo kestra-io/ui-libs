@@ -123,10 +123,9 @@ function getSectionFromDocument({yamlDoc, section}:
     return sectionNode?.value;
 }
 
-function getPathFromId({node, id, key} : {
+function getPathFromId({node, id} : {
     node: Node,
     id: string
-    key?: string
 }): (string | number)[] | undefined {
     // recursively search for the id in the node
     if (isSeq<{ value: Node }>(node)) {
