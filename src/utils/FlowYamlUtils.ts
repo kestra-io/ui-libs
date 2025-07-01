@@ -153,7 +153,7 @@ function getPathFromId({node, id} : {
         } else {
             for (const item of node.items) {
                 if(item.value) {        
-                    const path = getPathFromId({node: item.value, id, key: item.key.value});
+                    const path = getPathFromId({node: item.value, id});
                     if (path) {
                         return [item.key.value, ...path];
                     }
