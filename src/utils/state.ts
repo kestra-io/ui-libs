@@ -149,6 +149,15 @@ export const STATES:Record<string, StateModel> = Object.freeze({
         isKillable: false,
         isFailed: false,
     },
+    BREAKPOINT: {
+        name: "BREAKPOINT",
+        color: "#918BA9",
+        colorClass: "gray",
+        icon: PauseCircle,
+        isRunning: false,
+        isKillable: false,
+        isFailed: false,
+    },
 });
 
 export default class State {
@@ -202,6 +211,10 @@ export default class State {
 
     static get RETRIED() {
         return STATES.RETRIED.name;
+    }
+
+    static get BREAKPOINT() {
+        return STATES.BREAKPOINT.name;
     }
 
     static isRunning(state:string) {
