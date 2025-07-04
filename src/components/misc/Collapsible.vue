@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, watch, computed} from "vue";
+    import {ref, watch, computed, onMounted} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
     import {useRoute, useRouter} from "vue-router";
@@ -43,41 +43,39 @@
     const route = useRoute();
     const router = useRouter();
 
+    const emit = defineEmits(["expand"]);
     const getHash = computed(() => `#${props.href}-body`);
     const handleToggle = () => {
         collapsed.value = !collapsed.value;
+        if(!collapsed.value) {
+            emit("expand");
+        }
         router.replace({
             hash: collapsed.value ? "" : getHash.value
         });
     };
 
-    const emit = defineEmits(["expand"]);
-
-    watch(
-        () => {
-            return route.hash;
-        },
-        routeHash => {
-            if (routeHash === getHash.value) {
-                collapsed.value = false;
-                emit("expand");
-            }
-        },
-        {immediate: true}
-    );
-
-    const open = computed(() => {
-        return props.initiallyExpanded || route.hash === getHash.value;
-    });
+    const open = ref(false); 
 
     watch(
         () => props.initiallyExpanded,
-        initiallyExpanded => {
-            if (initiallyExpanded !== undefined) {
+        (initiallyExpanded) => {
+            if (initiallyExpanded !== undefined && open.value !== Boolean(initiallyExpanded)) {
+                open.value = initiallyExpanded;
                 collapsed.value = !initiallyExpanded;
             }
         }
         , {immediate: true}
+    );
+
+    watch(
+        () => route.hash,
+        (hash) => {
+            if (hash === getHash.value && collapsed.value) {
+                open.value = true;
+                collapsed.value = false;
+            }
+        }
     );
 </script>
 
