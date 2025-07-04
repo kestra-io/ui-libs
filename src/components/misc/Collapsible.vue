@@ -1,8 +1,9 @@
 <template>
-    <details :id="href" @click="handleToggle" :open>
+    <details :id="href" :open>
         <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
+            @click="handleToggle"
         >
             <span class="d-flex gap-2 align-items-center">
                 <component v-if="arrow" class="arrow" :is="collapsed ? MenuRight : MenuDown" />
@@ -65,8 +66,7 @@
                 collapsed.value = !initiallyExpanded;
             }
         }
-        , {immediate: true}
-    );
+        , {immediate: true});
 
     watch(
         () => route.hash,
@@ -76,7 +76,7 @@
                 collapsed.value = false;
             }
         }
-    );
+        , {immediate: true});
 </script>
 
 <style scoped lang="scss">
