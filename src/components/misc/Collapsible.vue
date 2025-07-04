@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, watch, computed, onMounted} from "vue";
+    import {ref, watch, computed} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
     import {useRoute, useRouter} from "vue-router";
@@ -60,7 +60,7 @@
     watch(
         () => props.initiallyExpanded,
         (initiallyExpanded) => {
-            if (initiallyExpanded !== undefined && open.value !== Boolean(initiallyExpanded)) {
+            if (initiallyExpanded !== undefined) {
                 open.value = initiallyExpanded;
                 collapsed.value = !initiallyExpanded;
             }
