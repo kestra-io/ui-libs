@@ -7,6 +7,9 @@
         :nodes-connectable="false"
         :elevate-nodes-on-select="false"
         :elevate-edges-on-select="false"
+        @keydown="handleKeyDown"
+        tabindex="0"
+        ref="vueFlowContainer"
     >
         <Background :pattern-color="darkTheme ? cssVariable('--bs-grey-500') : cssVariable('--bs-grey-300')" />
 
@@ -91,7 +94,7 @@
     </VueFlow>
 </template>
 <script lang="ts" setup>
-    import {computed, nextTick, onMounted, PropType, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, onUnmounted, PropType, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
     import {Background} from "@vue-flow/background";
@@ -179,7 +182,8 @@
 
     const dragging = ref(false);
     const lastPosition = ref<XYPosition | null>()
-    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
+    const vueFlowContainer = ref<HTMLElement | null>(null);
+    const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef, getSelectedNodes} = useVueFlow(props.id);
     const edgeReplacer = ref({});
     const hiddenNodes = ref<string[]>([]);
     const collapsed = ref(new Set<string>());
@@ -206,7 +210,9 @@
 
     onMounted(() => {
         generateGraph();
-
+        if (vueFlowContainer.value) {
+            vueFlowContainer.value.focus();
+        }
     })
 
     watch(() => props.flowGraph, () => {
@@ -223,7 +229,6 @@
         nextTick(() => {
             emit("loading", true);
 
-            // Workaround due to start & end nodes regeneration when fetching the graph again
             const oldCollapsed = collapsed.value;
             collapsed.value = new Set<string>();
             hiddenNodes.value = [];
@@ -253,7 +258,35 @@
         })
     }
 
-    // Graph interactions functions
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            event.preventDefault(); // Prevent default browser behavior
+            
+            
+            if (props.isReadOnly || !props.isAllowedEdit) {
+                return;
+            }
+
+            const selectedNodes = getSelectedNodes.value;
+            
+            // If no nodes are selected, do nothing
+            if (selectedNodes.length === 0) {
+                return;
+            }
+
+            selectedNodes.forEach(node => {
+                if (node.type === 'task' || node.type === 'trigger') {
+                    // Emit the same delete event as clicking the delete button
+                    emit(EVENTS.DELETE, {
+                        id: node.id,
+                        type: node.type,
+                        data: node.data
+                    });
+                }
+            });
+        }
+    }
+
     const onMouseOver = (node: any) => {
         if (!dragging.value) {
             VueFlowUtils.linkedElements(props.id, node.uid).forEach((n) => {
@@ -289,7 +322,6 @@
         dragging.value = false;
         if (e.intersections && checkIntersections(e.intersections, e.node) === null) {
             const taskNode1 = e.node;
-            // check multiple intersection with task
             const taskNode2 = e.intersections.find((n:any) => n.type === "task");
             if (taskNode2) {
                 try {
@@ -480,5 +512,8 @@
                 background: var(--ks-button-background-secondary-hover);;
             }
         }
+    }
+    .vue-flow__container:focus {
+        outline: none;
     }
 </style>
