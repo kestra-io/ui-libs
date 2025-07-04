@@ -1,5 +1,5 @@
 <template>
-    <details :id="href" @toggle="handleToggle" ref="collapsible">
+    <details :id="href" @toggle="handleToggle" :open="initiallyExpanded">
         <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, watch, computed, useTemplateRef, onMounted} from "vue";
+    import {ref, watch, computed} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
     import {useRoute, useRouter} from "vue-router";
@@ -39,7 +39,6 @@
     });
 
     const collapsed = ref(true);
-    const collapsible = useTemplateRef("collapsible");
 
     const route = useRoute();
     const router = useRouter();
@@ -66,21 +65,6 @@
         },
         {immediate: true}
     );
-
-    watch(
-        () => props.initiallyExpanded,
-        initiallyExpanded => {
-            if (initiallyExpanded !== undefined) {
-                collapsed.value = !initiallyExpanded;
-            }
-        }
-    );
-
-    onMounted(() => {
-        if (collapsible.value && props.initiallyExpanded !== undefined) {
-            collapsible.value.open = props.initiallyExpanded;
-        }
-    });
 </script>
 
 <style scoped lang="scss">

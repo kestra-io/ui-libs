@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-    import {nextTick, ref, shallowRef} from "vue";
+    import {computed, nextTick, ref, shallowRef} from "vue";
     import {createPopper} from "@popperjs/core";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
@@ -54,7 +54,7 @@
     const copyButton = ref<HTMLButtonElement>()
     const copyTooltip = ref<HTMLDivElement>()
 
-    const codeData = ref(props.highlighter.codeToHtml(props.code, {
+    const codeData = computed(() => props.highlighter.codeToHtml(props.code, {
         lang: props.language,
         theme: props.theme,
     }))
