@@ -1,5 +1,5 @@
 <template>
-    <details :id="href" @click="handleToggle" :open="initiallyExpanded">
+    <details :id="href" @click="handleToggle" :open>
         <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
@@ -65,6 +65,10 @@
         },
         {immediate: true}
     );
+
+    const open = computed(() => {
+        return props.initiallyExpanded || route.hash === getHash.value;
+    });
 
     watch(
         () => props.initiallyExpanded,
