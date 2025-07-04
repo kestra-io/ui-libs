@@ -1,5 +1,5 @@
 <template>
-    <details :id="href" @toggle="handleToggle" :open="initiallyExpanded">
+    <details :id="href" @click="handleToggle" :open="initiallyExpanded">
         <summary
             class="d-flex align-items-center justify-content-between fw-bold gap-2 collapse-button"
             :class="{collapsed}"
@@ -64,6 +64,16 @@
             }
         },
         {immediate: true}
+    );
+
+    watch(
+        () => props.initiallyExpanded,
+        initiallyExpanded => {
+            if (initiallyExpanded !== undefined) {
+                collapsed.value = !initiallyExpanded;
+            }
+        }
+        , {immediate: true}
     );
 </script>
 
