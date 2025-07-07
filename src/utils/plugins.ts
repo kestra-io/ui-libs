@@ -18,7 +18,7 @@ export function isEntryAPluginElementPredicate(key: string, value: any) {
     return Array.isArray(value) &&
         !["categories", "controllers", "storages", "aliases", "guides"].includes(key) &&
         ((value as any[]).length === 0 ||
-        typeof value[0] === "string");
+        value[0]?.cls !== undefined);
 }
 
 export function subGroupName(subGroupWrapper: Plugin) {

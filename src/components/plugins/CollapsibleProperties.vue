@@ -73,11 +73,12 @@
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import {ref, watch} from "vue";
 
-    withDefaults(defineProps<{ href?: string, sectionName: string, properties?: Record<string, JSONProperty>, showDynamic?: boolean, initiallyExpanded?: boolean }>(), {
+    const props = withDefaults(defineProps<{ href?: string, sectionName: string, properties?: Record<string, JSONProperty>, showDynamic?: boolean, initiallyExpanded?: boolean, forceInclude?: string[]}>(), {
         properties: undefined,
         href: Math.random().toString(36).substring(2, 5),
         showDynamic: true,
-        initiallyExpanded: false
+        initiallyExpanded: false,
+        forceInclude: () => [] as string[]
     });
 
     const emit = defineEmits(["expand"]);
@@ -124,7 +125,9 @@
 
         const sortedSchema = {} as Record<string, JSONProperty>;
         sortedKeys.forEach(key => {
-            sortedSchema[key] = schema[key];
+            if (!schema[key].$deprecated || props.forceInclude?.includes(key)) {
+                sortedSchema[key] = schema[key];
+            }
         });
 
         return sortedSchema;
