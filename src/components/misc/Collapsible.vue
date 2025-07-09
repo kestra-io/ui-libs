@@ -56,7 +56,7 @@
         });
     };
 
-    const open = ref(false); 
+    const open = ref(false);
 
     watch(
         () => props.initiallyExpanded,
@@ -80,29 +80,29 @@
 </script>
 
 <style scoped lang="scss">
-details{
-    overflow: hidden;
-}
-
-details::details-content{
-    block-size: 0%;
-    transition: block-size 150ms, 
-        content-visibility 150ms;
-    transition-behavior: allow-discrete;
-}
-
-details[open]::details-content{
-    block-size: auto;
-}
-
-.collapse-button {
-    padding: 0;
-    border: none;
-    background: none;
-
-    &:focus {
-        outline: none;
-        box-shadow: none;
+    details{
+        overflow: hidden;
     }
-}
+
+    details::details-content{
+        block-size: 0%;
+        transition: block-size 150ms,
+        content-visibility 150ms;
+        transition-behavior: allow-discrete;
+    }
+
+    details[open]::details-content{
+        block-size: auto;
+    }
+
+    .collapse-button {
+        padding: 0;
+        border: none;
+        background: none;
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
 </style>
