@@ -1,3 +1,8 @@
+export type PluginElement = {
+    cls: string;
+    deprecated?: boolean;
+}
+
 export type Plugin = {
     name: string;
     title: string;
@@ -11,7 +16,7 @@ export type Plugin = {
     aliases?: string[];
     guides?: string[];
 } & {
-    [pluginElement: string]: string[];
+    [pluginElement: string]: PluginElement[];
 }
 
 export function isEntryAPluginElementPredicate(key: string, value: any) {
