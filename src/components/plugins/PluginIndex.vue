@@ -39,7 +39,7 @@
 </template>
 <script setup lang="ts">
     import RowLink from "../misc/RowLink.vue";
-    import type {Plugin} from "../../utils/plugins";
+    import type {Plugin, PluginElement} from "../../utils/plugins";
     import {isEntryAPluginElementPredicate, subGroupName} from "../../utils/plugins";
     import {slugify} from "../../utils/url";
     import {computed} from "vue";
@@ -77,7 +77,7 @@
     function extractPluginElements(plugin: Plugin): Record<string, string[]> {
         return Object.fromEntries(
             Object.entries(plugin).filter(([key, value]) => isEntryAPluginElementPredicate(key, value))
-                .map(([key, value]) => [key.replaceAll(/[A-Z]/g, match => ` ${match}`), value as string[]])
+                .map(([key, value]) => [key.replaceAll(/[A-Z]/g, match => ` ${match}`), (value as PluginElement[]).filter(({deprecated}) => !deprecated).map(({cls}) => cls)])
         );
     }
 
