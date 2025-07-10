@@ -17,17 +17,17 @@
             </div>
         </template>
         <template v-else>
-            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in elementsByType" :key="elementType">
+            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in groupedByAction" :key="elementType">
                 <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
                 </h4>
                 <div class="d-flex flex-column">
                     <RowLink
-                        v-for="element in elements"
+                        v-for="element in Object.keys(elements)"
                         :id="slugify(element)"
-                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[element] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
+                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elements[element][0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
                         :text="elementName(element)"
-                        :href="elementHref(element)"
+                        :is-actions="elements[element]"
                         :key="element"
                         class="text-capitalize"
                         @click="$emit('goTo', {element})"
@@ -64,7 +64,7 @@
     });
 
     const elementName = (qualifiedName: string) => {
-        let split = qualifiedName.split(".");
+        let split = qualifiedName.split(".");        
         return split?.[split.length - 1];
     }
 
@@ -82,6 +82,35 @@
     }
 
     const elementsByType = computed<Record<string, string[]>>(() => extractPluginElements(plugin.value));
+    const groupedByAction = computed(() => {
+        const result: Record<string, object> = {};
+
+        const allTasks = Object.keys(elementsByType.value);
+
+        allTasks.forEach((task) => {
+            result[task] = {};
+
+            const taskElements = elementsByType.value?.[task] ?? [];
+
+            taskElements.forEach((href) => {
+                const parts = href.split(".");
+                const subcategory = parts[4];
+                const action = parts[5];
+
+                if (!action || !subcategory) return;
+
+                if (!result[task][action]) {
+                    result[task][action] = [];
+                }
+
+                if (!result[task][action].includes(subcategory)) {
+                    result[task][action].push(href);
+                }
+            });
+        });
+
+        return result;
+    });
 
     defineEmits<{
         (e: "goTo", target: {subGroup?: Plugin & Pick<Plugin, "subGroup">, element?: string}): void
