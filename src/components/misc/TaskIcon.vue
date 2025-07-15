@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="imageBase64"
         :class="classes"
         class="wrapper"
     >
@@ -29,10 +30,6 @@
         variable?: string;
     }>()
 
-    const backgroundImage = computed(() => {
-        return `data:image/svg+xml;base64,${imageBase64.value}`
-    })
-
     const classes = computed(() => {
         return {
             "flowable": icon.value ? icon.value.flowable : false,
@@ -41,7 +38,7 @@
 
     const styles = computed(() => {
         return {
-            backgroundImage: `url(${backgroundImage.value})`
+            backgroundImage: `url(data:image/svg+xml;base64,${imageBase64.value})`
         }
     })
 
@@ -49,13 +46,7 @@
         let localIcon = icon.value && icon.value.icon ? window.atob(icon.value.icon) : undefined;
 
         if (!localIcon) {
-            localIcon = "<svg xmlns=\"http://www.w3.org/2000/svg\" " +
-                "xmlns:xlink=\"http://www.w3.org/1999/xlink\" aria-hidden=\"true\" " +
-                "focusable=\"false\" width=\"0.75em\" height=\"1em\" style=\"-ms-transform: " +
-                "rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);\" " +
-                "preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 384 512\">" +
-                "<path d=\"M288 32H0v448h384V128l-96-96zm64 416H32V64h224l96 96v288z\" fill=\"currentColor\"/>" +
-                "</svg>";
+            return false;
         }
 
         const darkTheme = document.getElementsByTagName("html")[0].className.indexOf("dark") >= 0;
