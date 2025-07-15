@@ -49,6 +49,7 @@
                 section-name="Properties"
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
+                :force-include="forceIncludeProperties"
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -134,9 +135,11 @@
         pluginType: string,
         darkMode?: boolean,
         propsInitiallyExpanded?: boolean
+        forceIncludeProperties?: string[]
     }>(), {
         darkMode: true,
-        propsInitiallyExpanded: false
+        propsInitiallyExpanded: false,
+        forceIncludeProperties: () => [] as string[]
     });
 
     const definitionsExpanded = ref(false);

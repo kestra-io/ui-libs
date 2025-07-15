@@ -1,3 +1,8 @@
+export type PluginElement = {
+    cls: string;
+    deprecated?: boolean;
+}
+
 export type Plugin = {
     name: string;
     title: string;
@@ -11,14 +16,14 @@ export type Plugin = {
     aliases?: string[];
     guides?: string[];
 } & {
-    [pluginElement: string]: string[];
+    [pluginElement: string]: PluginElement[];
 }
 
 export function isEntryAPluginElementPredicate(key: string, value: any) {
     return Array.isArray(value) &&
         !["categories", "controllers", "storages", "aliases", "guides"].includes(key) &&
         ((value as any[]).length === 0 ||
-        typeof value[0] === "string");
+        value[0]?.cls !== undefined);
 }
 
 export function subGroupName(subGroupWrapper: Plugin) {

@@ -56,6 +56,8 @@ InitiallyExpanded.args = {
 export const LargePropertiesList = Template.bind({});
 LargePropertiesList.args = {
     sectionName: "Large Properties List",
+    // This will force to include property4 even if it is deprecated
+    forceInclude: ["property4"],
     properties: {
         property1: {$required: true, type: "string"},
         property2: {type: "number", $dynamic: true, $deprecated: true},
