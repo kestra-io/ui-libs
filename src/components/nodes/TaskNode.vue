@@ -182,7 +182,7 @@
                 }
             },
             dataWithLink() {
-                if(this.data.node.type.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
+                if(this.data.node.type?.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
                     const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
                     return {
                         ...this.data,

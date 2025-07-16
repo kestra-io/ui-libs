@@ -15,7 +15,7 @@
                     class="text-truncate task-title"
                 >
                     <tooltip :title="hoverTooltip">
-                        {{ trimmedId }}
+                        {{ title ?? trimmedId }}
                     </tooltip>
                 </div>
                 <span
@@ -95,6 +95,10 @@
         inheritAttrs: false,
         props: {
             id: {
+                type: String,
+                default: undefined
+            },
+            title: {
                 type: String,
                 default: undefined
             },
@@ -203,7 +207,7 @@
                 return this.data.node.task.type;
             },
             hoverTooltip() {
-                if (this.data.node.type.endsWith("SubflowGraphTask")) {
+                if (this.data.node.type?.endsWith("SubflowGraphTask")) {
                     const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
 
                     return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
