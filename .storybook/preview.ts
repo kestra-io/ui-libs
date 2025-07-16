@@ -1,5 +1,4 @@
 import moment from "moment";
-import {createStore} from "vuex";
 import {setup} from "@storybook/vue3-vite";
 import {withThemeByClassName} from "@storybook/addon-themes";
 
@@ -30,15 +29,6 @@ const preview = {
 };
 
 setup((app) => {
-    // mock state
-    app.use(createStore({
-        modules: {
-            execution: {
-                namespaced: true,
-            }
-        }
-    }));
-
     app.config.globalProperties.$moment = moment;
 
     // mock vue-i18n
