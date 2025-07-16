@@ -69,8 +69,8 @@
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import {mapState} from "vuex";
     import Utils from "../../utils/Utils";
+    import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
 
     export default {
         components: {
@@ -137,11 +137,15 @@
                 isOpen: false,
             };
         },
+        inject: {
+            execution: { 
+                from: EXECUTION_INJECTION_KEY,
+            },
+        },
         computed: {
             Utils() {
                 return Utils
             },
-            ...mapState("execution", ["execution"]),
             borderColor() {
                 const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
                 return color ? color : this.expandable ? "blue" : null
