@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-4">
-        <slot v-if="description !== undefined" name="markdown" :content="description.replaceAll(/ *:(?![ /])/g, ': ')" />
+        <slot v-if="description !== undefined" name="markdown" :content="description.replace(/ *:(?![ /])/g, ': ')" />
         <!-- Root plugin page with subgroups -->
         <template v-if="subGroup === undefined && plugins.length > 1">
             <div class="d-flex flex-column">
@@ -77,7 +77,7 @@
     function extractPluginElements(plugin: Plugin): Record<string, string[]> {
         return Object.fromEntries(
             Object.entries(plugin).filter(([key, value]) => isEntryAPluginElementPredicate(key, value))
-                .map(([key, value]) => [key.replaceAll(/[A-Z]/g, match => ` ${match}`), (value as PluginElement[]).filter(({deprecated}) => !deprecated).map(({cls}) => cls)])
+                .map(([key, value]) => [key.replace(/[A-Z]/g, match => ` ${match}`), (value as PluginElement[]).filter(({deprecated}) => !deprecated).map(({cls}) => cls)])
         );
     }
 

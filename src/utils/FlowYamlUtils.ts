@@ -1144,7 +1144,7 @@ export function localizeElementAtIndex(source: string, indexInSource: number): Y
                     range: [
                         pair.value.range[0] -
                         (beforeElement.length -
-                            beforeElement.replaceAll(/\s*$/g, "").length),
+                            beforeElement.replace(/\s*$/g, "").length),
                         ...pair.value.range.slice(1),
                     ],
                 });
