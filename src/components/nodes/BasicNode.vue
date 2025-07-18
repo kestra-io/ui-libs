@@ -15,7 +15,7 @@
                     class="text-truncate task-title"
                 >
                     <tooltip :title="hoverTooltip">
-                        {{ trimmedId }}
+                        {{ title ?? trimmedId }}
                     </tooltip>
                 </div>
                 <span
@@ -69,8 +69,8 @@
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
-    import {mapState} from "vuex";
     import Utils from "../../utils/Utils";
+    import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
 
     export default {
         components: {
@@ -95,6 +95,10 @@
         inheritAttrs: false,
         props: {
             id: {
+                type: String,
+                default: undefined
+            },
+            title: {
                 type: String,
                 default: undefined
             },
@@ -137,11 +141,15 @@
                 isOpen: false,
             };
         },
+        inject: {
+            execution: { 
+                from: EXECUTION_INJECTION_KEY,
+            },
+        },
         computed: {
             Utils() {
                 return Utils
             },
-            ...mapState("execution", ["execution"]),
             borderColor() {
                 const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
                 return color ? color : this.expandable ? "blue" : null
@@ -199,7 +207,7 @@
                 return this.data.node.task.type;
             },
             hoverTooltip() {
-                if (this.data.node.type.endsWith("SubflowGraphTask")) {
+                if (this.data.node.type?.endsWith("SubflowGraphTask")) {
                     const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
 
                     return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;

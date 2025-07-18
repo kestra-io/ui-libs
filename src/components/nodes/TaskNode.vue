@@ -84,9 +84,9 @@
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
     import SendLock from "vue-material-design-icons/SendLock.vue"
-    import {mapGetters, mapState} from "vuex";
     import Tooltip from "../misc/Tooltip.vue"
     import Utils from "../../utils/Utils";
+    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "../topology/injectionKeys";
 
     export default {
         name: "Task",
@@ -101,9 +101,15 @@
             SendLock
         },
         inheritAttrs: false,
+        inject: {
+            execution: { 
+                from: EXECUTION_INJECTION_KEY,
+            },
+            subflowsExecutions: {
+                from: SUBFLOWS_EXECUTIONS_INJECTION_KEY,
+            }
+        },
         computed: {
-            ...mapState("execution", ["execution"]),
-            ...mapGetters("execution", ["subflowsExecutions"]),
             SECTIONS() {
                 return SECTIONS
             },
@@ -176,7 +182,7 @@
                 }
             },
             dataWithLink() {
-                if(this.data.node.type.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
+                if(this.data.node.type?.endsWith("SubflowGraphTask") && this.enableSubflowInteraction){
                     const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
                     return {
                         ...this.data,

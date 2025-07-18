@@ -94,7 +94,7 @@
     </VueFlow>
 </template>
 <script lang="ts" setup>
-    import {computed, nextTick, onMounted, onUnmounted, PropType, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, onUnmounted, PropType, provide, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
     import {Background} from "@vue-flow/background";
@@ -121,6 +121,7 @@
     import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
+    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
 
     const props = defineProps({
         id: {
@@ -154,12 +155,10 @@
         },
         flowId: {
             type: String,
-            required: false,
             default: undefined
         },
         namespace: {
             type: String,
-            required: false,
             default: undefined
         },
         expandedSubflows: {
@@ -177,6 +176,14 @@
         enableSubflowInteraction: {
             type: Boolean,
             default: true
+        },
+        execution: {
+            type: Object,
+            default: undefined
+        },
+        subflowsExecutions: {
+            type: Object as PropType<Record<string, any[]>>,
+            default: () => ({})
         }
     });
 
@@ -189,6 +196,10 @@
     const collapsed = ref(new Set<string>());
     const clusterToNode = ref([])
     const {capture} = useScreenshot();
+
+    provide(EXECUTION_INJECTION_KEY, computed(() => props.execution));
+    provide(SUBFLOWS_EXECUTIONS_INJECTION_KEY, computed(() => props.subflowsExecutions));
+
 
     const emit = defineEmits(
         [

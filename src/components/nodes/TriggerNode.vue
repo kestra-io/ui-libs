@@ -39,18 +39,22 @@
 </script>
 <script>
     import {Handle} from "@vue-flow/core";
-    import {mapState} from "vuex";
     import {EVENTS, SECTIONS} from "../../utils/constants";
     import Pencil from "vue-material-design-icons/Pencil.vue";
     import Delete from "vue-material-design-icons/Delete.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
+    import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
 
     export default {
         name: "Task",
         inheritAttrs: false,
+        inject: {
+            execution: { 
+                from: EXECUTION_INJECTION_KEY,
+            },
+        },
         computed: {
-            ...mapState("execution", ["execution"]),
             SECTIONS() {
                 return SECTIONS
             },
