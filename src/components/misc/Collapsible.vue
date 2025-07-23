@@ -46,8 +46,10 @@
 
     const emit = defineEmits(["expand"]);
     const getHash = computed(() => `#${props.href}-body`);
-    const handleToggle = () => {
+    const handleToggle = (event: Event) => {
+        event.preventDefault();
         collapsed.value = !collapsed.value;
+        open.value = !collapsed.value;
         if(!collapsed.value) {
             emit("expand");
         }
