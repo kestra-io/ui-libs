@@ -1,4 +1,4 @@
-import {shallowRef, ref, nextTick} from "vue";
+import {ref, nextTick} from "vue";
 import {useVueFlow} from "@vue-flow/core";
 import lodash from "lodash";
 
@@ -23,7 +23,12 @@ const base = {
                 fitView();
             });
 
-            return () => <TopologyComponent {...args} source={source} flowGraph={flowGraph} />;
+            return () => <TopologyComponent 
+                {...args} 
+                iconComponent={TaskIcon} 
+                source={source} 
+                flowGraph={flowGraph} 
+            />;
         },
     }),
     decorators: [() => ({
@@ -38,12 +43,24 @@ const base = {
         isReadOnly: false,
         isAllowedEdit: false,
         toggleOrientationButton: false,
-        iconComponent: shallowRef(TaskIcon),
         source: "graph",
+        playgroundEnabled: false,
     },
     parameters:{
         controls:{
-            exclude: ["id", "namespace", "flowId", "iconComponent", "source", "flowGraph", "icons", "expandedSubflows", "toggleOrientationButton"],
+            exclude: [
+                "id", 
+                "namespace", 
+                "flowId", 
+                "iconComponent", 
+                "source", 
+                "flowGraph", 
+                "icons", 
+                "expandedSubflows", 
+                "toggleOrientationButton", 
+                "execution",
+                "subflowsExecutions",
+            ],
         }
     },
 };

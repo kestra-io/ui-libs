@@ -15,6 +15,11 @@
     >
         <template #content>
             <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" :uid="data.node.uid" />
+            <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="$emit(EVENTS.RUN_TASK, {task: data.node.task})">
+                <tooltip style="display: flex;" :title="$t('run task in playground')">
+                    <PlayIcon class="button-play-icon" alt="Play task" />
+                </tooltip>
+            </button>
         </template>
         <template #badge-button-before>
             <span
@@ -83,10 +88,15 @@
     import Delete from "vue-material-design-icons/Delete.vue";
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue"
+    import PlayIcon from "vue-material-design-icons/Play.vue";
     import SendLock from "vue-material-design-icons/SendLock.vue"
     import Tooltip from "../misc/Tooltip.vue"
     import Utils from "../../utils/Utils";
-    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "../topology/injectionKeys";
+    import {
+        EXECUTION_INJECTION_KEY, 
+        SUBFLOWS_EXECUTIONS_INJECTION_KEY,
+        PLAYGROUND_ENABLED_INJECTION_KEY
+    } from "../topology/injectionKeys";
 
     export default {
         name: "Task",
@@ -107,6 +117,9 @@
             },
             subflowsExecutions: {
                 from: SUBFLOWS_EXECUTIONS_INJECTION_KEY,
+            },
+            playgroundEnabled: {
+                from: PLAYGROUND_ENABLED_INJECTION_KEY,
             }
         },
         computed: {
@@ -249,3 +262,22 @@
     }
 </script>
 
+<style lang="scss" scoped>
+@use "../../scss/_color-palette.scss" as _color-palette;
+
+.playground-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    border: none;
+    background: transparent;
+    background-color: _color-palette.$base-blue-500;
+    color: _color-palette.$base-white; 
+    border-radius: 3px;
+    height: 1rem;
+    width: 1rem;
+    padding: 0;
+    margin: 6px
+}
+</style>
