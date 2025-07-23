@@ -11,7 +11,7 @@ export default {
 };
 
 const base = {
-    render: (args, {loaded: {flowGraph, source}}) => ({
+    render: (args, {loaded: {flowGraph, source, execution}}) => ({
         components: {TopologyComponent},
         setup() {
             const vueflowId = ref(Math.random().toString());
@@ -28,6 +28,7 @@ const base = {
                 iconComponent={TaskIcon} 
                 source={source} 
                 flowGraph={flowGraph} 
+                execution={execution}
             />;
         },
     }),
@@ -158,7 +159,7 @@ export const SwitchSchedule = lodash.merge({},
     base,
     {
         loaders: [
-            async ({_args}) => {
+            async () => {
                 return {
                     flowGraph: SwitchScheduleData,
                     source: "",
@@ -175,10 +176,99 @@ export const Error = lodash.merge({},
     base,
     {
         loaders: [
-            async ({_args}) => {
+            async () => {
                 return {
                     flowGraph: ErrorData,
                     source: "",
+                }
+            },
+        ],
+    }
+)
+
+import Simple from "../../data/graphs/simple.js";
+
+function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes*60000);
+}
+
+export const ExecutionStatus = lodash.merge({},
+    base,
+    {
+        loaders: [
+            async () => {
+                Simple.nodes.forEach((node) => {
+                    node.executionId = "execution-id";
+                });
+
+                return {
+                    flowGraph: Simple,
+                    source: "",
+                    execution: {
+                        id: "execution-id",
+                        taskRunList: [
+                            {
+                                taskId: "message",
+                                state: {
+                                    current: "SUCCESS",
+                                    histories: [
+                                        {
+                                            "state": "SUCCESS",
+                                            "date": "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "message_again",
+                                state: {
+                                    current: "FAILED",
+                                    histories: [
+                                        {
+                                            "state": "FAILED",
+                                            "date": "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "all_done",
+                                state: {
+                                    current: "RUNNING",
+                                    histories: [
+                                        {
+                                            "state": "RUNNING",
+                                            "date": new Date().toISOString()
+                                        }
+                                    ],
+                                    startDate: new Date().toISOString(),
+                                    endDate: addMinutes(new Date(), 1).toISOString(),
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "message",
+                                state: {
+                                    current: "SUCCESS",
+                                    histories: [
+                                        {
+                                            "state": "SUCCESS",
+                                            "date": "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            }
+                        ]
+                    }
                 }
             },
         ],
