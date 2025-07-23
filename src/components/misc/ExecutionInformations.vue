@@ -104,9 +104,10 @@
         ];
     });
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@use "../../scss/_color-palette.scss" as _color-palette;
 .content {
-  color: var(--bs-gray-700);
+  color: var(--ks-content-secondary);
 }
 
 .content-children {
