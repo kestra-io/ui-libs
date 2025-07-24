@@ -775,17 +775,14 @@ export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, curr
     if (!taskId) {
         return false;
     }
-
-    const previousRootNodes = getRootNodes(previousGraph);
-    const currentRootNodes = getRootNodes(currentGraph);
-
+    
+    let previousRootTaskNodes = getRootNodes(previousGraph);
+    let currentRootTaskNodes = getRootNodes(currentGraph);
+    
     // if the root nodes are not the same, we cannot compare
-    if (previousRootNodes.length !== currentRootNodes.length) {
+    if (previousRootTaskNodes.length !== currentRootTaskNodes.length) {
         return false;
     }
-
-    let previousRootTaskNodes = previousRootNodes
-    let currentRootTaskNodes = currentRootNodes
 
     // avoid infinite loop
     let failIndex = 120
