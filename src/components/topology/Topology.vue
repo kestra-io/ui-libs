@@ -30,6 +30,7 @@
                 :icon-component="iconComponent"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
+                @run-task="emit(EVENTS.RUN_TASK, $event)"
                 @expand="expand($event)"
                 @open-link="emit(EVENTS.OPEN_LINK, $event)"
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
@@ -206,6 +207,7 @@
         [
             EVENTS.EDIT,
             EVENTS.DELETE,
+            EVENTS.RUN_TASK,
             EVENTS.OPEN_LINK,
             EVENTS.SHOW_LOGS,
             EVENTS.SHOW_DESCRIPTION,
