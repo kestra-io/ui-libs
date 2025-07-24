@@ -748,18 +748,18 @@ export function getTargetNodesEdges(graph: FlowGraph, nodeUid?: string) {
  * @returns An array of the next task nodes found.
  */
 export function getNextTaskNodes(graph: FlowGraph, initialNode: MinimalNode) {
-    let edges: GraphEdge[], nextTaskNodes: MinimalNode[], nodeUid: string = initialNode.uid;
+    let edges: GraphEdge[], nextTaskNodes: MinimalNode[], nodeUIDs: string[] = [initialNode.uid];
     // loop until we find a node that is not a cluster
     do {
         // find all the edges that are connected to this task
-        edges = getTargetNodesEdges(graph, nodeUid) as GraphEdge[]
+        edges = nodeUIDs.flatMap((uid) => getTargetNodesEdges(graph, uid)).filter(Boolean) as GraphEdge[];
         // if there are no edges, return undefined
         if (edges.length === 0) {
             return [];
         }
-        nodeUid = edges[0].target
-        nextTaskNodes = graph.nodes.filter((node) => node.uid === nodeUid && node.task)
-    } while (!nextTaskNodes.length)
+        nodeUIDs = edges.map((edge) => edge.target);
+        nextTaskNodes = graph.nodes.filter((node) => nodeUIDs.includes(node.uid) && node.task);
+    } while (!nextTaskNodes.length);
 
     return nextTaskNodes
 }
@@ -784,20 +784,23 @@ export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, curr
         return false;
     }
 
-    let previousRootTaskNodes = previousRootNodes.flatMap((node) => getNextTaskNodes(previousGraph, node));
-    let currentRootTaskNodes = currentRootNodes.flatMap((node) => getNextTaskNodes(currentGraph, node));
+    let previousRootTaskNodes = previousRootNodes
+    let currentRootTaskNodes = currentRootNodes
 
-    // wal the graph until we find the taskId in the current root task nodes
+    // avoid infinite loop
+    let failIndex = 120
+
+    // walk the graph until we find the taskId in the current root task nodes
     // or until we run out of nodes to compare
     do {
-        currentRootTaskNodes = currentRootNodes.flatMap((node) => getNextTaskNodes(currentGraph, node));
-
+        currentRootTaskNodes = currentRootTaskNodes.flatMap((node) => getNextTaskNodes(currentGraph, node));
+        
         // stop if we find the taskId in the current root task nodes
         if (currentRootTaskNodes.some((node: any) => node.task.id === taskId)) {
             return true;
         }
 
-        previousRootTaskNodes = previousRootNodes.flatMap((node) => getNextTaskNodes(previousGraph, node));
+        previousRootTaskNodes = previousRootTaskNodes.flatMap((node) => getNextTaskNodes(previousGraph, node));
 
         if (previousRootTaskNodes.length !== currentRootTaskNodes.length) {
             return false;
@@ -809,13 +812,23 @@ export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, curr
             const currentTaskValue = currentTaskNode.task as Record<string, any> ?? {};
 
             // if any member of the task is different, tasks are different
+            if (!prevTaskNode 
+                || Object.keys(prevTaskValue).length !== Object.keys(currentTaskValue).length
+            ){
+                return false;
+            }
             for (const key in currentTaskNode.task) {
                 if (prevTaskValue[key] !== currentTaskValue[key]) {
                     return false;
                 }
             }
         }
-    } while (previousRootTaskNodes.length && currentRootTaskNodes.length);
+    } while (previousRootTaskNodes.length && currentRootTaskNodes.length && failIndex-- > 0);
+
+    if (failIndex <= 0) {
+        console.warn("areTasksIdenticalInGraphUntilTask: Infinite loop detected, stopping comparison.");
+        return false;
+    }
 
     return true;
 }
