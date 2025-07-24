@@ -19,6 +19,7 @@ interface MinimalNode {
     uid: string;
     type: string;
     task?: {
+        id?: string;
         type: string;
         namespace: string;
         flowId: string;
@@ -713,6 +714,110 @@ export function isExpandableTask(
         node.uid &&
         enableSubflowInteraction
     );
+}
+
+/**
+ * Get nodes that have no incoming edges, i.e., root nodes of the graph.
+ */
+export function getRootNodes(graph: FlowGraph) {
+    const nodeUIDs = graph.nodes.map((node) => node.uid);
+    const rootUIDs = nodeUIDs.filter((uid) => {
+        return !graph.edges.some((edge) => edge.target === uid);
+    });
+    return graph.nodes.filter((node) => rootUIDs.includes(node.uid));
+}
+
+/**
+ * Get the edges connected as the source to a specific node. (outward facing arrows)
+ * @param graph The flow graph.
+ * @param nodeUid The UID of the node.
+ * @returns An array of edges connected to the node.
+ */
+export function getTargetNodesEdges(graph: FlowGraph, nodeUid?: string) {
+    if (!nodeUid) {
+        return undefined;
+    }
+    return graph.edges.filter((edge) => edge.source === nodeUid && edge.target);
+}
+
+/**
+ * Follow the graph from a specific node to find the next task nodes.
+ * This function traverses the graph until it finds a node that is not a cluster.
+ * @param graph 
+ * @param initialNode The initial node to start the search from.
+ * @returns An array of the next task nodes found.
+ */
+export function getNextTaskNodes(graph: FlowGraph, initialNode: MinimalNode) {
+    let edges: GraphEdge[], nextTaskNodes: MinimalNode[], nodeUid: string = initialNode.uid;
+    // loop until we find a node that is not a cluster
+    do {
+        // find all the edges that are connected to this task
+        edges = getTargetNodesEdges(graph, nodeUid) as GraphEdge[]
+        // if there are no edges, return undefined
+        if (edges.length === 0) {
+            return [];
+        }
+        nodeUid = edges[0].target
+        nextTaskNodes = graph.nodes.filter((node) => node.uid === nodeUid && node.task)
+    } while (!nextTaskNodes.length)
+
+    return nextTaskNodes
+}
+
+/**
+ * Check if the tasks in the current graph are identical to the previous graph until the specified task.
+ * @param previousGraph The graph from the previous execution.
+ * @param currentGraph The graph from the current execution.
+ * @param taskId The ID of the task to check.
+ * @returns True if all tasks are identical, false otherwise.
+ */
+export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, currentGraph: FlowGraph, taskId?: string) {
+    if (!taskId) {
+        return false;
+    }
+
+    const previousRootNodes = getRootNodes(previousGraph);
+    const currentRootNodes = getRootNodes(currentGraph);
+
+    // if the root nodes are not the same, we cannot compare
+    if (previousRootNodes.length !== currentRootNodes.length) {
+        return false;
+    }
+
+    let previousRootTaskNodes = previousRootNodes.flatMap((node) => getNextTaskNodes(previousGraph, node));
+    let currentRootTaskNodes = currentRootNodes.flatMap((node) => getNextTaskNodes(currentGraph, node));
+
+    // wal the graph until we find the taskId in the current root task nodes
+    // or until we run out of nodes to compare
+    do {
+        currentRootTaskNodes = currentRootNodes.flatMap((node) => getNextTaskNodes(currentGraph, node));
+
+        // stop if we find the taskId in the current root task nodes
+        if (currentRootTaskNodes.some((node: any) => node.task.id === taskId)) {
+            return true;
+        }
+
+        previousRootTaskNodes = previousRootNodes.flatMap((node) => getNextTaskNodes(previousGraph, node));
+
+        if (previousRootTaskNodes.length !== currentRootTaskNodes.length) {
+            return false;
+        }
+
+        for (const currentTaskNode of currentRootTaskNodes) {
+            const prevTaskNode = previousRootTaskNodes.find((taskNode) => taskNode.task?.id === currentTaskNode.task?.id);
+            const prevTaskValue = prevTaskNode?.task as Record<string, any> ?? {};
+            const currentTaskValue = currentTaskNode.task as Record<string, any> ?? {};
+
+            // if any member of the task is different, tasks are different
+            for (const key in currentTaskNode.task) {
+                if (prevTaskValue[key] !== currentTaskValue[key]) {
+                    return false;
+                }
+            }
+        }
+    } while (previousRootTaskNodes.length && currentRootTaskNodes.length);
+
+    return true;
 }
 
 /**
