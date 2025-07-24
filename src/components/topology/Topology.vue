@@ -116,7 +116,7 @@
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
-    import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
+    import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
     import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY, PLAYGROUND_ENABLED_INJECTION_KEY} from "./injectionKeys";
@@ -148,7 +148,7 @@
             default: false,
         },
         flowGraph: {
-            type: Object as PropType<FlowGraph>,
+            type: Object as PropType<VueFlowUtils.FlowGraph>,
             required: true
         },
         flowId: {
