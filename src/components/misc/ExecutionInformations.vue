@@ -105,7 +105,6 @@
     });
 </script>
 <style lang="scss" scoped>
-@use "../../scss/_color-palette.scss" as _color-palette;
 .content {
   color: var(--ks-content-secondary);
 }
