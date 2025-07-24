@@ -104,9 +104,9 @@
         ];
     });
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .content {
-  color: var(--bs-gray-700);
+  color: var(--ks-content-secondary);
 }
 
 .content-children {

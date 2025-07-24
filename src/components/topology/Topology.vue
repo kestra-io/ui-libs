@@ -30,6 +30,7 @@
                 :icon-component="iconComponent"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
+                @run-task="emit(EVENTS.RUN_TASK, $event)"
                 @expand="expand($event)"
                 @open-link="emit(EVENTS.OPEN_LINK, $event)"
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
@@ -115,10 +116,10 @@
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
-    import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
+    import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
-    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
+    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY, PLAYGROUND_ENABLED_INJECTION_KEY} from "./injectionKeys";
 
     const props = defineProps({
         id: {
@@ -147,7 +148,7 @@
             default: false,
         },
         flowGraph: {
-            type: Object as PropType<FlowGraph>,
+            type: Object as PropType<VueFlowUtils.FlowGraph>,
             required: true
         },
         flowId: {
@@ -181,6 +182,10 @@
         subflowsExecutions: {
             type: Object as PropType<Record<string, any[]>>,
             default: () => ({})
+        },
+        playgroundEnabled: {
+            type: Boolean,
+            default: false
         }
     });
 
@@ -195,12 +200,14 @@
 
     provide(EXECUTION_INJECTION_KEY, computed(() => props.execution));
     provide(SUBFLOWS_EXECUTIONS_INJECTION_KEY, computed(() => props.subflowsExecutions));
+    provide(PLAYGROUND_ENABLED_INJECTION_KEY, computed(() => props.playgroundEnabled));
 
 
     const emit = defineEmits(
         [
             EVENTS.EDIT,
             EVENTS.DELETE,
+            EVENTS.RUN_TASK,
             EVENTS.OPEN_LINK,
             EVENTS.SHOW_LOGS,
             EVENTS.SHOW_DESCRIPTION,
