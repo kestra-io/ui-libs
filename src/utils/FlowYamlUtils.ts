@@ -1214,3 +1214,66 @@ export function getChartAtPosition(source: string, position: { lineNumber: numbe
 
     return chart ? chart.toJSON() : null;
 }
+
+/**
+ * Get line start and end for all tasks
+ * @param source - YAML source code
+ * @returns lines infos for each taskId
+ */
+export function getTasksLines(
+    source: string
+):Record<string, {start: number, end: number}> {
+    const yamlDoc = parseDocument(source) as any;
+    const lineCounter = new LineCounter();
+    parseDocument(source, {lineCounter});
+
+    let tasksLines: Record<string, {start: number, end: number}> = {};
+    visit(yamlDoc, {
+        Map(_, map) {
+            if (map.items) {
+                for (const item of map.items as any[]) {
+                    if (item?.key?.value === "tasks") { // visit only root tasks block for now
+                        if (item?.value?.items) {
+                            for (const task of item.value.items) {
+                                if(isMap(task)){
+                                    const foundChilTasksLines = getTasksAndFlowableLines(lineCounter, task);
+                                    tasksLines = {...tasksLines, ...foundChilTasksLines}
+                                }
+                            }
+                        }
+                        return visit.BREAK;
+                    }
+                }
+            }
+        },
+    });
+    return tasksLines;
+}
+function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Record<string, {start: number, end: number}>{
+    let tasksLines: Record<string, {start: number, end: number}> = {};
+    const taskId = task.get("id") as string | undefined;
+    if(taskId){
+        if(task.range) {
+            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line -1}
+        }
+        const childTasks = task.get("tasks") as YAMLMap | undefined;
+        if (childTasks && isSeq<YAMLMap>(childTasks) && childTasks.items){
+            console.log(childTasks.items);
+            childTasks.items.forEach(childTask => {
+                if(isMap(childTask)){
+                    tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, childTask)}
+                }
+            })
+        }
+    } else if (task.get("task")) {
+        // io.kestra.plugin.core.flow.Dag special case
+        const nestedDagTaskField = task.get("task") as YAMLMap;
+        if(isMap(task)) {
+            tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
+        }
+
+    } else {
+        // task is invalid
+    }
+    return tasksLines;
+}

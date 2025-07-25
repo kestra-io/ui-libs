@@ -1494,3 +1494,123 @@ describe("cleanMetadata", () => {
         expect(lines[1]).toBe("namespace: test");
     });
 });
+
+describe("get lines infos", () => {
+    test("get tasks lines", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            extrafield: Extra field 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 6}});
+        expect(tasksLines).to.containSubset({plugin2: {start: 7, end: 9}});
+    })
+    test("get tasks lines including comments and line breaks", () => {
+        const yamlString = `# this count as an empty line
+        # second comment
+        tasks:
+            # third comment
+          - id: plugin1
+            type: type1
+            # fourth comment
+            name: Plugin 1
+            
+            
+            # end comment
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 5, end: 8}});
+    })
+    test("get tasks lines including multiline field", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            payload: |
+              {
+                "text": "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
+              }
+         # end comment     
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 9}});
+    })
+    test("get tasks lines for 'Dag' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: log_task
+            type: io.kestra.plugin.core.log.Log
+            message: 'log msg'
+          - id: dag_task
+            type: io.kestra.plugin.core.flow.Dag
+            tasks:
+              - task:
+                  id: nested_task_1_inside_dag
+                  type: io.kestra.plugin.core.log.Log
+                  message: test1
+              - task:
+                  id: nested_task_2_inside_dag
+                  type: io.kestra.plugin.core.log.Log
+                  message: test2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({dag_task: {start: 6, end: 16}});
+        expect(tasksLines).to.containSubset({nested_task_1_inside_dag: {start: 10, end: 12}});
+        expect(tasksLines).to.containSubset({nested_task_2_inside_dag: {start: 14, end: 16}});
+    })
+    test("get tasks lines for 'Foreach' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: for_each_task
+            type: io.kestra.plugin.core.flow.ForEach
+            values:
+              - value 1
+            tasks:
+              - id: for_each_task_1
+                type: io.kestra.plugin.core.log.Log
+                message: test1
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 10}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 10}});
+    })
+    test("get tasks lines for nested 'Foreach' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: for_each
+            type: io.kestra.plugin.core.flow.ForEach
+            values:
+              - value 1
+            tasks:
+              - id: for_each_task_1
+                type: io.kestra.plugin.core.log.Log
+                message: test1
+              - id: nested_foreach
+                type: io.kestra.plugin.core.flow.ForEach
+                values:
+                    - value 2
+                tasks:
+                  - id: nested_foreach_task1
+                    type: io.kestra.plugin.core.log.Log
+                    message: test2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({for_each: {start: 3, end: 18}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 10}});
+        expect(tasksLines).to.containSubset({nested_foreach: {start: 11, end: 18}});
+        expect(tasksLines).to.containSubset({nested_foreach_task1: {start: 16, end: 18}});
+    })
+});
