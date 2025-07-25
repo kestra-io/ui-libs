@@ -8,6 +8,8 @@
 
 :root{
 	/* background */
+	#{--ks-background-additionLine}: $base-green-100;
+	#{--ks-background-additionNum}: $base-green-200;
 	#{--ks-background-body}: $base-gray-50;
 	#{--ks-background-box}: $base-gray-50;
 	#{--ks-background-cancelled}: $base-red-100;
@@ -15,6 +17,8 @@
 	#{--ks-background-card-hover}: $base-white;
 	#{--ks-background-card-opacity}: #1b1c23e5;
 	#{--ks-background-created}: rgba($base-blue-50, 0.39);
+	#{--ks-background-deletionLine}: $base-red-100;
+	#{--ks-background-deletionNum}: $base-red-200;
 	#{--ks-background-error}: $base-red-50;
 	#{--ks-background-failed}: $base-red-50;
 	#{--ks-background-info}: #c7f0ff;
@@ -129,12 +133,29 @@
 	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-500;
 
+	/* dependencies */
+	#{--ks-dependencies-edge}: $base-gray-300;
+	#{--ks-dependencies-edge-hover}: $base-gray-600;
+	#{--ks-dependencies-edge-selected}: $base-purple-300;
+	#{--ks-dependencies-edge-selected-level2}: $base-purple-300;
+	#{--ks-dependencies-node-background}: $base-white;
+	#{--ks-dependencies-node-background-hover}: $base-gray-50;
+	#{--ks-dependencies-node-background-selected}: $base-purple-200;
+	#{--ks-dependencies-node-background-selected-level2}: $base-blue-200;
+	#{--ks-dependencies-node-border}: $base-gray-200;
+	#{--ks-dependencies-node-border-hover}: $base-gray-300;
+	#{--ks-dependencies-node-border-selected}: $base-purple-400;
+	#{--ks-dependencies-node-border-selected-level2}: $base-blue-400;
+
 	/* dialog */
 	#{--ks-dialog-background}: $base-white;
 	#{--ks-dialog-border}: $base-gray-200;
 	#{--ks-dialog-header}: $base-white;
 	#{--ks-dialog-headerbtn}: $base-gray-300;
 	#{--ks-dialog-headerbtn-hover}: $base-purple-300;
+
+	/* dots */
+	#{--ks-dots-topology}: $base-gray-100;
 
 	/* dropdown */
 	#{--ks-dropdown-background}: $base-white;
@@ -164,6 +185,11 @@
 	#{--ks-log-content-info}: $base-blue-600;
 	#{--ks-log-content-trace}: $base-gray-500;
 	#{--ks-log-content-warn}: $base-orange-800;
+
+	/* playground */
+	#{--ks-playground-bg-color}: $base-blue-400;
+	#{--ks-playground-end-gradient}: $base-blue-500;
+	#{--ks-playground-start-gradient,}: $base-blue-400;
 
 	/* scrollbar */
 	#{--ks-scrollbar-background}: $base-gray-100;
