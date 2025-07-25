@@ -1218,7 +1218,7 @@ export function getChartAtPosition(source: string, position: { lineNumber: numbe
 /**
  * Get line start and end for all tasks
  * @param source - YAML source code
- * @returns lines infos for each taskId. 'start' is inclusive, 'end' is exclusive
+ * @returns lines infos for each taskId
  */
 export function getTasksLines(
     source: string
@@ -1254,7 +1254,7 @@ function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Re
     const taskId = task.get("id") as string | undefined;
     if(taskId){
         if(task.range) {
-            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line}
+            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line -1}
         }
         const childTasks = task.get("tasks") as YAMLMap | undefined;
         if (childTasks && isSeq<YAMLMap>(childTasks) && childTasks.items){

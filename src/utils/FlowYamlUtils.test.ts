@@ -1509,8 +1509,8 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 7}});
-        expect(tasksLines).to.containSubset({plugin2: {start: 7, end: 10}});
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 6}});
+        expect(tasksLines).to.containSubset({plugin2: {start: 7, end: 9}});
     })
     test("get tasks lines including comments and line breaks", () => {
         const yamlString = `# this count as an empty line
@@ -1527,7 +1527,7 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({plugin1: {start: 5, end: 9}});
+        expect(tasksLines).to.containSubset({plugin1: {start: 5, end: 8}});
     })
     test("get tasks lines including multiline field", () => {
         const yamlString = `# this count as an empty line
@@ -1543,7 +1543,7 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 10}});
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 9}});
     })
     test("get tasks lines for 'Dag' tasks", () => {
         const yamlString = `# this count as an empty line
@@ -1565,9 +1565,9 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({dag_task: {start: 6, end: 17}});
-        expect(tasksLines).to.containSubset({nested_task_1_inside_dag: {start: 10, end: 13}});
-        expect(tasksLines).to.containSubset({nested_task_2_inside_dag: {start: 14, end: 17}});
+        expect(tasksLines).to.containSubset({dag_task: {start: 6, end: 16}});
+        expect(tasksLines).to.containSubset({nested_task_1_inside_dag: {start: 10, end: 12}});
+        expect(tasksLines).to.containSubset({nested_task_2_inside_dag: {start: 14, end: 16}});
     })
     test("get tasks lines for 'Foreach' tasks", () => {
         const yamlString = `# this count as an empty line
@@ -1583,8 +1583,8 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 11}});
-        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 11}});
+        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 10}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 10}});
     })
     test("get tasks lines for nested 'Foreach' tasks", () => {
         const yamlString = `# this count as an empty line
@@ -1608,9 +1608,9 @@ describe("get lines infos", () => {
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({for_each: {start: 3, end: 19}});
-        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 11}});
-        expect(tasksLines).to.containSubset({nested_foreach: {start: 11, end: 19}});
-        expect(tasksLines).to.containSubset({nested_foreach_task1: {start: 16, end: 19}});
+        expect(tasksLines).to.containSubset({for_each: {start: 3, end: 18}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 10}});
+        expect(tasksLines).to.containSubset({nested_foreach: {start: 11, end: 18}});
+        expect(tasksLines).to.containSubset({nested_foreach_task1: {start: 16, end: 18}});
     })
 });
