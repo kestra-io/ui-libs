@@ -1,5 +1,7 @@
 {
   "background": [
+    "ks-background-additionLine",
+    "ks-background-additionNum",
     "ks-background-body",
     "ks-background-box",
     "ks-background-cancelled",
@@ -7,6 +9,8 @@
     "ks-background-card-hover",
     "ks-background-card-opacity",
     "ks-background-created",
+    "ks-background-deletionLine",
+    "ks-background-deletionNum",
     "ks-background-error",
     "ks-background-failed",
     "ks-background-info",
@@ -121,12 +125,29 @@
     "ks-content-tertiary",
     "ks-content-warning"
   ],
+  "dependencies": [
+    "ks-dependencies-edge",
+    "ks-dependencies-edge-hover",
+    "ks-dependencies-edge-selected",
+    "ks-dependencies-edge-selected-level2",
+    "ks-dependencies-node-background",
+    "ks-dependencies-node-background-hover",
+    "ks-dependencies-node-background-selected",
+    "ks-dependencies-node-background-selected-level2",
+    "ks-dependencies-node-border",
+    "ks-dependencies-node-border-hover",
+    "ks-dependencies-node-border-selected",
+    "ks-dependencies-node-border-selected-level2"
+  ],
   "dialog": [
     "ks-dialog-background",
     "ks-dialog-border",
     "ks-dialog-header",
     "ks-dialog-headerbtn",
     "ks-dialog-headerbtn-hover"
+  ],
+  "dots": [
+    "ks-dots-topology"
   ],
   "dropdown": [
     "ks-dropdown-background",
@@ -156,6 +177,11 @@
     "ks-log-content-info",
     "ks-log-content-trace",
     "ks-log-content-warn"
+  ],
+  "playground": [
+    "ks-playground-bg-color",
+    "ks-playground-end-gradient",
+    "ks-playground-start-gradient,"
   ],
   "scrollbar": [
     "ks-scrollbar-background",
