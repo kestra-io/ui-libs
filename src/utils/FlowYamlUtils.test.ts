@@ -1576,18 +1576,41 @@ describe("get lines infos", () => {
             type: io.kestra.plugin.core.flow.ForEach
             values:
               - value 1
-              - value 2
-              - value 3
-              - value 4
-            concurrencyLimit: 2
             tasks:
               - id: for_each_task_1
-                type: io.kestra.plugin.core.debug.Return
-                format: "{{ task.id }} with value {{ taskrun.value }}"
+                type: io.kestra.plugin.core.log.Log
+                message: test1
         `;
 
         const tasksLines = YamlUtils.getTasksLines(yamlString);
-        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 15}});
-        expect(tasksLines).to.containSubset({for_each_task_1: {start: 12, end: 15}});
+        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 11}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 11}});
+    })
+    test("get tasks lines for nested 'Foreach' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: for_each
+            type: io.kestra.plugin.core.flow.ForEach
+            values:
+              - value 1
+            tasks:
+              - id: for_each_task_1
+                type: io.kestra.plugin.core.log.Log
+                message: test1
+              - id: nested_foreach
+                type: io.kestra.plugin.core.flow.ForEach
+                values:
+                    - value 2
+                tasks:
+                  - id: nested_foreach_task1
+                    type: io.kestra.plugin.core.log.Log
+                    message: test2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({for_each: {start: 3, end: 19}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 8, end: 11}});
+        expect(tasksLines).to.containSubset({nested_foreach: {start: 11, end: 19}});
+        expect(tasksLines).to.containSubset({nested_foreach_task1: {start: 16, end: 19}});
     })
 });
