@@ -1613,4 +1613,25 @@ describe("get lines infos", () => {
         expect(tasksLines).to.containSubset({nested_foreach: {start: 11, end: 18}});
         expect(tasksLines).to.containSubset({nested_foreach_task1: {start: 16, end: 18}});
     })
+    test("get tasks lines for 'Condition' task", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: if_task
+            type: io.kestra.plugin.core.flow.If
+            condition: "{{ inputs.string == 'Condition' }}"
+            then:
+              - id: when_true
+                type: io.kestra.plugin.core.log.Log
+                message: "Condition was true"
+            else:
+              - id: when_false
+                type: io.kestra.plugin.core.log.Log
+                message: "Condition was false"
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({if_task: {start: 3, end: 13}});
+        expect(tasksLines).to.containSubset({when_true: {start: 7, end: 9}});
+        expect(tasksLines).to.containSubset({when_false: {start: 11, end: 13}});
+    })
 });
