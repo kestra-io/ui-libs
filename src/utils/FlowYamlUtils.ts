@@ -1214,3 +1214,45 @@ export function getChartAtPosition(source: string, position: { lineNumber: numbe
 
     return chart ? chart.toJSON() : null;
 }
+
+/**
+ * Get line start and end for all tasks
+ * @param source - YAML source code
+ * @returns lines infos for each taskId. 'start' is inclusive, 'end' is exclusive
+ */
+export function getTasksLines(
+    source: string
+):Record<string, {start: number, end: number}> {
+    const yamlDoc = parseDocument(source) as any;
+    const lineCounter = new LineCounter();
+    parseDocument(source, {lineCounter});
+
+    const tasksLines: Record<string, {start: number, end: number}> = {};
+    visit(yamlDoc, {
+        Map(_, map) {
+            if (map.items) {
+                for (const item of map.items as any[]) {
+                    if (item?.key?.value === "tasks") {
+                        if (item?.value?.items) {
+                            for (const task of item.value.items) {
+                                if(isMap(task)){
+                                    const taskId = task.get("id") as string | undefined;
+                                    if(taskId){
+                                        if(task.range) {
+                                            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line}
+                                        }
+                                    }
+                                } else {
+                                    throw new Error("unhandled error task should always be a map")
+                                }
+                            }
+                        }
+                        return visit.BREAK;
+                    }
+                }
+            }
+        },
+    });
+
+    return tasksLines;
+}

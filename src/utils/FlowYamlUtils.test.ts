@@ -1494,3 +1494,55 @@ describe("cleanMetadata", () => {
         expect(lines[1]).toBe("namespace: test");
     });
 });
+
+describe("get lines infos", () => {
+    test("get tasks lines", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            extrafield: Extra field 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 7}});
+        expect(tasksLines).to.containSubset({plugin2: {start: 7, end: 10}});
+    })
+    test("get tasks lines including comments and line breaks", () => {
+        const yamlString = `# this count as an empty line
+        # second comment
+        tasks:
+            # third comment
+          - id: plugin1
+            type: type1
+            # fourth comment
+            name: Plugin 1
+            
+            
+            # end comment
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 5, end: 9}});
+    })
+    test("get tasks lines including multiline field", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            payload: |
+              {
+                "text": "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
+              }
+         # end comment     
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 10}});
+    })
+});
