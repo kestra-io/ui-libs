@@ -1256,24 +1256,36 @@ function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Re
         if(task.range) {
             tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line -1}
         }
-        const childTasks = task.get("tasks") as YAMLMap | undefined;
-        if (childTasks && isSeq<YAMLMap>(childTasks) && childTasks.items){
-            console.log(childTasks.items);
-            childTasks.items.forEach(childTask => {
-                if(isMap(childTask)){
-                    tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, childTask)}
-                }
-            })
+        const childTasks = new YAMLSeq<YAMLMap>();
+        const tasksChilds = task.get("tasks") as YAMLSeq<YAMLMap> | undefined;
+        if (isSeq<YAMLMap>(tasksChilds)){
+            tasksChilds.items.forEach(x => childTasks.add(x));
         }
-    } else if (task.get("task")) {
-        // io.kestra.plugin.core.flow.Dag special case
-        const nestedDagTaskField = task.get("task") as YAMLMap;
-        if(isMap(task)) {
-            tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
+        const thenChilds = task.get("then") as YAMLSeq<YAMLMap> | undefined;
+        // io.kestra.plugin.core.flow special case
+        if (isSeq<YAMLMap>(thenChilds)){
+            thenChilds.items.forEach(x => childTasks.add(x));
         }
 
+        const elseChilds = task.get("else") as YAMLSeq<YAMLMap> | undefined;
+        // io.kestra.plugin.core.flow special case
+        if (isSeq<YAMLMap>(elseChilds)){
+            elseChilds.items.forEach(x => childTasks.add(x));
+        }
+
+        childTasks.items.forEach(childTask => {
+            if(isMap(childTask)){
+                tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, childTask)}
+            }
+        })
     } else {
-        // task is invalid
+        if (task.get("task")) {
+            // io.kestra.plugin.core.flow.Dag special case
+            const nestedDagTaskField = task.get("task") as YAMLMap;
+            if(isMap(nestedDagTaskField)) {
+                tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
+            }
+        }
     }
     return tasksLines;
 }
