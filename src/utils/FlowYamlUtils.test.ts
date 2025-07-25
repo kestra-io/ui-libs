@@ -1569,4 +1569,25 @@ describe("get lines infos", () => {
         expect(tasksLines).to.containSubset({nested_task_1_inside_dag: {start: 10, end: 13}});
         expect(tasksLines).to.containSubset({nested_task_2_inside_dag: {start: 14, end: 17}});
     })
+    test("get tasks lines for 'Foreach' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: for_each_task
+            type: io.kestra.plugin.core.flow.ForEach
+            values:
+              - value 1
+              - value 2
+              - value 3
+              - value 4
+            concurrencyLimit: 2
+            tasks:
+              - id: for_each_task_1
+                type: io.kestra.plugin.core.debug.Return
+                format: "{{ task.id }} with value {{ taskrun.value }}"
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({for_each_task: {start: 3, end: 15}});
+        expect(tasksLines).to.containSubset({for_each_task_1: {start: 12, end: 15}});
+    })
 });
