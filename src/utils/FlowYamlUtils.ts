@@ -1227,23 +1227,17 @@ export function getTasksLines(
     const lineCounter = new LineCounter();
     parseDocument(source, {lineCounter});
 
-    const tasksLines: Record<string, {start: number, end: number}> = {};
+    let tasksLines: Record<string, {start: number, end: number}> = {};
     visit(yamlDoc, {
         Map(_, map) {
             if (map.items) {
                 for (const item of map.items as any[]) {
-                    if (item?.key?.value === "tasks") {
+                    if (item?.key?.value === "tasks") { // visit only root tasks block for now
                         if (item?.value?.items) {
                             for (const task of item.value.items) {
                                 if(isMap(task)){
-                                    const taskId = task.get("id") as string | undefined;
-                                    if(taskId){
-                                        if(task.range) {
-                                            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line}
-                                        }
-                                    }
-                                } else {
-                                    throw new Error("unhandled error task should always be a map")
+                                    const foundChilTasksLines = getTasksAndFlowableLines(lineCounter, task);
+                                    tasksLines = {...tasksLines, ...foundChilTasksLines}
                                 }
                             }
                         }
@@ -1253,6 +1247,32 @@ export function getTasksLines(
             }
         },
     });
+    return tasksLines;
+}
+function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Record<string, {start: number, end: number}>{
+    let tasksLines: Record<string, {start: number, end: number}> = {};
+    const taskId = task.get("id") as string | undefined;
+    if(taskId){
+        if(task.range) {
+            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line}
+        }
+        const childTasks = task.get("tasks") as YAMLMap | undefined;
+        if (childTasks && isSeq<YAMLMap>(childTasks) && childTasks.items){
+            console.log(childTasks.items);
+            childTasks.items.forEach(childTask => {
+                if(isMap(childTask)){
+                    tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, childTask)}
+                }
+            })
+        }
+    } else if (task.get("task")) {
+        const nestedDagTaskField = task.get("task") as YAMLMap;
+        if(isMap(task)) {
+            tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
+        }
 
+    } else {
+        // task is invalid
+    }
     return tasksLines;
 }

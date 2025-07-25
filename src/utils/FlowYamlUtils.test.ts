@@ -1545,4 +1545,28 @@ describe("get lines infos", () => {
         const tasksLines = YamlUtils.getTasksLines(yamlString);
         expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 10}});
     })
+    test("get tasks lines for 'Dag' tasks", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: log_task
+            type: io.kestra.plugin.core.log.Log
+            message: 'log msg'
+          - id: dag_task
+            type: io.kestra.plugin.core.flow.Dag
+            tasks:
+              - task:
+                  id: nested_task_1_inside_dag
+                  type: io.kestra.plugin.core.log.Log
+                  message: test1
+              - task:
+                  id: nested_task_2_inside_dag
+                  type: io.kestra.plugin.core.log.Log
+                  message: test2
+        `;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({dag_task: {start: 6, end: 17}});
+        expect(tasksLines).to.containSubset({nested_task_1_inside_dag: {start: 10, end: 13}});
+        expect(tasksLines).to.containSubset({nested_task_2_inside_dag: {start: 14, end: 17}});
+    })
 });
