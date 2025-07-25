@@ -1266,6 +1266,7 @@ function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Re
             })
         }
     } else if (task.get("task")) {
+        // io.kestra.plugin.core.flow.Dag special case
         const nestedDagTaskField = task.get("task") as YAMLMap;
         if(isMap(task)) {
             tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
