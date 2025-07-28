@@ -1634,4 +1634,15 @@ describe("get lines infos", () => {
         expect(tasksLines).to.containSubset({when_true: {start: 7, end: 9}});
         expect(tasksLines).to.containSubset({when_false: {start: 11, end: 13}});
     })
+    test("if a task ends on the last line, it should be included", () => {
+        const yamlString = `# this count as an empty line
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+            extrafield: Extra field 1`;
+
+        const tasksLines = YamlUtils.getTasksLines(yamlString);
+        expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 6}});
+    })
 });
