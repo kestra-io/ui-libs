@@ -1254,7 +1254,10 @@ function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Re
     const taskId = task.get("id") as string | undefined;
     if(taskId){
         if(task.range) {
-            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line -1}
+            tasksLines[taskId] = {
+                start: lineCounter.linePos(task.range[0]).line,
+                end: lineCounter.linePos(task.range[1]).line - (lineCounter.linePos(task.range[1]).col === 1 ? 1 : 0)
+            }
         }
         const childTasks = new YAMLSeq<YAMLMap>();
         const tasksChilds = task.get("tasks") as YAMLSeq<YAMLMap> | undefined;
