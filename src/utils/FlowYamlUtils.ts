@@ -1223,9 +1223,13 @@ export function getChartAtPosition(source: string, position: { lineNumber: numbe
 export function getTasksLines(
     source: string
 ):Record<string, {start: number, end: number}> {
-    const yamlDoc = parseDocument(source) as any;
+    // if a task ends on the last line of the YAML,
+    // its end range will be one line off.
+    // To avoid this specific case, we add a newline at the end of the source.
+    const paddedSource = source + "\n";
+    const yamlDoc = parseDocument(paddedSource) as any;
     const lineCounter = new LineCounter();
-    parseDocument(source, {lineCounter});
+    parseDocument(paddedSource, {lineCounter});
 
     let tasksLines: Record<string, {start: number, end: number}> = {};
     visit(yamlDoc, {
@@ -1237,7 +1241,10 @@ export function getTasksLines(
                             for (const task of item.value.items) {
                                 if(isMap(task)){
                                     const foundChilTasksLines = getTasksAndFlowableLines(lineCounter, task);
-                                    tasksLines = {...tasksLines, ...foundChilTasksLines}
+                                    tasksLines = {
+                                        ...tasksLines, 
+                                        ...foundChilTasksLines
+                                    }
                                 }
                             }
                         }
@@ -1249,12 +1256,16 @@ export function getTasksLines(
     });
     return tasksLines;
 }
-function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) :  Record<string, {start: number, end: number}>{
+
+function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) {
     let tasksLines: Record<string, {start: number, end: number}> = {};
     const taskId = task.get("id") as string | undefined;
     if(taskId){
         if(task.range) {
-            tasksLines[taskId] = {start: lineCounter.linePos(task.range[0]).line, end: lineCounter.linePos(task.range[1]).line -1}
+            tasksLines[taskId] = {
+                start: lineCounter.linePos(task.range[0]).line, 
+                end: lineCounter.linePos(task.range[1]).line - 1
+            }
         }
         const childTasks = new YAMLSeq<YAMLMap>();
         const tasksChilds = task.get("tasks") as YAMLSeq<YAMLMap> | undefined;
