@@ -12,7 +12,6 @@ export default {
 
 const base = {
     render: (args, {loaded: {flowGraph, source, execution}}) => ({
-        components: {TopologyComponent},
         setup() {
             const vueflowId = ref(Math.random().toString());
             const {
@@ -208,7 +207,7 @@ export const ExecutionStatus = lodash.merge({},
                         id: "execution-id",
                         taskRunList: [
                             {
-                                taskId: "message",
+                                taskId: "SUCCESS",
                                 state: {
                                     current: "SUCCESS",
                                     histories: [
@@ -223,7 +222,7 @@ export const ExecutionStatus = lodash.merge({},
                                 }
                             },
                             {
-                                taskId: "message_again",
+                                taskId: "FAILED",
                                 state: {
                                     current: "FAILED",
                                     histories: [
@@ -238,7 +237,7 @@ export const ExecutionStatus = lodash.merge({},
                                 }
                             },
                             {
-                                taskId: "all_done",
+                                taskId: "RUNNING",
                                 state: {
                                     current: "RUNNING",
                                     histories: [
@@ -253,7 +252,7 @@ export const ExecutionStatus = lodash.merge({},
                                 }
                             },
                             {
-                                taskId: "message",
+                                taskId: "SUCCESS",
                                 state: {
                                     current: "SUCCESS",
                                     histories: [

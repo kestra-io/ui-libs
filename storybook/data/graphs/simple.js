@@ -9,30 +9,30 @@ export default {
             "type": "io.kestra.core.models.hierarchies.GraphClusterEnd"
         },
         {
-            "uid": "root.message",
+            "uid": "root.SUCCESS",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "message",
+                "id": "SUCCESS",
                 "type": "io.kestra.plugin.core.log.Log",
                 "message": "Hello World! \uD83D\uDE80"
             },
             "relationType": "SEQUENTIAL"
         },
         {
-            "uid": "root.message_again",
+            "uid": "root.FAILED",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "message_again",
+                "id": "FAILED",
                 "type": "io.kestra.plugin.core.log.Log",
                 "message": "Hello World! \uD83D\uDE80 2"
             },
             "relationType": "SEQUENTIAL"
         },
         {
-            "uid": "root.all_done",
+            "uid": "root.RUNNING",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "all_done",
+                "id": "RUNNING",
                 "type": "io.kestra.plugin.core.log.Log",
                 "message": "All Done \uD83C\uDF89"
             },
@@ -42,24 +42,24 @@ export default {
     "edges": [
         {
             "source": "root.root-4YSfVCqMyeEV2iJgSzZQgA",
-            "target": "root.message",
+            "target": "root.SUCCESS",
             "relation": {}
         },
         {
-            "source": "root.all_done",
+            "source": "root.RUNNING",
             "target": "root.end-6GSmakgmr7wljoyPr6kaNw",
             "relation": {}
         },
         {
-            "source": "root.message_again",
-            "target": "root.all_done",
+            "source": "root.FAILED",
+            "target": "root.RUNNING",
             "relation": {
                 "relationType": "SEQUENTIAL"
             }
         },
         {
-            "source": "root.message",
-            "target": "root.message_again",
+            "source": "root.SUCCESS",
+            "target": "root.FAILED",
             "relation": {
                 "relationType": "SEQUENTIAL"
             }
