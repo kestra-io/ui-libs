@@ -146,13 +146,15 @@
 
     const props = withDefaults(defineProps<{
         data: NodeData;
-        sourcePosition: Position;
-        targetPosition: Position;
+        sourcePosition?: Position;
+        targetPosition?: Position;
         id: string;
         icons?: Record<string, unknown>;
         iconComponent?: object;
         enableSubflowInteraction?: boolean;
     }>(), {
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined
