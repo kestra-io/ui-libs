@@ -212,13 +212,13 @@ export const ExecutionStatus = lodash.merge({},
                                     current: "SUCCESS",
                                     histories: [
                                         {
-                                            "state": "SUCCESS",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "SUCCESS",
+                                            date: "2025-07-22T14:40:48.081987Z"
                                         }
                                     ],
-                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    startDate: "2025-07-21T14:46:47.565377Z",
                                     endDate: "2025-07-23T14:46:48.081987Z",
-                                    duration: "PT0.51661S"
+                                    duration: "PT17.39S"
                                 }
                             },
                             {
@@ -227,13 +227,13 @@ export const ExecutionStatus = lodash.merge({},
                                     current: "FAILED",
                                     histories: [
                                         {
-                                            "state": "FAILED",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "FAILED",
+                                            date: "2025-07-23T14:46:48.081987Z"
                                         }
                                     ],
                                     startDate: "2025-07-23T14:46:47.565377Z",
                                     endDate: "2025-07-23T14:46:48.081987Z",
-                                    duration: "PT0.51661S"
+                                    duration: "PT3.51661S"
                                 }
                             },
                             {
@@ -242,8 +242,8 @@ export const ExecutionStatus = lodash.merge({},
                                     current: "RUNNING",
                                     histories: [
                                         {
-                                            "state": "RUNNING",
-                                            "date": new Date().toISOString()
+                                            state: "RUNNING",
+                                            date: new Date().toISOString()
                                         }
                                     ],
                                     startDate: new Date().toISOString(),
@@ -257,8 +257,8 @@ export const ExecutionStatus = lodash.merge({},
                                     current: "SUCCESS",
                                     histories: [
                                         {
-                                            "state": "SUCCESS",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "SUCCESS",
+                                            date: "2025-07-23T14:46:48.081987Z"
                                         }
                                     ],
                                     startDate: "2025-07-23T14:46:47.565377Z",
