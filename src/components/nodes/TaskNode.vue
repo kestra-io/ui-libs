@@ -1,5 +1,5 @@
 <template>
-    <Handle type="source" :position="sourcePosition" />
+    <!-- <Handle type="source" :position="sourcePosition" /> -->
     <basic-node
         :id="id"
         :data="dataWithLink"
@@ -169,6 +169,11 @@
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined
+    });
+
+    defineOptions({
+        name: "TaskNode",
+        inheritAttrs: false
     });
 
     // Define emits
