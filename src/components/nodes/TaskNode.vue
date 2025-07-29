@@ -22,8 +22,11 @@
                 :uid="data.node.uid"
                 :state="state"
             />
-            <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="emit(EVENTS.RUN_TASK, {task: data.node.task})">
-                <tooltip style="display: flex;" :title="$t('run task in playground')">
+            <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="emit(EVENTS.RUN_TASK, {task: data.node.task})" :disabled="state === State.RUNNING">
+                <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('run task in playground')">
+                    <DotsCircleIcon class="button-running-icon" alt="Running task" />
+                </tooltip>
+                <tooltip v-else style="display: flex;" :title="$t('run task in playground')">
                     <PlayIcon class="button-play-icon" alt="Play task" />
                 </tooltip>
             </button>
@@ -95,6 +98,7 @@
     import TextBoxSearch from "vue-material-design-icons/TextBoxSearch.vue";
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue";
     import PlayIcon from "vue-material-design-icons/Play.vue";
+    import DotsCircleIcon from "vue-material-design-icons/DotsCircle.vue";
     import SendLock from "vue-material-design-icons/SendLock.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
@@ -293,32 +297,25 @@
     z-index: 1;
     border: none;
     background: transparent;
-    background-color: _color-palette.$base-blue-500;
+    background-color: _color-palette.$base-blue-400;
     color: _color-palette.$base-white; 
     border-radius: 3px;
     height: 1rem;
     width: 1rem;
-    padding: 0;
-    margin: 6px
+    padding: .1rem;
+    margin: 6px;
+    font-size: .8rem;
+    .button-running-icon{
+        animation: spin 3s linear infinite;
+    }
 }
-</style>
 
-<style lang="scss" scoped>
-@use "../../scss/_color-palette.scss" as _color-palette;
-
-.playground-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-    border: none;
-    background: transparent;
-    background-color: _color-palette.$base-blue-500;
-    color: _color-palette.$base-white; 
-    border-radius: 3px;
-    height: 1rem;
-    width: 1rem;
-    padding: 0;
-    margin: 6px
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>
