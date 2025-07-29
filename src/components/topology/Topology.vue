@@ -91,6 +91,7 @@
         </Controls>
     </VueFlow>
 </template>
+
 <script lang="ts" setup>
     import {computed, nextTick, onMounted, PropType, provide, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";

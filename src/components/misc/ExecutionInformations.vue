@@ -8,6 +8,7 @@
         <span v-if="histories"><duration :histories="histories" /></span>
     </div>
 </template>
+
 <script lang="ts" setup>
     import {computed} from "vue";
     import moment from "moment";
@@ -34,11 +35,13 @@
     const taskRunList = computed(() => {
         return props.execution?.taskRunList ? props.execution.taskRunList : [];
     });
+
     const taskRuns = computed(() => {
         return taskRunList.value.filter(
             (t) => t.taskId === Utils.afterLastDot(props.uid ?? "")
         );
     });
+
     const state = computed(() => {
         if (!taskRuns.value) {
             return null;
@@ -73,6 +76,7 @@
 
         return result[0];
     });
+
     const histories = computed(() => {
         if (!taskRuns.value) {
             return undefined;
@@ -104,6 +108,7 @@
         ];
     });
 </script>
+
 <style lang="scss" scoped>
 .content {
   color: var(--ks-content-secondary);
