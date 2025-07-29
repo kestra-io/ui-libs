@@ -68,7 +68,6 @@
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
-    import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
 
     const emit = defineEmits([
         EVENTS.EXPAND,

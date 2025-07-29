@@ -13,7 +13,6 @@
     import {computed} from "vue";
     import moment from "moment";
     import Duration from "./Duration.vue";
-    import State from "../../utils/state";
     import Utils from "../../utils/Utils"
 
     defineOptions({
@@ -30,6 +29,7 @@
             type: object;
             default: null;
         };
+        state: string;
     }>();
 
     const taskRunList = computed(() => {
@@ -40,41 +40,6 @@
         return taskRunList.value.filter(
             (t) => t.taskId === Utils.afterLastDot(props.uid ?? "")
         );
-    });
-
-    const state = computed(() => {
-        if (!taskRuns.value) {
-            return null;
-        }
-
-        if (taskRuns.value.length === 1) {
-            return taskRuns.value[0].state.current;
-        }
-
-        const allStates = taskRuns.value.map((t) => t.state.current);
-
-        const SORT_STATUS: (string | undefined)[] = [
-            State.FAILED,
-            State.KILLED,
-            State.WARNING,
-            State.KILLING,
-            State.RUNNING,
-            State.SUCCESS,
-            State.RESTARTED,
-            State.CREATED,
-        ];
-
-        // sorting based on SORT_STATUS array
-        const result = allStates
-            .map((item) => {
-                const n = SORT_STATUS.indexOf(item[1]);
-                SORT_STATUS[n] = undefined;
-                return [n, item];
-            })
-            .sort()
-            .map((j) => j[1]);
-
-        return result[0];
     });
 
     const histories = computed(() => {
@@ -104,7 +69,7 @@
 
         return [
             {date: moment(max).subtract(duration, "second"), state: "CREATED"},
-            {date: moment(max), state: state.value},
+            {date: moment(max), state: props.state},
         ];
     });
 </script>

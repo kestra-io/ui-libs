@@ -14,7 +14,14 @@
         @mouseleave="emit(EVENTS.MOUSE_LEAVE)"
     >
         <template #content>
-            <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" :uid="data.node.uid" />
+            <execution-informations 
+                v-if="taskExecution"
+                :execution="taskExecution"
+                :task="data.node.task"
+                :color="color"
+                :uid="data.node.uid"
+                :state="state"
+            />
             <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="emit(EVENTS.RUN_TASK, {task: data.node.task})">
                 <tooltip style="display: flex;" :title="$t('run task in playground')">
                     <PlayIcon class="button-play-icon" alt="Play task" />
