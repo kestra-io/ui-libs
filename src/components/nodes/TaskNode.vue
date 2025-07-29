@@ -162,18 +162,18 @@
 
     // Define emits
     const emit = defineEmits<{
-        [EVENTS.EXPAND]: [data: any];
-        [EVENTS.OPEN_LINK]: [data: any];
-        [EVENTS.SHOW_LOGS]: [data: any];
-        [EVENTS.MOUSE_OVER]: [data: any];
-        [EVENTS.MOUSE_LEAVE]: [];
-        [EVENTS.ADD_ERROR]: [data: any];
-        [EVENTS.EDIT]: [data: any];
-        [EVENTS.DELETE]: [data: any];
-        [EVENTS.ADD_TASK]: [data: any];
-        [EVENTS.SHOW_CONDITION]: [data: any];
-        [EVENTS.SHOW_DESCRIPTION]: [data: any];
-        [EVENTS.RUN_TASK]: [data: { task: any }];
+        (event: typeof EVENTS.EXPAND, data: any): void;
+        (event: typeof EVENTS.OPEN_LINK, data: any): void;
+        (event: typeof EVENTS.SHOW_LOGS, data: any): void;
+        (event: typeof EVENTS.MOUSE_OVER, data: any): void;
+        (event: typeof EVENTS.MOUSE_LEAVE): void;
+        (event: typeof EVENTS.ADD_ERROR, data: { task: any }): void;
+        (event: typeof EVENTS.EDIT, data: any) :void;
+        (event: typeof EVENTS.DELETE, data: any) :void;
+        (event: typeof EVENTS.ADD_TASK, data: any) :void;
+        (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
+        (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
+        (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
     }>();
 
     // Inject dependencies

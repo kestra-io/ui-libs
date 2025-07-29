@@ -181,25 +181,6 @@
     })
 </script>
 
-<script>
-
-    export default {
-        data() {
-            return {
-                
-            };
-        },
-        inject: {
-            execution: { 
-                from: EXECUTION_INJECTION_KEY,
-            },
-        },
-        computed: {
-            
-        }
-    }
-</script>
-
 <style lang="scss" scoped>
     .node-wrapper {
         background-color: var(--ks-background-card);
