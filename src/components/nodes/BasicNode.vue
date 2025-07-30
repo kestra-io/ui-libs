@@ -1,7 +1,7 @@
 <template>
     <div
         class="node-wrapper rounded-3"
-        :style="{borderColor: `var(--ks-border-${state?.toLowerCase()})`}"
+        :style="{borderColor: state ? `var(--ks-border-${state.toLowerCase()})` : undefined}"
         :class="{...classes, 'running-border-animation': state === 'RUNNING'}"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
@@ -171,7 +171,7 @@
         z-index: 150000;
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
-        border: 1px solid transparent;
+        border: 1px solid var(--ks-border-primary);
 
         &.execution-no-taskrun, &.disabled {
             background-color: var(--ks-background-card);
