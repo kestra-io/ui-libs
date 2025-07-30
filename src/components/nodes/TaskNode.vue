@@ -23,11 +23,11 @@
                 :state="state"
             />
             <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="emit(EVENTS.RUN_TASK, {task: data.node.task})" :disabled="state === State.RUNNING">
-                <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('run task in playground')">
+                <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('task is running')">
                     <DotsCircleIcon class="button-running-icon" alt="Running task" />
                 </tooltip>
                 <tooltip v-else style="display: flex;" :title="$t('run task in playground')">
-                    <PlayIcon class="button-play-icon" alt="Play task" />
+                    <PlayIcon class="button-play-icon" :alt="$t('run task in playground')" />
                 </tooltip>
             </button>
         </template>
@@ -106,7 +106,6 @@
     import {
         EXECUTION_INJECTION_KEY,
         SUBFLOWS_EXECUTIONS_INJECTION_KEY,
-        PLAYGROUND_ENABLED_INJECTION_KEY
     } from "../topology/injectionKeys";
 
     // Define types
@@ -163,12 +162,14 @@
         icons?: Record<string, unknown>;
         iconComponent?: object;
         enableSubflowInteraction?: boolean;
+        playgroundEnabled: boolean;
+        playgroundReadyToStart: boolean;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
         enableSubflowInteraction: true,
         icons: undefined,
-        iconComponent: undefined
+        iconComponent: undefined,
     });
 
     defineOptions({
@@ -195,7 +196,6 @@
     // Inject dependencies
     const execution = inject(EXECUTION_INJECTION_KEY);
     const subflowsExecutions = inject(SUBFLOWS_EXECUTIONS_INJECTION_KEY);
-    const playgroundEnabled = inject(PLAYGROUND_ENABLED_INJECTION_KEY);
 
     // Computed properties
     const color = computed(() => props.data.color ?? "primary");
