@@ -29,18 +29,25 @@
                         <PlayIcon class="button-play-icon" :alt="$t('run task in playground')" />
                     </tooltip>
                 </button>
-                <div v-else class="playground-button" :style="{color: `var(--ks-content-${state?.toLowerCase()})`}">
+                <div
+                    v-else
+                    class="playground-button" 
+                    :style="{
+                        color: `var(--ks-content-${state?.toLowerCase()})`, 
+                        backgroundColor: `var(--ks-background-${state?.toLowerCase()})`
+                    }"
+                >
                     <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('task is running')">
-                        <DotsCircleIcon class="pg-running-icon" :alt="$t('task is running')" />
+                        <RotatingDots :alt="$t('task is running')" />
                     </tooltip>
                     <tooltip v-else-if="state === State.SUCCESS" style="display: flex;" :title="$t('task was successful')">
-                        <CheckIcon class="pg-success-icon" :alt="$t('task was successful')" />
+                        <CheckIcon :alt="$t('task was successful')" />
                     </tooltip>
                     <tooltip v-else-if="state === State.WARNING" style="display: flex;" :title="$t('task sent a warning')">
-                        <AlertIcon class="pg-warning-icon" :alt="$t('task sent a warning')" />
+                        <AlertIcon :alt="$t('task sent a warning')" />
                     </tooltip>
                     <tooltip v-else-if="state === State.FAILED" style="display: flex;" :title="$t('task failed')">
-                        <AlertCircleIcon class="pg-failure-icon" :alt="$t('task failed')" />
+                        <AlertCircleIcon :alt="$t('task failed')" />
                     </tooltip>
                 </div>
             </template>
@@ -121,10 +128,10 @@
     import AlertOutline from "vue-material-design-icons/AlertOutline.vue";
     import SendLock from "vue-material-design-icons/SendLock.vue";
     import PlayIcon from "vue-material-design-icons/Play.vue";
-    import DotsCircleIcon from "vue-material-design-icons/DotsCircle.vue";
     import CheckIcon from "vue-material-design-icons/Check.vue";
     import AlertCircleIcon from "vue-material-design-icons/AlertCircle.vue";
     import AlertIcon from "vue-material-design-icons/Alert.vue";
+    import RotatingDots from "../../assets/icons/RotatingDots.vue";
 
     // Define types
     interface TaskType {
@@ -326,23 +333,11 @@
     padding: .1rem;
     margin: 6px;
     font-size: .8rem;
-    .pg-running-icon{
-        animation: spin 3s linear infinite;
-    }
 }
 
 button.playground-button,
 .dark button.playground-button {
     color: _color-palette.$base-white; 
     background-color: _color-palette.$base-blue-400;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 </style>
