@@ -1,11 +1,11 @@
 <template>
     <div
-        :class="classes"
-        class="node-wrapper rounded-3 border"
+        class="node-wrapper rounded-3"
+        :style="{borderColor: state ? `var(--ks-border-${state.toLowerCase()})` : undefined}"
+        :class="{...classes, 'running-border-animation': state === 'RUNNING'}"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
             <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
         </div>
@@ -59,164 +59,104 @@
     </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+    import {computed} from "vue";
     import TaskIcon from "../misc/TaskIcon.vue";
-</script>
-
-<script>
     import InformationOutline from "vue-material-design-icons/InformationOutline.vue";
     import {EVENTS} from "../../utils/constants";
     import ArrowExpand from "vue-material-design-icons/ArrowExpand.vue";
     import OpenInNew from "vue-material-design-icons/OpenInNew.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
-    import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
 
-    export default {
-        components: {
-            ArrowExpand,
-            InformationOutline,
-            OpenInNew,
-            Tooltip
-        },
+    const emit = defineEmits([
+        EVENTS.EXPAND,
+        EVENTS.OPEN_LINK,
+        EVENTS.SHOW_LOGS,
+        EVENTS.MOUSE_OVER,
+        EVENTS.MOUSE_LEAVE,
+        EVENTS.ADD_ERROR,
+        EVENTS.EDIT,
+        EVENTS.DELETE,
+        EVENTS.ADD_TASK,
+        EVENTS.SHOW_DESCRIPTION
+    ]);
 
-        emits: [
-            EVENTS.EXPAND,
-            EVENTS.OPEN_LINK,
-            EVENTS.SHOW_LOGS,
-            EVENTS.MOUSE_OVER,
-            EVENTS.MOUSE_LEAVE,
-            EVENTS.ADD_ERROR,
-            EVENTS.EDIT,
-            EVENTS.DELETE,
-            EVENTS.ADD_TASK,
-            EVENTS.SHOW_DESCRIPTION
-        ],
+    defineOptions({
+        name: "BasicNode",
         inheritAttrs: false,
-        props: {
-            id: {
-                type: String,
-                default: undefined
-            },
-            title: {
-                type: String,
-                default: undefined
-            },
-            type: {
-                type: String,
-                default: undefined
-            },
-            disabled: {
-                type: Boolean,
-                default: undefined
-            },
-            state: {
-                type: String,
-                default: undefined
-            },
-            data: {
-                type: Object,
-                required: true
-            },
-            icons: {
-                type: Object,
-                default: undefined
-            },
-            iconComponent: {
-                type: Object,
-                default: undefined
-            }
-        },
-        methods: {
-            mouseover() {
-                this.$emit(EVENTS.MOUSE_OVER, this.data.node);
-            },
-            mouseleave() {
-                this.$emit(EVENTS.MOUSE_LEAVE);
-            },
-        },
-        data() {
-            return {
-                filter: undefined,
-                isOpen: false,
-            };
-        },
-        inject: {
-            execution: { 
-                from: EXECUTION_INJECTION_KEY,
-            },
-        },
-        computed: {
-            Utils() {
-                return Utils
-            },
-            borderColor() {
-                const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
-                return color ? color : this.expandable ? "blue" : null
-            },
-            EVENTS() {
-                return EVENTS
-            },
-            expandable() {
-                return this.data?.expandable || false
-            },
-            description() {
-                const node = this.data.node.task ?? this.data.node.trigger ?? null
-                if (node) {
-                    return node.description ?? null
-                }
-                return null
-            },
-            trimmedId() {
-                return Utils.afterLastDot(this.id);
-            },
-            taskIconBg() {
-                return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
-            },
-            stateColor() {
-                switch (this.state) {
-                case "RUNNING":
-                    return "primary"
-                case "SUCCESS":
-                    return "success"
-                case "WARNING":
-                    return "warning"
-                case "FAILED":
-                    return "danger"
-                default:
-                    return null;
-                }
-            },
-            classes() {
-                return {
-                    "unused-path": this.data.unused,
-                    [`border-${this.borderColor}`]: this.borderColor,
-                    "disabled": this.data.node.task?.disabled || this.data.parent?.taskNode?.task?.disabled,
-                    [this.$attrs.class]: true
-                }
-            },
-            cls() {
-                if (this.data.node.triggerDeclaration) {
-                    return this.data.node.triggerDeclaration.type;
-                }
+    });
 
-                if (!this.data.node?.task) {
-                    return undefined;
-                }
+    const props = defineProps<{
+        id?: string;
+        title?: string;
+        type?: string;
+        disabled?: boolean;
+        state?: string;
+        data: any;
+        icons: any;
+        iconComponent: any;
+        class?: string | string[] | Record<string, boolean>;
+    }>();
 
-                return this.data.node.task.type;
-            },
-            hoverTooltip() {
-                if (this.data.node.type?.endsWith("SubflowGraphTask")) {
-                    const subflowIdContainer = this.data.node.task.subflowId ?? this.data.node.task;
-
-                    return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
-                }
-
-                return this.trimmedId;
-            }
-        }
+    function mouseover() {
+        emit(EVENTS.MOUSE_OVER, props.data.node);
     }
+
+    function mouseleave() {
+        emit(EVENTS.MOUSE_LEAVE);
+    }
+
+    const expandable = computed(() => {
+        return props.data?.expandable || false
+    })
+
+    const description = computed(() => {
+        const node = props.data.node.task ?? props.data.node.trigger ?? null
+        if (node) {
+            return node.description ?? null
+        }
+        return null
+    })
+
+    const trimmedId = computed(() => {
+        return Utils.afterLastDot(props.id ?? "");
+    })
+
+    const taskIconBg = computed(() => {
+        return !["default", "danger"].includes(props.data.color) ? props.data.color : "";
+    })
+
+    const classes = computed(() => {
+        return [{
+                    "unused-path": props.data.unused,
+                    "disabled": props.data.node.task?.disabled || props.data.parent?.taskNode?.task?.disabled,
+                },
+                props.class
+        ]
+    })
+
+    const cls = computed(() => {
+        if (props.data.node.triggerDeclaration) {
+            return props.data.node.triggerDeclaration.type;
+        }
+
+        if (!props.data.node?.task) {
+            return undefined;
+        }
+
+        return props.data.node.task.type;
+    })
+
+    const hoverTooltip = computed(() => {
+        if (props.data.node.type?.endsWith("SubflowGraphTask")) {
+            const subflowIdContainer = props.data.node.task.subflowId ?? props.data.node.task;
+
+            return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
+        }
+
+        return trimmedId.value;
+    })
 </script>
 
 <style lang="scss" scoped>
@@ -231,6 +171,7 @@
         z-index: 150000;
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
+        border: 1px solid var(--ks-border-primary);
 
         &.execution-no-taskrun, &.disabled {
             background-color: var(--ks-background-card);
@@ -291,5 +232,33 @@
         position: absolute;
         left: -0.04438rem;
         border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    .running-border-animation {
+        border-color: transparent !important;
+        &:before{
+            position: absolute;
+            content: '';
+            z-index: -1;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: .55rem;
+            background: conic-gradient(from calc(var(--border-angle-running) + 50.37deg) at 50% 50%, var(--ks-border-running) 0%, white 25%, var(--ks-border-running) 30%, var(--ks-border-running) 100%);
+            animation: running-border 2s linear infinite;
+        }
+    }
+
+    @keyframes running-border {
+        to {
+            --border-angle-running: 1turn;
+        }
+    }
+
+    @property --border-angle-running {
+        syntax: "<angle>";
+        inherits: true;
+        initial-value: 0turn;
     }
 </style>

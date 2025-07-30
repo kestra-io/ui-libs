@@ -12,7 +12,6 @@ export default {
 
 const base = {
     render: (args, {loaded: {flowGraph, source, execution}}) => ({
-        components: {TopologyComponent},
         setup() {
             const vueflowId = ref(Math.random().toString());
             const {
@@ -46,6 +45,7 @@ const base = {
         toggleOrientationButton: false,
         source: "graph",
         playgroundEnabled: false,
+        playgroundReadyToStart: true,
     },
     parameters:{
         controls:{
@@ -203,48 +203,49 @@ export const ExecutionStatus = lodash.merge({},
 
                 return {
                     flowGraph: Simple,
+                    isHorizontal: false,
                     source: "",
                     execution: {
                         id: "execution-id",
                         taskRunList: [
                             {
-                                taskId: "message",
+                                taskId: "SUCCESS",
                                 state: {
                                     current: "SUCCESS",
                                     histories: [
                                         {
-                                            "state": "SUCCESS",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "SUCCESS",
+                                            date: "2025-07-22T14:40:48.081987Z"
                                         }
                                     ],
-                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    startDate: "2025-07-21T14:46:47.565377Z",
                                     endDate: "2025-07-23T14:46:48.081987Z",
-                                    duration: "PT0.51661S"
+                                    duration: "PT17.39661S"
                                 }
                             },
                             {
-                                taskId: "message_again",
+                                taskId: "FAILED",
                                 state: {
                                     current: "FAILED",
                                     histories: [
                                         {
-                                            "state": "FAILED",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "FAILED",
+                                            date: "2025-07-23T14:46:48.081987Z"
                                         }
                                     ],
                                     startDate: "2025-07-23T14:46:47.565377Z",
                                     endDate: "2025-07-23T14:46:48.081987Z",
-                                    duration: "PT0.51661S"
+                                    duration: "PT3.51661S"
                                 }
                             },
                             {
-                                taskId: "all_done",
+                                taskId: "RUNNING",
                                 state: {
                                     current: "RUNNING",
                                     histories: [
                                         {
-                                            "state": "RUNNING",
-                                            "date": new Date().toISOString()
+                                            state: "RUNNING",
+                                            date: new Date().toISOString()
                                         }
                                     ],
                                     startDate: new Date().toISOString(),
@@ -253,13 +254,43 @@ export const ExecutionStatus = lodash.merge({},
                                 }
                             },
                             {
-                                taskId: "message",
+                                taskId: "SUCCESS",
                                 state: {
                                     current: "SUCCESS",
                                     histories: [
                                         {
-                                            "state": "SUCCESS",
-                                            "date": "2025-07-23T14:46:48.081987Z"
+                                            state: "SUCCESS",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "SKIPPED",
+                                state: {
+                                    current: "SKIPPED",
+                                    histories: [
+                                        {
+                                            state: "SKIPPED",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "WARNING",
+                                state: {
+                                    current: "WARNING",
+                                    histories: [
+                                        {
+                                            state: "WARNING",
+                                            date: "2025-07-23T14:46:48.081987Z"
                                         }
                                     ],
                                     startDate: "2025-07-23T14:46:47.565377Z",

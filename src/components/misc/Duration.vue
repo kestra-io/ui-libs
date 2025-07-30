@@ -7,7 +7,7 @@
                 class="ks-duration-tt"
             >
                 <span class="ks-duration-tt-square" :class="squareClass(history.state)" />
-                <strong>{{ history.state }}: </strong>{{ Utils.dateFilter(history.date.toString(), "iso") }} <br>
+                <strong>{{ history.state }}: </strong>{{ Utils.dateFilter(history.date.toISOString(), "iso") }} <br>
             </span>
         </template>
         
@@ -21,7 +21,7 @@
     import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
     import {type Moment} from "moment";
     import State from "../../utils/state";
-    import Utils from "../../utils/Utils";
+    import * as Utils from "../../utils/Utils";
     import Tooltip from "./Tooltip.vue";
 
     const props = defineProps<{

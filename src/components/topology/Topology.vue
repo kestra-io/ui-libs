@@ -28,6 +28,8 @@
                 v-bind="taskProps"
                 :icons="icons"
                 :icon-component="iconComponent"
+                :playground-enabled="playgroundEnabled"
+                :playground-ready-to-start="playgroundReadyToStart"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
                 @run-task="emit(EVENTS.RUN_TASK, $event)"
@@ -91,6 +93,7 @@
         </Controls>
     </VueFlow>
 </template>
+
 <script lang="ts" setup>
     import {computed, nextTick, onMounted, PropType, provide, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
@@ -102,7 +105,6 @@
     import DotNode from "../nodes/DotNode.vue";
     // @ts-expect-error no types for internals necessary
     import EdgeNode from "../nodes/EdgeNode.vue";
-    // @ts-expect-error no types for internals necessary
     import TaskNode from "../nodes/TaskNode.vue";
     // @ts-expect-error no types for internals necessary
     import TriggerNode from "../nodes/TriggerNode.vue"
@@ -119,7 +121,7 @@
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
-    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY, PLAYGROUND_ENABLED_INJECTION_KEY} from "./injectionKeys";
+    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
 
     const props = defineProps({
         id: {
@@ -186,6 +188,10 @@
         playgroundEnabled: {
             type: Boolean,
             default: false
+        },
+        playgroundReadyToStart: {
+            type: Boolean,
+            default: false
         }
     });
 
@@ -200,7 +206,6 @@
 
     provide(EXECUTION_INJECTION_KEY, computed(() => props.execution));
     provide(SUBFLOWS_EXECUTIONS_INJECTION_KEY, computed(() => props.subflowsExecutions));
-    provide(PLAYGROUND_ENABLED_INJECTION_KEY, computed(() => props.playgroundEnabled));
 
 
     const emit = defineEmits(

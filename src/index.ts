@@ -7,6 +7,7 @@ export {default as getMDCParser} from "./composables/getMDCParser";
 export * from "./utils/constants";
 export * from "./utils/url";
 export * from "./utils/plugins";
+export {default as RotatingDotsIcon} from "./assets/icons/RotatingDots.vue";
 
 export type {YamlElement} from "./utils/YamlUtilsLegacy";
 export type {Plugin} from "./utils/plugins";
