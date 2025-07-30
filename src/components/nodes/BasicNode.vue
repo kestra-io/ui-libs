@@ -5,7 +5,6 @@
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
             <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
         </div>
@@ -71,6 +70,7 @@
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
     import {EXECUTION_INJECTION_KEY} from "../topology/injectionKeys";
+    import {STATES} from "../../utils/state";
 
     export default {
         components: {
@@ -151,6 +151,10 @@
                 return Utils
             },
             borderColor() {
+                if (this.state && this.stateColor) {
+                    return this.stateColor;
+                }
+                
                 const color = this.data.color ? this.data.color === "default" ? null : this.data.color : null
                 return color ? color : this.expandable ? "blue" : null
             },
@@ -174,18 +178,11 @@
                 return !["default", "danger"].includes(this.data.color) ? this.data.color : "";
             },
             stateColor() {
-                switch (this.state) {
-                case "RUNNING":
-                    return "primary"
-                case "SUCCESS":
-                    return "success"
-                case "WARNING":
-                    return "warning"
-                case "FAILED":
-                    return "danger"
-                default:
+                if (!this.state || !STATES[this.state]) {
                     return null;
                 }
+                
+                return STATES[this.state].colorClass;
             },
             classes() {
                 return {
@@ -285,11 +282,19 @@
         flex-grow: 1;
     }
 
-    .status-div {
-        width: 8px;
-        height: 100%;
-        position: absolute;
-        left: -0.04438rem;
-        border-radius: 0.5rem 0 0 0.5rem;
+    .node-wrapper {
+        $state-colors: (
+            "purple": "running",
+            "green": "success", 
+            "orange": "warning",
+            "gray": "skipped",
+            "red": "failed"
+        );
+        
+        @each $color, $state in $state-colors {
+            &.border-#{$color} { 
+                border-color: var(--ks-border-#{$state}) !important; 
+            }
+        }
     }
 </style>

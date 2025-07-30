@@ -15,6 +15,15 @@
     >
         <template #content>
             <execution-informations v-if="taskExecution" :execution="taskExecution" :task="data.node.task" :color="color" :uid="data.node.uid" />
+            <div 
+                v-if="stateIcon.show && !playgroundEnabled" 
+                :class="`icon-wrapper state-icon-${stateIcon.colorClass}`"
+            >
+                <component 
+                    :is="stateIcon.icon" 
+                    class="icon-base"
+                />
+            </div>
             <button v-if="playgroundEnabled && data.node.task" type="button" class="playground-button" @click="$emit(EVENTS.RUN_TASK, {task: data.node.task})">
                 <tooltip style="display: flex;" :title="$t('run task in playground')">
                     <PlayIcon class="button-play-icon" alt="Play task" />
@@ -81,7 +90,7 @@
 </script>
 <script>
     import {Handle} from "@vue-flow/core";
-    import State from "../../utils/state";
+    import State, {STATES} from "../../utils/state";
     import {EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Pencil from "vue-material-design-icons/Pencil.vue";
@@ -91,6 +100,11 @@
     import PlayIcon from "vue-material-design-icons/Play.vue";
     import SendLock from "vue-material-design-icons/SendLock.vue"
     import Tooltip from "../misc/Tooltip.vue"
+    import CheckBold from "vue-material-design-icons/CheckBold.vue";
+    import Alert from "vue-material-design-icons/Alert.vue";
+    import SkipForward from "vue-material-design-icons/SkipForward.vue";
+    import AlertCircle from "vue-material-design-icons/AlertCircle.vue";
+    import LoadingDotsCircle from "../../assets/icons/LoadingDotsCircle.vue";
     import Utils from "../../utils/Utils";
     import {
         EXECUTION_INJECTION_KEY, 
@@ -108,7 +122,12 @@
             TextBoxSearch,
             AlertOutline,
             Tooltip,
-            SendLock
+            SendLock,
+            CheckBold,
+            Alert,
+            SkipForward,
+            AlertCircle,
+            LoadingDotsCircle
         },
         inheritAttrs: false,
         inject: {
@@ -210,6 +229,31 @@
                 }
 
                 return this.data;
+            },
+            stateIcon() {
+                if (!this.state || !STATES[this.state]) {
+                    return {show: false, icon: null, colorClass: null};
+                }
+                
+                const supportedStates = ["RUNNING", "SUCCESS", "WARNING", "SKIPPED", "FAILED"];
+                if (!supportedStates.includes(this.state)) {
+                    return {show: false, icon: null, colorClass: null};
+                }
+                
+                const customIcons = {
+                    "RUNNING": LoadingDotsCircle,
+                    "SUCCESS": CheckBold,
+                    "WARNING": Alert,
+                    "SKIPPED": SkipForward,
+                    "FAILED": AlertCircle
+                };
+                
+                return {
+                    show: true,
+                    icon: customIcons[this.state],
+                    colorClass: STATES[this.state].colorClass,
+                    stateData: STATES[this.state]
+                };
             }
         },
         emits: [
@@ -279,5 +323,39 @@
     width: 1rem;
     padding: 0;
     margin: 6px
+}
+
+.icon-wrapper {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    $state-colors: (
+        "purple": "running",
+        "green": "success", 
+        "orange": "warning",
+        "gray": "skipped",
+        "red": "failed"
+    );
+    
+    @each $color, $state in $state-colors {
+        &.state-icon-#{$color} {
+            background-color: var(--ks-background-#{$state});
+            
+            .icon-base {
+                color: var(--ks-content-#{$state});
+            }
+        }
+    }
+}
+
+.icon-base {
+    font-size: 14px;
 }
 </style>

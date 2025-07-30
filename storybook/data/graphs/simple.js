@@ -37,6 +37,26 @@ export default {
                 "message": "All Done \uD83C\uDF89"
             },
             "relationType": "SEQUENTIAL"
+        },
+        {
+            "uid": "root.message_warning",
+            "type": "io.kestra.core.models.hierarchies.GraphTask",
+            "task": {
+                "id": "message_warning",
+                "type": "io.kestra.plugin.core.log.Log",
+                "message": "Warning Task"
+            },
+            "relationType": "SEQUENTIAL"
+        },
+        {
+            "uid": "root.message_skipped",
+            "type": "io.kestra.core.models.hierarchies.GraphTask",
+            "task": {
+                "id": "message_skipped",
+                "type": "io.kestra.plugin.core.log.Log",
+                "message": "Skipped Task"
+            },
+            "relationType": "SEQUENTIAL"
         }
     ],
     "edges": [
@@ -47,6 +67,20 @@ export default {
         },
         {
             "source": "root.all_done",
+            "target": "root.message_warning",
+            "relation": {
+                "relationType": "SEQUENTIAL"
+            }
+        },
+        {
+            "source": "root.message_warning",
+            "target": "root.message_skipped",
+            "relation": {
+                "relationType": "SEQUENTIAL"
+            }
+        },
+        {
+            "source": "root.message_skipped",
             "target": "root.end-6GSmakgmr7wljoyPr6kaNw",
             "relation": {}
         },

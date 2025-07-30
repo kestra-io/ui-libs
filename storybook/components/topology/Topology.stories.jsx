@@ -253,6 +253,36 @@ export const ExecutionStatus = lodash.merge({},
                                 }
                             },
                             {
+                                taskId: "message_warning",
+                                state: {
+                                    current: "WARNING",
+                                    histories: [
+                                        {
+                                            "state": "WARNING",
+                                            "date": "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "message_skipped",
+                                state: {
+                                    current: "SKIPPED",
+                                    histories: [
+                                        {
+                                            "state": "SKIPPED",
+                                            "date": "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
                                 taskId: "message",
                                 state: {
                                     current: "SUCCESS",
