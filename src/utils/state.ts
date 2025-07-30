@@ -201,6 +201,10 @@ export default class State {
         return STATES.CANCELLED.name;
     }
 
+    static get SKIPPED() {
+        return STATES.SKIPPED.name;
+    }
+
     static get QUEUED() {
         return STATES.QUEUED.name;
     }

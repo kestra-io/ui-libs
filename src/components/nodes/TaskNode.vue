@@ -1,5 +1,5 @@
 <template>
-    <!-- <Handle type="source" :position="sourcePosition" /> -->
+    <Handle type="source" :position="sourcePosition" />
     <basic-node
         :id="id"
         :data="dataWithLink"
@@ -37,17 +37,12 @@
                         backgroundColor: `var(--ks-background-${state?.toLowerCase()})`
                     }"
                 >
-                    <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('task is running')">
-                        <RotatingDots :alt="$t('task is running')" />
-                    </tooltip>
-                    <tooltip v-else-if="state === State.SUCCESS" style="display: flex;" :title="$t('task was successful')">
-                        <CheckIcon :alt="$t('task was successful')" />
-                    </tooltip>
-                    <tooltip v-else-if="state === State.WARNING" style="display: flex;" :title="$t('task sent a warning')">
-                        <AlertIcon :alt="$t('task sent a warning')" />
-                    </tooltip>
-                    <tooltip v-else-if="state === State.FAILED" style="display: flex;" :title="$t('task failed')">
-                        <AlertCircleIcon :alt="$t('task failed')" />
+                    <tooltip style="display: flex;" :title="$t(iconAlt)">
+                        <RotatingDots v-if="state === State.RUNNING" :alt="$t(iconAlt)" />
+                        <CheckIcon v-else-if="state === State.SUCCESS" :alt="$t(iconAlt)" />
+                        <AlertIcon v-else-if="state === State.WARNING" :alt="$t(iconAlt)" />
+                        <SkipForwardIcon v-else-if="state === State.SKIPPED" :alt="$t(iconAlt)" />
+                        <AlertCircleIcon v-else-if="state === State.FAILED" :alt="$t(iconAlt)" />
                     </tooltip>
                 </div>
             </template>
@@ -131,6 +126,7 @@
     import CheckIcon from "vue-material-design-icons/Check.vue";
     import AlertCircleIcon from "vue-material-design-icons/AlertCircle.vue";
     import AlertIcon from "vue-material-design-icons/Alert.vue";
+    import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
 
     // Define types
@@ -266,6 +262,7 @@
             State.FAILED,
             State.KILLED,
             State.WARNING,
+            State.SKIPPED,
             State.KILLING,
             State.RUNNING,
             State.SUCCESS,
@@ -314,6 +311,25 @@
             };
         }
         return props.data;
+    });
+
+    const iconAlt = computed(() => {
+        if(state.value === State.RUNNING){
+            return "task is running";
+        }
+        if(state.value === State.SUCCESS){
+            return "task was successful";
+        }
+        if(state.value === State.WARNING){
+            return "task sent a warning";
+        }
+        if(state.value === State.SKIPPED){
+            return "task was skipped";
+        }
+        if(state.value === State.FAILED){
+            return "task failed";
+        }
+        return "";
     });
 </script>
 
