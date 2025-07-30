@@ -235,7 +235,7 @@
     }
 
     .running-border-animation {
-        border-color: transparent !important;
+        border: none !important;
         &:before{
             position: absolute;
             content: '';
@@ -245,8 +245,14 @@
             right: -1px;
             bottom: -1px;
             border-radius: .55rem;
-            background: conic-gradient(from calc(var(--border-angle-running) + 50.37deg) at 50% 50%, var(--ks-border-running) 0%, white 25%, var(--ks-border-running) 30%, var(--ks-border-running) 100%);
-            animation: running-border 2s linear infinite;
+            background: conic-gradient(from calc(var(--border-angle-running)) at 50% 50%, 
+                var(--ks-border-running) 0%, 
+                var(--ks-border-running) 10%, 
+                var(--ks-border-primary) 40%, 
+                var(--ks-border-primary) 60%, 
+                var(--ks-border-running) 90%, 
+                var(--ks-border-running) 100%);
+            animation: running-border 3s linear infinite;
         }
     }
 
