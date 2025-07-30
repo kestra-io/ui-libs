@@ -29,7 +29,7 @@
                         <PlayIcon class="button-play-icon" :alt="$t('run task in playground')" />
                     </tooltip>
                 </button>
-                <div v-else class="playground-button">
+                <div v-else class="playground-button" :style="{color: `var(--ks-content-${state?.toLowerCase()})`}">
                     <tooltip v-if="state === State.RUNNING" style="display: flex;" :title="$t('task is running')">
                         <DotsCircleIcon class="pg-running-icon" :alt="$t('task is running')" />
                     </tooltip>
@@ -319,9 +319,7 @@
     right: 0;
     z-index: 1;
     border: none;
-    background: transparent;
-    background-color: _color-palette.$base-blue-400;
-    color: _color-palette.$base-white; 
+    background-color: var(--ks-background-card);
     border-radius: 3px;
     height: 1rem;
     width: 1rem;
@@ -331,6 +329,12 @@
     .pg-running-icon{
         animation: spin 3s linear infinite;
     }
+}
+
+button.playground-button,
+.dark button.playground-button {
+    color: _color-palette.$base-white; 
+    background-color: _color-palette.$base-blue-400;
 }
 
 @keyframes spin {

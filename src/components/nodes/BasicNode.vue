@@ -1,11 +1,11 @@
 <template>
     <div
-        :class="classes"
-        class="node-wrapper rounded-3 border"
+        class="node-wrapper rounded-3"
+        :style="{borderColor: `var(--ks-border-${state?.toLowerCase()})`}"
+        :class="{...classes, 'running-border-animation': state === 'RUNNING'}"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div v-if="state" class="status-div" :class="[`bg-${stateColor}`]" />
         <div class="icon rounded">
             <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
         </div>
@@ -107,11 +107,6 @@
         emit(EVENTS.MOUSE_LEAVE);
     }
 
-    const borderColor = computed(() => {
-        const color = props.data.color ? props.data.color === "default" ? null : props.data.color : null
-        return color ? color : expandable.value ? "blue" : null
-    })
-
     const expandable = computed(() => {
         return props.data?.expandable || false
     })
@@ -132,25 +127,9 @@
         return !["default", "danger"].includes(props.data.color) ? props.data.color : "";
     })
 
-    const stateColor = computed(() => {
-        switch (props.state) {
-        case "RUNNING":
-            return "primary"
-        case "SUCCESS":
-            return "success"
-        case "WARNING":
-            return "warning"
-        case "FAILED":
-            return "danger"
-        default:
-            return null;
-        }
-    })
-
     const classes = computed(() => {
         return [{
                     "unused-path": props.data.unused,
-                    [`border-${borderColor.value}`]: borderColor.value,
                     "disabled": props.data.node.task?.disabled || props.data.parent?.taskNode?.task?.disabled,
                 },
                 props.class
@@ -192,6 +171,7 @@
         z-index: 150000;
         align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
+        border: 1px solid transparent;
 
         &.execution-no-taskrun, &.disabled {
             background-color: var(--ks-background-card);
@@ -252,5 +232,33 @@
         position: absolute;
         left: -0.04438rem;
         border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    .running-border-animation {
+        border-color: transparent !important;
+        &:before{
+            position: absolute;
+            content: '';
+            z-index: -1;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: .55rem;
+            background: conic-gradient(from calc(var(--border-angle-running) + 50.37deg) at 50% 50%, var(--ks-border-running) 0%, white 25%, var(--ks-border-running) 30%, var(--ks-border-running) 100%);
+            animation: running-border 2s linear infinite;
+        }
+    }
+
+    @keyframes running-border {
+        to {
+            --border-angle-running: 1turn;
+        }
+    }
+
+    @property --border-angle-running {
+        syntax: "<angle>";
+        inherits: true;
+        initial-value: 0turn;
     }
 </style>
