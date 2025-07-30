@@ -251,8 +251,7 @@
                 return {
                     show: true,
                     icon: customIcons[this.state],
-                    colorClass: STATES[this.state].colorClass,
-                    stateData: STATES[this.state]
+                    colorClass: STATES[this.state].colorClass
                 };
             }
         },
