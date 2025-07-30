@@ -37,12 +37,12 @@
                         backgroundColor: `var(--ks-background-${state?.toLowerCase()})`
                     }"
                 >
-                    <tooltip style="display: flex;" :title="$t(iconAlt)">
-                        <RotatingDots v-if="state === State.RUNNING" :alt="$t(iconAlt)" />
-                        <CheckIcon v-else-if="state === State.SUCCESS" :alt="$t(iconAlt)" />
-                        <AlertIcon v-else-if="state === State.WARNING" :alt="$t(iconAlt)" />
-                        <SkipForwardIcon v-else-if="state === State.SKIPPED" :alt="$t(iconAlt)" />
-                        <AlertCircleIcon v-else-if="state === State.FAILED" :alt="$t(iconAlt)" />
+                    <tooltip style="display: flex;" :title="iconAlt ? $t(iconAlt) : undefined">
+                        <RotatingDots v-if="state === State.RUNNING" :alt="iconAlt ? $t(iconAlt) : undefined" />
+                        <CheckIcon v-else-if="state === State.SUCCESS" :alt="iconAlt ? $t(iconAlt) : undefined" />
+                        <AlertIcon v-else-if="state === State.WARNING" :alt="iconAlt ? $t(iconAlt) : undefined" />
+                        <SkipForwardIcon v-else-if="state === State.SKIPPED" :alt="iconAlt ? $t(iconAlt) : undefined" />
+                        <AlertCircleIcon v-else-if="state === State.FAILED" :alt="iconAlt ? $t(iconAlt) : undefined" />
                     </tooltip>
                 </div>
             </template>
@@ -329,7 +329,7 @@
         if(state.value === State.FAILED){
             return "task failed";
         }
-        return "";
+        return undefined;
     });
 </script>
 
