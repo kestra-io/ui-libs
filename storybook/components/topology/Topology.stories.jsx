@@ -45,6 +45,7 @@ const base = {
         toggleOrientationButton: false,
         source: "graph",
         playgroundEnabled: false,
+        playgroundReadyToStart: true,
     },
     parameters:{
         controls:{
@@ -202,6 +203,7 @@ export const ExecutionStatus = lodash.merge({},
 
                 return {
                     flowGraph: Simple,
+                    isHorizontal: false,
                     source: "",
                     execution: {
                         id: "execution-id",
@@ -218,7 +220,7 @@ export const ExecutionStatus = lodash.merge({},
                                     ],
                                     startDate: "2025-07-21T14:46:47.565377Z",
                                     endDate: "2025-07-23T14:46:48.081987Z",
-                                    duration: "PT17.39S"
+                                    duration: "PT17.39661S"
                                 }
                             },
                             {
@@ -258,6 +260,36 @@ export const ExecutionStatus = lodash.merge({},
                                     histories: [
                                         {
                                             state: "SUCCESS",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "SKIPPED",
+                                state: {
+                                    current: "SKIPPED",
+                                    histories: [
+                                        {
+                                            state: "SKIPPED",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "WARNING",
+                                state: {
+                                    current: "WARNING",
+                                    histories: [
+                                        {
+                                            state: "WARNING",
                                             date: "2025-07-23T14:46:48.081987Z"
                                         }
                                     ],

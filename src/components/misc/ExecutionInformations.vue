@@ -13,7 +13,7 @@
     import {computed} from "vue";
     import moment from "moment";
     import Duration from "./Duration.vue";
-    import Utils from "../../utils/Utils"
+    import * as Utils from "../../utils/Utils"
 
     defineOptions({
         name: "ExecutionInformations",
