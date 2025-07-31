@@ -3,6 +3,7 @@ import dagre from "dagre";
 import Utils from "./Utils";
 import {CLUSTER_PREFIX, NODE_SIZES} from "./constants";
 import {flowHaveTasks as yamlFlowHaveTask} from "./FlowYamlUtils";
+import isEqual from "lodash/isEqual"
 
 const TRIGGERS_NODE_UID = "root.Triggers";
 
@@ -814,11 +815,11 @@ export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, curr
             ){
                 return false;
             }
-            for (const key in currentTaskNode.task) {
-                if (prevTaskValue[key] !== currentTaskValue[key]) {
-                    return false;
-                }
+            
+            if (!isEqual(prevTaskValue, currentTaskValue)) {
+                return false;
             }
+            
         }
     } while (previousRootTaskNodes.length && currentRootTaskNodes.length && failIndex-- > 0);
 
