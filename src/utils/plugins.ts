@@ -19,7 +19,7 @@ export type Plugin = {
     [pluginElement: string]: PluginElement[];
 }
 
-export function isEntryAPluginElementPredicate(key: string, value: any) {
+export function isEntryAPluginElementPredicate(key: string, value: any): value is PluginElement[] {
     return Array.isArray(value) &&
         !["categories", "controllers", "storages", "aliases", "guides"].includes(key) &&
         ((value as any[]).length === 0 ||
