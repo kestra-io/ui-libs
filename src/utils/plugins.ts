@@ -10,11 +10,13 @@ export type Plugin = {
     longDescription?: string;
     description?: string;
     subGroup?: string;
+    tooltipContent?: string;
     categories?: string[];
     controllers?: string[];
     storages?: string[];
     aliases?: string[];
     guides?: string[];
+    
 } & {
     [pluginElement: string]: PluginElement[];
 }
