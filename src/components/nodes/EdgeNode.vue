@@ -130,4 +130,8 @@
     .stroke-warning {
         stroke: var(--ks-border-warning);
     }
+
+    .vue-flow__edge-path {
+        stroke-dasharray: 3 5;
+    }
 </style>
