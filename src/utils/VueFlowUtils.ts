@@ -666,6 +666,7 @@ export function generateGraph(
                 style: {
                     zIndex: 10,
                 },
+                animated: true,
             });
         }
     }
