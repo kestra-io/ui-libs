@@ -31,8 +31,11 @@
                 v-bind="taskProps"
                 :icons="icons"
                 :icon-component="iconComponent"
+                :playground-enabled="playgroundEnabled"
+                :playground-ready-to-start="playgroundReadyToStart"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
+                @run-task="emit(EVENTS.RUN_TASK, $event)"
                 @expand="expand($event)"
                 @open-link="emit(EVENTS.OPEN_LINK, $event)"
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
@@ -93,6 +96,7 @@
         </Controls>
     </VueFlow>
 </template>
+
 <script lang="ts" setup>
     import {computed, nextTick, onMounted, onUnmounted, PropType, provide, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
@@ -104,7 +108,6 @@
     import DotNode from "../nodes/DotNode.vue";
     // @ts-expect-error no types for internals necessary
     import EdgeNode from "../nodes/EdgeNode.vue";
-    // @ts-expect-error no types for internals necessary
     import TaskNode from "../nodes/TaskNode.vue";
     // @ts-expect-error no types for internals necessary
     import TriggerNode from "../nodes/TriggerNode.vue"
@@ -118,7 +121,7 @@
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
-    import VueFlowUtils, {type FlowGraph} from "../../utils/VueFlowUtils";
+    import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
     import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
@@ -150,7 +153,7 @@
             default: false,
         },
         flowGraph: {
-            type: Object as PropType<FlowGraph>,
+            type: Object as PropType<VueFlowUtils.FlowGraph>,
             required: true
         },
         flowId: {
@@ -184,6 +187,14 @@
         subflowsExecutions: {
             type: Object as PropType<Record<string, any[]>>,
             default: () => ({})
+        },
+        playgroundEnabled: {
+            type: Boolean,
+            default: false
+        },
+        playgroundReadyToStart: {
+            type: Boolean,
+            default: false
         }
     });
 
@@ -205,9 +216,11 @@
         [
             EVENTS.EDIT,
             EVENTS.DELETE,
+            EVENTS.RUN_TASK,
             EVENTS.OPEN_LINK,
             EVENTS.SHOW_LOGS,
             EVENTS.SHOW_DESCRIPTION,
+            EVENTS.RUN_TASK,
             "on-add-flowable-error",
             EVENTS.ADD_TASK,
             "toggle-orientation",

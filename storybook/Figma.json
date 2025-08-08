@@ -447,6 +447,18 @@
             "rootAlias": ""
           },
           {
+            "name": "ks/background-additionLine",
+            "value": "#beefe2",
+            "var": "base-color-palette/green/green-100",
+            "rootAlias": "base-color-palette/green/green-100"
+          },
+          {
+            "name": "ks/background-additionNum",
+            "value": "#7cdfc4",
+            "var": "base-color-palette/green/green-200",
+            "rootAlias": "base-color-palette/green/green-200"
+          },
+          {
             "name": "ks/background-body",
             "value": "#f9f9fa",
             "var": "base-color-palette/neutral/gray-50",
@@ -487,6 +499,18 @@
             "value": "#c7f0ff63",
             "var": "",
             "rootAlias": ""
+          },
+          {
+            "name": "ks/background-deletionLine",
+            "value": "#fec9cb",
+            "var": "base-color-palette/red/red-100",
+            "rootAlias": "base-color-palette/red/red-100"
+          },
+          {
+            "name": "ks/background-deletionNum",
+            "value": "#fd9297",
+            "var": "base-color-palette/red/red-200",
+            "rootAlias": "base-color-palette/red/red-200"
           },
           {
             "name": "ks/background-error",
@@ -1095,6 +1119,78 @@
             "rootAlias": "base-color-palette/orange/orange-500"
           },
           {
+            "name": "ks/dependencies-edge",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
+          },
+          {
+            "name": "ks/dependencies-edge-hover",
+            "value": "#2c303f",
+            "var": "base-color-palette/neutral/gray-600",
+            "rootAlias": "base-color-palette/neutral/gray-600"
+          },
+          {
+            "name": "ks/dependencies-edge-selected",
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dependencies-edge-selected-level2",
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dependencies-node-background",
+            "value": "#ffffff",
+            "var": "base-color-palette/neutral/white",
+            "rootAlias": "base-color-palette/neutral/white"
+          },
+          {
+            "name": "ks/dependencies-node-background-hover",
+            "value": "#f9f9fa",
+            "var": "base-color-palette/neutral/gray-50",
+            "rootAlias": "base-color-palette/neutral/gray-50"
+          },
+          {
+            "name": "ks/dependencies-node-background-selected",
+            "value": "#a396ff",
+            "var": "base-color-palette/purple/purple-200",
+            "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
+            "name": "ks/dependencies-node-background-selected-level2",
+            "value": "#7fbbff",
+            "var": "base-color-palette/blue/blue-200",
+            "rootAlias": "base-color-palette/blue/blue-200"
+          },
+          {
+            "name": "ks/dependencies-node-border",
+            "value": "#cfd3d6",
+            "var": "base-color-palette/neutral/gray-200",
+            "rootAlias": "base-color-palette/neutral/gray-200"
+          },
+          {
+            "name": "ks/dependencies-node-border-hover",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
+          },
+          {
+            "name": "ks/dependencies-node-border-selected",
+            "value": "#8c4bff",
+            "var": "base-color-palette/purple/purple-400",
+            "rootAlias": "base-color-palette/purple/purple-400"
+          },
+          {
+            "name": "ks/dependencies-node-border-selected-level2",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
             "name": "ks/dialog-background",
             "value": "#ffffff",
             "var": "base-color-palette/neutral/white",
@@ -1123,6 +1219,12 @@
             "value": "#9470ff",
             "var": "base-color-palette/purple/purple-300",
             "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dots-topology",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
           },
           {
             "name": "ks/dropdown-background",
@@ -1261,6 +1363,24 @@
             "value": "#8a3b00",
             "var": "base-color-palette/orange/orange-800",
             "rootAlias": "base-color-palette/orange/orange-800"
+          },
+          {
+            "name": "ks/playground-bg-color",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
+            "name": "ks/playground-end-gradient",
+            "value": "#1761fd",
+            "var": "base-color-palette/blue/blue-500",
+            "rootAlias": "base-color-palette/blue/blue-500"
+          },
+          {
+            "name": "ks/playground-start-gradient,",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
           },
           {
             "name": "ks/scrollbar-background",
@@ -1789,6 +1909,18 @@
             "rootAlias": ""
           },
           {
+            "name": "ks/background-additionLine",
+            "value": "#029e734d",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
+            "name": "ks/background-additionNum",
+            "value": "#029e7380",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
             "name": "ks/background-body",
             "value": "#20232d",
             "var": "base-color-palette/neutral/gray-800",
@@ -1827,6 +1959,18 @@
           {
             "name": "ks/background-created",
             "value": "#3991ff33",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
+            "name": "ks/background-deletionLine",
+            "value": "#fd727866",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
+            "name": "ks/background-deletionNum",
+            "value": "#fd727899",
             "var": "",
             "rootAlias": ""
           },
@@ -2437,6 +2581,78 @@
             "rootAlias": "base-color-palette/orange/orange-200"
           },
           {
+            "name": "ks/dependencies-edge",
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
+          },
+          {
+            "name": "ks/dependencies-edge-hover",
+            "value": "#e0e0ff",
+            "var": "base-color-palette/purple/purple-50",
+            "rootAlias": "base-color-palette/purple/purple-50"
+          },
+          {
+            "name": "ks/dependencies-edge-selected",
+            "value": "#a396ff",
+            "var": "base-color-palette/purple/purple-200",
+            "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
+            "name": "ks/dependencies-edge-selected-level2",
+            "value": "#7fbbff",
+            "var": "base-color-palette/blue/blue-200",
+            "rootAlias": "base-color-palette/blue/blue-200"
+          },
+          {
+            "name": "ks/dependencies-node-background",
+            "value": "#2f3342",
+            "var": "base-color-palette/neutral/gray-500",
+            "rootAlias": "base-color-palette/neutral/gray-500"
+          },
+          {
+            "name": "ks/dependencies-node-background-hover",
+            "value": "#bbbbff",
+            "var": "base-color-palette/purple/purple-100",
+            "rootAlias": "base-color-palette/purple/purple-100"
+          },
+          {
+            "name": "ks/dependencies-node-background-selected",
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dependencies-node-background-selected-level2",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
+            "name": "ks/dependencies-node-border",
+            "value": "#9797a6",
+            "var": "base-color-palette/neutral/gray-300",
+            "rootAlias": "base-color-palette/neutral/gray-300"
+          },
+          {
+            "name": "ks/dependencies-node-border-hover",
+            "value": "#e0e0ff",
+            "var": "base-color-palette/purple/purple-50",
+            "rootAlias": "base-color-palette/purple/purple-50"
+          },
+          {
+            "name": "ks/dependencies-node-border-selected",
+            "value": "#a396ff",
+            "var": "base-color-palette/purple/purple-200",
+            "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
+            "name": "ks/dependencies-node-border-selected-level2",
+            "value": "#5bb8ff",
+            "var": "base-color-palette/blue/blue-300",
+            "rootAlias": "base-color-palette/blue/blue-300"
+          },
+          {
             "name": "ks/dialog-background",
             "value": "#2f3342",
             "var": "base-color-palette/neutral/gray-500",
@@ -2465,6 +2681,12 @@
             "value": "#a396ff",
             "var": "base-color-palette/purple/purple-200",
             "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
+            "name": "ks/dots-topology",
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/dropdown-background",
@@ -2605,6 +2827,24 @@
             "rootAlias": "base-color-palette/orange/orange-100"
           },
           {
+            "name": "ks/playground-bg-color",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
+            "name": "ks/playground-end-gradient",
+            "value": "#051538",
+            "var": "base-color-palette/blue/blue-900",
+            "rootAlias": "base-color-palette/blue/blue-900"
+          },
+          {
+            "name": "ks/playground-start-gradient,",
+            "value": "#0e3b9a",
+            "var": "base-color-palette/blue/blue-700",
+            "rootAlias": "base-color-palette/blue/blue-700"
+          },
+          {
             "name": "ks/scrollbar-background",
             "value": "#1e202a",
             "var": "base-color-palette/neutral/gray-900",
@@ -2648,21 +2888,21 @@
           },
           {
             "name": "ks/tag-background",
-            "value": "#262a35",
-            "var": "base-color-palette/neutral/gray-700",
-            "rootAlias": "base-color-palette/neutral/gray-700"
-          },
-          {
-            "name": "ks/tag-background-active",
-            "value": "#2f3342",
-            "var": "base-color-palette/neutral/gray-500",
-            "rootAlias": "base-color-palette/neutral/gray-500"
-          },
-          {
-            "name": "ks/tag-background-hover",
             "value": "#404559",
             "var": "base-color-palette/neutral/gray-400",
             "rootAlias": "base-color-palette/neutral/gray-400"
+          },
+          {
+            "name": "ks/tag-background-active",
+            "value": "#59607b",
+            "var": "",
+            "rootAlias": ""
+          },
+          {
+            "name": "ks/tag-background-hover",
+            "value": "#59607b",
+            "var": "",
+            "rootAlias": ""
           },
           {
             "name": "ks/tag-content",

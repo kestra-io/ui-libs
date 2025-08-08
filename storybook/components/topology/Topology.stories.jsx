@@ -1,4 +1,4 @@
-import {shallowRef, ref, nextTick} from "vue";
+import {ref, nextTick} from "vue";
 import {useVueFlow} from "@vue-flow/core";
 import lodash from "lodash";
 
@@ -11,8 +11,7 @@ export default {
 };
 
 const base = {
-    render: (args, {loaded: {flowGraph, source}}) => ({
-        components: {TopologyComponent},
+    render: (args, {loaded: {flowGraph, source, execution}}) => ({
         setup() {
             const vueflowId = ref(Math.random().toString());
             const {
@@ -23,7 +22,13 @@ const base = {
                 fitView();
             });
 
-            return () => <TopologyComponent {...args} source={source} flowGraph={flowGraph} />;
+            return () => <TopologyComponent 
+                {...args} 
+                iconComponent={TaskIcon} 
+                source={source} 
+                flowGraph={flowGraph} 
+                execution={execution}
+            />;
         },
     }),
     decorators: [() => ({
@@ -38,12 +43,25 @@ const base = {
         isReadOnly: false,
         isAllowedEdit: false,
         toggleOrientationButton: false,
-        iconComponent: shallowRef(TaskIcon),
         source: "graph",
+        playgroundEnabled: false,
+        playgroundReadyToStart: true,
     },
     parameters:{
         controls:{
-            exclude: ["id", "namespace", "flowId", "iconComponent", "source", "flowGraph", "icons", "expandedSubflows", "toggleOrientationButton"],
+            exclude: [
+                "id", 
+                "namespace", 
+                "flowId", 
+                "iconComponent", 
+                "source", 
+                "flowGraph", 
+                "icons", 
+                "expandedSubflows", 
+                "toggleOrientationButton", 
+                "execution",
+                "subflowsExecutions",
+            ],
         }
     },
 };
@@ -141,7 +159,7 @@ export const SwitchSchedule = lodash.merge({},
     base,
     {
         loaders: [
-            async ({_args}) => {
+            async () => {
                 return {
                     flowGraph: SwitchScheduleData,
                     source: "",
@@ -158,10 +176,130 @@ export const Error = lodash.merge({},
     base,
     {
         loaders: [
-            async ({_args}) => {
+            async () => {
                 return {
                     flowGraph: ErrorData,
                     source: "",
+                }
+            },
+        ],
+    }
+)
+
+import Simple from "../../data/graphs/simple.js";
+
+function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes*60000);
+}
+
+export const ExecutionStatus = lodash.merge({},
+    base,
+    {
+        loaders: [
+            async () => {
+                Simple.nodes.forEach((node) => {
+                    node.executionId = "execution-id";
+                });
+
+                return {
+                    flowGraph: Simple,
+                    isHorizontal: false,
+                    source: "",
+                    execution: {
+                        id: "execution-id",
+                        taskRunList: [
+                            {
+                                taskId: "SUCCESS",
+                                state: {
+                                    current: "SUCCESS",
+                                    histories: [
+                                        {
+                                            state: "SUCCESS",
+                                            date: "2025-07-22T14:40:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-21T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT17.39661S"
+                                }
+                            },
+                            {
+                                taskId: "FAILED",
+                                state: {
+                                    current: "FAILED",
+                                    histories: [
+                                        {
+                                            state: "FAILED",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT3.51661S"
+                                }
+                            },
+                            {
+                                taskId: "RUNNING",
+                                state: {
+                                    current: "RUNNING",
+                                    histories: [
+                                        {
+                                            state: "RUNNING",
+                                            date: new Date().toISOString()
+                                        }
+                                    ],
+                                    startDate: new Date().toISOString(),
+                                    endDate: addMinutes(new Date(), 1).toISOString(),
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "SUCCESS",
+                                state: {
+                                    current: "SUCCESS",
+                                    histories: [
+                                        {
+                                            state: "SUCCESS",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "SKIPPED",
+                                state: {
+                                    current: "SKIPPED",
+                                    histories: [
+                                        {
+                                            state: "SKIPPED",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            },
+                            {
+                                taskId: "WARNING",
+                                state: {
+                                    current: "WARNING",
+                                    histories: [
+                                        {
+                                            state: "WARNING",
+                                            date: "2025-07-23T14:46:48.081987Z"
+                                        }
+                                    ],
+                                    startDate: "2025-07-23T14:46:47.565377Z",
+                                    endDate: "2025-07-23T14:46:48.081987Z",
+                                    duration: "PT0.51661S"
+                                }
+                            }
+                        ]
+                    }
                 }
             },
         ],

@@ -1214,3 +1214,89 @@ export function getChartAtPosition(source: string, position: { lineNumber: numbe
 
     return chart ? chart.toJSON() : null;
 }
+
+/**
+ * Get line start and end for all tasks
+ * @param source - YAML source code
+ * @returns lines infos for each taskId
+ */
+export function getTasksLines(
+    source: string
+):Record<string, {start: number, end: number}> {
+    // if a task ends on the last line of the YAML,
+    // its end range will be one line off.
+    // To avoid this specific case, we add a newline at the end of the source.
+    const paddedSource = source + "\n";
+    const yamlDoc = parseDocument(paddedSource) as any;
+    const lineCounter = new LineCounter();
+    parseDocument(paddedSource, {lineCounter});
+
+    let tasksLines: Record<string, {start: number, end: number}> = {};
+    visit(yamlDoc, {
+        Map(_, map) {
+            if (map.items) {
+                for (const item of map.items as any[]) {
+                    if (item?.key?.value === "tasks") { // visit only root tasks block for now
+                        if (item?.value?.items) {
+                            for (const task of item.value.items) {
+                                if(isMap(task)){
+                                    const foundChilTasksLines = getTasksAndFlowableLines(lineCounter, task);
+                                    tasksLines = {
+                                        ...tasksLines, 
+                                        ...foundChilTasksLines
+                                    }
+                                }
+                            }
+                        }
+                        return visit.BREAK;
+                    }
+                }
+            }
+        },
+    });
+    return tasksLines;
+}
+
+function getTasksAndFlowableLines(lineCounter: LineCounter, task: YAMLMap) {
+    let tasksLines: Record<string, {start: number, end: number}> = {};
+    const taskId = task.get("id") as string | undefined;
+    if(taskId){
+        if(task.range) {
+            tasksLines[taskId] = {
+                start: lineCounter.linePos(task.range[0]).line, 
+                end: lineCounter.linePos(task.range[1]).line - 1
+            }
+        }
+        const childTasks = new YAMLSeq<YAMLMap>();
+        const tasksChilds = task.get("tasks") as YAMLSeq<YAMLMap> | undefined;
+        if (isSeq<YAMLMap>(tasksChilds)){
+            tasksChilds.items.forEach(x => childTasks.add(x));
+        }
+        const thenChilds = task.get("then") as YAMLSeq<YAMLMap> | undefined;
+        // io.kestra.plugin.core.flow special case
+        if (isSeq<YAMLMap>(thenChilds)){
+            thenChilds.items.forEach(x => childTasks.add(x));
+        }
+
+        const elseChilds = task.get("else") as YAMLSeq<YAMLMap> | undefined;
+        // io.kestra.plugin.core.flow special case
+        if (isSeq<YAMLMap>(elseChilds)){
+            elseChilds.items.forEach(x => childTasks.add(x));
+        }
+
+        childTasks.items.forEach(childTask => {
+            if(isMap(childTask)){
+                tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, childTask)}
+            }
+        })
+    } else {
+        if (task.get("task")) {
+            // io.kestra.plugin.core.flow.Dag special case
+            const nestedDagTaskField = task.get("task") as YAMLMap;
+            if(isMap(nestedDagTaskField)) {
+                tasksLines = {...tasksLines, ...getTasksAndFlowableLines(lineCounter, nestedDagTaskField)};
+            }
+        }
+    }
+    return tasksLines;
+}

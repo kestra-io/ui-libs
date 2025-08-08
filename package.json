@@ -27,6 +27,14 @@
       },
       "require": "./dist/kestra-flowyamlutils.cjs.js"
     },
+    "./vue-flow-utils": {
+      "types": "./dist/utils/VueFlowUtils.d.ts",
+      "import": {
+        "types": "./dist/utils/VueFlowUtils.d.ts",
+        "default": "./dist/kestra-vueflowutils.es.js"
+      },
+      "require": "./dist/kestra-vueflowutils.cjs.js"
+    },
     "./style.css": "./dist/ui-libs.css",
     "./src/*": "./src/*"
   },

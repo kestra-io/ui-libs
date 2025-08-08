@@ -8,6 +8,8 @@
 
 html.dark{
 	/* background */
+	#{--ks-background-additionLine}: rgba($base-green-500, 0.3);
+	#{--ks-background-additionNum}: rgba($base-green-500, 0.5);
 	#{--ks-background-body}: $base-gray-800;
 	#{--ks-background-box}: $base-gray-800;
 	#{--ks-background-cancelled}: rgba($base-red-200, 0.2);
@@ -15,6 +17,8 @@ html.dark{
 	#{--ks-background-card-hover}: $base-gray-400;
 	#{--ks-background-card-opacity}: #121319e5;
 	#{--ks-background-created}: rgba($base-blue-400, 0.2);
+	#{--ks-background-deletionLine}: rgba($base-red-300, 0.4);
+	#{--ks-background-deletionNum}: rgba($base-red-300, 0.6);
 	#{--ks-background-error}: rgba($base-red-900, 0.2);
 	#{--ks-background-failed}: rgba($base-red-900, 0.2);
 	#{--ks-background-info}: rgba($base-blue-700, 0.2);
@@ -129,12 +133,29 @@ html.dark{
 	#{--ks-content-tertiary}: $base-gray-300;
 	#{--ks-content-warning}: $base-orange-200;
 
+	/* dependencies */
+	#{--ks-dependencies-edge}: $base-gray-400;
+	#{--ks-dependencies-edge-hover}: $base-purple-50;
+	#{--ks-dependencies-edge-selected}: $base-purple-200;
+	#{--ks-dependencies-edge-selected-level2}: $base-blue-200;
+	#{--ks-dependencies-node-background}: $base-gray-500;
+	#{--ks-dependencies-node-background-hover}: $base-purple-100;
+	#{--ks-dependencies-node-background-selected}: $base-purple-300;
+	#{--ks-dependencies-node-background-selected-level2}: $base-blue-400;
+	#{--ks-dependencies-node-border}: $base-gray-300;
+	#{--ks-dependencies-node-border-hover}: $base-purple-50;
+	#{--ks-dependencies-node-border-selected}: $base-purple-200;
+	#{--ks-dependencies-node-border-selected-level2}: $base-blue-300;
+
 	/* dialog */
 	#{--ks-dialog-background}: $base-gray-500;
 	#{--ks-dialog-border}: $base-gray-400;
 	#{--ks-dialog-header}: $base-gray-500;
 	#{--ks-dialog-headerbtn}: $base-gray-300;
 	#{--ks-dialog-headerbtn-hover}: $base-purple-200;
+
+	/* dots */
+	#{--ks-dots-topology}: $base-gray-400;
 
 	/* dropdown */
 	#{--ks-dropdown-background}: $base-gray-700;
@@ -165,6 +186,11 @@ html.dark{
 	#{--ks-log-content-trace}: $base-gray-100;
 	#{--ks-log-content-warn}: $base-orange-100;
 
+	/* playground */
+	#{--ks-playground-bg-color}: $base-blue-400;
+	#{--ks-playground-end-gradient}: $base-blue-900;
+	#{--ks-playground-start-gradient,}: $base-blue-700;
+
 	/* scrollbar */
 	#{--ks-scrollbar-background}: $base-gray-900;
 	#{--ks-scrollbar-content}: $base-gray-400;
@@ -177,9 +203,9 @@ html.dark{
 	#{--ks-select-hover}: $base-gray-600;
 
 	/* tag */
-	#{--ks-tag-background}: $base-gray-700;
-	#{--ks-tag-background-active}: $base-gray-500;
-	#{--ks-tag-background-hover}: $base-gray-400;
+	#{--ks-tag-background}: $base-gray-400;
+	#{--ks-tag-background-active}: #59607b;
+	#{--ks-tag-background-hover}: #59607b;
 	#{--ks-tag-content}: $base-white;
 
 	/* tooltip */

@@ -26,7 +26,7 @@
     import {ref, watch, computed} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
-    import {useRoute, useRouter} from "vue-router";
+    import {useRoute} from "vue-router";
 
     const props = withDefaults(defineProps<{
         href?: string,
@@ -42,18 +42,17 @@
     const collapsed = ref(true);
 
     const route = useRoute();
-    const router = useRouter();
 
     const emit = defineEmits(["expand"]);
     const getHash = computed(() => `#${props.href}-body`);
-    const handleToggle = () => {
+    const handleToggle = (event: Event) => {
+        event.preventDefault();
         collapsed.value = !collapsed.value;
+        open.value = !collapsed.value;
         if(!collapsed.value) {
             emit("expand");
         }
-        router.replace({
-            hash: collapsed.value ? "" : getHash.value
-        });
+        window.location.hash = collapsed.value ? "" : getHash.value
     };
 
     const open = ref(false);
