@@ -188,7 +188,7 @@
                 checkHashAndExpand();
             }
         }
-    }, {immediate: true});
+    });
 
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {

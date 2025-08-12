@@ -55,14 +55,14 @@ export interface JSONSchema {
 
 type ExtractedTypes = { types: string[], subType?: string };
 
-function extractTypeOrRef(propType: JSONProperty): string | undefined {
+function extractTypesOrRef(propType: JSONProperty): string[] | undefined {
     if (propType.type) {
-        return propType.type;
+        return Array.isArray(propType.type) ? propType.type : [propType.type];
     }
 
     if (propType.$ref) {
         const ref = propType.$ref;
-        return "#" + ref.slice(8);
+        return ["#" + ref.slice(8)];
     }
 
     return undefined;
@@ -109,19 +109,19 @@ export function aggregateAllOf(property: JSONProperty): JSONProperty {
 export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     const result: ExtractedTypes = {} as ExtractedTypes;
 
-    const extractedType = extractTypeOrRef(property);
+    const extractedType = extractTypesOrRef(property);
     if (extractedType) {
-        result.types = [extractedType];
+        result.types = extractedType;
     } else if (property.anyOf) {
-        result.types = property.anyOf.map(extractTypeOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
+        result.types = property.anyOf.flatMap(extractTypesOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
     } else {
         result.types = ["object"];
     }
 
     if (property.additionalProperties) {
-        result.subType = extractTypeOrRef(property.additionalProperties);
+        result.subType = extractTypesOrRef(property.additionalProperties)?.[0];
     } else if (property.items) {
-        result.subType = extractTypeOrRef(property.items);
+        result.subType = extractTypesOrRef(property.items)?.[0];
     }
 
     return result;
