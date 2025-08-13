@@ -78,7 +78,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.14",
     "@types/moment-timezone": "^0.5.30",
-    "@typescript-eslint/parser": "^8.19.1",
+    "@typescript-eslint/parser": "^8.39.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vitest/coverage-v8": "^3.1.2",
