@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column gap-6">
         <div>
-            <div class="alert alert-info" role="alert" v-if="schema.properties?.$beta">
+            <div class="alert alert-info mb-2" role="alert" v-if="schema.properties?.$beta">
                 <p>
                     This plugin is currently in beta. While it is considered safe for use, please be aware that its API
                     could change in ways that are not compatible with earlier versions in future releases, or it might
