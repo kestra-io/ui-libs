@@ -77,9 +77,10 @@
 <style lang="scss" scoped>
 .content {
   color: var(--ks-content-secondary);
+  width: calc(100% - .9rem);
 }
 
 .content-children {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 </style>

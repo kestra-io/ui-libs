@@ -31,6 +31,7 @@ import Twig from "shiki/langs/twig.mjs";
 import Typescript from "shiki/langs/typescript.mjs";
 import Xml from "shiki/langs/xml.mjs";
 import Yaml from "shiki/langs/yaml.mjs";
+import Html from "shiki/langs/html.mjs";
 
 
 const langsMap: Record<string, any> = {
@@ -62,6 +63,7 @@ const langsMap: Record<string, any> = {
     typescript: Typescript,
     xml: Xml,
     yaml: Yaml,
+    html: Html,
 };
 
 export type MDParser = (md: string) => Promise<MDCParserResult>
