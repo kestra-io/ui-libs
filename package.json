@@ -104,7 +104,7 @@
     "shiki": "^3.9.2"
   },
   "optionalDependencies": {
-    "@esbuild/darwin-arm64": "^0.24.2",
+    "@esbuild/darwin-arm64": "^0.25.9",
     "@esbuild/darwin-x64": "^0.24.2",
     "@esbuild/linux-x64": "^0.24.2",
     "@rollup/rollup-darwin-arm64": "^4.30.1",
