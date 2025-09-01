@@ -126,18 +126,17 @@
     "ks-content-warning"
   ],
   "dependencies": [
-    "ks-dependencies-edge",
-    "ks-dependencies-edge-hover",
-    "ks-dependencies-edge-selected",
-    "ks-dependencies-edge-selected-level2",
-    "ks-dependencies-node-background",
-    "ks-dependencies-node-background-hover",
+    "ks-dependencies-edge-default",
+    "ks-dependencies-edge-faded",
+    "ks-dependencies-edge-hovered",
+    "ks-dependencies-node-background-default",
+    "ks-dependencies-node-background-faded",
+    "ks-dependencies-node-background-hovered",
     "ks-dependencies-node-background-selected",
-    "ks-dependencies-node-background-selected-level2",
-    "ks-dependencies-node-border",
-    "ks-dependencies-node-border-hover",
-    "ks-dependencies-node-border-selected",
-    "ks-dependencies-node-border-selected-level2"
+    "ks-dependencies-node-border-default",
+    "ks-dependencies-node-border-faded",
+    "ks-dependencies-node-border-hovered",
+    "ks-dependencies-node-border-selected"
   ],
   "dialog": [
     "ks-dialog-background",
