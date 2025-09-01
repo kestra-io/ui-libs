@@ -10,6 +10,7 @@
                     :clickable-text="propertyKey"
                     :href="href + '_' + propertyKey"
                     @expand="autoExpanded = true"
+                    :no-url-change
                 >
                     <template #additionalButtonText>
                         <Tooltip v-if="property['$required']" class="d-flex" title="Required">
@@ -73,12 +74,21 @@
     import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
     import {ref, watch} from "vue";
 
-    const props = withDefaults(defineProps<{ href?: string, sectionName: string, properties?: Record<string, JSONProperty>, showDynamic?: boolean, initiallyExpanded?: boolean, forceInclude?: string[]}>(), {
+    const props = withDefaults(defineProps<{ 
+        href?: string, 
+        sectionName: string, 
+        properties?: Record<string, JSONProperty>, 
+        showDynamic?: boolean, 
+        initiallyExpanded?: boolean, 
+        forceInclude?: string[],
+        noUrlChange?: boolean
+    }>(), {
         properties: undefined,
         href: Math.random().toString(36).substring(2, 5),
         showDynamic: true,
         initiallyExpanded: false,
-        forceInclude: () => [] as string[]
+        forceInclude: () => [] as string[],
+        noUrlChange: false
     });
 
     const emit = defineEmits(["expand"]);
