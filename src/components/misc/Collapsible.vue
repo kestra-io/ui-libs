@@ -33,10 +33,12 @@
         clickableText: string,
         arrow?: boolean,
         initiallyExpanded?: boolean
+        noUrlChange?: boolean
     }>(), {
         href: Math.random().toString(36).substring(2, 5),
         arrow: true,
-        initiallyExpanded: false
+        initiallyExpanded: false,
+        noUrlChange: false
     });
 
     const collapsed = ref(true);
@@ -51,6 +53,9 @@
         open.value = !collapsed.value;
         if(!collapsed.value) {
             emit("expand");
+        }
+        if(props.noUrlChange) {
+            return;
         }
         window.location.hash = collapsed.value ? "" : getHash.value
     };

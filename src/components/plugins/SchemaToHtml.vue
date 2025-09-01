@@ -20,7 +20,7 @@
         </div>
 
         <div class="d-flex flex-column gap-3" :key="pluginType">
-            <Collapsible class="plugin-section" v-if="examples" clickable-text="Examples" href="examples">
+            <Collapsible class="plugin-section" v-if="examples" clickable-text="Examples" href="examples" :no-url-change>
                 <template #content>
                     <div class="d-flex flex-column gap-4">
                         <template v-for="(example, index) in examples" :key="pluginType + '-' + index">
@@ -50,6 +50,7 @@
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
                 :force-include="forceIncludeProperties"
+                :no-url-change
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -65,6 +66,7 @@
                 section-name="Outputs"
                 href="outputs"
                 :show-dynamic="false"
+                :no-url-change
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -80,6 +82,7 @@
                 section-name="Metrics"
                 href="metrics"
                 :show-dynamic="false"
+                :no-url-change
             >
                 <template #markdown="{content}">
                     <div class="markdown">
@@ -95,6 +98,7 @@
                 href="definitions" 
                 :initially-expanded="definitionsExpanded"
                 :key="`definitions-${pluginType}-${forceExpandKey}`"
+                :no-url-change
             >
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
@@ -108,6 +112,7 @@
                             :key="pluginType + '-' + definitionKey"
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true; expandedDefinitions.add(definitionKey)"
+                            :no-url-change
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
@@ -134,12 +139,14 @@
         schema: JSONSchema,
         pluginType: string,
         darkMode?: boolean,
-        propsInitiallyExpanded?: boolean
-        forceIncludeProperties?: string[]
+        propsInitiallyExpanded?: boolean,
+        forceIncludeProperties?: string[],
+        noUrlChange?: boolean
     }>(), {
         darkMode: true,
         propsInitiallyExpanded: false,
-        forceIncludeProperties: () => [] as string[]
+        forceIncludeProperties: () => [],
+        noUrlChange: false
     });
 
     const definitionsExpanded = ref(false);
