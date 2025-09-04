@@ -109,13 +109,29 @@ export function aggregateAllOf(property: JSONProperty): JSONProperty {
 export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     const result: ExtractedTypes = {} as ExtractedTypes;
 
-    const extractedType = extractTypesOrRef(property);
+    const getTypes = (property: JSONProperty) => {
+        const types = extractTypesOrRef(property);
+        if (types && types.length > 0) {
+            return types;
+        }
+        if (property.anyOf) {
+            return property.anyOf.flatMap(extractTypesOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
+        }
+        return undefined;
+    };
+
+    const extractedType = getTypes(property);
     if (extractedType) {
         result.types = extractedType;
-    } else if (property.anyOf) {
-        result.types = property.anyOf.flatMap(extractTypesOrRef).filter(o => o !== undefined).filter(Utils.distinctFilter);
     } else {
         result.types = ["object"];
+    }
+
+    if (result.types.includes("array") && property.items) {
+        const typesToAdd = getTypes(property.items);
+        if (typesToAdd && property.items.anyOf) {
+            result.types = result.types.filter(type => type !== "array").concat(typesToAdd);
+        }
     }
 
     if (property.additionalProperties) {
