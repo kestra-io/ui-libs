@@ -1120,21 +1120,21 @@
           },
           {
             "name": "ks/dependencies-edge-default",
-            "value": "#9797a6",
-            "var": "base-color-palette/neutral/gray-300",
-            "rootAlias": "base-color-palette/neutral/gray-300"
-          },
-          {
-            "name": "ks/dependencies-edge-faded",
             "value": "#cfd3d6",
             "var": "base-color-palette/neutral/gray-200",
             "rootAlias": "base-color-palette/neutral/gray-200"
           },
           {
+            "name": "ks/dependencies-edge-faded",
+            "value": "#ecebef",
+            "var": "base-color-palette/neutral/gray-100",
+            "rootAlias": "base-color-palette/neutral/gray-100"
+          },
+          {
             "name": "ks/dependencies-edge-hovered",
-            "value": "#2c303f",
-            "var": "base-color-palette/neutral/gray-600",
-            "rootAlias": "base-color-palette/neutral/gray-600"
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
           },
           {
             "name": "ks/dependencies-node-background-default",
@@ -1180,9 +1180,9 @@
           },
           {
             "name": "ks/dependencies-node-border-selected",
-            "value": "#8c4bff",
-            "var": "base-color-palette/purple/purple-400",
-            "rootAlias": "base-color-palette/purple/purple-400"
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
           },
           {
             "name": "ks/dialog-background",
@@ -2582,15 +2582,15 @@
           },
           {
             "name": "ks/dependencies-edge-faded",
-            "value": "#cfd3d6",
-            "var": "base-color-palette/neutral/gray-200",
-            "rootAlias": "base-color-palette/neutral/gray-200"
+            "value": "#404559",
+            "var": "base-color-palette/neutral/gray-400",
+            "rootAlias": "base-color-palette/neutral/gray-400"
           },
           {
             "name": "ks/dependencies-edge-hovered",
-            "value": "#f9f9fa",
-            "var": "base-color-palette/neutral/gray-50",
-            "rootAlias": "base-color-palette/neutral/gray-50"
+            "value": "#e0e0ff",
+            "var": "base-color-palette/purple/purple-50",
+            "rootAlias": "base-color-palette/purple/purple-50"
           },
           {
             "name": "ks/dependencies-node-background-default",
@@ -2606,9 +2606,9 @@
           },
           {
             "name": "ks/dependencies-node-background-hovered",
-            "value": "#bbbbff",
-            "var": "base-color-palette/purple/purple-100",
-            "rootAlias": "base-color-palette/purple/purple-100"
+            "value": "#e0e0ff",
+            "var": "base-color-palette/purple/purple-50",
+            "rootAlias": "base-color-palette/purple/purple-50"
           },
           {
             "name": "ks/dependencies-node-background-selected",
