@@ -13,6 +13,7 @@ import {
     isSeq,
     visit,
     Range,
+    ToStringOptions,
 } from "yaml";
 import cloneDeep from "lodash/cloneDeep";
 
@@ -55,16 +56,18 @@ const SORT_FIELDS = [
     "pluginDefaults"
 ];
 
+function sortPredicate(a: string, b: string) {
+    const aIndex = SORT_FIELDS.indexOf(a);
+    const bIndex = SORT_FIELDS.indexOf(b);
+    const aIndexProtected = aIndex >= 0 ? aIndex : Number.MAX_SAFE_INTEGER;
+    const bIndexProtected = bIndex >= 0 ? bIndex : Number.MAX_SAFE_INTEGER;
+
+    return aIndexProtected - bIndexProtected;
+}
+
 export function sort(value: Record<string, any>) {
     return Object.keys(value)
-        .sort((a, b) => {
-            const aIndex = SORT_FIELDS.indexOf(a);
-            const bIndex = SORT_FIELDS.indexOf(b);
-            const aIndexProtected = aIndex >= 0 ? aIndex : Number.MAX_SAFE_INTEGER;
-            const bIndexProtected = bIndex >= 0 ? bIndex : Number.MAX_SAFE_INTEGER;
-
-            return aIndexProtected - bIndexProtected;
-        });
+        .sort(sortPredicate);
 }
 
 export function pairsToMap(pairs?: any[]) {
@@ -312,8 +315,16 @@ export function replaceBlockWithPath({source, path, newContent}: {
 }) {
     const yamlDoc = parseDocumentTyped(source);
     const newItem = yamlDoc.createNode(parseDocument(newContent));
+    const pathArray = parsePath(path);
+    const insertBlock = !yamlDoc.hasIn(pathArray);
+    yamlDoc.setIn(pathArray, newItem);
 
-    yamlDoc.setIn(parsePath(path), newItem);
+    // When inserting a top level element 
+    // try to insert the key at the right place
+    if (insertBlock && pathArray.length === 1
+        && yamlDoc.contents && isMap(yamlDoc.contents)) {
+        yamlDoc.contents.items.sort((a, b) => sortPredicate(a.key.value ?? a.key, b.key.value ?? a.key));
+    }
 
     return yamlDoc.toString(TOSTRING_OPTIONS);
 }
@@ -1048,7 +1059,9 @@ function extractAllVersions(source: string){
     return extractFieldFromMaps(source, "version", () => true, () => true, true);
 }
 
-const TOSTRING_OPTIONS = {lineWidth: 0};
+const TOSTRING_OPTIONS: ToStringOptions = {
+    lineWidth: 0,
+};
 
 const yamlKeyCapture = "([^:\\n]+): *";
 const indentAndYamlKeyCapture = new RegExp(

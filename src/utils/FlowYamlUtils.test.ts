@@ -1276,6 +1276,45 @@ tasks:
           "
         `)
     })
+
+    test("insert the key at the right location", () => {
+        const yamlString = `
+        id: my-flow
+        namespace: my.namespace
+
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const newValue = `
+        my nice flow
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString,
+            path: "description",
+            newContent: newValue
+        })
+        expect(result).toMatchInlineSnapshot(`
+          "id: my-flow
+          namespace: my.namespace
+          description: my nice flow
+
+          tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+            - id: plugin2
+              type: type2
+              name: Plugin 2
+          "
+        `)
+    })
 })
 
 describe("getPathFromSectionAndId", () => {  
