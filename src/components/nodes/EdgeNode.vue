@@ -88,7 +88,14 @@
     })
 
 
-    const {t} = useI18n();
+    let t = (s: string) => s;
+    try{
+        const {t: realT} = useI18n();
+        t = realT;
+    } catch {
+        // ignore, not in a i18n context
+    }
+
     const title = computed(() => {
         const {haveAdd} = props.data ?? {};
         return `${t("add task")} ${haveAdd?.length === 2 ? `${t(haveAdd[1])} ${haveAdd[0]}` : ""}`.trim();
