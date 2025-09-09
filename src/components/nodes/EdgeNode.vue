@@ -1,5 +1,6 @@
 <template>
     <path
+        v-if="path?.length"
         :id="id"
         :class="classes"
         :style="data.haveDashArray ?
@@ -11,7 +12,7 @@
         :marker-end="markerEnd"
     />
 
-    <EdgeLabelRenderer style="z-index: 10">
+    <EdgeLabelRenderer style="z-index: 10" v-if="path?.length">
         <div
             :style="{
                 pointerEvents: 'all',
@@ -89,7 +90,7 @@
 
     const {t} = useI18n();
     const title = computed(() => {
-        const {haveAdd} = props.data;
+        const {haveAdd} = props.data ?? {};
         return `${t("add task")} ${haveAdd?.length === 2 ? `${t(haveAdd[1])} ${haveAdd[0]}` : ""}`.trim();
     })
 

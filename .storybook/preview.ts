@@ -6,6 +6,7 @@ import "../src/scss/vendor.scss";
 import "../src/scss/ks-theme-light.scss";
 import "../src/scss/ks-theme-dark.scss";
 import "./app.scss";
+import {createI18n} from "vue-i18n";
 
 /** @type { import('@storybook/vue3-vite').Preview } */
 const preview = {
@@ -35,6 +36,17 @@ setup((app) => {
     app.config.globalProperties.$t = (key) => {
         return key;
     }
+
+    const i18n = createI18n({
+        locale: "en",
+        messages: {
+            en: {
+                "add task": "Add Task",
+            },
+        },
+    });
+
+    app.use(i18n);
 })
 
 export default preview;
