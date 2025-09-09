@@ -33,7 +33,7 @@ jobs:
 
       - name: "Set up Cloud SDK"
         if: env.GOOGLE_SERVICE_ACCOUNT != 0
-        uses: "google-github-actions/setup-gcloud@v2"
+        uses: "google-github-actions/setup-gcloud@v3"
 
       - name: Publish storybook to Google Cloud
         run: |
