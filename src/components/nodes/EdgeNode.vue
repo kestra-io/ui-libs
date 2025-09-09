@@ -31,91 +31,74 @@
     </EdgeLabelRenderer>
 </template>
 
-<script>
-    import {computed} from "vue";
+<script lang="ts" setup>
+    import {computed, PropType} from "vue";
+    import {useI18n} from "vue-i18n";
     import {EdgeLabelRenderer, getSmoothStepPath} from "@vue-flow/core";
     import AddTaskButton from "../buttons/AddTaskButton.vue";
     import {EVENTS} from "../../utils/constants";
     import Tooltip from "../misc/Tooltip.vue";
-    import Utils from "../../utils/Utils";
 
-    export default {
-        data() {
-            return {
-                tooltips: [],
-            }
+    const props = defineProps({
+        id: {
+            type: String,
+            default: undefined,
         },
-        props: {
-            id: {
-                type: String,
-                default: undefined,
-            },
-            data: {
-                type: Object,
-                default: undefined,
-            },
-            sourceX: {
-                type: Number,
-                default: undefined,
-            },
-            sourceY: {
-                type: Number,
-                default: undefined,
-            },
-            targetX: {
-                type: Number,
-                default: undefined,
-            },
-            targetY: {
-                type: Number,
-                default: undefined,
-            },
-            markerEnd: {
-                type: String,
-                default: undefined,
-            },
-            sourcePosition: {
-                type: String,
-                default: undefined,
-            },
-            targetPosition: {
-                type: String,
-                default: undefined,
-            },
+        data: {
+            type: Object as PropType<any>,
+            default: undefined,
         },
-        components: {
-            AddTaskButton,
-            EdgeLabelRenderer,
-            Tooltip
+        sourceX: {
+            type: Number,
+            default: undefined,
         },
-        computed: {
-            Utils() {
-                return Utils
-            },
-            EVENTS() {
-                return EVENTS
-            },
-            classes() {
-                return {
-                    "vue-flow__edge-path": true,
-                    ["stroke-" + this.data.color]: this.data.color,
-                    "unused-path": this.data.unused
-                }
-            },
-            title() {
-                const {haveAdd} = this.data;
-                return `${this.$t("add task")} ${haveAdd?.length === 2 ? `${this.$t(haveAdd[1])} ${haveAdd[0]}` : ""}`.trim();
-            }
+        sourceY: {
+            type: Number,
+            default: undefined,
         },
-        setup(props) {
-            const path = computed(() => getSmoothStepPath(props));
+        targetX: {
+            type: Number,
+            default: undefined,
+        },
+        targetY: {
+            type: Number,
+            default: undefined,
+        },
+        markerEnd: {
+            type: String,
+            default: undefined,
+        },
+        sourcePosition: {
+            type: String,
+            default: undefined,
+        },
+        targetPosition: {
+            type: String,
+            default: undefined,
+        },
+    })
+        
+    const classes = computed(() => {
+        return props.data ? {
+            "vue-flow__edge-path": true,
+            ["stroke-" + props.data.color]: props.data.color,
+            "unused-path": props.data.unused
+        } : {};
+    })
 
-            return {
-                path,
-            };
-        },
+
+    const {t} = useI18n();
+    const title = computed(() => {
+        const {haveAdd} = props.data;
+        return `${t("add task")} ${haveAdd?.length === 2 ? `${t(haveAdd[1])} ${haveAdd[0]}` : ""}`.trim();
+    })
+
+
+    const path = computed(() => getSmoothStepPath(props as any));
+
+    defineOptions({
         inheritAttrs: false,
-    };
+    });
 </script>
 
 <style scoped>

@@ -163,7 +163,7 @@
     const enumValues = ref(extractEnumValues(props.property));
 
     const codeSanitizer = (str: string): string => {
-        return str.replaceAll(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replaceAll(/(?<!:):(?![: /])/g, ": ");
+        return str.replace(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replace(/(?<!:):(?![: /])/g, ": ");
     }
 </script>
 

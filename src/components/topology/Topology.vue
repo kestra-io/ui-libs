@@ -103,7 +103,6 @@
     import ClusterNode from "../nodes/ClusterNode.vue";
     // @ts-expect-error no types for internals necessary
     import DotNode from "../nodes/DotNode.vue";
-    // @ts-expect-error no types for internals necessary
     import EdgeNode from "../nodes/EdgeNode.vue";
     import TaskNode from "../nodes/TaskNode.vue";
     // @ts-expect-error no types for internals necessary
