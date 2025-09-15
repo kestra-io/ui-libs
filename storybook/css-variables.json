@@ -129,6 +129,7 @@
     "ks-dependencies-edge-default",
     "ks-dependencies-edge-faded",
     "ks-dependencies-edge-hovered",
+    "ks-dependencies-edge-selected",
     "ks-dependencies-node-background-default",
     "ks-dependencies-node-background-faded",
     "ks-dependencies-node-background-hovered",

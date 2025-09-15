@@ -1137,6 +1137,12 @@
             "rootAlias": "base-color-palette/purple/purple-300"
           },
           {
+            "name": "ks/dependencies-edge-selected",
+            "value": "#a396ff",
+            "var": "base-color-palette/purple/purple-200",
+            "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
             "name": "ks/dependencies-node-background-default",
             "value": "#ffffff",
             "var": "base-color-palette/neutral/white",
@@ -2591,6 +2597,12 @@
             "value": "#e0e0ff",
             "var": "base-color-palette/purple/purple-50",
             "rootAlias": "base-color-palette/purple/purple-50"
+          },
+          {
+            "name": "ks/dependencies-edge-selected",
+            "value": "#9470ff",
+            "var": "base-color-palette/purple/purple-300",
+            "rootAlias": "base-color-palette/purple/purple-300"
           },
           {
             "name": "ks/dependencies-node-background-default",
