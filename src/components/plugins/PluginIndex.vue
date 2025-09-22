@@ -50,6 +50,7 @@
         pluginName: string,
         subGroup?: string | undefined,
         icons: Record<string, string>
+        routePath?: string
     }>();
 
     const plugin = computed(() => props.plugins.find(p => props.subGroup === undefined ? true : (slugify(subGroupName(p)) === props.subGroup)) as Plugin);
@@ -68,7 +69,8 @@
         return split?.[split.length - 1];
     }
 
-    const {path} = useRoute();
+    const route = useRoute();
+    const path = route?.path ?? props.routePath; 
 
     const subGroupHref = (targetSubGroup: string) => `${path}/${slugify(targetSubGroup)}`;
 
