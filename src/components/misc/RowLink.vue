@@ -7,13 +7,16 @@
 <script setup lang="ts">
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
     import {slugify} from "../../utils/url";
-    import {useRoute} from "vue-router";
     import {computed} from "vue";
 
-    const props = defineProps<{ iconB64Svg: string, text: string, href?: string | undefined }>();
+    const props = defineProps<{ 
+        iconB64Svg: string, 
+        text: string, 
+        routePath: string
+        href?: string | undefined 
+    }>();
 
-    const {path} = useRoute();
-    const hrefWithDefault = computed(() => props.href === undefined ? `${path}/${slugify(props.text)}` : props.href);
+    const hrefWithDefault = computed(() => props.href === undefined ? `${props.routePath}/${slugify(props.text)}` : props.href);
 </script>
 <style lang="scss" scoped>
     .row-link {

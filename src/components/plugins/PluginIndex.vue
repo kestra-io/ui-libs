@@ -11,6 +11,7 @@
                     :text="subGroupName(subGroupWrapper)"
                     :href="subGroupHref(subGroupName(subGroupWrapper))"
                     :key="subGroupName(subGroupWrapper)"
+                    :route-path="routePath"
                     class="text-capitalize"
                     @click="$emit('goTo', {subGroup: subGroupWrapper})"
                 />
@@ -29,6 +30,7 @@
                         :text="elementName(element)"
                         :href="elementHref(element)"
                         :key="element"
+                        :route-path="routePath"
                         class="text-capitalize"
                         @click="$emit('goTo', {element})"
                     />
@@ -43,14 +45,13 @@
     import {isEntryAPluginElementPredicate, subGroupName} from "../../utils/plugins";
     import {slugify} from "../../utils/url";
     import {computed} from "vue";
-    import {useRoute} from "vue-router";
 
     const props = defineProps<{
         plugins: Plugin[],
         pluginName: string,
-        subGroup?: string | undefined,
+        routePath: string
         icons: Record<string, string>
-        routePath?: string
+        subGroup?: string | undefined,
     }>();
 
     const plugin = computed(() => props.plugins.find(p => props.subGroup === undefined ? true : (slugify(subGroupName(p)) === props.subGroup)) as Plugin);
@@ -69,12 +70,9 @@
         return split?.[split.length - 1];
     }
 
-    const route = useRoute();
-    const path = route?.path ?? props.routePath; 
+    const subGroupHref = (targetSubGroup: string) => `${props.routePath}/${slugify(targetSubGroup)}`;
 
-    const subGroupHref = (targetSubGroup: string) => `${path}/${slugify(targetSubGroup)}`;
-
-    const elementHref = (element: string) => `${path}/${element}`;
+    const elementHref = (element: string) => `${props.routePath}/${element}`;
 
     function extractPluginElements(plugin: Plugin): Record<string, string[]> {
         return Object.fromEntries(

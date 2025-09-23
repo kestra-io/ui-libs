@@ -26,7 +26,7 @@
     import {ref, watch, computed} from "vue";
     import MenuRight from "vue-material-design-icons/MenuRight.vue";
     import MenuDown from "vue-material-design-icons/MenuDown.vue";
-    import {useRoute} from "vue-router";
+    import {useBrowserLocation} from "@vueuse/core";
 
     const props = withDefaults(defineProps<{
         href?: string,
@@ -43,7 +43,7 @@
 
     const collapsed = ref(true);
 
-    const route = useRoute();
+    const location = useBrowserLocation();
 
     const emit = defineEmits(["expand"]);
     const getHash = computed(() => `#${props.href}-body`);
@@ -73,7 +73,7 @@
         , {immediate: true});
 
     watch(
-        () => route.hash,
+        () => location.value.hash,
         (hash) => {
             if (hash === getHash.value && collapsed.value) {
                 open.value = true;
