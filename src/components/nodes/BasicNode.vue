@@ -15,7 +15,7 @@
                     class="text-truncate task-title"
                 >
                     <tooltip :title="hoverTooltip">
-                        {{ title ?? trimmedId }}
+                        {{ displayTitle }}
                     </tooltip>
                 </div>
                 <span
@@ -156,6 +156,10 @@
         }
 
         return trimmedId.value;
+    })
+
+    const displayTitle = computed(() => {
+        return props.title ?? trimmedId.value;
     })
 </script>
 
