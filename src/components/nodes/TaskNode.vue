@@ -148,6 +148,7 @@
             uid: string;
             type?: string;
             task: TaskType;
+            taskRun: TaskRun
         };
         executionId?: string;
         color?: string;
@@ -161,6 +162,7 @@
     }
 
     interface TaskRun {
+        id: string
         taskId: string;
         state: {
             current: [string, string]; // [state, stateText]
@@ -303,7 +305,7 @@
                     id: subflowIdContainer.flowId,
                     executionId: taskExecution.value?.taskRunList
                         .filter((taskRun: TaskRun) => 
-                            taskRun.taskId === props.data.node.task.id && 
+                            taskRun.id === props.data.node.taskRun.id && 
                             taskRun.outputs?.executionId
                         )
                         ?.[0]?.outputs?.executionId
