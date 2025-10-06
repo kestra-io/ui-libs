@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column gap-6">
-        <div>
+        <div class="d-flex flex-column gap-3">
             <div class="alert alert-info mb-2" role="alert" v-if="schema.properties?.$beta">
                 <p>
                     This plugin is currently in beta. While it is considered safe for use, please be aware that its API
@@ -91,11 +91,11 @@
                 </template>
             </CollapsibleProperties>
 
-            <Collapsible 
-                v-if="schema.definitions && Object.keys(schema.definitions).length > 0" 
-                class="plugin-section" 
-                clickable-text="Definitions" 
-                href="definitions" 
+            <Collapsible
+                v-if="schema.definitions && Object.keys(schema.definitions).length > 0"
+                class="plugin-section"
+                clickable-text="Definitions"
+                href="definitions"
                 :initially-expanded="definitionsExpanded"
                 :key="`definitions-${pluginType}-${forceExpandKey}`"
                 :no-url-change
@@ -182,7 +182,7 @@
                     requestAnimationFrame(attemptScroll);
                 }
             };
-        
+
             requestAnimationFrame(attemptScroll);
         } else {
             expandedDefinitions.value.clear();
