@@ -56,6 +56,31 @@ export default defineConfig({
                     "moment-timezone": "MomentTimezone",
                     "@nuxtjs/mdc/runtime": "NuxtMdcRuntime",
                 },
+                manualChunks: (id) => {
+                    if (/node_modules\/@shikijs\/langs\//.test(id)) {
+                        const lang = id.split("/").pop()?.split(".")[0];
+                        return ["java",
+                            "yaml",
+                            "json",
+                            "bash",
+                            "groovy",
+                            "markdown",
+                            "python",
+                            "dockerfile",
+                            "powershell",
+                            "systemd",
+                            "hcl",
+                            "sql", "xml",
+                            "properties",
+                            "ini", "diff",
+                            "js", "typescript",
+                            "tsx", "css", "scss",
+                            "php", "python",
+                            "ruby", "go", "twig",
+                            "bash", "shell", "sh",
+                        ].includes(lang || "") ? "shiki-langs" : "shiki-advanced-langs";
+                    }  
+                }
             }
         },
     },

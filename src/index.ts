@@ -2,7 +2,7 @@ export {YamlUtils} from "./utils/YamlUtilsLegacy";
 export {cssVariable} from "./utils/global";
 export {default as State, STATES} from "./utils/state";
 export {default as Utils} from "./utils/Utils";
-export {default as VueFlowUtils} from "./utils/VueFlowUtils";
+export * as VueFlowUtils from "./utils/VueFlowUtils";
 export {default as getMDCParser} from "./composables/getMDCParser";
 export * from "./utils/constants";
 export * from "./utils/url";

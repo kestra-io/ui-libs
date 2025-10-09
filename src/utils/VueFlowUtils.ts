@@ -831,31 +831,3 @@ export function areTasksIdenticalInGraphUntilTask(previousGraph: FlowGraph, curr
 
     return true;
 }
-
-/**
- * @deprecated prefer using VueFlowUtils directly for tree shaking
- */
-export default {
-    isClusterRootOrEnd,
-    computeClusterColor,
-    isExpandableTask,
-    generateGraph,
-    generateDagreGraph,
-    getNodePosition,
-    getNodeWidth,
-    getNodeHeight,
-    isTaskNode,
-    isTriggerNode,
-    isCollapsedCluster,
-    replaceIfCollapsed,
-    cleanGraph,
-    flowHaveTasks,
-    nodeColor,
-    haveAdd,
-    getEdgeColor,
-    predecessorsEdge,
-    successorsEdge,
-    predecessorsNode,
-    successorsNode,
-    linkedElements,
-}
