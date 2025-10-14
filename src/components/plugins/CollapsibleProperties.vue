@@ -1,5 +1,5 @@
 <template>
-    <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded">
+    <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded" :no-url-change="noUrlChange">
         <template v-if="Object.keys(properties ?? {}).length > 0" #content>
             <div class="border overflow-hidden">
                 <Collapsible
