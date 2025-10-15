@@ -34,7 +34,7 @@ import Yaml from "shiki/langs/yaml.mjs";
 import Html from "shiki/langs/html.mjs";
 
 
-const langsMap: Record<string, any> = {
+export const langsMap: Record<string, any> = {
     bash: Bash,
     c: C,
     cpp: Cpp,
@@ -76,7 +76,7 @@ export default async function useMarkdownParser() {
             
             const {bundledLanguagesInfo} = await import("shiki/langs");
 
-            
+
             Object.entries(langsMap).forEach(([langId, lang]) => {
                 const info = bundledLanguagesInfo.find(i => i.aliases?.includes?.(langId) || i.id === langId);
                 if (!info) {

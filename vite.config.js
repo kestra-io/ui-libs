@@ -1,7 +1,9 @@
+// @ts-check
 import * as path from "path"
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
+import {langsMap} from "./src/composables/useMarkdownParser";
 import * as sass from "sass";
 
 export default defineConfig({
@@ -59,26 +61,7 @@ export default defineConfig({
                 manualChunks: (id) => {
                     if (/node_modules\/@shikijs\/langs\//.test(id)) {
                         const lang = id.split("/").pop()?.split(".")[0];
-                        return ["java",
-                            "yaml",
-                            "json",
-                            "bash",
-                            "groovy",
-                            "markdown",
-                            "python",
-                            "dockerfile",
-                            "powershell",
-                            "systemd",
-                            "hcl",
-                            "sql", "xml",
-                            "properties",
-                            "ini", "diff",
-                            "js", "typescript",
-                            "tsx", "css", "scss",
-                            "php", "python",
-                            "ruby", "go", "twig",
-                            "bash", "shell", "sh",
-                        ].includes(lang || "") ? "shiki-langs" : "shiki-advanced-langs";
+                        return Object.keys(langsMap).includes(lang || "") ? "shiki-langs" : "shiki-advanced-langs";
                     }  
                 }
             }
