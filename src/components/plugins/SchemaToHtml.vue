@@ -216,10 +216,10 @@
     ));
 
     const {
-        createHighlighterCore
+        getHighlighterCore
     } = await import("./shikiToolset");
 
-    highlighter.value = await createHighlighterCore(props.darkMode || false);
+    highlighter.value = await getHighlighterCore();
 
     const codeTheme = "github-" + (props.darkMode ? "dark" : "light");
 
