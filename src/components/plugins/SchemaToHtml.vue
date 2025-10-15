@@ -207,7 +207,7 @@
         return example.code
     }
 
-    const highlighter = ref<HighlighterCore | null>(null);
+    const highlighter = ref<HighlighterCore | undefined>();
 
     const examples = computed(() => props.schema.properties?.["$examples"]);
 
@@ -216,26 +216,10 @@
     ));
 
     const {
-        githubLight,
-        githubDark,
-        yaml,
-        python,
-        javascript,
-        createJavaScriptRegexEngine,
         createHighlighterCore
     } = await import("./shikiToolset");
 
-    highlighter.value = await createHighlighterCore({
-        themes: [
-            props.darkMode ? githubDark : githubLight
-        ],
-        langs: [
-            yaml,
-            python,
-            javascript
-        ],
-        engine: createJavaScriptRegexEngine(),
-    });
+    highlighter.value = await createHighlighterCore(props.darkMode || false);
 
     const codeTheme = "github-" + (props.darkMode ? "dark" : "light");
 
