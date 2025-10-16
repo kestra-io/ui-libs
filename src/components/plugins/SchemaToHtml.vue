@@ -230,7 +230,6 @@
 
     onUnmounted(() => {
         window.removeEventListener("hashchange", checkHashAndExpand);
-        highlighter.value?.dispose();
     });
 </script>
 
