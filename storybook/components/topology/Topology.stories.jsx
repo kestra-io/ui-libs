@@ -312,10 +312,14 @@ import CustomNodesData from "../../data/graphs/custom-nodes.js";
 export const CustomNodes = lodash.merge({},
     base,
     {
+        args: {
+            isHorizontal: false,
+        },
         loaders: [
             async () => {
                 return {
                     flowGraph: CustomNodesData,
+                    
                     source: "",
                 }
             },
