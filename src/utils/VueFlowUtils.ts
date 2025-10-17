@@ -553,6 +553,8 @@ export function generateGraph(
             let nodeType = "task";
             if (isClusterRootOrEnd(node)) {
                 nodeType = "dot";
+            } else if (node.type.endsWith("CustomGraphNode")) {
+                nodeType = "custom";
             } else if (node.type.includes("GraphTrigger")) {
                 nodeType = "trigger";
             } else if (node.type === "collapsedcluster") {
