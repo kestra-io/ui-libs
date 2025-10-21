@@ -451,57 +451,51 @@
     const controlsShown = ref(true);
     const isDropdownOpen = ref(false);
     const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
-    function exportAsImage(type: "jpeg" | "png") {
-        if (!vueFlowRef.value) {
-            console.warn("Flow not found");
-            return;
-        }
+async function exportAsImage(type: "jpeg" | "png") {
+    if (!vueFlowRef.value) {
+        console.warn("Flow not found");
+        return;
+    }
+    
+    controlsShown.value = false;
+    await nextTick();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const rootStyles = getComputedStyle(document.documentElement);
+    const edgeColor = rootStyles.getPropertyValue('--ks-topology-edge-color').trim() || '#000000';
+    
+    const edgePaths = vueFlowRef.value.querySelectorAll('.vue-flow__edge-path');
+    const originalStyles = new Map();
+    
+    edgePaths.forEach(path => {
+        originalStyles.set(path, path.getAttribute('style'));
+        path.style.stroke = edgeColor;
+        path.style.strokeWidth = '2px';
+        path.style.fill = 'none';
+        path.style.strokeOpacity = '1';
+    });
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    try {
+        await capture(vueFlowRef.value, {
+            type,
+            shouldDownload: true,
+            cacheBust: true,
+            pixelRatio: 2,
+        });
+    } finally {
+        edgePaths.forEach(path => {
+            const original = originalStyles.get(path);
+            if (original) {
+                path.setAttribute('style', original);
+            } else {
+                path.removeAttribute('style');
+            }
+        });
         
-        controlsShown.value = false
-        capture(vueFlowRef.value, {type, shouldDownload: true})
-            .then(() => controlsShown.value = true)
-            .finally(() => isDropdownOpen.value = false);
+        controlsShown.value = true;
+        isDropdownOpen.value = false;
     }
-</script>
-
-<style lang="scss" src="./topology.scss" />
-<style scoped lang="scss">
-    .material-design-icon.download-icon {
-        max-width: 12px;
-    }
-
-    :deep(.unused-path) {
-        opacity: 0.3;
-    }
-
-    .exporting {
-        position: absolute;
-        bottom: 0px;
-        left: 40px;
-        padding: 0;
-        margin: 0;
-        z-index: 1000;
-        list-style-type: none;
-        background: var(--ks-background-card);
-        border: 1px solid var(--ks-border-primary);
-        box-shadow: 0 12px 12px rgba(130, 103, 158, 0.1019607843);
-        border-radius: 5px;
-        text-align:left;
-
-        & .item {
-            padding: 5px 8px;
-            cursor: pointer;
-            color: var(--ks-content-primary);
-            font-size: 12px;
-            width: 110px;
-
-            &:first-child{
-                border-bottom: 1px solid var(--ks-border-primary);
-            }
-
-            &:hover {
-                background: var(--ks-button-background-secondary-hover);;
-            }
-        }
-    }
+}
 </style>
