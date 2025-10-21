@@ -236,7 +236,7 @@ export function getNodePosition(n: {
 }
 
 export function getNodeWidth(node: MinimalNode) {
-    return isTaskNode(node) || isTriggerNode(node)
+    return isTaskNode(node) || isTriggerNode(node) || isCustomNode(node)
         ? NODE_SIZES.TASK_WIDTH
         : (isCollapsedCluster(node)
             ? NODE_SIZES.COLLAPSED_CLUSTER_WIDTH
@@ -257,6 +257,10 @@ export function isTaskNode(node: MinimalNode) {
 
 export function isTriggerNode(node: MinimalNode) {
     return node.type.endsWith("GraphTrigger");
+}
+
+export function isCustomNode(node: MinimalNode) {
+    return node.type.endsWith("CustomGraphNode");
 }
 
 export function isCollapsedCluster(node: MinimalNode) {
@@ -426,6 +430,7 @@ export function generateGraph(
     const clustersWithoutRootNode = [CLUSTER_PREFIX + TRIGGERS_NODE_UID];
 
     if (!flowGraph || (flowSource && !flowHaveTasks(flowSource))) {
+        console.warn("No flow graph or tasks found");
         elements.push({
             id: "start",
             type: "dot",
@@ -570,13 +575,15 @@ export function generateGraph(
                 readOnlyUidPrefixes.some((prefix) =>
                     node.uid.startsWith(prefix + ".")
                 );
+
+            const cluster = clusterByNodeUid[node.uid]
             elements.push({
                 id: node.uid,
                 type: nodeType,
                 position: getNodePosition(
                     dagreNode,
-                    clusterByNodeUid[node.uid]
-                        ? dagreGraph.node(clusterByNodeUid[node.uid].uid)
+                    cluster
+                        ? dagreGraph.node(cluster.uid)
                         : undefined
                 ),
                 style: {
@@ -585,22 +592,22 @@ export function generateGraph(
                 },
                 sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
                 targetPosition: isHorizontal ? Position.Left : Position.Top,
-                parentNode: clusterByNodeUid[node.uid]
-                    ? clusterByNodeUid[node.uid].uid
+                parentNode: cluster
+                    ? cluster.uid
                     : undefined,
                 draggable: nodeType === "task" ? !isReadOnlyTask : false,
                 data: {
                     node: node,
-                    parent: clusterByNodeUid[node.uid] ? clusterByNodeUid[node.uid] : undefined,
+                    parent: cluster ? cluster : undefined,
                     namespace:
-                        clusterByNodeUid[node.uid]?.taskNode?.task?.namespace ??
+                        cluster?.taskNode?.task?.namespace ??
                         namespace,
                     flowId:
-                        clusterByNodeUid[node.uid]?.taskNode?.task?.flowId ?? flowId,
+                        cluster?.taskNode?.task?.flowId ?? flowId,
                     isFlowable:
-                        clusterByNodeUid[node.uid]?.uid === CLUSTER_PREFIX + node.uid &&
+                        cluster?.uid === CLUSTER_PREFIX + node.uid &&
                         !node.type.endsWith("SubflowGraphTask"),
-                    color: color,
+                    color,
                     expandable: isExpandableTask(
                         node,
                         clusterByNodeUid,

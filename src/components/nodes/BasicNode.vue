@@ -111,12 +111,12 @@
         return props.data?.expandable || false
     })
 
+    const node = computed(() => {
+        return props.data.node?.plugin ?? props.data.node?.task ?? props.data.node?.trigger ?? null
+    })
+
     const description = computed(() => {
-        const node = props.data.node.task ?? props.data.node.trigger ?? null
-        if (node) {
-            return node.description ?? null
-        }
-        return null
+        return node.value?.description ?? null
     })
 
     const trimmedId = computed(() => {
@@ -130,7 +130,7 @@
     const classes = computed(() => {
         return [{
                     "unused-path": props.data.unused,
-                    "disabled": props.data.node.task?.disabled || props.data.parent?.taskNode?.task?.disabled,
+                    "disabled": node.value?.disabled || props.data.parent?.taskNode?.task?.disabled,
                 },
                 props.class
         ]
@@ -141,16 +141,16 @@
             return props.data.node.triggerDeclaration.type;
         }
 
-        if (!props.data.node?.task) {
+        if (!node.value) {
             return undefined;
         }
 
-        return props.data.node.task.type;
+        return node.value?.type;
     })
 
     const hoverTooltip = computed(() => {
-        if (props.data.node.type?.endsWith("SubflowGraphTask")) {
-            const subflowIdContainer = props.data.node.task.subflowId ?? props.data.node.task;
+        if (node.value?.type?.endsWith("SubflowGraphTask")) {
+            const subflowIdContainer = node.value.subflowId ?? node.value;
 
             return subflowIdContainer.namespace + " " + subflowIdContainer.flowId;
         }
