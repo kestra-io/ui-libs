@@ -13,27 +13,23 @@
                     :key="subGroupName(subGroupWrapper)"
                     :route-path="routePath"
                     class="text-capitalize"
-                    @click="$emit('goTo', {subGroup: subGroupWrapper})"
+                    @click.native="$emit('goTo', {subGroup: subGroupWrapper})"
                 />
             </div>
         </template>
         <template v-else>
-            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in groupedByAction" :key="elementType">
+            <div class="d-flex flex-column elements-section" v-for="(subcategories, elementType) in groupedByAction" :key="elementType">
                 <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
                 </h4>
                 <div class="d-flex flex-column">
                     <RowOptions
-                        v-for="_,element of elements"
-                        :id="slugify(element)"
-                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elements[element][0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
-                        :text="elementName(element)"
-                        :href="elementHref(element)"
-                        :element="elements[element]"
-                        :key="element"
+                        v-for="(elementList, subcategory) in subcategories"
+                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elementList[0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
+                        :text="subcategory"
+                        :element="elementList"
+                        :key="subcategory"
                         :route-path="routePath"
-                        class="text-capitalize"
-                        @click="$emit('goTo', {element})"
                     />
                 </div>
             </div>
@@ -67,7 +63,7 @@
     });
 
     const elementName = (qualifiedName: string) => {
-        let split = qualifiedName.split(".");
+        const split = qualifiedName.split(".");
         return split?.[split.length - 1];
     }
 
@@ -99,7 +95,7 @@
                 const subcategory = parts[4];
                 const action = parts[5];
 
-                if (!action || !subcategory) return;
+                if (!action || !subcategory) continue;
 
                 if (!result[section][subcategory]) {
                     result[section][subcategory] = [];
