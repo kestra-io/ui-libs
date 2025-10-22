@@ -4,7 +4,7 @@
         <!-- Root plugin page with subgroups -->
         <template v-if="subGroup === undefined && plugins.length > 1">
             <div class="d-flex flex-column">
-                <RowLink
+                <RowOptions
                     v-for="subGroupWrapper in subGroupsWrappers"
                     :id="`group-${slugify(subGroupName(subGroupWrapper))}`"
                     :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
@@ -18,17 +18,18 @@
             </div>
         </template>
         <template v-else>
-            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in elementsByType" :key="elementType">
+            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in groupedByAction" :key="elementType">
                 <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
                 </h4>
                 <div class="d-flex flex-column">
-                    <RowLink
-                        v-for="element in elements"
+                    <RowOptions
+                        v-for="_,element of elements"
                         :id="slugify(element)"
-                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[element] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
+                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elements[element][0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
                         :text="elementName(element)"
                         :href="elementHref(element)"
+                        :element="elements[element]"
                         :key="element"
                         :route-path="routePath"
                         class="text-capitalize"
@@ -40,7 +41,7 @@
     </div>
 </template>
 <script setup lang="ts">
-    import RowLink from "../misc/RowLink.vue";
+    import RowOptions from "../misc/RowOptions.vue";
     import type {Plugin, PluginElement} from "../../utils/plugins";
     import {isEntryAPluginElementPredicate, subGroupName} from "../../utils/plugins";
     import {slugify} from "../../utils/url";
@@ -80,6 +81,37 @@
                 .map(([key, value]) => [key.replace(/[A-Z]/g, match => ` ${match}`), (value as PluginElement[]).filter(({deprecated}) => !deprecated).map(({cls}) => cls)])
         );
     }
+
+    const groupedByAction = computed(() => {
+        const result: any = {};
+        console.log("elementByType---",elementsByType.value);
+        
+        //iterating over sections (tasks,triggers)
+        for (let section in elementsByType.value ){
+            console.log("section==",section)
+            result[section] = {};
+
+            const taskElements = elementsByType.value?.[section] ?? [];
+            console.log("taskElem===",taskElements)
+
+            for (let element of taskElements ){
+                const parts = element.split(".");
+                const subcategory = parts[4];
+                const action = parts[5];
+
+                if (!action || !subcategory) return;
+
+                if (!result[section][subcategory]) {
+                    result[section][subcategory] = [];
+                }
+
+                result[section][subcategory].push(element);
+            }
+        }
+
+        console.log("result--",result)
+        return result;
+    });
 
     const elementsByType = computed<Record<string, string[]>>(() => extractPluginElements(plugin.value));
 
