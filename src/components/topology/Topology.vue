@@ -45,6 +45,14 @@
             />
         </template>
 
+        <template #node-custom="taskProps">
+            <BasicNode
+                v-bind="taskProps"
+                :icons="icons"
+                :icon-component="iconComponent"
+            />
+        </template>
+
         <template #node-trigger="triggerProps">
             <TriggerNode
                 v-bind="triggerProps"
@@ -121,6 +129,7 @@
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
     import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
+    import BasicNode from "../nodes/BasicNode.vue";
 
     const props = defineProps({
         id: {
@@ -268,6 +277,7 @@
                 props.isAllowedEdit,
                 props.enableSubflowInteraction
             );
+
             if(elements) {
                 setElements(elements);
                 fitView();
