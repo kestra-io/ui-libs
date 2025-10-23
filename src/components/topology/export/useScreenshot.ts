@@ -31,28 +31,36 @@ export function useScreenshot(): UseScreenshot {
   const error = ref();
 
   async function capture(el: HTMLElement, options: UseScreenshotOptions = {}) {
-    let data;
+    const fileName = options.fileName ?? `flow-graph-${Date.now()}`;
 
-    const fileName = options.fileName ?? `vue-flow-screenshot-${Date.now()}`;
+    const edgePaths = el.querySelectorAll(".vue-flow__edge-path");
+    const originalStyles = Array.from(edgePaths).map(edge => {
+      const element = edge as HTMLElement;
+      const original = element.getAttribute("style") || "";
+      
+      element.setAttribute(
+        "style",
+        `${original}; stroke: ${window.getComputedStyle(element).stroke}; ` +
+        `stroke-width: ${window.getComputedStyle(element).strokeWidth}; ` +
+        `stroke-dasharray: ${window.getComputedStyle(element).strokeDasharray}`
+      );
+      
+      return {element, original};
+    });
 
-    switch (options.type) {
-      case "jpeg":
-        data = await toJpeg(el, options);
-        break;
-      case "png":
-        data = await toPng(el, options);
-        break;
-      default:
-        data = await toPng(el, options);
-        break;
+    try {
+      const data = options.type === "jpeg" 
+        ? await toJpeg(el, options) 
+        : await toPng(el, options);
+
+      if (options.shouldDownload && fileName) download(fileName);
+
+      return data;
+    } finally {
+      originalStyles.forEach(({element, original}) => 
+        original ? element.setAttribute("style", original) : element.removeAttribute("style")
+      );
     }
-
-    // immediately download the image if shouldDownload is true
-    if (options.shouldDownload && fileName !== "") {
-      download(fileName);
-    }
-
-    return data;
   }
 
   function toJpeg(
