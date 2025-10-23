@@ -28,5 +28,9 @@
         &.text-danger {
             border-color: $red;
         }
+
+        &:hover {
+            background-color: var(--ks-button-background-secondary-hover);
+        }
     }
 </style>
