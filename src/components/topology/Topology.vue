@@ -451,53 +451,17 @@
     const controlsShown = ref(true);
     const isDropdownOpen = ref(false);
     const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
-    async function exportAsImage(type: "jpeg" | "png") {
-    if (!vueFlowRef.value) {
-        console.warn("Flow not found");
-        return;
-    }
-    
-    controlsShown.value = false;
-    await nextTick();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    const rootStyles = getComputedStyle(document.documentElement);
-    const edgeColor = rootStyles.getPropertyValue('--ks-topology-edge-color').trim() || '#000000';
-    
-    const edgePaths = vueFlowRef.value.querySelectorAll('.vue-flow__edge-path');
-    const originalStyles = new Map();
-    
-    edgePaths.forEach(path => {
-        originalStyles.set(path, path.getAttribute('style'));
-        path.style.stroke = edgeColor;
-        path.style.strokeWidth = '2px';
-        path.style.fill = 'none';
-        path.style.strokeOpacity = '1';
-    });
-    
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    try {
-        await capture(vueFlowRef.value, {
-            type,
-            shouldDownload: true,
-            cacheBust: true,
-            pixelRatio: 2,
-        });
-    } finally {
-        edgePaths.forEach(path => {
-            const original = originalStyles.get(path);
-            if (original) {
-                path.setAttribute('style', original);
-            } else {
-                path.removeAttribute('style');
-            }
-        });
+    function exportAsImage(type: "jpeg" | "png") {
+        if (!vueFlowRef.value) {
+            console.warn("Flow not found");
+            return;
+        }
         
-        controlsShown.value = true;
-        isDropdownOpen.value = false;
+        controlsShown.value = false
+        capture(vueFlowRef.value, {type, shouldDownload: true})
+            .then(() => controlsShown.value = true)
+            .finally(() => isDropdownOpen.value = false);
     }
-}
 </script>
 
 <style lang="scss" src="./topology.scss" />
