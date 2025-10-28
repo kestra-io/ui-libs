@@ -32,7 +32,7 @@
                             </span>
                             <span class="d-flex flex-wrap justify-content-end gap-2">
                                 <template v-for="type in extractTypeInfo(property).types" :key="type">
-                                    <a v-if="type.startsWith('#')" class="d-flex fw-bold type-box rounded fs-7 px-2 py-1" :href="type" @click.stop>
+                                    <a v-if="type.startsWith('#')" class="d-flex fw-bold ref-type-box rounded fs-7 px-2 py-1" :href="type" @click.stop>
                                         <span class="ref-type">{{ className(type) }}</span><eye-outline />
                                     </a>
                                     <span v-else class="type-box rounded fs-7 px-2 py-1">
@@ -148,9 +148,19 @@
     @use "../../scss/variables" as variables;
 
     .type-box, :deep(.type-box) {
+        background-color: var(--ks-tag-background-active) !important;
+        color: var(--ks-tag-content) !important;
+        font-size: 12px !important;
+        line-height: 20px;
+        padding: 0 8px;
+        padding-bottom: 2px;
+        border-radius: 8px !important;
+        text-transform: capitalize;
+    }
+    .ref-type-box, :deep(.ref-type-box) {
         border: 1px solid variables.$blue !important;
-        background: none;
-
+        background: transparent;
+        color: var(--ks-tag-content);
         .ref-type {
             padding-right: 0.625rem;
 
@@ -159,7 +169,7 @@
             }
         }
     }
-
+    
     .border {
         border-radius: .5rem;
     }
