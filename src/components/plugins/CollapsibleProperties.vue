@@ -159,7 +159,8 @@
     }
     .ref-type-box, :deep(.ref-type-box) {
         border: 1px solid variables.$blue !important;
-        background: none;
+        background: transparent;
+        color: var(--ks-tag-content);
         .ref-type {
             padding-right: 0.625rem;
 
