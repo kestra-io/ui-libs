@@ -2,45 +2,46 @@
     <div class="d-flex flex-column gap-4">
         <slot v-if="description !== undefined" name="markdown" :content="description.replace(/ *:(?![ /])/g, ': ')" />
         <!-- Root plugin page with subgroups -->
+
         <template v-if="subGroup === undefined && plugins.length > 1">
             <div class="d-flex flex-column">
-                <RowLink
+                <RowOptions
                     v-for="subGroupWrapper in subGroupsWrappers"
                     :id="`group-${slugify(subGroupName(subGroupWrapper))}`"
                     :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
                     :text="subGroupName(subGroupWrapper)"
                     :href="subGroupHref(subGroupName(subGroupWrapper))"
                     :key="subGroupName(subGroupWrapper)"
+                    :is-sub-wrapper="true"
                     :route-path="routePath"
                     class="text-capitalize"
-                    @click="$emit('goTo', {subGroup: subGroupWrapper})"
+                    @click.native="$emit('goTo', {subGroup: subGroupWrapper})"
                 />
             </div>
         </template>
         <template v-else>
-            <div class="d-flex flex-column elements-section" v-for="(elements, elementType) in elementsByType" :key="elementType">
+            <div class="d-flex flex-column elements-section" v-for="(subcategories, elementType) in groupedByAction" :key="elementType">
                 <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
                 </h4>
                 <div class="d-flex flex-column">
-                    <RowLink
-                        v-for="element in elements"
-                        :id="slugify(element)"
-                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[element] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
-                        :text="elementName(element)"
-                        :href="elementHref(element)"
-                        :key="element"
+                    <RowOptions
+                        v-for="(elementList, subcategory) in subcategories"
+                        :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[elementList[0]] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
+                        :text="subcategory"
+                        :element="elementList"
+                        :is-sub-wrapper="false"
+                        :key="subcategory"
                         :route-path="routePath"
-                        class="text-capitalize"
-                        @click="$emit('goTo', {element})"
                     />
                 </div>
             </div>
         </template>
     </div>
 </template>
+
 <script setup lang="ts">
-    import RowLink from "../misc/RowLink.vue";
+    import RowOptions from "../misc/RowOptions.vue";
     import type {Plugin, PluginElement} from "../../utils/plugins";
     import {isEntryAPluginElementPredicate, subGroupName} from "../../utils/plugins";
     import {slugify} from "../../utils/url";
@@ -65,14 +66,7 @@
             .filter(p => p.name.toLowerCase() === props.pluginName.toLowerCase() && p.subGroup !== undefined) as Required<Plugin>[];
     });
 
-    const elementName = (qualifiedName: string) => {
-        let split = qualifiedName.split(".");
-        return split?.[split.length - 1];
-    }
-
     const subGroupHref = (targetSubGroup: string) => `${props.routePath}/${slugify(targetSubGroup)}`;
-
-    const elementHref = (element: string) => `${props.routePath}/${element}`;
 
     function extractPluginElements(plugin: Plugin): Record<string, string[]> {
         return Object.fromEntries(
@@ -80,6 +74,44 @@
                 .map(([key, value]) => [key.replace(/[A-Z]/g, match => ` ${match}`), (value as PluginElement[]).filter(({deprecated}) => !deprecated).map(({cls}) => cls)])
         );
     }
+
+    const groupedByAction = computed(() => {
+        const result: any = {};
+        
+        //iterating over sections (tasks,triggers)
+        for (let section in elementsByType.value ){
+            result[section] = {};
+
+            const taskElements = elementsByType.value?.[section] ?? [];
+
+            for (let element of taskElements ){
+                const parts = element.split(".");
+                const action = parts[parts.length - 1];
+                
+                if (!action) continue;
+
+                // Determine subcategory: use second-to-last part if it exists and isn't the plugin name,
+                // otherwise use the plugin name itself for root-level tasks
+                let subcategory;
+                if (parts.length > 1) {
+                    const secondToLast = parts[parts.length - 2];
+                    // Check if second-to-last is the main plugin package (e.g., "git" in io.kestra.plugin.git)
+                    // If so, it's a root-level task
+                    subcategory = secondToLast === props.pluginName.toLowerCase() ? props.pluginName : secondToLast;
+                } else {
+                    subcategory = props.pluginName;
+                }
+
+                if (!result[section][subcategory]) {
+                    result[section][subcategory] = [];
+                }
+
+                result[section][subcategory].push(element);
+            }
+        }
+
+        return result;
+    });
 
     const elementsByType = computed<Record<string, string[]>>(() => extractPluginElements(plugin.value));
 
