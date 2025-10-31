@@ -7,6 +7,7 @@ export {default as Topology} from "./topology/Topology.vue";
 // misc
 export {default as State} from "./misc/State.vue";
 export {default as TaskIcon} from "./misc/TaskIcon.vue";
+export {default as Collapsible} from "./misc/Collapsible.vue";
 
 // plugins
 export {default as SchemaToHtml} from "./plugins/SchemaToHtml.vue";
