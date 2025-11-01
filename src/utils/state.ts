@@ -160,6 +160,10 @@ export const STATES:Record<string, StateModel> = Object.freeze({
     },
 });
 
+export const STATE_NAMES = Object.freeze(
+  Object.keys(STATES) as (keyof typeof STATES)[]
+);
+
 export default class State {
     static get CREATED() {
         return STATES.CREATED.name;
