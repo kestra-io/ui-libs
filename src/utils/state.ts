@@ -22,6 +22,8 @@ interface StateModel {
     isFailed: boolean;
 }
 
+export const LOG_LEVELS = ["ERROR", "WARN", "INFO", "DEBUG", "TRACE"] as const;
+
 export const STATES:Record<string, StateModel> = Object.freeze({
     CREATED: {
         name: "CREATED",

@@ -5,7 +5,7 @@ export {default as DependenciesNode} from "./nodes/DependenciesNode.vue"
 export {default as Topology} from "./topology/Topology.vue";
 
 // misc
-export {default as State} from "./misc/State.vue";
+export {default as Status} from "./misc/Status.vue";
 export {default as TaskIcon} from "./misc/TaskIcon.vue";
 export {default as Collapsible} from "./misc/Collapsible.vue";
 

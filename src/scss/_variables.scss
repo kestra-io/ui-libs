@@ -112,7 +112,7 @@ $popper-margin: .2rem;
 
 $baseline-max-width: 730px;
 
-$statusList: created, restarted, success, running, killing, killed, warning, failed, paused, cancelled, skipped, queued, retrying, retried;
+$statusList: created, restarted, success, running, killing, killed, warning, failed, paused, cancelled, skipped, queued, retrying, retried, breakpoint;
 
 // bootstrap
 @import "bootstrap/scss/functions";
