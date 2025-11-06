@@ -109,7 +109,7 @@
         return Math.abs(dy) >= Math.abs(dx);
     });
 
-    const OFFSET = 14; // px, tuned to visually match task-to-+ spacing
+    const OFFSET = 14; 
     const labelYOffset = computed(() => {
         if (!isVertical.value) return 0;
         const boundary = props.data?.edgeBoundary;
