@@ -176,7 +176,7 @@ export function generateDagreGraph(
             continue;
         }
         if (!edgeReplacer[cluster.cluster.uid]) {
-            dagreGraph.setNode(cluster.cluster.uid, {clusterLabelPos: "top"});
+           dagreGraph.setNode(cluster.cluster.uid, {clusterLabelPos: "top"});
 
             for (const node of cluster.nodes || []) {
                 if (!hiddenNodes.includes(node)) {
@@ -643,6 +643,14 @@ export function generateGraph(
         );
         if (newEdge) {
             const edgeColor = getEdgeColor(edge, nodeByUid, clusterByNodeUid);
+            const targetNodeType = nodeByUid[newEdge.target]?.type ?? "";
+            const sourceNodeType = nodeByUid[newEdge.source]?.type ?? "";
+            let edgeBoundary: "top" | "bottom" | undefined = undefined;
+            if (typeof targetNodeType === "string" && targetNodeType.endsWith("GraphClusterRoot")) {
+                edgeBoundary = "top";
+            } else if (typeof sourceNodeType === "string" && sourceNodeType.endsWith("GraphClusterEnd")) {
+                edgeBoundary = "bottom";
+            }
             elements.push({
                 id: newEdge.source + "|" + newEdge.target,
                 source: newEdge.source,
@@ -665,6 +673,7 @@ export function generateGraph(
                             clusterRootTaskNodeUids,
                             readOnlyUidPrefixes
                         ),
+                    edgeBoundary: edgeBoundary,
                     haveDashArray:
                         nodeByUid[edge.source].type.endsWith("GraphTrigger") ||
                         nodeByUid[edge.target].type.endsWith("GraphTrigger") ||
@@ -682,7 +691,6 @@ export function generateGraph(
 
     return elements;
 }
-
 export function isClusterRootOrEnd(node: MinimalNode) {
     return ["GraphClusterRoot", "GraphClusterFinally", "GraphClusterAfterExecution", "GraphClusterEnd"].some((s) =>
         node.type.endsWith(s)
