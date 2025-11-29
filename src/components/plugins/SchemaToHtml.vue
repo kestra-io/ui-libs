@@ -160,13 +160,17 @@
             return;
         }
 
-        const definitionKey = hash.includes("#") ? hash.split("#").pop()?.split(".").pop() : hash;
+        const cleanHash = hash.replace(/-body$/, '');
+        
+        const matchingDefinitionKey = Object.keys(props.schema.definitions).find(defKey => 
+            cleanHash === defKey || cleanHash.startsWith(defKey + '_')
+        );
 
-        if (definitionKey && definitionKey in props.schema.definitions) {
+        if (matchingDefinitionKey) {
             definitionsExpanded.value = true;
             forceExpandKey.value += 1;
             expandedDefinitions.value.clear();
-            expandedDefinitions.value.add(definitionKey);
+            expandedDefinitions.value.add(matchingDefinitionKey);
 
             await nextTick();
 
@@ -174,7 +178,7 @@
             const maxAttempts = 30;
 
             const attemptScroll = () => {
-                const element = document.getElementById(definitionKey);
+                const element = document.getElementById(cleanHash);
                 if (element) {
                     element.scrollIntoView({behavior: "smooth", block: "start"});
                 } else if (attempts < maxAttempts) {
@@ -263,7 +267,8 @@
             }
         }
 
-        .material-design-icon:not(.property .material-design-icon) {
+        & > button .material-design-icon,
+        & > summary .material-design-icon {
             &, & * {
                 height: 2rem;
                 width: 2rem;
