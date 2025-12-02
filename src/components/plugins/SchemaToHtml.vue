@@ -160,17 +160,17 @@
             return;
         }
 
-        const cleanHash = hash.replace(/-body$/, '');
+        const cleanHash = hash.replace(/-body$/, "");
         
-        const matchingDefinitionKey = Object.keys(props.schema.definitions).find(defKey => 
-            cleanHash === defKey || cleanHash.startsWith(defKey + '_')
+        const definitionKey = Object.keys(props.schema.definitions).find(defKey => 
+            cleanHash === defKey || cleanHash.startsWith(defKey + "_")
         );
 
-        if (matchingDefinitionKey) {
+        if (definitionKey) {
             definitionsExpanded.value = true;
             forceExpandKey.value += 1;
             expandedDefinitions.value.clear();
-            expandedDefinitions.value.add(matchingDefinitionKey);
+            expandedDefinitions.value.add(definitionKey);
 
             await nextTick();
 
@@ -267,8 +267,7 @@
             }
         }
 
-        & > button .material-design-icon,
-        & > summary .material-design-icon {
+        .material-design-icon:not(.property .material-design-icon) {
             &, & * {
                 height: 2rem;
                 width: 2rem;
