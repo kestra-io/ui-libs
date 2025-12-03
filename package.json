@@ -94,7 +94,7 @@
     "vue-tsc": "^3.0.6"
   },
   "dependencies": {
-    "@nuxtjs/mdc": "^0.17.3",
+    "@nuxtjs/mdc": "^0.19.1",
     "@popperjs/core": "^2.11.8",
     "html-to-image": "^1.11.13",
     "mermaid": "^11.11.0",
