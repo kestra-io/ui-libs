@@ -160,9 +160,13 @@
             return;
         }
 
-        const definitionKey = hash.includes("#") ? hash.split("#").pop()?.split(".").pop() : hash;
+        const cleanHash = hash.replace(/-body$/, "");
+        
+        const definitionKey = Object.keys(props.schema.definitions).find(defKey => 
+            cleanHash === defKey || cleanHash.startsWith(defKey + "_")
+        );
 
-        if (definitionKey && definitionKey in props.schema.definitions) {
+        if (definitionKey) {
             definitionsExpanded.value = true;
             forceExpandKey.value += 1;
             expandedDefinitions.value.clear();
@@ -174,7 +178,7 @@
             const maxAttempts = 30;
 
             const attemptScroll = () => {
-                const element = document.getElementById(definitionKey);
+                const element = document.getElementById(cleanHash);
                 if (element) {
                     element.scrollIntoView({behavior: "smooth", block: "start"});
                 } else if (attempts < maxAttempts) {
