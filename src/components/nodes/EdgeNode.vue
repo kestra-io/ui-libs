@@ -17,7 +17,7 @@
             :style="{
                 pointerEvents: 'all',
                 position: 'absolute',
-                transform: `translate(-50%, -50%) translate(${path[1]}px,${path[2]}px)`,
+                transform: `translate(-50%, -50%) translate(${path[1] + labelXOffset}px,${path[2] + labelYOffset}px)`,
             }"
         >
             <tooltip :title>
@@ -103,6 +103,22 @@
 
 
     const path = computed(() => getSmoothStepPath(props as any));
+    const isVertical = computed(() => {
+        const dx = (props.targetX ?? 0) - (props.sourceX ?? 0);
+        const dy = (props.targetY ?? 0) - (props.sourceY ?? 0);
+        return Math.abs(dy) >= Math.abs(dx);
+    });
+
+    const OFFSET = 14; 
+    const labelYOffset = computed(() => {
+        if (!isVertical.value) return 0;
+        const boundary = props.data?.edgeBoundary;
+        if (boundary === "top") return -OFFSET;
+        if (boundary === "bottom") return OFFSET;
+        return 0;
+    });
+
+    const labelXOffset = computed(() => 0);
 
     defineOptions({
         inheritAttrs: false,
