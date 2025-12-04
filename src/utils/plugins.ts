@@ -6,6 +6,20 @@ export type PluginElement = {
     // description?: string; - Upcoming
 }
 
+export type PluginMetadata = {
+    group: string;
+    artifactGroupId: string;
+    artifactId: string;
+    name: string;
+    title: string;
+    description?: string;
+    videos?: string[];
+    createdBy?: string;
+    managedBy?: string;
+    version?: string;
+    icon?: string;
+}
+
 export type Plugin = {
     name: string;
     title: string;
@@ -19,6 +33,7 @@ export type Plugin = {
     storages?: string[];
     aliases?: string[];
     guides?: string[];
+    manifest?: Record<string, any>;
     
 } & {
     [pluginElement: string]: PluginElement[];
