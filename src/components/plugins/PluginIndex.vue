@@ -8,8 +8,8 @@
                         <SubgroupCard
                             :id="slugify(subGroupName(subGroupWrapper))"
                             :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
-                            :text="subGroupName(subGroupWrapper)"
-                            :description="subGroupWrapper.description"
+                            :text="getSubgroupTitle(subGroupWrapper)"
+                            :description="getSubgroupDescription(subGroupWrapper)"
                             :href="`${routePath}/${slugify(subGroupName(subGroupWrapper))}`"
                             :route-path="routePath"
                             :plugin-group="subGroupWrapper.group ?? subGroupWrapper.name"
@@ -73,7 +73,7 @@
     import {computed, ref} from "vue";
     import {useElementSize} from "@vueuse/core";
     import {slugify} from "../../utils/url";
-    import type {Plugin} from "../../utils/plugins";
+    import type {Plugin, PluginMetadata} from "../../utils/plugins";
     import {subGroupName, extractPluginElements} from "../../utils/plugins";
     import {usePluginElementCounts} from "../../composables/usePluginElementCounts";
 
@@ -89,8 +89,21 @@
         icons: Record<string, string>
         subGroup?: string | undefined,
         activeId?: string | undefined
-        subgroupBlueprintCounts?: Record<string, number>
+        subgroupBlueprintCounts?: Record<string, number>,
+        metadataMap?: Record<string, PluginMetadata>
     }>();
+
+    const getSubgroupMetadata = (subGroupWrapper: Plugin) => {
+        return props.metadataMap?.[subGroupWrapper.subGroup ?? subGroupWrapper.group];
+    };
+
+    const getSubgroupDescription = (subGroupWrapper: Plugin) => {
+        return getSubgroupMetadata(subGroupWrapper)?.description ?? subGroupWrapper.description;
+    };
+
+    const getSubgroupTitle = (subGroupWrapper: Plugin) => {
+        return getSubgroupMetadata(subGroupWrapper)?.title ?? subGroupWrapper.title ?? subGroupName(subGroupWrapper);
+    };
 
     const plugin = computed(() => props.plugins.find(p => props.subGroup === undefined ? true : (slugify(subGroupName(p)) === props.subGroup)) as Plugin);
 
