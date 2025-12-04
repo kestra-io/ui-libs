@@ -149,10 +149,12 @@
 </template>
 
 <script setup lang="ts">
-    import {className, extractEnumValues, extractTypeInfo, type JSONProperty} from "../../utils/schemaUtils.ts";
     import {ref} from "vue";
-    import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
+    import {sanitizeForMarkdown} from "../../utils/Utils";
+    import {className, extractEnumValues, extractTypeInfo, type JSONProperty} from "../../utils/schemaUtils.ts";
+    
     import Alert from "../content/Alert.vue";
+    import EyeOutline from "vue-material-design-icons/EyeOutline.vue";
 
     const props = defineProps<{
         property: JSONProperty
@@ -162,9 +164,7 @@
 
     const enumValues = ref(extractEnumValues(props.property));
 
-    const codeSanitizer = (str: string): string => {
-        return str.replace(/(```)(?:bash|yaml|js|console|json)(\n) *([\s\S]*?```)/g, "$1$2$3").replace(/(?<!:):(?![: /])/g, ": ");
-    }
+    const codeSanitizer = sanitizeForMarkdown;
 </script>
 
 <style lang="scss" scoped>
