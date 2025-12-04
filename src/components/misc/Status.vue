@@ -1,6 +1,5 @@
 <template>
     <button
-        data-test-id="status"
         type="button"
         :class="classes"
     >
