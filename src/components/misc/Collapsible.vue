@@ -49,6 +49,7 @@
     const getHash = computed(() => `#${props.href}-body`);
     const handleToggle = (event: Event) => {
         event.preventDefault();
+        event.stopPropagation();
         collapsed.value = !collapsed.value;
         open.value = !collapsed.value;
         if(!collapsed.value) {
@@ -57,7 +58,12 @@
         if(props.noUrlChange) {
             return;
         }
-        window.location.hash = collapsed.value ? "" : getHash.value
+        
+        if (collapsed.value) {
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+        } else {
+            window.location.hash = getHash.value;
+        }
     };
 
     const open = ref(false);
