@@ -61,7 +61,8 @@
         extractTypeInfo,
         className,
         type JSONProperty,
-        aggregateAllOf
+        aggregateAllOf,
+        isDynamic
     } from "../../utils/schemaUtils";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
     import Collapsible from "../misc/Collapsible.vue";
@@ -103,18 +104,6 @@
             }
         }
     );
-
-    const isDynamic = (property: JSONProperty): boolean => {
-        if (property["$dynamic"] === true) {
-            return true;
-        }
-
-        if (property["$dynamic"] === false) {
-            return false;
-        }
-
-        return property.anyOf?.some(prop => prop["$dynamic"] === true) ?? false;
-    };
 
     function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
         const requiredKeys = [];

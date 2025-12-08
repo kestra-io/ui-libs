@@ -7,10 +7,11 @@ export {default as getMDCParser} from "./composables/getMDCParser";
 export * from "./utils/constants";
 export * from "./utils/url";
 export * from "./utils/plugins";
+export {usePluginElementCounts} from "./composables/usePluginElementCounts";
 export {default as RotatingDotsIcon} from "./assets/icons/RotatingDots.vue";
 
 export type {YamlElement} from "./utils/YamlUtilsLegacy";
-export type {Plugin} from "./utils/plugins";
+export type {Plugin, PluginMetadata, PluginElement} from "./utils/plugins";
 export type {JSONSchema, JSONProperty} from "./utils/schemaUtils";
 
 import "./scss/ks-theme-light.scss";

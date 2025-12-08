@@ -62,7 +62,9 @@ function extractTypesOrRef(propType: JSONProperty): string[] | undefined {
 
     if (propType.$ref) {
         const ref = propType.$ref;
-        return ["#" + ref.slice(8)];
+        const parts = ref.split("/");
+        const key = parts[parts.length - 1];
+        return ["#" + key];
     }
 
     return undefined;
@@ -141,4 +143,46 @@ export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     }
 
     return result;
+}
+
+export function extractReferencedDefinitions(
+    property: JSONProperty, 
+    definitions: Record<string, JSONSchema> | undefined,
+    visitedKeys: Set<string> = new Set()
+): Array<{ key: string, title: string, properties: Record<string, JSONProperty> }> {
+    if (!definitions) return [];
+    
+    const typeInfo = extractTypeInfo(property);
+    const defKeys: string[] = [];
+    
+    typeInfo.types.forEach(type => {
+        if (type.startsWith("#")) {
+            const key = type.slice(1);
+            if (definitions[key] && !visitedKeys.has(key) && !defKeys.includes(key)) {
+                defKeys.push(key);
+            }
+        }
+    });
+    
+    if (typeInfo.subType?.startsWith("#")) {
+        const key = typeInfo.subType.slice(1);
+        if (definitions[key] && !visitedKeys.has(key) && !defKeys.includes(key)) {
+            defKeys.push(key);
+        }
+    }
+    
+    return defKeys.map(key => {
+        const def = definitions[key];
+        return {
+            key,
+            title: def?.title ?? key.split("_")[0],
+            properties: def?.properties ?? {}
+        };
+    });
+}
+
+export function isDynamic(property: JSONProperty): boolean {
+    if (property["$dynamic"] === true) return true;
+    if (property["$dynamic"] === false) return false;
+    return property.anyOf?.some(prop => prop["$dynamic"] === true) ?? false;
 }
