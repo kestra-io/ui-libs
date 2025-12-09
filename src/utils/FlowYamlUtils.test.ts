@@ -543,7 +543,6 @@ describe("deleteBlock", () => {
     })
 })
 
-
 describe("extractFieldFromMaps", () => {
     test("extracts field from maps", () => {
         const yamlSrc = `
@@ -1685,3 +1684,40 @@ describe("get lines infos", () => {
         expect(tasksLines).to.containSubset({plugin1: {start: 3, end: 6}});
     })
 });
+
+describe("getTypeAtPosition", () => {
+    test("gets type at given line and column", () => {
+        const yamlString = `
+        id: sqlserver_v3
+        namespace: io.kestra.blx
+
+        tasks:
+        - type: io.kestra.plugin.core.log.Log
+          id: asda
+          message: hoo
+        - type: io.kestra.plugin.jdbc.sqlserver.Query
+          version: 1.0.0
+          id: select
+          url: help
+        `;
+        const result = YamlUtils.getTypeAtPosition(yamlString, {
+            lineNumber:9,
+            column: 15
+        }, [
+            'io.kestra.plugin.jdbc.sqlserver.Query', 
+            'io.kestra.plugin.core.log.Log'
+        ]); // line 9, column 15 corresponds to io.kestra.plugin.jdbc.sqlserver.Query
+        expect(result).toBe("io.kestra.plugin.jdbc.sqlserver.Query");
+    });
+
+    test("returns null if no type found at position", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+        `;
+        const result = YamlUtils.getTypeAtPosition(yamlString, {lineNumber: 2, column:5}, ["type1"]); // line 2, column 5 is 'tasks' field
+        expect(result).toBeNull();
+    });
+})
