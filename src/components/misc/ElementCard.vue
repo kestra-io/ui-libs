@@ -1,5 +1,5 @@
 <template>
-    <a :href="hrefWithDefault">
+    <a :href="hrefWithDefault" @click.prevent="emit('navigate', hrefWithDefault)">
         <div class="element-card" :class="{'is-active': isActive}">
             <div class="top-row">
                 <h6 class="text-capitalize">
@@ -29,6 +29,10 @@
         href?: string | undefined
         isActive?: boolean
         title?: string
+    }>();
+
+    const emit = defineEmits<{
+        (e: "navigate", url: string): void
     }>();
 
     const hrefWithDefault = computed(() => props.href === undefined 

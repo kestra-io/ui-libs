@@ -17,7 +17,7 @@
                             :blueprints-count="props.subgroupBlueprintCounts?.[`${slugify(subGroupWrapper.group ?? subGroupWrapper.name)}-${slugify(subGroupName(subGroupWrapper))}`] ?? 0"
                             :is-active="activeId === slugify(subGroupName(subGroupWrapper))"
                             class="text-capitalize h-100"
-                            @click="$emit('goTo', {subGroup: subGroupWrapper})"
+                            @navigate="emit('navigate', $event)"
                         />
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                             :is-active="activeId === slugify(element)"
                             :title="schemas?.[element]?.title"
                             class="h-100"
-                            @click="$emit('goTo', {element})"
+                            @navigate="emit('navigate', $event)"
                         >
                             <template #markdown="{content}">
                                 <slot name="markdown" :content="content" />
@@ -149,9 +149,9 @@
         isExpanded.value = !isExpanded.value;
     }
 
-    defineEmits<{
-        (e: "goTo", target: {subGroup?: Plugin & Pick<Plugin, "subGroup">, element?: string}): void
-    }>()
+    const emit = defineEmits<{
+        (e: "navigate", url: string): void
+    }>();
 </script>
 
 <style lang="scss" scoped>

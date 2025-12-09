@@ -1,5 +1,5 @@
 <template>
-    <a :href="hrefWithDefault">
+    <a :href="hrefWithDefault" @click.prevent="emit('navigate', hrefWithDefault)">
         <div class="plugin" :class="{'is-active': isActive}">
             <div class="top-row">
                 <div class="icon-content">
@@ -44,6 +44,10 @@
         isActive: false,
         blueprintsCount: 0,
     });
+
+    const emit = defineEmits<{
+        (e: "navigate", url: string): void
+    }>();
     
     const hrefWithDefault = computed(() => props.href === undefined
         ? `${props.routePath}/${slugify(props.text)}`
@@ -54,6 +58,12 @@
 <style scoped lang="scss">
     @use "../../scss/variables" as variables;
     @use "../../scss/color-palette" as color-palette;
+
+    a {
+        display: block;
+        height: 100%;
+        text-decoration: none;
+    }
 
     .plugin {
         width: 100%;
