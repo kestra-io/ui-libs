@@ -1704,8 +1704,8 @@ describe("getTypeAtPosition", () => {
             lineNumber:9,
             column: 15
         }, [
-            'io.kestra.plugin.jdbc.sqlserver.Query', 
-            'io.kestra.plugin.core.log.Log'
+            "io.kestra.plugin.jdbc.sqlserver.Query", 
+            "io.kestra.plugin.core.log.Log"
         ]); // line 9, column 15 corresponds to io.kestra.plugin.jdbc.sqlserver.Query
         expect(result).toBe("io.kestra.plugin.jdbc.sqlserver.Query");
     });
