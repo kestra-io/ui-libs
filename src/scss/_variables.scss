@@ -107,13 +107,20 @@ $gray-300-alt: #9797A6 !default;
 
 $purple-50: #E0E0FF !default;
 
-// fonts
-$font-size-base: 1rem !default;
+// font family
 $font-family-sans-serif: "Public Sans", sans-serif;
 $font-family-monospace: "Source Code Pro", monospace;
-$font-size-xs: $font-size-base * 0.75 !default;
-$font-size-md: $font-size-base * 1;
+
+// font sizes
+$font-size-base: 1rem;
+$font-size-xs: $font-size-base * 0.75;
+$font-size-sm: $font-size-base * 0.875;
+$font-size-md : $font-size-base * 1;
+$font-size-lg: $font-size-base * 1.25;
 $font-size-xl: $font-size-base * 1.375;
+$font-size-2xl : $font-size-base * 2.188;
+$font-size-3xl : $font-size-base * 3;
+$font-size-4xl : $font-size-base * 3.75;
 
 // border
 $block-border: 1px solid $black-3;
