@@ -94,7 +94,7 @@
             right: 0.35rem;
             top: 0.25rem;
             color: var(--bs-gray-600);
-            font-size: calc($font-size-base * .75);
+            font-size: $font-size-xs;
         }
 
         :deep(pre) {
