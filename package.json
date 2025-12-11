@@ -1,6 +1,10 @@
 {
   "name": "@kestra-io/ui-libs",
   "version": "0.0.146",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kestra-io/ui-libs"
+  },
   "type": "module",
   "files": [
     "dist",
