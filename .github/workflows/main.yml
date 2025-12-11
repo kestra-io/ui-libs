@@ -74,7 +74,7 @@ jobs:
       # Slack on error
       - name: Slack - Notify on failure
         id: send-ci-failed
-        if: always()
+        if: failure()
         uses: kestra-io/actions/composite/slack-status@main
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
