@@ -684,6 +684,7 @@ export function generateGraph(
                 style: {
                     zIndex: 10,
                 },
+                label:  (edge as any).relation?.value || edge.label,
                 animated: true,
             });
         }
