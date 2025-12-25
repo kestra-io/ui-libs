@@ -146,11 +146,12 @@ export function generateDagreGraph(
     clustersWithoutRootNode: string[],
     edgeReplacer: EdgeReplacer,
     collapsed: Set<string>,
-    clusterToNode: MinimalNode[]
+    clusterToNode: MinimalNode[],
+    isAllowedEdit: boolean
 ) {
     const dagreGraph = new dagre.graphlib.Graph({compound: true});
     dagreGraph.setDefaultEdgeLabel(() => ({}));
-    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB"});
+    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? 80 : isAllowedEdit ? 80 : 50});
 
     for (const node of flowGraph.nodes) {
         if (!hiddenNodes.includes(node.uid)) {
@@ -484,7 +485,8 @@ export function generateGraph(
         clustersWithoutRootNode,
         edgeReplacer,
         collapsed,
-        clusterToNode
+        clusterToNode,
+        isAllowedEdit
     );
 
     const clusterByNodeUid: Record<string, Cluster> = {};
