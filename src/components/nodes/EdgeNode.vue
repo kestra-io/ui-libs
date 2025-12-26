@@ -18,7 +18,9 @@
                 pointerEvents: 'all',
                 position: 'absolute',
                 transform: `translate(-50%, -50%) translate(${path[1] + labelXOffset}px,${path[2] + labelYOffset}px)`,
+                flexDirection: isVertical ? 'column' : 'row',
             }"
+            class="edge-label-wrapper"
         >
             <tooltip :title>
                 <AddTaskButton
@@ -28,6 +30,7 @@
                     :class="{'text-danger': data.color}"
                 />
             </tooltip>
+            <span v-if="label" class="edge-label" :class="data?.color ? `text-${data.color}` : ''">{{ label }}</span>
         </div>
     </EdgeLabelRenderer>
 </template>
@@ -77,6 +80,10 @@
             type: String,
             default: undefined,
         },
+        label: {
+            type: [String, Object],
+            default: undefined,
+        }
     })
         
     const classes = computed(() => {
@@ -103,22 +110,39 @@
 
 
     const path = computed(() => getSmoothStepPath(props as any));
-    const isVertical = computed(() => {
-        const dx = (props.targetX ?? 0) - (props.sourceX ?? 0);
-        const dy = (props.targetY ?? 0) - (props.sourceY ?? 0);
-        return Math.abs(dy) >= Math.abs(dx);
-    });
+    const isVertical = computed(() => props.sourcePosition === "bottom");
 
     const OFFSET = 14; 
     const labelYOffset = computed(() => {
-        if (!isVertical.value) return 0;
         const boundary = props.data?.edgeBoundary;
         if (boundary === "top") return -OFFSET;
         if (boundary === "bottom") return OFFSET;
+        const p = path.value;
+        if (p && p.length >= 3 && props.targetY !== undefined) {
+             if (isVertical.value) {
+                const baseOffset = 15;
+                const editOffset = props.data?.haveAdd ? 35 : 0;
+                return props.targetY - (baseOffset + editOffset) - p[2];
+             } else {
+                return props.targetY - p[2];
+             }
+        }
         return 0;
     });
 
-    const labelXOffset = computed(() => 0);
+    const labelXOffset = computed(() => {
+        const p = path.value;
+        if (p && p.length >= 3 && props.targetX !== undefined) {
+            if (isVertical.value) {
+                return props.targetX - p[1];
+            } else {
+                const baseOffset = 40;
+                const editOffset = props.data?.haveAdd ? 30 : 0;
+                return props.targetX - (baseOffset + editOffset) - p[1];
+            }
+        }
+        return 0;
+    });
 
     defineOptions({
         inheritAttrs: false,
@@ -140,5 +164,26 @@
 
     .vue-flow__edge-path {
         stroke-dasharray: 3 5;
+    }
+
+    .edge-label {
+        font-size: 12px;
+        color: var(--ks-content-secondary);
+        background: var(--ks-background-card);
+        border: 1px solid var(--ks-border-primary);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+    
+    .text-danger {
+        color: var(--ks-content-error);
+        border-color: var(--ks-border-error);
+    }
+    
+    .edge-label-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
     }
 </style>
