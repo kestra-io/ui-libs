@@ -151,7 +151,7 @@ export function generateDagreGraph(
 ) {
     const dagreGraph = new dagre.graphlib.Graph({compound: true});
     dagreGraph.setDefaultEdgeLabel(() => ({}));
-    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? 80 : isAllowedEdit ? 80 : 50});
+    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? (isAllowedEdit ? 220 : 150) : isAllowedEdit ? 200 : 80});
 
     for (const node of flowGraph.nodes) {
         if (!hiddenNodes.includes(node.uid)) {

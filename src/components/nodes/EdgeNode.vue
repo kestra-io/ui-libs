@@ -18,10 +18,10 @@
                 pointerEvents: 'all',
                 position: 'absolute',
                 transform: `translate(-50%, -50%) translate(${path[1] + labelXOffset}px,${path[2] + labelYOffset}px)`,
+                flexDirection: isVertical ? 'column' : 'row',
             }"
             class="edge-label-wrapper"
         >
-            <span v-if="label" class="edge-label" :class="data?.color ? `text-${data.color}` : ''">{{ label }}</span>
             <tooltip :title>
                 <AddTaskButton
                     v-if="data.haveAdd"
@@ -30,6 +30,7 @@
                     :class="{'text-danger': data.color}"
                 />
             </tooltip>
+            <span v-if="label" class="edge-label" :class="data?.color ? `text-${data.color}` : ''">{{ label }}</span>
         </div>
     </EdgeLabelRenderer>
 </template>
@@ -119,9 +120,11 @@
         const p = path.value;
         if (p && p.length >= 3 && props.targetY !== undefined) {
              if (isVertical.value) {
-                return props.targetY - 28 - p[2];
+                const baseOffset = 15;
+                const editOffset = props.data?.haveAdd ? 35 : 0;
+                return props.targetY - (baseOffset + editOffset) - p[2];
              } else {
-                return props.targetY - 10 - p[2];
+                return props.targetY - p[2];
              }
         }
         return 0;
@@ -133,7 +136,9 @@
             if (isVertical.value) {
                 return props.targetX - p[1];
             } else {
-                return props.targetX - 30 - p[1];
+                const baseOffset = 40;
+                const editOffset = props.data?.haveAdd ? 30 : 0;
+                return props.targetX - (baseOffset + editOffset) - p[1];
             }
         }
         return 0;
@@ -164,6 +169,10 @@
     .edge-label {
         font-size: 12px;
         color: var(--ks-content-secondary);
+        background: var(--ks-background-card);
+        border: 1px solid var(--ks-border-primary);
+        padding: 2px 8px;
+        border-radius: 4px;
     }
     
     .text-danger {
