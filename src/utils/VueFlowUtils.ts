@@ -149,9 +149,234 @@ export function generateDagreGraph(
     clusterToNode: MinimalNode[],
     isAllowedEdit: boolean
 ) {
+    const switchNodes = flowGraph.nodes
+        .filter((node: MinimalNode) => node.task?.type === "io.kestra.core.tasks.flows.Switch")
+        .map((node: MinimalNode) => node.uid);
+
+    if (switchNodes.length === 0) {
+        return generateStandardDagreGraph(flowGraph, hiddenNodes, isHorizontal, clustersWithoutRootNode, edgeReplacer, collapsed, clusterToNode, isAllowedEdit);
+    }
+
+    const activeNodes: string[] = [];
+    
+    for (const node of flowGraph.nodes) {
+        if (!hiddenNodes.includes(node.uid)) {
+            activeNodes.push(node.uid);
+        }
+    }
+
+    const effectiveEdges: {source: string, target: string}[] = [];
+    
+    for (const edge of flowGraph.edges || []) {
+        const newEdge = replaceIfCollapsed(
+            edge.source,
+            edge.target,
+            edgeReplacer,
+            hiddenNodes
+        );
+        if (newEdge) {
+            effectiveEdges.push(newEdge);
+        }
+    }
+
+    const cutEdges = effectiveEdges.filter(e => switchNodes.includes(e.source)); 
+
+    if (cutEdges.length === 0) {
+         return generateStandardDagreGraph(flowGraph, hiddenNodes, isHorizontal, clustersWithoutRootNode, edgeReplacer, collapsed, clusterToNode, isAllowedEdit);
+    }
+
+    const allDagreNodes = new Set<string>();
+    
+    flowGraph.nodes.forEach((n: MinimalNode) => !hiddenNodes.includes(n.uid) && allDagreNodes.add(n.uid));
+    
+    flowGraph.clusters?.forEach((c: any) => {
+         const nodeUid = c.cluster.uid.replace(CLUSTER_PREFIX, "");
+         if (clustersWithoutRootNode.includes(c.cluster.uid) && collapsed.has(nodeUid)) {
+             allDagreNodes.add(nodeUid);
+         }
+    });
+
+    const adj: Record<string, string[]> = {};
+    
+    allDagreNodes.forEach(n => { adj[n] = []; });
+     effectiveEdges.forEach(e => {
+        const isCut = cutEdges.some(ce => ce.source === e.source && ce.target === e.target);
+        if (!isCut && allDagreNodes.has(e.source) && allDagreNodes.has(e.target)) {
+            adj[e.source].push(e.target);
+            adj[e.target].push(e.source);
+        }
+    });
+
+    const visited = new Set<string>();
+    const components: string[][] = [];
+    
+    allDagreNodes.forEach(node => {
+         if (!visited.has(node)) {
+             const component: string[] = [];
+             const queue = [node];
+             visited.add(node);
+             while(queue.length > 0) {
+                 const u = queue.shift()!;
+                 component.push(u);
+                 (adj[u] || []).forEach(v => {
+                     if(!visited.has(v)) {
+                         visited.add(v);
+                         queue.push(v);
+                     }
+                 });
+             }
+             components.push(component);
+         }
+    });
+
+    const layouts: Record<string, dagre.graphlib.Graph> = {};
+    const componentMap: Record<string, number> = {}; 
+    
+    components.forEach((compNodes, idx) => {
+        compNodes.forEach(n => componentMap[n] = idx);
+        
+        const g = new dagre.graphlib.Graph({compound: true});
+        g.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? (isAllowedEdit ? 190 : 150) : isAllowedEdit ? 100 : 80});
+        g.setDefaultEdgeLabel(() => ({}));
+
+        compNodes.forEach(nodeUid => {
+             let node = flowGraph.nodes.find((n:any) => n.uid === nodeUid);
+             if(!node) {
+                 const cluster = flowGraph.clusters?.find((c:any) => c.cluster.uid.endsWith(nodeUid) && c.cluster.uid.replace(CLUSTER_PREFIX, "") === nodeUid);
+                 if (cluster) {
+                      node = {uid: nodeUid, type: "collapsedcluster"};
+                      if (!clusterToNode.some(n => n.uid === nodeUid)) {
+                          clusterToNode.push(node)
+                      }
+                 }
+             }
+             
+             if (node) {
+                 g.setNode(nodeUid, { width: getNodeWidth(node), height: getNodeHeight(node) });
+             }
+        });
+
+        effectiveEdges.forEach(e => {
+            if (componentMap[e.source] === idx && componentMap[e.target] === idx) {
+                 g.setEdge(e.source, e.target);
+            }
+        });
+        
+        flowGraph.clusters?.forEach((c:any) => {
+            if (!c.cluster.uid.startsWith(CLUSTER_PREFIX)) return;
+            const clusterUid = c.cluster.uid;
+            
+             compNodes.forEach(nUid => {
+                 const parentCluster = flowGraph.clusters?.find((xc:any) => xc.nodes.includes(nUid));
+                 if (parentCluster && parentCluster.cluster.uid === clusterUid) {
+                      const pUid = parentCluster.cluster.uid;
+                      if (!edgeReplacer[pUid]) {
+                           g.setNode(pUid, {clusterLabelPos: "top"});
+                           g.setParent(nUid, pUid);
+                      }
+                 }
+            });
+              if (c.parents) {
+                   if (g.hasNode(clusterUid)) {
+                        const parentUid = c.parents[c.parents.length - 1].uid; 
+                        if (!edgeReplacer[clusterUid]) {
+                             g.setNode(parentUid, {clusterLabelPos: "top"});
+                             g.setParent(clusterUid, parentUid);
+                        }
+                   }
+              }
+        });
+
+        dagre.layout(g);
+        layouts[idx] = g;
+    });
+
+    const metaG = new dagre.graphlib.Graph();
+    const SWITCH_GAP = 200; 
+    metaG.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: SWITCH_GAP});
+    metaG.setDefaultEdgeLabel(() => ({}));
+
+    Object.keys(layouts).forEach(idx => {
+        const layout = layouts[idx];
+        const graphLabel = layout.graph();
+        metaG.setNode(idx, { width: graphLabel.width, height: graphLabel.height });
+    });
+
+    cutEdges.forEach(e => {
+        const srcIdx = componentMap[e.source];
+        const tgtIdx = componentMap[e.target];
+        if (srcIdx !== undefined && tgtIdx !== undefined && srcIdx !== tgtIdx) {
+            metaG.setEdge(String(srcIdx), String(tgtIdx));
+        }
+    });
+
+    dagre.layout(metaG);
+
+    const finalGraph = new dagre.graphlib.Graph({compound: true});
+    finalGraph.setGraph({width: metaG.graph().width, height: metaG.graph().height}); 
+
+    Object.keys(layouts).forEach(idx => {
+         const layout = layouts[idx];
+         const metaPos = metaG.node(idx);
+         const offsetX = metaPos.x - metaPos.width / 2;
+         const offsetY = metaPos.y - metaPos.height / 2;
+
+         layout.nodes().forEach((nId: string) => {
+             const n = layout.node(nId);
+             finalGraph.setNode(nId, {
+                 ...n,
+                 x: offsetX + n.x,
+                 y: offsetY + n.y
+             });
+         });
+    });
+
+    if (flowGraph.clusters) {
+        flowGraph.clusters.forEach((c: any) => {
+             const clusterUid = c.cluster.uid;
+             const checkNodes = finalGraph.nodes();
+             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+             let found = false;
+
+             checkNodes.forEach((nId: string) => {
+                 if (c.nodes.includes(nId)) {
+                     const n = finalGraph.node(nId);
+                     if (n) {
+                         found = true;
+                         minX = Math.min(minX, n.x - n.width/2);
+                         maxX = Math.max(maxX, n.x + n.width/2);
+                         minY = Math.min(minY, n.y - n.height/2);
+                         maxY = Math.max(maxY, n.y + n.height/2);
+                     }
+                 }
+             });
+
+             if (found) {
+                 const w = maxX - minX;
+                 const h = maxY - minY;
+                 const x = minX + w/2;
+                 const y = minY + h/2;
+                 finalGraph.setNode(clusterUid, { width: w, height: h, x, y });
+             }
+        });
+    }
+
+    return finalGraph;
+}
+
+function generateStandardDagreGraph(
+    flowGraph: { nodes: any; clusters: any; edges: any },
+    hiddenNodes: string[],
+    isHorizontal: boolean,
+    clustersWithoutRootNode: string[],
+    edgeReplacer: EdgeReplacer,
+    collapsed: Set<string>,
+    clusterToNode: MinimalNode[],
+    isAllowedEdit: boolean
+) {
     const dagreGraph = new dagre.graphlib.Graph({compound: true});
     dagreGraph.setDefaultEdgeLabel(() => ({}));
-    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? (isAllowedEdit ? 220 : 150) : isAllowedEdit ? 200 : 80});
+    dagreGraph.setGraph({rankdir: isHorizontal ? "LR" : "TB", ranksep: isHorizontal ? (isAllowedEdit ? 190 : 150) : isAllowedEdit ? 100 : 80});
 
     for (const node of flowGraph.nodes) {
         if (!hiddenNodes.includes(node.uid)) {
@@ -682,6 +907,8 @@ export function generateGraph(
                         edge.source.startsWith(TRIGGERS_NODE_UID),
                     color: edgeColor,
                     unused: (edge as any).unused,
+                    isHorizontal,
+                    isSwitch: nodeByUid[newEdge.source]?.task?.type === "io.kestra.core.tasks.flows.Switch",
                 },
                 style: {
                     zIndex: 10,

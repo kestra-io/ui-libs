@@ -30,7 +30,7 @@
                     :class="{'text-danger': data.color}"
                 />
             </tooltip>
-            <span v-if="label" class="edge-label" :class="data?.color ? `text-${data.color}` : ''">{{ label }}</span>
+            <span v-if="label" class="edge-label" :class="data?.color ? `text-${data.color}` : ''">{{ typeof label === 'string' ? label : label?.text }}</span>
         </div>
     </EdgeLabelRenderer>
 </template>
@@ -136,6 +136,9 @@
             if (isVertical.value) {
                 return props.targetX - p[1];
             } else {
+                if (!props.data?.isSwitch) {
+                    return 0;
+                }
                 const baseOffset = 40;
                 const editOffset = props.data?.haveAdd ? 30 : 0;
                 return props.targetX - (baseOffset + editOffset) - p[1];
