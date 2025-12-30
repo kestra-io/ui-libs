@@ -1143,6 +1143,12 @@
             "rootAlias": "base-color-palette/purple/purple-200"
           },
           {
+            "name": "ks/dependencies-node-background-assets",
+            "value": "#1761fd",
+            "var": "base-color-palette/blue/blue-500",
+            "rootAlias": "base-color-palette/blue/blue-500"
+          },
+          {
             "name": "ks/dependencies-node-background-default",
             "value": "#ffffff",
             "var": "base-color-palette/neutral/white",
@@ -1165,6 +1171,12 @@
             "value": "#a396ff",
             "var": "base-color-palette/purple/purple-200",
             "rootAlias": "base-color-palette/purple/purple-200"
+          },
+          {
+            "name": "ks/dependencies-node-border-assets",
+            "value": "#0a2869",
+            "var": "base-color-palette/blue/blue-800",
+            "rootAlias": "base-color-palette/blue/blue-800"
           },
           {
             "name": "ks/dependencies-node-border-default",
@@ -2605,6 +2617,12 @@
             "rootAlias": "base-color-palette/purple/purple-300"
           },
           {
+            "name": "ks/dependencies-node-background-assets",
+            "value": "#3991ff",
+            "var": "base-color-palette/blue/blue-400",
+            "rootAlias": "base-color-palette/blue/blue-400"
+          },
+          {
             "name": "ks/dependencies-node-background-default",
             "value": "#2f3342",
             "var": "base-color-palette/neutral/gray-500",
@@ -2627,6 +2645,12 @@
             "value": "#9470ff",
             "var": "base-color-palette/purple/purple-300",
             "rootAlias": "base-color-palette/purple/purple-300"
+          },
+          {
+            "name": "ks/dependencies-node-border-assets",
+            "value": "#7fbbff",
+            "var": "base-color-palette/blue/blue-200",
+            "rootAlias": "base-color-palette/blue/blue-200"
           },
           {
             "name": "ks/dependencies-node-border-default",
