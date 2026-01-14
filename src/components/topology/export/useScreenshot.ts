@@ -8,7 +8,6 @@ interface UseScreenshotOptions extends HTMLToImageOptions {
   type?: ImageType;
   fileName?: string;
   shouldDownload?: boolean;
-  fetchRequestInit?: RequestInit;
 }
 
 type CaptureScreenshot = (
@@ -33,33 +32,41 @@ export function useScreenshot(): UseScreenshot {
   async function capture(el: HTMLElement, options: UseScreenshotOptions = {}) {
     const fileName = options.fileName ?? `flow-graph-${Date.now()}`;
 
+    el.classList.add("is-exporting");
+
     const edgePaths = el.querySelectorAll(".vue-flow__edge-path");
     const originalStyles = Array.from(edgePaths).map(edge => {
       const element = edge as HTMLElement;
       const original = element.getAttribute("style") || "";
-      
+
+      const computed = window.getComputedStyle(element);
+
       element.setAttribute(
         "style",
-        `${original}; stroke: ${window.getComputedStyle(element).stroke}; ` +
-        `stroke-width: ${window.getComputedStyle(element).strokeWidth}; ` +
-        `stroke-dasharray: ${window.getComputedStyle(element).strokeDasharray}`
+        `
+        ${original};
+        stroke: ${computed.stroke};
+        stroke-width: ${computed.strokeWidth};
+        stroke-dasharray: ${computed.strokeDasharray};
+        fill: none;
+        `
       );
-      
+
       return {element, original};
     });
 
     try {
-      const data = options.type === "jpeg" 
-        ? await toJpeg(el, options) 
+      const data = options.type === "jpeg"
+        ? await toJpeg(el, options)
         : await toPng(el, options);
 
       if (options.shouldDownload && fileName) download(fileName);
-
       return data;
     } finally {
-      originalStyles.forEach(({element, original}) => 
+      originalStyles.forEach(({element, original}) =>
         original ? element.setAttribute("style", original) : element.removeAttribute("style")
       );
+      el.classList.remove("is-exporting");
     }
   }
 

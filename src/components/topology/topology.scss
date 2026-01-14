@@ -70,6 +70,7 @@ $node-colors: (
 
     .vue-flow__edge-path {
         stroke: var(--ks-topology-edge-color);
+        fill: none;
     }
 
     @each $color, $value in $node-colors {
@@ -77,5 +78,15 @@ $node-colors: (
             background-color: rgba($value, 0.05);
             border: 1px solid $value;
         }
+    }
+}
+
+.is-exporting {
+    .vue-flow__controls,
+    .vue-flow__controls-button,
+    .vue-flow__handle,
+    .top-button-div,
+    .circle-button {
+        display: none !important;
     }
 }
