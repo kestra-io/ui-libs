@@ -56,21 +56,17 @@ export function useScreenshot(): UseScreenshot {
     });
 
     try {
-      const data = options.type === "jpeg" ? await toJpeg(el, options) : await toPng(el, options);
+      const data = options.type === "jpeg"
+        ? await toJpeg(el, options)
+        : await toPng(el, options);
 
-      if (options.shouldDownload && fileName) {
-        download(fileName);
-      }
+      if (options.shouldDownload && fileName) download(fileName);
       return data;
 
     } finally {
-      originalStyles.forEach(({element, original}) => {
-        if (original) {
-          element.setAttribute("style", original);
-        } else {
-          element.removeAttribute("style");
-        }
-      });
+      originalStyles.forEach(({element, original}) =>
+        original ? element.setAttribute("style", original) : element.removeAttribute("style")
+      );
       el.classList.remove("is-exporting");
     }
   }
@@ -81,30 +77,32 @@ export function useScreenshot(): UseScreenshot {
   ) {
     error.value = null;
 
-    return ElToJpg(el, options).then(data => {
-      dataUrl.value = data;
-      imgType.value = "jpeg";
-      return data;
-    }).catch(error => {
-      error.value = error;
-      throw error;
-    });
+    return ElToJpg(el, options)
+      .then(data => {
+        dataUrl.value = data;
+        imgType.value = "jpeg";
+        return data;
+      }).catch(error => {
+        error.value = error;
+        throw error;
+      });
   }
 
   function toPng(
     el: HTMLElement,
-    options: HTMLToImageOptions = {}
+    options: HTMLToImageOptions = {quality: 0.95}
   ) {
     error.value = null;
 
-    return ElToPng(el, options).then(data => {
-      dataUrl.value = data;
-      imgType.value = "png";
-      return data;
-    }).catch(error => {
-      error.value = error;
-      throw error;
-    });
+    return ElToPng(el, options)
+      .then(data => {
+        dataUrl.value = data;
+        imgType.value = "png";
+        return data;
+      }).catch(error => {
+        error.value = error;
+        throw error;
+      });
   }
 
   function download(fileName: string) {
