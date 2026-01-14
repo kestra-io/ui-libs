@@ -1,6 +1,6 @@
-import { ref, Ref } from "vue";
-import { toJpeg as ElToJpg, toPng as ElToPng } from "html-to-image";
-import type { Options as HTMLToImageOptions } from "html-to-image/es/types";
+import {ref, Ref} from "vue";
+import {toJpeg as ElToJpg, toPng as ElToPng} from "html-to-image";
+import type {Options as HTMLToImageOptions} from "html-to-image/es/types";
 
 type ImageType = "jpeg" | "png";
 
@@ -53,7 +53,7 @@ export function useScreenshot(): UseScreenshot {
         `
       );
 
-      return { element, original };
+      return {element, original};
     });
 
     try {
@@ -65,7 +65,7 @@ export function useScreenshot(): UseScreenshot {
       return data;
 
     } finally {
-      originalStyles.forEach(({ element, original }) => {
+      originalStyles.forEach(({element, original}) => {
         if (original) {
           element.setAttribute("style", original);
         } else {
@@ -78,7 +78,7 @@ export function useScreenshot(): UseScreenshot {
 
   function toJpeg(
     el: HTMLElement,
-    options: HTMLToImageOptions = { quality: 0.95 }
+    options: HTMLToImageOptions = {quality: 0.95}
   ) {
     error.value = null;
 
