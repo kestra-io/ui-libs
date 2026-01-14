@@ -61,6 +61,7 @@ export function useScreenshot(): UseScreenshot {
         : await toPng(el, options);
 
       if (options.shouldDownload && fileName) download(fileName);
+
       return data;
 
     } finally {
@@ -78,13 +79,14 @@ export function useScreenshot(): UseScreenshot {
     error.value = null;
 
     return ElToJpg(el, options)
-      .then(data => {
+      .then((data) => {
         dataUrl.value = data;
         imgType.value = "jpeg";
         return data;
-      }).catch(error => {
+      })
+      .catch((error) => {
         error.value = error;
-        throw error;
+        throw new Error(error);
       });
   }
 
@@ -95,13 +97,14 @@ export function useScreenshot(): UseScreenshot {
     error.value = null;
 
     return ElToPng(el, options)
-      .then(data => {
+      .then((data) => {
         dataUrl.value = data;
         imgType.value = "png";
         return data;
-      }).catch(error => {
+      })
+      .catch((error) => {
         error.value = error;
-        throw error;
+        throw new Error(error);
       });
   }
 
