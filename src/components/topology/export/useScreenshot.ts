@@ -61,9 +61,7 @@ export function useScreenshot(): UseScreenshot {
         : await toPng(el, options);
 
       if (options.shouldDownload && fileName) download(fileName);
-
       return data;
-
     } finally {
       originalStyles.forEach(({element, original}) =>
         original ? element.setAttribute("style", original) : element.removeAttribute("style")
