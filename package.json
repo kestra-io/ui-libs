@@ -80,7 +80,7 @@
     "@types/dagre": "^0.7.53",
     "@types/humanize-duration": "^3.27.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/lodash": "^4.17.20",
+    "@types/lodash": "^4.17.23",
     "@typescript-eslint/parser": "^8.42.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
