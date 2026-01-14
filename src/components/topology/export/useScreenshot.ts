@@ -8,7 +8,6 @@ interface UseScreenshotOptions extends HTMLToImageOptions {
   type?: ImageType;
   fileName?: string;
   shouldDownload?: boolean;
-  // fetchRequestInit?: RequestInit;
 }
 
 type CaptureScreenshot = (
