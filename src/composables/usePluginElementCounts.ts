@@ -1,4 +1,4 @@
-import {computed, unref, type Ref} from "vue";
+import {computed, MaybeRef, isRef} from "vue";
 import {extractPluginElements, type Plugin} from "../utils/plugins";
 
 /**
@@ -7,8 +7,11 @@ import {extractPluginElements, type Plugin} from "../utils/plugins";
  * @param plugin - The plugin to analyze.
  * @returns Object with elementsByType (computed) and total (computed) counts.
  */
-export function usePluginElementCounts(plugin: Plugin | Ref<Plugin>) {
-    const elementsByType = computed(() => extractPluginElements(unref(plugin)));
+export function usePluginElementCounts(plugin: MaybeRef<Plugin | undefined>) {
+    const elementsByType = computed(() => {
+        const pluginValue = isRef(plugin) ? plugin.value : plugin
+        return pluginValue ? extractPluginElements(pluginValue) : {};
+    });
 
     const total = computed(() => Object.values(elementsByType.value).reduce((sum, arr) => sum + arr.length, 0));
 
