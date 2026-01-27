@@ -28,17 +28,48 @@ export function parse<T = any>(item?: string, throwIfError = true): T | undefine
     }
 }
 
+const CRON_LINE_REGEX = /^(\s*-?\s*cron:\s*)([^\n#]*?)(\s*(#.*)?)$/gm;
+
+function preserveCronQuotes(yamlContent: string) {
+    return yamlContent.replace(
+        CRON_LINE_REGEX,
+        (fullLine, prefix: string, valuePart: string, suffix: string) => {
+            const value = valuePart.trim();
+            const isEmptyValue = value === "" || value === "\"\"" || value === "''";
+
+            if (isEmptyValue) {
+                // Leave empty cron values untouched and without extra quotes.
+                return `${prefix}${suffix ?? ""}`;
+            }
+
+            const shouldSkip =
+                value.startsWith("\"") ||
+                value.startsWith("'") ||
+                value.startsWith("|") ||
+                value.startsWith(">");
+
+            if (shouldSkip) {
+                return fullLine;
+            }
+
+            return `${prefix}"${value}"${suffix ?? ""}`;
+        }
+    );
+}
+
 export function stringify(item: any) {
     if (item === undefined) return "";
 
     const clonedValue = cloneDeep(item);
     delete clonedValue.deleted;
 
-    return dump(transform(clonedValue), {
+    const yamlContent = dump(transform(clonedValue), {
         lineWidth: -1,
         noCompatMode: true,
         quotingType: "\"",
     });
+
+    return preserveCronQuotes(yamlContent);
 }
 
 const SORT_FIELDS = [
