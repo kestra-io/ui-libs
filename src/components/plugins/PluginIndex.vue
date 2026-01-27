@@ -23,7 +23,7 @@
                 </div>
             </div>
         </template>
-        <template v-else>
+        <template v-else-if="plugin">
             <div class="d-flex flex-column elements-section pb-3" v-for="(elements, elementType) in elementsByType" :key="elementType">
                 <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
                     {{ elementType }}
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </template>
-        <template v-if="description !== undefined && plugin.longDescription">
+        <template v-if="description !== undefined && plugin?.longDescription">
             <div class="description">
                 <h4 id="how-to-use-this-plugin">
                     How to use this plugin
@@ -111,15 +111,15 @@
         return getSubgroupMetadata(subGroupWrapper)?.title ?? subGroupWrapper.title ?? subGroupName(subGroupWrapper);
     };
 
-    const plugin = computed(() => props.plugins.find(p => props.subGroup === undefined ? true : (slugify(subGroupName(p)) === props.subGroup)) as Plugin);
+    const plugin = computed(() => props.plugins.find(p => props.subGroup === undefined ? true : (slugify(subGroupName(p)) === props.subGroup)));
 
     const description = computed(() => {
         return plugin.value?.longDescription ?? plugin.value?.description
     });
 
-    const subGroupsWrappers = computed<Required<Plugin>[]>(() => {
+    const subGroupsWrappers = computed(() => {
         return props.plugins
-            .filter(p => p.name.toLowerCase() === props.pluginName.toLowerCase() && p.subGroup !== undefined) as Required<Plugin>[];
+            .filter(p => p.name.toLowerCase() === props.pluginName.toLowerCase() && p.subGroup !== undefined) as (Plugin & {subGroup:string})[];
     });
 
     const elementName = (qualifiedName: string) => {
