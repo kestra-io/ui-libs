@@ -1,6 +1,6 @@
 <template>
     <a :href="hrefWithDefault" @click.prevent="emit('navigate', hrefWithDefault)">
-        <div class="element-card" :class="{'is-active': isActive}">
+        <div class="element-card">
             <div class="top-row">
                 <h6 class="text-capitalize">
                     {{ text }}
@@ -27,7 +27,6 @@
         routePath: string
         pluginClass: string
         href?: string | undefined
-        isActive?: boolean
         title?: string
     }>();
 
@@ -68,15 +67,10 @@
             transform: scale(1.025);
         }
 
-        &.is-active {
-            border-color: variables.$primary;
-        }
-
         .top-row {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            align-items: baseline;
             min-width: 0;
         }
 
