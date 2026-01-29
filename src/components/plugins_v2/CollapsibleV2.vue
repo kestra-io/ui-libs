@@ -5,7 +5,9 @@
             :class="{collapsed}"
             @click="handleToggle"
         >
-            <span>{{ title }}<slot name="additional" /></span>
+            <span>{{ title }}
+                <slot name="additional" />
+            </span>
             <slot name="right" />
             <span v-if="arrow" class="chevron">
                 <component :is="collapsed ? ChevronRight : ChevronDown" />
@@ -45,18 +47,18 @@
     const emit = defineEmits(["expand"]);
 
     const getHash = computed(() => `#${props.href}-body`);
-    
+
     const handleToggle = (event: Event) => {
         event.preventDefault();
         collapsed.value = !collapsed.value;
         open.value = !collapsed.value;
-        if(!collapsed.value) {
+        if (!collapsed.value) {
             emit("expand");
         }
         if (props.noUrlChange) return;
 
         const newUrl = window.location.pathname + window.location.search + (!collapsed.value ? getHash.value : "");
-        
+
         try {
             window.history.pushState(null, "", newUrl);
         } catch {
@@ -93,19 +95,8 @@
 </script>
 
 <style scoped lang="scss">
-    details{
+    details {
         overflow: hidden;
-    }
-
-    details::details-content{
-        block-size: 0%;
-        transition: block-size 150ms,
-        content-visibility 150ms;
-        transition-behavior: allow-discrete;
-    }
-
-    details[open]::details-content{
-        block-size: auto;
     }
 
     .collapse-button {
