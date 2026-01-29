@@ -4,7 +4,11 @@
         <template v-if="subGroup === undefined && plugins.length > 1">
             <div class="pb-2">
                 <div class="row g-4 last">
-                    <div class="col-md-4 col-lg-6 col-xl-6 col-xxl-4" v-for="subGroupWrapper in subGroupsWrappers" :key="subGroupName(subGroupWrapper)">
+                    <div
+                        class="col-md-4 col-lg-6 col-xl-6 col-xxl-4"
+                        v-for="subGroupWrapper in subGroupsWrappers"
+                        :key="subGroupName(subGroupWrapper)"
+                    >
                         <SubgroupCard
                             :id="slugify(subGroupName(subGroupWrapper))"
                             :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
@@ -15,7 +19,7 @@
                             :plugin-group="subGroupWrapper.group ?? subGroupWrapper.name"
                             :total-count="getTotalElementCount(subGroupWrapper)"
                             :blueprints-count="props.subgroupBlueprintCounts?.[`${slugify(subGroupWrapper.group ?? subGroupWrapper.name)}-${slugify(subGroupName(subGroupWrapper))}`] ?? 0"
-                            :is-active="activeId === slugify(subGroupName(subGroupWrapper))"
+                            :is-active="activeId?.toLowerCase() === slugify(subGroupName(subGroupWrapper))"
                             class="text-capitalize h-100"
                             @navigate="emit('navigate', $event)"
                         />
@@ -37,7 +41,6 @@
                             :plugin-class="element"
                             :href="elementHref(element)"
                             :route-path="routePath"
-                            :is-active="activeId === slugify(element)"
                             :title="schemas?.[element]?.title"
                             class="h-100"
                             @navigate="emit('navigate', $event)"
@@ -59,10 +62,7 @@
                     <div ref="contentInner" class="markdown-inner">
                         <slot name="markdown" :content="description.replace(/ *:(?![ /])/g, ': ')" />
                     </div>
-                    <div 
-                        v-if="isOverflow && !isExpanded" 
-                        class="gradient-overlay" 
-                    />
+                    <div v-if="isOverflow && !isExpanded" class="gradient-overlay" />
                 </div>
                 <div v-if="isOverflow || isExpanded" class="more-wrap text-center">
                     <button class="more-btn" @click="toggleExpand">
@@ -96,7 +96,7 @@
         activeId?: string | undefined
         subgroupBlueprintCounts?: Record<string, number>,
         metadataMap?: Record<string, PluginMetadata>,
-        schemas?: Record<string, {title?: string}>
+        schemas?: Record<string, { title?: string }>
     }>();
 
     const getSubgroupMetadata = (subGroupWrapper: Plugin) => {
@@ -156,21 +156,21 @@
 
 <style lang="scss" scoped>
     @use "../../scss/variables" as variables;
-    
+
     h4 {
         font-size: 20px;
         font-weight: 600;
         margin: 0 0 1.5rem;
         color: var(--ks-content-primary);
     }
-    
+
     .description {
         border-top: 1px solid variables.$black-3;
         padding: 2rem 3rem;
         margin: 0 -3rem;
     }
 
-    .row > * {
+    .row>* {
         padding-inline: 8px;
         margin-top: 1rem;
     }

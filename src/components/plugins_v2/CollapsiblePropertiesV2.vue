@@ -39,12 +39,12 @@
     import PropertyBadges from "../plugins_v2/PropertyBadges.vue";
     import {ref, watch, computed} from "vue";
 
-    const props = withDefaults(defineProps<{ 
-        href?: string, 
-        sectionName: string, 
-        properties?: Record<string, JSONProperty>, 
-        showDynamic?: boolean, 
-        initiallyExpanded?: boolean, 
+    const props = withDefaults(defineProps<{
+        href?: string,
+        sectionName: string,
+        properties?: Record<string, JSONProperty>,
+        showDynamic?: boolean,
+        initiallyExpanded?: boolean,
         forceInclude?: string[],
         noUrlChange?: boolean,
         definitions?: Record<string, JSONSchema>
@@ -127,7 +127,6 @@
             border: 1px solid variables.$black-6;
             border-radius: 12px;
             background-color: variables.$black-9;
-            transition: border-radius 150ms ease;
         }
 
         &[open] {
@@ -179,5 +178,4 @@
             }
         }
     }
-
 </style>

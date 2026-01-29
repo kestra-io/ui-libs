@@ -48,7 +48,7 @@
     const emit = defineEmits<{
         (e: "navigate", url: string): void
     }>();
-    
+
     const hrefWithDefault = computed(() => props.href === undefined
         ? `${props.routePath}/${slugify(props.text)}`
         : props.href);
@@ -84,7 +84,7 @@
         }
 
         &.is-active {
-            border-color: variables.$primary;
+            border-color: variables.$primary !important;
         }
 
         .top-row {

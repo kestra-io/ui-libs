@@ -46,10 +46,10 @@
 <script setup lang="ts">
     import {computed} from "vue";
     import {
-        extractEnumValues, 
-        extractTypeInfo, 
-        extractReferencedDefinitions, 
-        type JSONProperty, 
+        extractEnumValues,
+        extractTypeInfo,
+        extractReferencedDefinitions,
+        type JSONProperty,
         type JSONSchema
     } from "../../utils/schemaUtils.ts";
     import {sanitizeForMarkdown} from "../../utils/Utils";
@@ -94,7 +94,7 @@
         const d = props.depth;
         const max = props.maxDepth;
         const visited = props.visitedKeys;
-        
+
         if (!defs || d >= max) return [];
         return extractReferencedDefinitions(p, defs, visited);
     }
@@ -146,7 +146,6 @@
             background: variables.$black-9;
             border: 1px solid variables.$black-6;
             border-radius: 12px 12px 0 0;
-            transition: border-radius 150ms ease;
         }
 
         :deep(summary.collapsed) {
