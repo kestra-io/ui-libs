@@ -9,9 +9,6 @@
                 </p>
             </div>
 
-            <div v-if="schema.properties?.title" class="plugin-title markdown">
-                <slot name="markdown" :content="schema.properties.title.replace(/ *:(?![ /])/g, ': ')" />
-            </div>
             <div v-if="schema.properties?.description" class="markdown">
                 <slot name="markdown" :content="schema.properties.description.replace(/ *:(?![ /])/g, ': ')" />
             </div>
