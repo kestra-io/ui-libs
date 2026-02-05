@@ -1721,3 +1721,210 @@ describe("getTypeAtPosition", () => {
         expect(result).toBeNull();
     });
 })
+
+describe("stringify with preserveCronQuotes", () => {
+    test("adds quotes to unquoted cron values", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "0 0 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        expect(result).toContain("cron: \"0 0 * * *\"");
+    });
+
+    test("preserves double quotes in cron values", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "\"0 0 * * *\""
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // When input already has quotes, preserveCronQuotes should skip adding quotes
+        // The regex should skip values that already start with quotes
+        expect(result).toContain("cron:");
+        expect(result).toContain("0 0 * * *");
+        // Should preserve the existing quotes (js-yaml may escape them)
+        expect(result).toMatch(/cron:\s*"\\"0 0 \* \* \*\\""|cron:\s*"0 0 \* \* \*"/);
+    });
+
+    test("preserves single quotes in cron values", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "'0 0 * * *'"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // Single quotes are preserved in the output
+        expect(result).toContain("cron:");
+        expect(result).toContain("'0 0 * * *'");
+    });
+
+    test("does not quote multiline strings starting with pipe", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "|\n  0 0 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        expect(result).toContain("cron: |");
+        expect(result).not.toContain("cron: \"|");
+    });
+
+    test("does not quote multiline strings starting with greater than", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: ">\n  0 0 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // Multiline strings with > are preserved as multiline (not quoted)
+        expect(result).toContain("cron:");
+        expect(result).not.toContain("cron: \">");
+        // The multiline format should be preserved
+        expect(result).toMatch(/cron:\s*[|>]/);
+    });
+
+    test("handles cron values with comments", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    // include an inline comment marker in the value to ensure it is preserved
+                    cron: "0 0 * * * # daily"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        expect(result).toContain("cron: \"0 0 * * * # daily\"");
+    });
+
+    test("handles multiple cron triggers", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "0 0 * * *"
+                },
+                {
+                    id: "trigger2",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "0 12 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        expect(result).toContain("cron: \"0 0 * * *\"");
+        expect(result).toContain("cron: \"0 12 * * *\"");
+    });
+
+    test("handles cron with indentation", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "0 0 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // Should handle indented cron lines (two spaces before dash, four before cron)
+        expect(result).toMatch(/\n {2}- id: trigger1\n {4}type: .*?\n {4}cron: "0 0 \* \* \*"/);
+    });
+
+    test("handles empty cron value without adding quotes", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: ""
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // Empty values should not be quoted
+        expect(result).not.toContain("cron: \"\"");
+        expect(result).toMatch(/cron:\s*$/m);
+    });
+
+    test("handles cron with whitespace-only value", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "   "
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // Whitespace-only values should be quoted
+        expect(result).toContain("cron: \"   \"");
+    });
+
+    test("does not affect non-cron fields", () => {
+        const yaml = {
+            id: "test-flow",
+            namespace: "io.kestra.test",
+            tasks: [
+                {
+                    id: "task1",
+                    type: "io.kestra.plugin.core.log.Log",
+                    message: "0 0 * * *"
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        // The message field should not have quotes added (it's not a cron field)
+        // preserveCronQuotes only affects lines matching the cron regex pattern
+        expect(result).toContain("message:");
+        expect(result).toContain("0 0 * * *");
+        // Verify the cron regex doesn't match message fields
+        expect(result).not.toMatch(/message:\s*"0 0 \* \* \*"/);
+    });
+
+    test("handles cron in nested structures", () => {
+        const yaml = {
+            triggers: [
+                {
+                    id: "trigger1",
+                    type: "io.kestra.plugin.core.trigger.Schedule",
+                    cron: "0 0 * * *",
+                    conditions: [
+                        {
+                            id: "condition1",
+                            type: "io.kestra.plugin.core.condition.Expression",
+                            expression: "{{ true }}"
+                        }
+                    ]
+                }
+            ]
+        };
+        const result = YamlUtils.stringify(yaml);
+        expect(result).toContain("cron: \"0 0 * * *\"");
+    });
+})
