@@ -345,8 +345,13 @@ export function replaceBlockWithPath({source, path, newContent}: {
     newContent: string
 }) {
     const yamlDoc = parseDocumentTyped(source);
-    const newItem = yamlDoc.createNode(parseDocument(newContent));
     const pathArray = parsePath(path);
+    // if value is empty, delete the property instead of replacing it with an empty value
+    if(newContent === ""){
+        yamlDoc.deleteIn(pathArray);  
+        return yamlDoc.toString(TOSTRING_OPTIONS);  
+    }
+    const newItem = yamlDoc.createNode(parseDocument(newContent));
     const insertBlock = !yamlDoc.hasIn(pathArray);
     yamlDoc.setIn(pathArray, newItem);
 

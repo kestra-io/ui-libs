@@ -1314,6 +1314,32 @@ tasks:
           "
         `)
     })
+
+    test("replace with empty content should remove the item at path", () => {
+        const yamlString = `
+        tasks:
+          - id: plugin1
+            type: type1
+            name: Plugin 1
+          - id: plugin2
+            type: type2
+            name: Plugin 2
+        `;
+
+        const result = YamlUtils.replaceBlockWithPath({
+            source: yamlString, 
+            path: "tasks[1]",
+            newContent: YamlUtils.stringify(undefined)
+        })
+
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+              type: type1
+              name: Plugin 1
+          "
+        `)
+    })
 })
 
 describe("getPathFromSectionAndId", () => {  
