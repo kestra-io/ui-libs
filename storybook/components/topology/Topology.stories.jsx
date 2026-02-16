@@ -327,6 +327,26 @@ export const CustomNodes = lodash.merge({},
     }
 )
 
+import AdditionalInfoData from "../../data/graphs/additional-info.js";
+
+export const AdditionalInfo = lodash.merge({},
+    base,
+    {
+        args: {
+            isHorizontal: false,
+        },
+        loaders: [
+            async () => {
+                return {
+                    flowGraph: AdditionalInfoData,
+                    
+                    source: "",
+                }
+            },
+        ],
+    }
+)
+
 
 
 
