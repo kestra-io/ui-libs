@@ -272,7 +272,6 @@
     }
 
     .additional-info {
-        padding: .5px;
         font-size: .5rem;
         background-color: var(--ks-background-body);
         border-bottom-left-radius: .5rem;
@@ -282,9 +281,6 @@
             padding: 0.2rem .5rem;
             display: flex;
             justify-content: space-between;
-        }
-        .info-left, .info-right{
-            display: block;
         }
     }
 
