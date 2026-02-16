@@ -14,7 +14,12 @@ export default {
             "task": {
                 "id": "RUNNING",
                 "type": "io.kestra.plugin.core.log.Log",
-                "message": "All Done \uD83C\uDF89"
+                "message": "All Done \uD83C\uDF89",
+                "additionalInfo": {
+                    "Provider": "Open AI - gpt-5-nano",
+                    "Memory": "JOHN",
+                    "Tool": "DockerMcpClient"
+                }
             },
             "relationType": "SEQUENTIAL"
         },

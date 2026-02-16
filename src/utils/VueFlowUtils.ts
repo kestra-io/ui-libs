@@ -24,6 +24,7 @@ interface MinimalNode {
         type: string;
         namespace: string;
         flowId: string;
+        additionalInfo?: Record<string, any>;
     }
 }
 
@@ -37,6 +38,7 @@ interface Cluster {
             type: string
             namespace: string
             flowId: string
+            additionalInfo?: Record<string, any>;
         }
     }
     branchType: BranchType
@@ -244,6 +246,9 @@ export function getNodeWidth(node: MinimalNode) {
 }
 
 export function getNodeHeight(node: MinimalNode) {
+    if(node.task?.additionalInfo) {
+        return NODE_SIZES.TASK_HEIGHT + Object.keys(node.task.additionalInfo).length * 20 + 1; // add height for additional info
+    }   
     return isTaskNode(node) || isTriggerNode(node)
         ? NODE_SIZES.TASK_HEIGHT
         : (isCollapsedCluster(node)

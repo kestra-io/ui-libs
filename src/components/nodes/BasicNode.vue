@@ -1,60 +1,67 @@
 <template>
     <div
-        class="node-wrapper rounded-3"
+        class="node-wrapper"
         :style="{borderColor: state ? `var(--ks-border-${state.toLowerCase()})` : undefined}"
-        :class="{...classes, 'running-border-animation': state === 'RUNNING'}"
+        :class="classes"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div class="icon rounded">
-            <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
-        </div>
-        <div class="node-content">
-            <div class="d-flex node-title">
-                <div
-                    class="text-truncate task-title"
-                >
-                    <tooltip :title="hoverTooltip">
-                        {{ displayTitle }}
-                    </tooltip>
+        <div class="node-core">
+            <div class="icon rounded">
+                <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
+            </div>
+            <div class="node-content">
+                <div class="d-flex node-title">
+                    <div
+                        class="text-truncate task-title"
+                    >
+                        <tooltip :title="hoverTooltip">
+                            {{ displayTitle }}
+                        </tooltip>
+                    </div>
+                    <span
+                        class="d-flex"
+                        v-if="description"
+                    >
+                        <tooltip :title="$t('show description')" class="d-flex align-items-center">
+                            <InformationOutline
+                                @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
+                                class="description-button ms-2"
+                            />
+                        </tooltip>
+                    </span>
                 </div>
+                <slot name="content" />
+            </div>
+            <div class="text-white top-button-div">
+                <slot name="badge-button-before" />
                 <span
-                    class="d-flex"
-                    v-if="description"
+                    v-if="data.link"
+                    class="circle-button"
+                    :class="[`bg-${data.color}`]"
+                    @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
                 >
-                    <tooltip :title="$t('show description')" class="d-flex align-items-center">
-                        <InformationOutline
-                            @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
-                            class="description-button ms-2"
-                        />
+                    <tooltip :title="$t('open')">
+                        <OpenInNew class="button-icon" alt="Open in new tab" />
                     </tooltip>
                 </span>
+                <span
+                    v-if="expandable"
+                    class="circle-button"
+                    :class="[`bg-${data.color}`]"
+                    @click="$emit(EVENTS.EXPAND)"
+                >
+                    <tooltip :title="$t('expand')">
+                        <ArrowExpand class="button-icon" alt="Expand task" />
+                    </tooltip>
+                </span>
+                <slot name="badge-button-after" />
             </div>
-            <slot name="content" />
         </div>
-        <div class="text-white top-button-div">
-            <slot name="badge-button-before" />
-            <span
-                v-if="data.link"
-                class="circle-button"
-                :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
-            >
-                <tooltip :title="$t('open')">
-                    <OpenInNew class="button-icon" alt="Open in new tab" />
-                </tooltip>
-            </span>
-            <span
-                v-if="expandable"
-                class="circle-button"
-                :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.EXPAND)"
-            >
-                <tooltip :title="$t('expand')">
-                    <ArrowExpand class="button-icon" alt="Expand task" />
-                </tooltip>
-            </span>
-            <slot name="badge-button-after" />
+        <div class="additional-info" v-if="node?.additionalInfo">
+            <div v-for="(info, key) in node.additionalInfo" :key="key">
+                <span class="info-left">{{ key }}</span><span class="info-right">{{ info }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -129,11 +136,10 @@
 
     const classes = computed(() => {
         return [{
-                    "unused-path": props.data.unused,
-                    "disabled": node.value?.disabled || props.data.parent?.taskNode?.task?.disabled,
-                },
-                props.class
-        ]
+            "unused-path": props.data.unused,
+            "disabled": node.value?.disabled || props.data.parent?.taskNode?.task?.disabled,
+            "running-border-animation": props.state === "RUNNING"
+        }, props.class]
     })
 
     const cls = computed(() => {
@@ -165,36 +171,41 @@
 
 <style lang="scss" scoped>
     .node-wrapper {
-        background-color: var(--ks-background-card);
-
-        width: 184px;
-        height: 44px;
-        margin: 0;
-        padding: 8px;
-        display: flex;
-        z-index: 150000;
-        align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
         border: 1px solid var(--ks-border-primary);
-
-        &.execution-no-taskrun, &.disabled {
+        border-radius: .5rem;
+        width: 184px;
+        .node-core{
             background-color: var(--ks-background-card);
-        }
 
-        &.disabled {
-            .task-title {
-                color: var(--ks-content-secondary);
-                text-decoration: line-through;
+            height: 44px;
+            margin: 0;
+            padding: 8px;
+            display: flex;
+            z-index: 150000;
+            align-items: center;
+            border-top-left-radius: .5rem;
+            border-top-right-radius: .5rem;
+            
+            &.execution-no-taskrun, &.disabled {
+                background-color: var(--ks-background-card);
             }
-        }
 
-        .icon {
-            margin: 0.2rem;
-            width: 25px;
-            height: 25px;
-            border: 0.4px solid var(--ks-border-primary);
-            min-width: 25px;
-            min-height: 25px;
+            &.disabled {
+                .task-title {
+                    color: var(--ks-content-secondary);
+                    text-decoration: line-through;
+                }
+            }
+
+            .icon {
+                margin: 0.2rem;
+                width: 25px;
+                height: 25px;
+                border: 0.4px solid var(--ks-border-primary);
+                min-width: 25px;
+                min-height: 25px;
+            }
         }
     }
 
@@ -257,6 +268,23 @@
                 var(--ks-border-running) 90%, 
                 var(--ks-border-running) 100%);
             animation: running-border 3s linear infinite;
+        }
+    }
+
+    .additional-info {
+        padding: .5px;
+        font-size: .5rem;
+        background-color: var(--ks-background-body);
+        border-bottom-left-radius: .5rem;
+        border-bottom-right-radius: .5rem;
+        > div{
+            border-top: 1px solid var(--ks-border-primary);
+            padding: 0.2rem .5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .info-left, .info-right{
+            display: block;
         }
     }
 
