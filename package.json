@@ -90,7 +90,7 @@
     "eslint-plugin-storybook": "^10.2.8",
     "eslint-plugin-vue": "^10.4.0",
     "sass": "^1.92.1",
-    "storybook": "^10.2.8",
+    "storybook": "^10.2.9",
     "storybook-vue3-router": "^6.0.2",
     "typescript-eslint": "^8.42.0",
     "vite": "^7.1.5",
