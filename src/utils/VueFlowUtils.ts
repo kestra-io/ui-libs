@@ -146,7 +146,16 @@ export function generateDagreGraph(
     clustersWithoutRootNode: string[],
     edgeReplacer: EdgeReplacer,
     collapsed: Set<string>,
-    clusterToNode: MinimalNode[]
+    clusterToNode: MinimalNode[],
+    getNodeDimensions: (
+        node: MinimalNode, 
+        getNodeWidth: (node: MinimalNode) => number, 
+        getNodeHeight: (node: MinimalNode) => number
+    ) => { width: number; height: number } 
+        = (node, getNodeWidth, getNodeHeight) => ({
+            width: getNodeWidth(node), 
+            height: getNodeHeight(node)
+        })
 ) {
     const dagreGraph = new dagre.graphlib.Graph({compound: true});
     dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -154,10 +163,7 @@ export function generateDagreGraph(
 
     for (const node of flowGraph.nodes) {
         if (!hiddenNodes.includes(node.uid)) {
-            dagreGraph.setNode(node.uid, {
-                width: getNodeWidth(node),
-                height: getNodeHeight(node),
-            });
+            dagreGraph.setNode(node.uid, getNodeDimensions(node, getNodeWidth, getNodeHeight));
         }
     }
 
@@ -168,10 +174,8 @@ export function generateDagreGraph(
             collapsed.has(nodeUid)
         ) {
             const node = {uid: nodeUid, type: "collapsedcluster"};
-            dagreGraph.setNode(nodeUid, {
-                width: getNodeWidth(node),
-                height: getNodeHeight(node),
-            });
+            const dimensions = getNodeDimensions(node, getNodeWidth, getNodeHeight);
+            dagreGraph.setNode(nodeUid, dimensions);
             clusterToNode.push(node);
             continue;
         }
@@ -244,6 +248,7 @@ export function getNodeWidth(node: MinimalNode) {
 }
 
 export function getNodeHeight(node: MinimalNode) {
+    console.log("Getting height for node", node);
     return isTaskNode(node) || isTriggerNode(node)
         ? NODE_SIZES.TASK_HEIGHT
         : (isCollapsedCluster(node)
@@ -423,7 +428,16 @@ export function generateGraph(
     clusterToNode: MinimalNode[],
     isReadOnly: boolean,
     isAllowedEdit: boolean,
-    enableSubflowInteraction: boolean
+    enableSubflowInteraction: boolean,
+    getNodeDimensions: (
+        node: MinimalNode, 
+        getNodeWidth: (node: MinimalNode) => number, 
+        getNodeHeight: (node: MinimalNode) => number
+    ) => { width: number; height: number } 
+        = (node, getNodeWidth, getNodeHeight) => ({
+            width: getNodeWidth(node), 
+            height: getNodeHeight(node)
+        })
 ): Elements | undefined {
     const elements: Elements = [];
 
@@ -484,7 +498,8 @@ export function generateGraph(
         clustersWithoutRootNode,
         edgeReplacer,
         collapsed,
-        clusterToNode
+        clusterToNode,
+        getNodeDimensions
     );
 
     const clusterByNodeUid: Record<string, Cluster> = {};
@@ -577,6 +592,7 @@ export function generateGraph(
                 );
 
             const cluster = clusterByNodeUid[node.uid]
+            const nodeDimensions = getNodeDimensions(node, getNodeWidth, getNodeHeight);
             elements.push({
                 id: node.uid,
                 type: nodeType,
@@ -587,8 +603,8 @@ export function generateGraph(
                         : undefined
                 ),
                 style: {
-                    width: getNodeWidth(node) + "px",
-                    height: getNodeHeight(node) + "px",
+                    width: nodeDimensions.width + "px",
+                    height: nodeDimensions.height + "px",
                 },
                 sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
                 targetPosition: isHorizontal ? Position.Left : Position.Top,

@@ -6,56 +6,59 @@
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div class="icon rounded">
-            <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
-        </div>
-        <div class="node-content">
-            <div class="d-flex node-title">
-                <div
-                    class="text-truncate task-title"
-                >
-                    <tooltip :title="hoverTooltip">
-                        {{ displayTitle }}
-                    </tooltip>
+        <div class="main-content">
+            <div class="icon rounded">
+                <component :is="iconComponent || TaskIcon" :cls="cls" :class="taskIconBg" class="rounded bg-white" theme="light" :icons="icons" />
+            </div>
+            <div class="node-content">
+                <div class="d-flex node-title">
+                    <div
+                        class="text-truncate task-title"
+                    >
+                        <tooltip :title="hoverTooltip">
+                            {{ displayTitle }}
+                        </tooltip>
+                    </div>
+                    <span
+                        class="d-flex"
+                        v-if="description"
+                    >
+                        <tooltip :title="$t('show description')" class="d-flex align-items-center">
+                            <InformationOutline
+                                @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
+                                class="description-button ms-2"
+                            />
+                        </tooltip>
+                    </span>
                 </div>
+                <slot name="content" />
+            </div>
+            <div class="text-white top-button-div">
+                <slot name="badge-button-before" />
                 <span
-                    class="d-flex"
-                    v-if="description"
+                    v-if="data.link"
+                    class="circle-button"
+                    :class="[`bg-${data.color}`]"
+                    @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
                 >
-                    <tooltip :title="$t('show description')" class="d-flex align-items-center">
-                        <InformationOutline
-                            @click="$emit(EVENTS.SHOW_DESCRIPTION, {id: trimmedId, description:description})"
-                            class="description-button ms-2"
-                        />
+                    <tooltip :title="$t('open')">
+                        <OpenInNew class="button-icon" alt="Open in new tab" />
                     </tooltip>
                 </span>
+                <span
+                    v-if="expandable"
+                    class="circle-button"
+                    :class="[`bg-${data.color}`]"
+                    @click="$emit(EVENTS.EXPAND)"
+                >
+                    <tooltip :title="$t('expand')">
+                        <ArrowExpand class="button-icon" alt="Expand task" />
+                    </tooltip>
+                </span>
+                <slot name="badge-button-after" />
             </div>
-            <slot name="content" />
         </div>
-        <div class="text-white top-button-div">
-            <slot name="badge-button-before" />
-            <span
-                v-if="data.link"
-                class="circle-button"
-                :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.OPEN_LINK, {link: data.link})"
-            >
-                <tooltip :title="$t('open')">
-                    <OpenInNew class="button-icon" alt="Open in new tab" />
-                </tooltip>
-            </span>
-            <span
-                v-if="expandable"
-                class="circle-button"
-                :class="[`bg-${data.color}`]"
-                @click="$emit(EVENTS.EXPAND)"
-            >
-                <tooltip :title="$t('expand')">
-                    <ArrowExpand class="button-icon" alt="Expand task" />
-                </tooltip>
-            </span>
-            <slot name="badge-button-after" />
-        </div>
+        <slot name="details" />
     </div>
 </template>
 
@@ -166,16 +169,18 @@
 <style lang="scss" scoped>
     .node-wrapper {
         background-color: var(--ks-background-card);
-
-        width: 184px;
-        height: 44px;
         margin: 0;
-        padding: 8px;
-        display: flex;
         z-index: 150000;
-        align-items: center;
         box-shadow: 0 12px 12px 0 rgba(130, 103, 158, 0.10);
         border: 1px solid var(--ks-border-primary);
+
+        .main-content{
+            display: flex;
+            padding: 8px;
+            align-items: center;
+            width: 184px;
+            height: 44px;
+        }
 
         &.execution-no-taskrun, &.disabled {
             background-color: var(--ks-background-card);

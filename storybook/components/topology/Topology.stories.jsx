@@ -28,7 +28,13 @@ const base = {
                 source={source} 
                 flowGraph={flowGraph} 
                 execution={execution}
-            />;
+            >
+                {
+                    {
+                        taskDetails: args.taskDetails
+                    }
+                }
+            </TopologyComponent>;
         },
     }),
     decorators: [() => ({
@@ -319,7 +325,48 @@ export const CustomNodes = lodash.merge({},
             async () => {
                 return {
                     flowGraph: CustomNodesData,
-                    
+                    source: "",
+                }
+            },
+        ],
+    }
+)
+
+import NodeDetailsData from "../../data/graphs/node-details.js";
+
+export const NodeDetails = lodash.merge({},
+    base,
+    {
+        args: {
+            taskDetails: (props) => {
+                return (<ul style={{
+                    textAlign: "left", 
+                    padding: "1rem", 
+                    margin: 0,
+                    listStyleType: "none", 
+                    fontSize: "10px", 
+                    borderTop: "1px solid var(--ks-border-color)", 
+                    backgroundColor: "var(--ks-background-body)",
+                    borderRadius: "0 0 1rem 1rem",
+                    overflow: "auto",
+                }}>{
+                    Object.keys(props?.data?.node.task || {}).map((key) => {
+                        return <li>
+                            <strong>{key}:</strong> {JSON.stringify(props.data.node.task[key])}
+                        </li>
+                    })
+                }</ul>)
+            },
+            taskNodeHeightByType: {
+                "io.kestra.plugin.serdes.avro.AvroToIon": 180,
+                "io.kestra.plugin.azure.datafactory.CreateRun": 120,
+                "io.kestra.plugin.jdbc.clickhouse.BulkInsert": 150,
+            },
+        },
+        loaders: [
+            async () => {
+                return {
+                    flowGraph: NodeDetailsData,
                     source: "",
                 }
             },
