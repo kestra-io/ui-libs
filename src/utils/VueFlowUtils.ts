@@ -248,7 +248,6 @@ export function getNodeWidth(node: MinimalNode) {
 }
 
 export function getNodeHeight(node: MinimalNode) {
-    console.log("Getting height for node", node);
     return isTaskNode(node) || isTriggerNode(node)
         ? NODE_SIZES.TASK_HEIGHT
         : (isCollapsedCluster(node)
