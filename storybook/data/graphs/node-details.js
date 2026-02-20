@@ -9,10 +9,10 @@ export default {
             "type": "io.kestra.core.models.hierarchies.GraphClusterEnd"
         },
         {
-            "uid": "root.SUCCESS",
+            "uid": "root.ClickHouse",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "SUCCESS",
+                "id": "ClickHouse",
                 "type": "io.kestra.plugin.jdbc.clickhouse.BulkInsert",
                 "message": "Hello World! \uD83D\uDE80",
                 "provider": "John",
@@ -20,10 +20,10 @@ export default {
             "relationType": "SEQUENTIAL"
         },
         {
-            "uid": "root.FAILED",
+            "uid": "root.Avro",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "FAILED",
+                "id": "Avro",
                 "type": "io.kestra.plugin.serdes.avro.AvroToIon",
                 "message": "Hello World! \uD83D\uDE80 2",
                 "additionalInfo": {
@@ -35,10 +35,10 @@ export default {
             "relationType": "SEQUENTIAL"
         },
         {
-            "uid": "root.RUNNING",
+            "uid": "root.DataFactory",
             "type": "io.kestra.core.models.hierarchies.GraphTask",
             "task": {
-                "id": "RUNNING",
+                "id": "DataFactory",
                 "type": "io.kestra.plugin.azure.datafactory.CreateRun",
                 "message": "All Done \uD83C\uDF89"
             },
@@ -48,25 +48,25 @@ export default {
     "edges": [
         {
             "source": "root.root-4YSfVCqMyeEV2iJgSzZQgA",
-            "target": "root.SUCCESS",
+            "target": "root.ClickHouse",
             "relation": {}
         },
         {
-            "source": "root.SUCCESS",
-            "target": "root.FAILED",
+            "source": "root.ClickHouse",
+            "target": "root.Avro",
             "relation": {
                 "relationType": "SEQUENTIAL"
             }
         },
         {
-            "source": "root.FAILED",
-            "target": "root.RUNNING",
+            "source": "root.Avro",
+            "target": "root.DataFactory",
             "relation": {
                 "relationType": "SEQUENTIAL"
             }
         },
         {
-            "source": "root.RUNNING",
+            "source": "root.DataFactory",
             "target": "root.end-6GSmakgmr7wljoyPr6kaNw",
             "relation": {}
         },

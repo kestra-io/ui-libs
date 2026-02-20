@@ -153,7 +153,7 @@
         subflowsExecutions?: Record<string, any[]>;
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
-        taskNodeHeightByType?: Record<string, number>;
+        getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
     }>(), {
         isHorizontal: true,
         isReadOnly: true,
@@ -169,7 +169,7 @@
         playgroundEnabled: false,
         playgroundReadyToStart: false,
         subflowsExecutions: () => ({}),
-        taskNodeHeightByType: () => ({})
+        getNodeDimensions: undefined
     });
 
     const dragging = ref(false);
@@ -245,14 +245,7 @@
                 props.isReadOnly,
                 props.isAllowedEdit,
                 props.enableSubflowInteraction,
-                (node, getNodeWidth, getNodeHeight) => {
-                    const taskType = node?.task?.type;
-                    console.log("Getting dimensions for node", taskType, props.taskNodeHeightByType?.[taskType]);
-                    return {
-                        width: getNodeWidth(node),
-                        height: taskType ? props.taskNodeHeightByType?.[taskType] ?? getNodeHeight(node) : getNodeHeight(node),
-                    }
-                }
+                props.getNodeDimensions
             );
 
             if(elements) {

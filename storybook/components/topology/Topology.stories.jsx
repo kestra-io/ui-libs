@@ -338,6 +338,7 @@ export const NodeDetails = lodash.merge({},
     base,
     {
         args: {
+            isHorizontal: true,
             taskDetails: (props) => {
                 return (<ul style={{
                     textAlign: "left", 
@@ -345,23 +346,33 @@ export const NodeDetails = lodash.merge({},
                     margin: 0,
                     listStyleType: "none", 
                     fontSize: "10px", 
-                    borderTop: "1px solid var(--ks-border-color)", 
+                    borderTop: "1px solid var(--ks-border-primary)", 
                     backgroundColor: "var(--ks-background-body)",
-                    borderRadius: "0 0 1rem 1rem",
+                    borderRadius: "0 0 .5rem .5rem",
                     overflow: "auto",
                 }}>{
                     Object.keys(props?.data?.node.task || {}).map((key) => {
-                        return <li>
+                        return <li style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}} title={`${key}: ${JSON.stringify(props.data.node.task[key])}`}>
                             <strong>{key}:</strong> {JSON.stringify(props.data.node.task[key])}
                         </li>
                     })
                 }</ul>)
             },
-            taskNodeHeightByType: {
-                "io.kestra.plugin.serdes.avro.AvroToIon": 180,
-                "io.kestra.plugin.azure.datafactory.CreateRun": 120,
-                "io.kestra.plugin.jdbc.clickhouse.BulkInsert": 150,
+            getNodeDimensions(node, getNodeWidth, getNodeHeight) {
+                const taskNodeHeightByType = {
+                    "io.kestra.plugin.jdbc.clickhouse.BulkInsert": 139,
+                    "io.kestra.plugin.serdes.avro.AvroToIon": 139,
+                    "io.kestra.plugin.azure.datafactory.CreateRun": 124,
+                }
+
+                const taskType = node?.task?.type;
+                console.log("Getting dimensions for node", taskType, taskNodeHeightByType?.[taskType]);
+                return {
+                    width: getNodeWidth(node),
+                    height: taskType ? taskNodeHeightByType?.[taskType] ?? getNodeHeight(node) : getNodeHeight(node),
+                }
             },
+            
         },
         loaders: [
             async () => {
