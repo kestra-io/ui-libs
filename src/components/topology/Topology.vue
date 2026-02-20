@@ -42,7 +42,11 @@
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
                 :enable-subflow-interaction="enableSubflowInteraction"
-            />
+            >
+                <template #details>
+                    <slot name="taskDetails" v-bind="taskProps" />
+                </template>
+            </TaskNode>
         </template>
 
         <template #node-custom="taskProps">
@@ -103,7 +107,7 @@
 </template>
 
 <script lang="ts" setup>
-    import {computed, nextTick, onMounted, PropType, provide, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, provide, ref, watch} from "vue";
     import {useVueFlow, VueFlow, XYPosition} from "@vue-flow/core";
     import {ControlButton, Controls} from "@vue-flow/controls";
     import {Background} from "@vue-flow/background";
@@ -131,76 +135,41 @@
     import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
     import BasicNode from "../nodes/BasicNode.vue";
 
-    const props = defineProps({
-        id: {
-            type: String,
-            required: true
-        },
-        isHorizontal: {
-            type: Boolean,
-            default: true,
-        },
-        isReadOnly: {
-            type: Boolean,
-            default: true,
-        },
-        isAllowedEdit: {
-            type: Boolean,
-            default: false,
-        },
-        source: {
-            type: String,
-            default: undefined,
-            required: true,
-        },
-        toggleOrientationButton: {
-            type: Boolean,
-            default: false,
-        },
-        flowGraph: {
-            type: Object as PropType<VueFlowUtils.FlowGraph>,
-            required: true
-        },
-        flowId: {
-            type: String,
-            default: undefined
-        },
-        namespace: {
-            type: String,
-            default: undefined
-        },
-        expandedSubflows: {
-            type: Array,
-            default: () => []
-        },
-        icons: {
-            type: Object,
-            default: undefined
-        },
-        iconComponent: {
-            type: Object,
-            default: undefined
-        },
-        enableSubflowInteraction: {
-            type: Boolean,
-            default: true
-        },
-        execution: {
-            type: Object,
-            default: undefined
-        },
-        subflowsExecutions: {
-            type: Object as PropType<Record<string, any[]>>,
-            default: () => ({})
-        },
-        playgroundEnabled: {
-            type: Boolean,
-            default: false
-        },
-        playgroundReadyToStart: {
-            type: Boolean,
-            default: false
-        }
+    const props = withDefaults(defineProps<{
+        id: string;
+        isHorizontal?: boolean;
+        isReadOnly?: boolean;
+        isAllowedEdit?: boolean;
+        source: string;
+        toggleOrientationButton?: boolean;
+        flowGraph: VueFlowUtils.FlowGraph;
+        flowId?: string;
+        namespace?: string;
+        expandedSubflows?: string[];
+        icons?: Record<string, any>;
+        iconComponent?: any;
+        enableSubflowInteraction?: boolean;
+        execution?: any;
+        subflowsExecutions?: Record<string, any[]>;
+        playgroundEnabled?: boolean;
+        playgroundReadyToStart?: boolean;
+        getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
+    }>(), {
+        isHorizontal: true,
+        isReadOnly: true,
+        isAllowedEdit: false,
+        toggleOrientationButton: false,
+        flowId: undefined,
+        namespace: undefined,
+        expandedSubflows: () => [],
+        icons: () => ({}),
+        iconComponent: undefined,
+        execution: undefined,
+        enableSubflowInteraction: true,
+        playgroundEnabled: false,
+        playgroundReadyToStart: false,
+        subflowsExecutions: () => ({}),
+        getNodeDimensions: undefined
     });
 
     const dragging = ref(false);
@@ -275,7 +244,8 @@
                 clusterToNode.value,
                 props.isReadOnly,
                 props.isAllowedEdit,
-                props.enableSubflowInteraction
+                props.enableSubflowInteraction,
+                props.getNodeDimensions
             );
 
             if(elements) {
