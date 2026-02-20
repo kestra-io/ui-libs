@@ -366,7 +366,6 @@ export const NodeDetails = lodash.merge({},
                 }
 
                 const taskType = node?.task?.type;
-                console.log("Getting dimensions for node", taskType, taskNodeHeightByType?.[taskType]);
                 return {
                     width: getNodeWidth(node),
                     height: taskType ? taskNodeHeightByType?.[taskType] ?? getNodeHeight(node) : getNodeHeight(node),
