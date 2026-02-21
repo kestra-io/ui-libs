@@ -13,7 +13,7 @@
                 <slot name="markdown" :content="schema.properties.description.replace(/ *:(?![ /])/g, ': ')" />
             </div>
 
-            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
+            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: ${pluginType}`" :key="pluginType" />
         </div>
 
         <div class="d-flex flex-column" :key="pluginType">
@@ -118,7 +118,7 @@
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
         if (!example?.full) {
-            const fullCode = `id: "${props.pluginType.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.pluginType}"\n`;
+            const fullCode = `id: ${props.pluginType.split(".").reverse()[0]?.toLowerCase()}\ntype: ${props.pluginType}\n`;
             return fullCode.concat(example.code)
         }
 
