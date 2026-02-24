@@ -17,7 +17,7 @@ updates:
 
   # Maintain dependencies for NPM modules
   - package-ecosystem: "npm"
-    directory: "/ui"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "wednesday"
