@@ -34,6 +34,10 @@ updates:
         applies-to: version-updates
         patterns: ["@types/*"]
 
+      flow:
+        applies-to: version-updates
+        patterns: ["@vue-flow/*"]
+
       storybook:
         applies-to: version-updates
         patterns: ["storybook*", "@storybook/*", "eslint-plugin-storybook"]
@@ -50,6 +54,7 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
+            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
@@ -67,6 +72,7 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
+            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
@@ -86,6 +92,7 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
+            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
