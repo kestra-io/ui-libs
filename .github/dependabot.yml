@@ -34,10 +34,6 @@ updates:
         applies-to: version-updates
         patterns: ["@types/*"]
 
-      flow:
-        applies-to: version-updates
-        patterns: ["@vue-flow/*"]
-
       storybook:
         applies-to: version-updates
         patterns: ["storybook*", "@storybook/*", "eslint-plugin-storybook"]
@@ -45,6 +41,10 @@ updates:
       vitest:
         applies-to: version-updates
         patterns: ["vitest", "@vitest/*"]
+
+      flow:
+        applies-to: version-updates
+        patterns: ["@vue-flow/*"]
 
       major:
         update-types: ["major"]
@@ -54,12 +54,12 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
-            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
             "vitest",
             "@vitest/*",
+            "@vue-flow/*",
             # Temporary exclusion of these packages from major updates
             "eslint-plugin-vue",
           ]
@@ -72,12 +72,12 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
-            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
             "vitest",
             "@vitest/*",
+            "@vue-flow/*",
             # Temporary exclusion of these packages from minor updates
             "moment-timezone",
             "monaco-editor",
@@ -92,12 +92,12 @@ updates:
             "@rollup/*",
             "@swc/*",
             "@types/*",
-            "@vue-flow/*",
             "storybook*",
             "@storybook/*",
             "eslint-plugin-storybook",
             "vitest",
             "@vitest/*",
+            "@vue-flow/*",
           ]
 
     ignore:
