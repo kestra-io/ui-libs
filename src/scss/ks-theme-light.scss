@@ -7,210 +7,91 @@
 @import "./color-palette.scss";
 
 :root{
-	/* background */
-	#{--ks-background-additionLine}: $base-green-100;
-	#{--ks-background-additionNum}: $base-green-200;
-	#{--ks-background-body}: $base-gray-50;
-	#{--ks-background-box}: $base-gray-50;
-	#{--ks-background-cancelled}: $base-red-100;
-	#{--ks-background-card}: $base-white;
-	#{--ks-background-card-hover}: $base-white;
-	#{--ks-background-card-opacity}: #1b1c23e5;
-	#{--ks-background-created}: rgba($base-blue-50, 0.39);
-	#{--ks-background-deletionLine}: $base-red-100;
-	#{--ks-background-deletionNum}: $base-red-200;
-	#{--ks-background-error}: $base-red-50;
-	#{--ks-background-failed}: $base-red-50;
-	#{--ks-background-info}: #c7f0ff;
-	#{--ks-background-input}: $base-white;
-	#{--ks-background-killed}: $base-yellow-50;
-	#{--ks-background-killing}: $base-yellow-50;
-	#{--ks-background-left-menu}: $base-white;
-	#{--ks-background-logo}: #2c0059;
-	#{--ks-background-panel}: $base-white;
-	#{--ks-background-paused}: #b2b2b542;
-	#{--ks-background-queued}: $base-yellow-50;
-	#{--ks-background-restarted}: $base-blue-50;
-	#{--ks-background-retried}: rgba($base-blue-500, 0.2);
-	#{--ks-background-retrying}: $base-blue-50;
-	#{--ks-background-running}: $base-blue-50;
-	#{--ks-background-skipped}: #b2b2b542;
-	#{--ks-background-success}: $base-green-50;
-	#{--ks-background-table-header}: $base-gray-50;
-	#{--ks-background-table-row}: $base-white;
-	#{--ks-background-table-row-hover}: $base-gray-50;
-	#{--ks-background-warning}: $base-orange-50;
+	/* Color */
+	#{--ks-Color-gradient-1-inverse}: #8b71fe;
+	#{--ks-Color-gradient-1-inverse 2}: #25232e;
 
-	/* badge */
-	#{--ks-badge-background}: $base-blue-50;
-	#{--ks-badge-border}: $base-blue-400;
-	#{--ks-badge-content}: $base-blue-600;
+	/* background */
+	#{--ks-background-alert-danger}: #ffe3e3;
+	#{--ks-background-alert-info}: #dbe0ff;
+	#{--ks-background-alert-success}: #bffddd;
+	#{--ks-background-alert-warning}: #ffede9;
+	#{--ks-background-artwork}: #0e0e10;
+	#{--ks-background-blue-light}: #eff4ff;
+	#{--ks-background-body}: #ffffff;
+	#{--ks-background-button-primary}: #631bff;
+	#{--ks-background-button-primary-hover}: #cdc5ff;
+	#{--ks-background-button-secondary}: #ffffff;
+	#{--ks-background-button-secondary-active}: #ffffff;
+	#{--ks-background-button-secondary-hover}: #131316;
+	#{--ks-background-function}: #f1efff;
+	#{--ks-background-header}: rgba($base-white, 0.8);
+	#{--ks-background-input}: #ffffff;
+	#{--ks-background-primary}: #ffffff;
+	#{--ks-background-primary-inverse}: #1c1c20;
+	#{--ks-background-purple-hover}: #cdc5ff;
+	#{--ks-background-purple-light}: #f1efff;
+	#{--ks-background-secondary}: #f7f7f7;
+	#{--ks-background-secondary-inverse}: #0e0e10;
+	#{--ks-background-tertiary}: #f1f1f1;
+	#{--ks-background-tertiary-inverse}: #131316;
+
+	/* backgroung */
+	#{--ks-backgroung-tag-category}: #f1efff;
+	#{--ks-backgroung-tag-success}: #bffddd;
+
+	/* blur */
+	#{--ks-blur-effect}: #a796ff;
 
 	/* border */
-	#{--ks-border-active}: $base-purple-500;
-	#{--ks-border-cancelled}: $base-red-300;
-	#{--ks-border-created}: $base-blue-200;
-	#{--ks-border-error}: $base-red-300;
-	#{--ks-border-failed}: $base-red-300;
-	#{--ks-border-inactive}: $base-gray-100;
-	#{--ks-border-info}: $base-blue-200;
-	#{--ks-border-killed}: $base-yellow-600;
-	#{--ks-border-killing}: $base-yellow-400;
-	#{--ks-border-paused}: $base-gray-200;
-	#{--ks-border-primary}: #e1e3e5;
-	#{--ks-border-queued}: $base-yellow-600;
-	#{--ks-border-restarted}: $base-blue-100;
-	#{--ks-border-retried}: $base-blue-600;
-	#{--ks-border-retrying}: $base-blue-500;
-	#{--ks-border-running}: $base-blue-400;
-	#{--ks-border-secondary}: $base-gray-100;
-	#{--ks-border-skipped}: $base-gray-200;
-	#{--ks-border-success}: $base-green-300;
-	#{--ks-border-system}: $base-blue-400;
-	#{--ks-border-warning}: $base-orange-300;
-
-	/* button */
-	#{--ks-button-background-inactive}: $base-gray-50;
-	#{--ks-button-background-primary}: $base-purple-500;
-	#{--ks-button-background-primary-active}: $base-purple-600;
-	#{--ks-button-background-primary-hover}: $base-purple-400;
-	#{--ks-button-background-secondary}: $base-white;
-	#{--ks-button-background-secondary-active}: $base-gray-100;
-	#{--ks-button-background-secondary-hover}: $base-gray-50;
-	#{--ks-button-background-success}: $base-green-500;
-	#{--ks-button-background-success-active}: $base-green-600;
-	#{--ks-button-background-success-hover}: $base-green-400;
-	#{--ks-button-content-primary}: $base-white;
-
-	/* card */
-	#{--ks-card-shadow}: $base-gray-100;
-
-	/* chart */
-	#{--ks-chart-cancelled}: $base-red-200;
-	#{--ks-chart-created}: $base-blue-500;
-	#{--ks-chart-debug}: $base-blue-200;
-	#{--ks-chart-error}: $base-red-300;
-	#{--ks-chart-failed}: $base-red-300;
-	#{--ks-chart-info}: $base-blue-300;
-	#{--ks-chart-killed}: $base-yellow-200;
-	#{--ks-chart-killing}: $base-yellow-300;
-	#{--ks-chart-paused}: $base-gray-200;
-	#{--ks-chart-queued}: $base-yellow-100;
-	#{--ks-chart-restarted}: $base-blue-50;
-	#{--ks-chart-retried}: $base-blue-100;
-	#{--ks-chart-retrying}: $base-blue-200;
-	#{--ks-chart-running}: $base-blue-300;
-	#{--ks-chart-skipped}: $base-gray-200;
-	#{--ks-chart-success}: $base-green-400;
-	#{--ks-chart-trace}: $base-gray-200;
-	#{--ks-chart-warn}: $base-orange-200;
-	#{--ks-chart-warning}: $base-orange-100;
+	#{--ks-border-active}: #631bff;
+	#{--ks-border-alert-danger}: #ff6a6c;
+	#{--ks-border-alert-info}: #718bfe;
+	#{--ks-border-alert-success}: #43f6b6;
+	#{--ks-border-alert-warning}: #ff8b61;
+	#{--ks-border-button-secondary}: #131316;
+	#{--ks-border-primary}: #f1f1f1;
+	#{--ks-border-primary-inverse}: #3b3a41;
+	#{--ks-border-secondary}: #cccbce;
+	#{--ks-border-secondary-inverse}: #5c5b64;
 
 	/* content */
-	#{--ks-content-alert}: $base-red-500;
-	#{--ks-content-cancelled}: $base-red-500;
-	#{--ks-content-created}: $base-blue-500;
-	#{--ks-content-error}: $base-red-500;
-	#{--ks-content-failed}: $base-red-500;
-	#{--ks-content-id}: $base-purple-500;
-	#{--ks-content-inactive}: $base-gray-300;
-	#{--ks-content-info}: $base-blue-600;
-	#{--ks-content-inverse}: $base-white;
-	#{--ks-content-killed}: $base-yellow-900;
-	#{--ks-content-killing}: $base-orange-500;
-	#{--ks-content-link}: $base-purple-500;
-	#{--ks-content-link-hover}: $base-purple-300;
-	#{--ks-content-paused}: $base-gray-500;
-	#{--ks-content-primary}: $base-black;
-	#{--ks-content-queued}: $base-yellow-800;
-	#{--ks-content-restarted}: $base-blue-600;
-	#{--ks-content-retried}: $base-blue-900;
-	#{--ks-content-retrying}: $base-blue-700;
-	#{--ks-content-running}: $base-blue-600;
-	#{--ks-content-secondary}: $base-gray-700;
-	#{--ks-content-skipped}: $base-gray-500;
-	#{--ks-content-success}: $base-green-700;
-	#{--ks-content-tertiary}: $base-gray-300;
-	#{--ks-content-warning}: $base-orange-500;
-
-	/* dependencies */
-	#{--ks-dependencies-edge-default}: $base-gray-200;
-	#{--ks-dependencies-edge-faded}: $base-gray-100;
-	#{--ks-dependencies-edge-hovered}: $base-purple-300;
-	#{--ks-dependencies-edge-selected}: $base-purple-200;
-	#{--ks-dependencies-node-background-assets}: $base-blue-500;
-	#{--ks-dependencies-node-background-default}: $base-white;
-	#{--ks-dependencies-node-background-faded}: $base-gray-100;
-	#{--ks-dependencies-node-background-hovered}: $base-gray-50;
-	#{--ks-dependencies-node-background-selected}: $base-purple-200;
-	#{--ks-dependencies-node-border-assets}: $base-blue-800;
-	#{--ks-dependencies-node-border-default}: $base-gray-200;
-	#{--ks-dependencies-node-border-faded}: $base-gray-200;
-	#{--ks-dependencies-node-border-hovered}: $base-gray-300;
-	#{--ks-dependencies-node-border-selected}: $base-purple-300;
-
-	/* dialog */
-	#{--ks-dialog-background}: $base-white;
-	#{--ks-dialog-border}: $base-gray-200;
-	#{--ks-dialog-header}: $base-white;
-	#{--ks-dialog-headerbtn}: $base-gray-300;
-	#{--ks-dialog-headerbtn-hover}: $base-purple-300;
-
-	/* dots */
-	#{--ks-dots-topology}: $base-gray-100;
-
-	/* dropdown */
-	#{--ks-dropdown-background}: $base-white;
-	#{--ks-dropdown-background-active}: $base-gray-50;
-	#{--ks-dropdown-background-hover}: $base-gray-50;
+	#{--ks-content-alert-danger}: #ed0011;
+	#{--ks-content-alert-info}: #0542b6;
+	#{--ks-content-alert-success}: #215d42;
+	#{--ks-content-alert-warning}: #a44500;
+	#{--ks-content-btn-secondary-hover}: #ffffff;
+	#{--ks-content-color-highlight}: #631bff;
+	#{--ks-content-color-highlight-inverse}: #a796ff;
+	#{--ks-content-link}: #631bff;
+	#{--ks-content-link-inverse}: #cdc5ff;
+	#{--ks-content-output}: #1e875e;
+	#{--ks-content-primary}: #131316;
+	#{--ks-content-primary-inverse}: #ffffff;
+	#{--ks-content-propertie}: #1761fd;
+	#{--ks-content-secondary}: #3b3a41;
+	#{--ks-content-secondary-inverse}: #cccbce;
+	#{--ks-content-tag-category}: #631bff;
+	#{--ks-content-tag-success}: #215d42;
+	#{--ks-content-tertiary}: #7f7f86;
+	#{--ks-content-tertiary-inverse}: #a5a4aa;
 
 	/* editor */
-	#{--ks-editor-number}: $base-orange-600;
-	#{--ks-editor-pabble}: $base-orange-400;
-	#{--ks-editor-property}: $base-purple-500;
-	#{--ks-editor-punctuation}: $base-gray-400;
-	#{--ks-editor-value}: $base-black;
+	#{--ks-editor-property}: #631bff;
+	#{--ks-editor-punctuation}: #a5a4aa;
+	#{--ks-editor-value}: #131316;
 
-	/* log */
-	#{--ks-log-background-debug}: $base-blue-50;
-	#{--ks-log-background-error}: $base-red-50;
-	#{--ks-log-background-info}: #c7f0ff;
-	#{--ks-log-background-trace}: $base-gray-100;
-	#{--ks-log-background-warn}: $base-orange-50;
-	#{--ks-log-border-debug}: $base-blue-400;
-	#{--ks-log-border-error}: $base-red-400;
-	#{--ks-log-border-info}: $base-blue-200;
-	#{--ks-log-border-trace}: $base-gray-300;
-	#{--ks-log-border-warn}: $base-orange-400;
-	#{--ks-log-content-debug}: $base-blue-600;
-	#{--ks-log-content-error}: $base-red-500;
-	#{--ks-log-content-info}: $base-blue-600;
-	#{--ks-log-content-trace}: $base-gray-500;
-	#{--ks-log-content-warn}: $base-orange-800;
+	/* icon */
+	#{--ks-icon}: #7f7f86;
+	#{--ks-icon-active}: #631bff;
+	#{--ks-icon-color}: #8465ff;
 
-	/* playground */
-	#{--ks-playground-bg-color}: $base-blue-400;
-	#{--ks-playground-end-gradient}: $base-blue-500;
-	#{--ks-playground-start-gradient,}: $base-blue-400;
+	/* shadows */
+	#{--ks-shadows-hight}: #27205633;
+	#{--ks-shadows-light}: #2720560d;
+	#{--ks-shadows-light-inverse}: #22222f;
 
-	/* scrollbar */
-	#{--ks-scrollbar-background}: $base-gray-100;
-	#{--ks-scrollbar-content}: $base-gray-200;
-
-	/* select */
-	#{--ks-select-active}: $base-white;
-	#{--ks-select-active-icon}: $base-purple-500;
-	#{--ks-select-background}: $base-white;
-	#{--ks-select-border}: $base-gray-200;
-	#{--ks-select-hover}: $base-gray-50;
-
-	/* tag */
-	#{--ks-tag-background}: $base-gray-100;
-	#{--ks-tag-background-active}: $base-gray-50;
-	#{--ks-tag-background-hover}: $base-gray-200;
-	#{--ks-tag-content}: $base-gray-800;
-
-	/* tooltip */
-	#{--ks-tooltip-background}: $base-white;
-	#{--ks-tooltip-border}: $base-gray-300;
+	/* special */
+	#{--ks-special-green}: #06f0b1;
+	#{--ks-special-orange}: #ff8b61;
 }
