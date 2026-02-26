@@ -105,9 +105,10 @@
         }
     );
 
-    function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
-        const requiredKeys = [];
-        const nonRequiredKeys = [];
+    function sortedAndAggregated(schema?: Record<string, JSONProperty>): Record<string, JSONProperty> {
+        schema = schema ?? {};
+        const requiredKeys: string[] = [];
+        const nonRequiredKeys: string[] = [];
 
         for (const key in schema) {
             if (typeof schema[key] === "object") {
