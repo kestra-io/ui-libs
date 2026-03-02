@@ -1,16 +1,19 @@
 # See GitHub's docs for more information on this file:
 # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+
 version: 2
+
 updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every week
       interval: "weekly"
-    labels:
-      - "dependency-upgrade"
+      day: "wednesday"
+      timezone: "Europe/Paris"
+      time: "08:00"
     open-pull-requests-limit: 50
+    labels: ["dependency-upgrade", "area/devops"]
 
   # Maintain dependencies for NPM modules
   - package-ecosystem: "npm"
@@ -18,11 +21,90 @@ updates:
     schedule:
       interval: "weekly"
       day: "wednesday"
-      time: "08:00"
       timezone: "Europe/Paris"
+      time: "08:00"
     open-pull-requests-limit: 50
-    labels: ["dependency-upgrade"]
+    labels: ["dependency-upgrade", "area/frontend"]
+    groups:
+      build:
+        applies-to: version-updates
+        patterns: ["@esbuild/*", "@rollup/*", "@swc/*"]
+
+      types:
+        applies-to: version-updates
+        patterns: ["@types/*"]
+
+      storybook:
+        applies-to: version-updates
+        patterns: ["storybook*", "@storybook/*", "eslint-plugin-storybook"]
+
+      vitest:
+        applies-to: version-updates
+        patterns: ["vitest", "@vitest/*"]
+
+      flow:
+        applies-to: version-updates
+        patterns: ["@vue-flow/*"]
+
+      major:
+        update-types: ["major"]
+        applies-to: version-updates
+        exclude-patterns: [
+            "@esbuild/*",
+            "@rollup/*",
+            "@swc/*",
+            "@types/*",
+            "storybook*",
+            "@storybook/*",
+            "eslint-plugin-storybook",
+            "vitest",
+            "@vitest/*",
+            "@vue-flow/*",
+            # Temporary exclusion of these packages from major updates
+            "eslint-plugin-vue",
+          ]
+
+      minor:
+        update-types: ["minor"]
+        applies-to: version-updates
+        exclude-patterns: [
+            "@esbuild/*",
+            "@rollup/*",
+            "@swc/*",
+            "@types/*",
+            "storybook*",
+            "@storybook/*",
+            "eslint-plugin-storybook",
+            "vitest",
+            "@vitest/*",
+            "@vue-flow/*",
+            # Temporary exclusion of these packages from minor updates
+            "moment-timezone",
+            "monaco-editor",
+          ]
+
+      patch:
+        update-types: ["patch"]
+        applies-to: version-updates
+        exclude-patterns:
+          [
+            "@esbuild/*",
+            "@rollup/*",
+            "@swc/*",
+            "@types/*",
+            "storybook*",
+            "@storybook/*",
+            "eslint-plugin-storybook",
+            "vitest",
+            "@vitest/*",
+            "@vue-flow/*",
+          ]
+
     ignore:
-      # Ignore major versions greater than 8, as it's still known to be flaky
+      # Ignore eslint major updates (eslint@10 currently conflicts with typescript-eslint + eslint-plugin-vue)
       - dependency-name: "eslint"
-        versions: [">8"]
+        update-types: ["version-update:semver-major"]
+
+      # Ignore @eslint/js major updates (v10 requires eslint ^10 but project is on eslint ^9)
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]

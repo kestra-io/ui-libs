@@ -13,6 +13,9 @@
         @mouseover="emit(EVENTS.MOUSE_OVER, $event)"
         @mouseleave="emit(EVENTS.MOUSE_LEAVE)"
     >
+        <template #details>
+            <slot name="details" />
+        </template>
         <template #content>
             <execution-informations 
                 v-if="taskExecution"
