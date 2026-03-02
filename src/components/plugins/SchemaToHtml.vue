@@ -46,6 +46,7 @@
                 v-if="schema.properties?.properties"
                 class="plugin-section"
                 :properties="schema.properties.properties"
+                :definitions="schema.definitions"
                 section-name="Properties"
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
@@ -63,6 +64,7 @@
                 v-if="schema.outputs?.properties && Object.keys(schema.outputs.properties).length > 0"
                 class="plugin-section"
                 :properties="schema.outputs.properties"
+                :definitions="schema.definitions"
                 section-name="Outputs"
                 href="outputs"
                 :show-dynamic="false"
@@ -79,6 +81,7 @@
                 v-if="schema.properties?.$metrics"
                 class="plugin-section"
                 :properties="metrics"
+                :definitions="schema.definitions"
                 section-name="Metrics"
                 href="metrics"
                 :show-dynamic="false"
@@ -92,7 +95,7 @@
             </CollapsibleProperties>
 
             <Collapsible
-                v-if="schema.definitions && Object.keys(schema.definitions).length > 0"
+                v-if="nonDeprecatedDefinitions.length > 0"
                 class="plugin-section"
                 clickable-text="Definitions"
                 href="definitions"
@@ -103,8 +106,9 @@
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
                         <CollapsibleProperties
-                            v-for="[definitionKey, definitionValue] in Object.entries(schema.definitions)"
+                            v-for="[definitionKey, definitionValue] in nonDeprecatedDefinitions"
                             :properties="definitionValue.properties"
+                            :definitions="schema.definitions"
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
                             :show-dynamic="false"
@@ -132,6 +136,7 @@
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
     import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
+    import {isDeprecated} from "../../utils/schemaUtils";
     import Collapsible from "../misc/Collapsible.vue";
     import CollapsibleProperties from "./CollapsibleProperties.vue";
 
@@ -152,6 +157,10 @@
     const definitionsExpanded = ref(false);
     const expandedDefinitions = ref<Set<string>>(new Set());
     const forceExpandKey = ref(0);
+
+    const nonDeprecatedDefinitions = computed(() =>
+        Object.entries(props.schema.definitions ?? {}).filter(([, val]) => !isDeprecated(val))
+    );
 
     const checkHashAndExpand = async () => {
         const hash = window.location.hash.slice(1);
@@ -200,7 +209,6 @@
             }
         }
     });
-
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
         if (!example?.full) {
@@ -286,3 +294,4 @@
         }
     }
 </style>
+

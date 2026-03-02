@@ -31,7 +31,7 @@
                                 </Tooltip>
                             </span>
                             <span class="d-flex flex-wrap justify-content-end gap-2">
-                                <template v-for="type in extractTypeInfo(property).types" :key="type">
+                                <template v-for="type in nonDeprecatedTypes(extractTypeInfo(property).types)" :key="type">
                                     <a v-if="type.startsWith('#')" class="d-flex fw-bold ref-type-box rounded fs-7 px-2 py-1" :href="type" @click.stop>
                                         <span class="ref-type">{{ className(type) }}</span><eye-outline />
                                     </a>
@@ -61,8 +61,10 @@
         extractTypeInfo,
         className,
         type JSONProperty,
+        type JSONSchema,
         aggregateAllOf,
-        isDynamic
+        isDynamic,
+        isDeprecated
     } from "../../utils/schemaUtils";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
     import Collapsible from "../misc/Collapsible.vue";
@@ -79,12 +81,14 @@
         href?: string, 
         sectionName: string, 
         properties?: Record<string, JSONProperty>, 
+        definitions?: Record<string, JSONSchema>,
         showDynamic?: boolean, 
         initiallyExpanded?: boolean, 
         forceInclude?: string[],
         noUrlChange?: boolean
     }>(), {
         properties: undefined,
+        definitions: undefined,
         href: Math.random().toString(36).substring(2, 5),
         showDynamic: true,
         initiallyExpanded: false,
@@ -103,6 +107,10 @@
                 emit("expand");
             }
         }
+    );
+
+    const nonDeprecatedTypes = (types: string[]) => types.filter(type =>
+        !type.startsWith("#") || !isDeprecated(props.definitions?.[type.slice(1)])
     );
 
     function sortedAndAggregated(schema?: Record<string, JSONProperty>): Record<string, JSONProperty> {
@@ -195,3 +203,4 @@
         }
     }
 </style>
+
