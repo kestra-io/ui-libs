@@ -1,5 +1,5 @@
 <template>
-    <tooltip :key="lastStep.date.toString()">
+    <tooltip :key="lastStep?.date?.valueOf() ?? $t('no_history')">
         <template #content>
             <span
                 v-for="(history, index) in filteredHistories"
@@ -34,7 +34,7 @@
     watch(
         () => props.histories,
         (newValue, oldValue) => {
-            if (oldValue[0].date !== newValue[0].date) {
+            if (newValue?.[0]?.date?.valueOf() !== oldValue?.[0]?.date?.valueOf()) {
                 paint();
             }
         }
@@ -48,11 +48,11 @@
     });
 
     const start = computed(() => {
-        return props.histories?.length && new Date(props.histories[0].date.toString()).getTime();
+        return props.histories?.[0]?.date?.valueOf() ?? null;
     });
 
     const lastStep = computed(() => {
-        return props.histories[props.histories.length - 1];
+        return props.histories?.length ? props.histories[props.histories.length - 1] : undefined;
     });
 
     const filteredHistories = computed(() => {
@@ -63,10 +63,10 @@
         if (!refreshHandler.value) {
             refreshHandler.value = setInterval(() => {
                 computeDuration();
-                if (props.histories && !State.isRunning(lastStep.value.state)) {
+                if (lastStep.value && !State.isRunning(lastStep.value.state)) {
                     cancel();
                 }
-            }, 100);
+            }, 10);
         }
     }
 
@@ -78,21 +78,28 @@
     }
 
     function delta() {
-        return stop() - start.value;
+        const startValue = start.value;
+        if (startValue === null) {
+            return 0;
+        }
+        return Math.max(0, stop() - startValue);
     }
 
     function stop() {
-        if (!props.histories || State.isRunning(lastStep.value.state)) {
+        if (!lastStep.value || State.isRunning(lastStep.value.state)) {
             return +new Date();
         }
-        return new Date(lastStep.value.date.toString()).getTime();
+        return lastStep.value.date.valueOf();
     }
 
     function computeDuration() {
         duration.value =
             filteredHistories.value.length === 0
                 ? "&nbsp;"
-                : Utils.humanDuration(delta() / 1000);
+                : Utils.humanDuration(delta() / 1000, {
+                    maxDecimalPoints: 2,
+                    units: ["h", "m", "s"],
+                });
     }
 
     function squareClass(state: string) {
