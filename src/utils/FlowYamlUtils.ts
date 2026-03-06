@@ -580,6 +580,41 @@ export function parsePath(path: string) {
     }, [])
 }
 
+function getParentNode(yamlDoc: ReturnType<typeof parseDocumentTyped>, parentPath: string) {
+    if(!parentPath.includes(".")){
+        if(!yamlDoc.contents){
+            throw new Error(`Document is empty, cannot insert block with path ${parentPath}`);  
+        }
+        return yamlDoc.contents;
+    } else {
+        // remove everything after the last "."
+        const parentPathWithoutKey = parentPath.substring(0, parentPath.lastIndexOf("."));
+        const parentNode = yamlDoc.getIn(parsePath(parentPathWithoutKey)) as YAMLMap<{ value: string }, Node>;
+        if (!parentNode) {
+            // create the missing parent node
+            const newParentNode = createParentNode(parentPathWithoutKey);
+            // attach it to the parents parent
+            const parentParentNode = getParentNode(yamlDoc, parentPathWithoutKey);
+            parentParentNode?.items.push(newParentNode);
+            return newParentNode.value
+        }
+        return parentNode
+    }
+}
+
+function createParentNode(parentPath: string) {
+    const newParentNode = new YAMLSeq();
+    const parentKey = parentPath.split(".").pop() as string;
+    const parentKeyNode = new Pair(new Scalar(parentKey), newParentNode);
+    return parentKeyNode;
+}
+
+function createPairNode(parentKey: string, newPropNode: Node) {
+    const newPairNodeValue = new YAMLSeq();
+    newPairNodeValue.add(newPropNode);
+    return new Pair(new Scalar(parentKey), newPairNodeValue);
+}
+
 export function insertBlockWithPath({
     source,
     newBlock,
@@ -602,24 +637,14 @@ export function insertBlockWithPath({
     const parsedPath = parsePath(parentPath);
 
     const parentNode = yamlDoc.getIn(parsedPath) as YAMLMap<{ value: string }, Node>;
+
     if (!parentNode) {
-        const newParentNode = new YAMLSeq();
-        newParentNode.add(newPropNode);
-        const parentKey = parentPath.split(".").pop() as string;
-        const parentKeyNode = new Pair(new Scalar(parentKey), newParentNode);
-        if(parentKey.length === parentPath.length){
-            yamlDoc.contents?.items.push(parentKeyNode);
-            return yamlDoc.toString(TOSTRING_OPTIONS);
-        } else {
-            const parentPathWithoutKey = parentPath.substring(0, parentPath.length - parentKey.length - 1);
-            const parentNode = yamlDoc.getIn(parsePath(parentPathWithoutKey)) as YAMLMap<{ value: string }, Node>;
-            if (!parentNode) {
-                throw new Error(`Parent block with path ${parentPathWithoutKey} not found`);
-            }
-            parentNode.items.push(parentKeyNode);
-            return yamlDoc.toString(TOSTRING_OPTIONS);
-        }
+        const newPairNode = createPairNode(parentPath.split(".").pop() as string, newPropNode);
+        const newParentNode = getParentNode(yamlDoc, parentPath);
+        newParentNode?.items.push(newPairNode);
+        return yamlDoc.toString(TOSTRING_OPTIONS);
     }
+
     const index = getNodeIndexInParent(yamlDoc, parentNode, parsedPath, refPath);
     if (position === "before") {
         parentNode.items.splice(index, 0, newPropNode);
