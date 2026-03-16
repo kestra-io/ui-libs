@@ -95,7 +95,7 @@
             </CollapsibleProperties>
 
             <Collapsible
-                v-if="nonDeprecatedDefinitions.length > 0"
+                v-if="allDefinitions.length > 0"
                 class="plugin-section"
                 clickable-text="Definitions"
                 href="definitions"
@@ -106,7 +106,7 @@
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
                         <CollapsibleProperties
-                            v-for="[definitionKey, definitionValue] in nonDeprecatedDefinitions"
+                            v-for="[definitionKey, definitionValue] in allDefinitions"
                             :properties="definitionValue.properties"
                             :definitions="schema.definitions"
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
@@ -117,6 +117,10 @@
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true; expandedDefinitions.add(definitionKey)"
                             :no-url-change
+    
+                            :description="definitionValue.description"
+                            :examples="(definitionValue as any).$examples ?? (definitionValue as any).examples"
+                            :deprecated="isDeprecated(definitionValue)"
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
@@ -158,8 +162,8 @@
     const expandedDefinitions = ref<Set<string>>(new Set());
     const forceExpandKey = ref(0);
 
-    const nonDeprecatedDefinitions = computed(() =>
-        Object.entries(props.schema.definitions ?? {}).filter(([, val]) => !isDeprecated(val))
+    const allDefinitions = computed(() =>
+        Object.entries(props.schema.definitions ?? {})
     );
 
     const checkHashAndExpand = async () => {
