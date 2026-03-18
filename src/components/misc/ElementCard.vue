@@ -84,7 +84,8 @@
             font-size: 1rem;
             font-weight: 700;
             margin: 0;
-            padding-top: 0;
+            line-height: 1.5rem;
+            padding: 0.25rem 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -128,3 +129,4 @@
         }
     }
 </style>
+
