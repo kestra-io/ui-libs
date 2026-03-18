@@ -140,7 +140,8 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            padding-top: 0;
+            line-height: 1.5rem;
+            padding: 0.25rem 0;
         }
 
         hr {
@@ -186,3 +187,4 @@
         }
     }
 </style>
+

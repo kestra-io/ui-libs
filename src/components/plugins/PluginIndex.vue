@@ -127,7 +127,7 @@
         return split?.[split.length - 1];
     }
 
-    const elementHref = (element: string) => `${props.routePath}/${element}`;
+    const elementHref = (element: string) => `${props.routePath}/${element.toLowerCase()}`;
 
     function getTotalElementCount(plugin: Plugin): number {
         const elements = extractPluginElements(plugin);
@@ -216,3 +216,4 @@
         }
     }
 </style>
+
