@@ -90,6 +90,53 @@
                     </div>
                 </template>
             </CollapsibleProperties>
+
+            <Collapsible
+                v-if="nonDeprecatedDefinitions.length > 0"
+                class="plugin-section"
+                title="Definitions"
+                href="definitions"
+                :no-url-change
+            >
+                <template #content>
+                    <div class="d-flex flex-column gap-7 mt-4">
+                        <CollapsibleProperties
+                            v-for="[definitionKey, definitionValue] in nonDeprecatedDefinitions"
+                            :properties="definitionValue.properties"
+                            :definitions="schema.definitions"
+                            :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
+                            :href="definitionKey"
+                            :show-dynamic="false"
+                            :key="pluginType + '-' + definitionKey"
+                            class="plugin-section"
+                            :no-url-change
+                            :description="definitionValue.description"
+                            :examples="(definitionValue as any).$examples ?? (definitionValue as any).examples"
+                        >
+                            <template #markdown="{content}">
+                                <div class="markdown">
+                                    <slot name="markdown" :content="content" />
+                                </div>
+                            </template>
+                            
+                            <template #example="{example}">
+                                <div class="d-flex flex-column gap-2 mt-2">
+                                    <div v-if="example.title" class="markdown">
+                                        <slot name="markdown" :content="`**${example.title}**`" />
+                                    </div>
+                                    <SchemaToCode
+                                        :highlighter="highlighter"
+                                        :language="example.lang ?? 'yaml'"
+                                        :theme="codeTheme"
+                                        :code="typeof example === 'string' ? example : generateExampleCode(example)"
+                                        v-if="typeof example === 'string' || example.code"
+                                    />
+                                </div>
+                            </template>
+                        </CollapsibleProperties>
+                    </div>
+                </template>
+            </Collapsible>
         </div>
     </div>
 </template>
@@ -98,7 +145,7 @@
     import {computed, ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "../plugins/SchemaToCode.vue";
-    import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
+    import {isDeprecated, type JSONProperty, type JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "./CollapsibleV2.vue";
     import CollapsibleProperties from "./CollapsiblePropertiesV2.vue";
 
@@ -115,6 +162,10 @@
         forceIncludeProperties: () => [],
         noUrlChange: false
     });
+
+    const nonDeprecatedDefinitions = computed(() =>
+        Object.entries(props.schema.definitions ?? {}).filter(([, val]) => !isDeprecated(val))
+    );
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
         if (!example?.full) {
