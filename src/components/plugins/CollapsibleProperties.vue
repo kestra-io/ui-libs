@@ -1,28 +1,20 @@
 <template>
     <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded" :no-url-change="noUrlChange">
-        <template #additionalButtonText>
-            <Tooltip v-if="deprecated" class="d-flex ms-2" title="Deprecated">
-                <Alert class="alert-icon text-warning" />
-            </Tooltip>
-        </template>
-        <template #content>
-            <div class="d-flex flex-column gap-3 mb-3 mt-2" v-if="description || deprecated || (examples && examples.length > 0)">
-                <div v-if="deprecated" class="alert alert-warning mb-0 d-flex align-items-center gap-2" role="alert">
-                    <Alert class="alert-icon text-warning me-2" />
-                    <div class="mb-0">This definition is deprecated.</div>
-                </div>
+        <template v-if="Object.keys(properties ?? {}).length > 0" #content>
+            
+            <div class="d-flex flex-column gap-3 mb-3 mt-2" v-if="description || (examples && examples.length > 0)">
                 <div v-if="description" class="markdown">
                     <slot name="markdown" :content="description" />
                 </div>
                 <div v-if="examples && examples.length > 0" class="examples-container">
                     <h6 class="fw-bold mb-2">Examples</h6>
-                    <div v-for="(example, idx) in examples" :key="idx" class="markdown mb-2">
-                        <slot name="markdown" :content="formatExample(example)" />
+                    <div v-for="(example, idx) in examples" :key="idx" class="mb-2">
+                        <slot name="example" :example="example" />
                     </div>
                 </div>
             </div>
 
-            <div v-if="Object.keys(properties ?? {}).length > 0" class="border overflow-hidden">
+            <div class="border overflow-hidden">
                 <Collapsible
                     class="property"
                     v-for="(property, propertyKey) in sortedAndAggregated(properties)"
@@ -108,8 +100,7 @@
         forceInclude?: string[],
         noUrlChange?: boolean,
         description?: string,
-        examples?: any[],
-        deprecated?: boolean
+        examples?: any[]
     }>(), {
         properties: undefined,
         definitions: undefined,
@@ -119,17 +110,8 @@
         forceInclude: () => [] as string[],
         noUrlChange: false,
         description: undefined,
-        examples: undefined,
-        deprecated: false
+        examples: undefined
     });
-
-    const formatExample = (example: any) => {
-        if (typeof example === "string") return `\`\`\`yaml\n${example}\n\`\`\``;
-        let md = "";
-        if (example.title) md += `**${example.title}**\n\n`;
-        md += `\`\`\`${example.lang || "yaml"}\n${example.code || JSON.stringify(example, null, 2)}\n\`\`\``;
-        return md;
-    };
 
     const emit = defineEmits(["expand"]);
 
@@ -207,20 +189,6 @@
         border-radius: .5rem;
     }
 
-    .alert-icon, :deep(.alert-icon) {
-        width: 12px;       
-        height: 12px;
-        flex: 0 0 16px;
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .alert-icon svg, :deep(.alert-icon svg) {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
     .property {
         gap: 0 !important;
 
@@ -252,4 +220,3 @@
         }
     }
 </style>
-

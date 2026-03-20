@@ -95,7 +95,7 @@
             </CollapsibleProperties>
 
             <Collapsible
-                v-if="allDefinitions.length > 0"
+                v-if="nonDeprecatedDefinitions.length > 0"
                 class="plugin-section"
                 clickable-text="Definitions"
                 href="definitions"
@@ -106,7 +106,7 @@
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
                         <CollapsibleProperties
-                            v-for="[definitionKey, definitionValue] in allDefinitions"
+                            v-for="[definitionKey, definitionValue] in nonDeprecatedDefinitions"
                             :properties="definitionValue.properties"
                             :definitions="schema.definitions"
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
@@ -120,11 +120,25 @@
     
                             :description="definitionValue.description"
                             :examples="(definitionValue as any).$examples ?? (definitionValue as any).examples"
-                            :deprecated="isDeprecated(definitionValue)"
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
                                     <slot name="markdown" :content="content" />
+                                </div>
+                            </template>
+                            
+                            <template #example="{example}">
+                                <div class="d-flex flex-column gap-2">
+                                    <div v-if="example.title" class="markdown">
+                                        <slot name="markdown" :content="`**${example.title}**`" />
+                                    </div>
+                                    <SchemaToCode
+                                        :highlighter="highlighter"
+                                        :language="example.lang ?? 'yaml'"
+                                        :theme="codeTheme"
+                                        :code="typeof example === 'string' ? example : generateExampleCode(example)"
+                                        v-if="typeof example === 'string' || example.code"
+                                    />
                                 </div>
                             </template>
                         </CollapsibleProperties>
@@ -162,8 +176,8 @@
     const expandedDefinitions = ref<Set<string>>(new Set());
     const forceExpandKey = ref(0);
 
-    const allDefinitions = computed(() =>
-        Object.entries(props.schema.definitions ?? {})
+    const nonDeprecatedDefinitions = computed(() =>
+        Object.entries(props.schema.definitions ?? {}).filter(([, val]) => !isDeprecated(val))
     );
 
     const checkHashAndExpand = async () => {
@@ -298,4 +312,3 @@
         }
     }
 </style>
-
