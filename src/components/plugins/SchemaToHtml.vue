@@ -29,11 +29,11 @@
                                     <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
+                                    v-if="example.code"
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
                                     :theme="codeTheme"
                                     :code="generateExampleCode(example)"
-                                    v-if="example.code"
                                 />
                             </div>
                             <hr class="w-100 align-self-center" v-if="index < examples.length - 1">
@@ -117,9 +117,8 @@
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true; expandedDefinitions.add(definitionKey)"
                             :no-url-change
-    
                             :description="definitionValue.description"
-                            :examples="(definitionValue as any).$examples ?? (definitionValue as any).examples"
+                            :examples="definitionValue?.$examples"
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
@@ -136,8 +135,8 @@
                                         :highlighter="highlighter"
                                         :language="example.lang ?? 'yaml'"
                                         :theme="codeTheme"
-                                        :code="typeof example === 'string' ? example : generateExampleCode(example)"
-                                        v-if="typeof example === 'string' || example.code"
+                                        :code="generateExampleCode(example)"
+                                        v-if="example.code"
                                     />
                                 </div>
                             </template>
@@ -268,9 +267,15 @@
         font-size: 1rem;
     }
 
-    :deep(.nested-button-py-2) button {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
+    :deep(.nested-button-py-2) {
+        button {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        p {
+            font-size: 14px;
+        }
     }
 
     :deep(.markdown) {
