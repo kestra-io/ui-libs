@@ -35,6 +35,12 @@ export interface JSONSchema {
     description?: string
     $deprecated?: boolean | string
     definitions?: Record<string, JSONSchema>
+    $examples?: {
+        title?: string
+        code: string
+        lang?: string
+        full?: boolean
+    }[]
     outputs?: {
         properties: Record<string, JSONProperty>
     }
@@ -179,10 +185,15 @@ export function extractReferencedDefinitions(
         .filter(key => !isDeprecated(definitions[key]))
         .map(key => {
             const def = definitions[key];
+            const properties = def?.properties ? {...def.properties} : {};
+            const examples = def?.["$examples"] || properties["$examples"];
+
             return {
                 key,
                 title: def?.title ?? key.split("_")[0],
-                properties: def?.properties ?? {}
+                description: def?.description,
+                properties: properties,
+                $examples: examples
             };
         });
 }

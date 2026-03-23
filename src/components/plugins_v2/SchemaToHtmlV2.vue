@@ -26,11 +26,11 @@
                                     <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
+                                    v-if="example.code"
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
                                     :theme="codeTheme"
                                     :code="generateExampleCode(example)"
-                                    v-if="example.code"
                                 />
                             </div>
                             <hr class="w-100 align-self-center" v-if="index < examples.length - 1">
@@ -101,6 +101,7 @@
     import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "./CollapsibleV2.vue";
     import CollapsibleProperties from "./CollapsiblePropertiesV2.vue";
+    import {provide} from "vue";
 
     const props = withDefaults(defineProps<{
         schema: JSONSchema,
@@ -126,6 +127,10 @@
     }
 
     const highlighter = ref<HighlighterCore | undefined>();
+    const codeTheme = computed(() => "github-" + (props.darkMode ? "dark" : "light"));
+
+    provide("highlighter", highlighter);
+    provide("codeTheme", codeTheme);
 
     const examples = computed(() => props.schema.properties?.["$examples"]);
 
@@ -136,8 +141,6 @@
     const {getHighlighterCore} = await import("../plugins/shikiToolset");
 
     highlighter.value = await getHighlighterCore();
-
-    const codeTheme = "github-" + (props.darkMode ? "dark" : "light");
 </script>
 
 <style scoped lang="scss">

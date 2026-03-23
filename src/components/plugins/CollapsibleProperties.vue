@@ -1,6 +1,20 @@
 <template>
     <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded" :no-url-change="noUrlChange">
         <template v-if="Object.keys(properties ?? {}).length > 0" #content>
+            <div class="d-flex flex-column gap-3 mb-3 mt-2" v-if="description || (examples && examples.length > 0)">
+                <div v-if="description" class="markdown">
+                    <slot name="markdown" :content="description" />
+                </div>
+                <div v-if="examples && examples.length > 0" class="examples-container">
+                    <h6 class="fw-bold mb-2">
+                        Examples
+                    </h6>
+                    <div v-for="(example, idx) in examples" :key="idx" class="mb-2">
+                        <slot name="example" :example="example" />
+                    </div>
+                </div>
+            </div>
+
             <div class="border overflow-hidden">
                 <Collapsible
                     class="property"
@@ -85,7 +99,9 @@
         showDynamic?: boolean, 
         initiallyExpanded?: boolean, 
         forceInclude?: string[],
-        noUrlChange?: boolean
+        noUrlChange?: boolean,
+        description?: string,
+        examples?: any[]
     }>(), {
         properties: undefined,
         definitions: undefined,
@@ -93,7 +109,9 @@
         showDynamic: true,
         initiallyExpanded: false,
         forceInclude: () => [] as string[],
-        noUrlChange: false
+        noUrlChange: false,
+        description: undefined,
+        examples: undefined
     });
 
     const emit = defineEmits(["expand"]);
@@ -203,4 +221,3 @@
         }
     }
 </style>
-
