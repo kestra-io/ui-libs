@@ -34,7 +34,6 @@ export type Plugin = {
     aliases?: string[];
     guides?: string[];
     manifest?: Record<string, any>;
-    
 } & {
     [pluginElement: string]: PluginElement[];
 }
@@ -46,7 +45,7 @@ export function isEntryAPluginElementPredicate(key: string, value: any): value i
         value[0]?.cls !== undefined);
 }
 
-export function subGroupName(subGroupWrapper: Plugin) {
+export function subGroupName(subGroupWrapper: {title?: string}) {
     const title = subGroupWrapper.title ?? "";
     const result = title.replace(/\.([a-zA-Z])/g, (_, capture) => ` ${capture.toUpperCase()}`);
     return result.charAt(0).toUpperCase() + result.slice(1);
