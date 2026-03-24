@@ -34,8 +34,7 @@ export type Plugin = {
     aliases?: string[];
     guides?: string[];
     manifest?: Record<string, any>;
-} & {
-    [pluginElement: string]: PluginElement[];
+    [pluginElement: string]: PluginElement[] | string | string[] | Record<string, any> | undefined;
 }
 
 export function isEntryAPluginElementPredicate(key: string, value: any): value is PluginElement[] {
