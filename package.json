@@ -55,6 +55,7 @@
     "watch": "npx concurrently -k -n \"VITE,TYPES\" -c \"magenta,blue\" \"vite build --watch\" \"vue-tsc --watch --project ./tsconfig.build.json\""
   },
   "peerDependencies": {
+    "@nuxtjs/mdc": "*",
     "@vue-flow/background": "1",
     "@vue-flow/controls": "1",
     "@vue-flow/core": "1",
@@ -65,14 +66,16 @@
     "lodash": "4",
     "moment": "*",
     "moment-timezone": "*",
+    "shiki": "4",
     "vue": "3",
+    "vue-i18n": "11",
     "vue-material-design-icons": "5",
-    "vue-router": "4",
     "yaml": "2"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
+    "@nuxtjs/mdc": "^0.20.2",
     "@storybook/addon-docs": "^10.2.12",
     "@storybook/addon-themes": "^10.2.12",
     "@storybook/vue3-vite": "^10.2.12",
@@ -91,21 +94,21 @@
     "eslint-plugin-vue": "^10.8.0",
     "globals": "^17.3.0",
     "sass": "^1.97.3",
+    "shiki": "^4.0.2",
     "storybook": "^10.2.12",
     "storybook-vue3-router": "^7.0.0",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1",
     "vitest": "^4.0.18",
+    "vue-i18n": "^11.2.8",
+    "vue-router": "^5.0.4",
     "vue-tsc": "^3.2.5"
   },
   "dependencies": {
-    "@nuxtjs/mdc": "^0.20.1",
     "@popperjs/core": "^2.11.8",
     "html-to-image": "^1.11.13",
     "mermaid": "^11.12.3",
-    "shiki": "^3.23.0",
-    "slugify": "^1.6.6",
-    "vue-i18n": "^11.2.8"
+    "slugify": "^1.6.6"
   },
   "optionalDependencies": {
     "@esbuild/darwin-arm64": "^0.27.3",
