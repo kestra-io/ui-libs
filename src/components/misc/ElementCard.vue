@@ -22,7 +22,6 @@
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
 
     const props = defineProps<{
-        iconB64Svg: string,
         text: string,
         routePath: string
         pluginClass: string

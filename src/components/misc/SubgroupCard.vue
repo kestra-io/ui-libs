@@ -3,7 +3,7 @@
         <div class="plugin" :class="{'is-active': isActive}">
             <div class="top-row">
                 <div class="icon-content">
-                    <img :src="iconB64Svg" :alt="`${text} icon`">
+                    <img v-if="iconSrc" :src="iconSrc" :alt="`${text} icon`">
                 </div>
                 <div class="text-content">
                     <h6>{{ text }}</h6>
@@ -29,7 +29,7 @@
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
 
     const props = withDefaults(defineProps<{
-        iconB64Svg: string,
+        iconSrc?: string,
         text: string,
         routePath: string
         totalCount: number,
@@ -38,6 +38,7 @@
         isActive?: boolean,
         blueprintsCount?: number
     }>(), {
+        iconSrc: undefined,
         totalCount: 0,
         description: "",
         href: undefined,

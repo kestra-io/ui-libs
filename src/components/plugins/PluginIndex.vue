@@ -11,7 +11,7 @@
                     >
                         <SubgroupCard
                             :id="slugify(subGroupName(subGroupWrapper))"
-                            :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
+                            :icon-src="icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group]"
                             :text="getSubgroupTitle(subGroupWrapper)"
                             :description="getSubgroupDescription(subGroupWrapper)"
                             :href="`${routePath}/${slugify(subGroupName(subGroupWrapper))}`"
@@ -36,7 +36,6 @@
                     <div class="col-md-4 col-lg-6 col-xl-6 col-xxl-4" v-for="element in elements" :key="element">
                         <ElementCard
                             :id="slugify(element)"
-                            :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[element] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
                             :text="elementName(element)"
                             :plugin-class="element"
                             :href="elementHref(element)"
