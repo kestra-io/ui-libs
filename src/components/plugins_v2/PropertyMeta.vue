@@ -119,24 +119,6 @@
         }
     }
 
-        $section-styles: (
-        properties: (
-            color: var(--ks-content-running),
-            background: var(--ks-background-running),
-            border-color: var(--ks-border-running)
-        ),
-        outputs: (
-            color: var(--ks-content-success),
-            background: rgba(color-palette.$base-green-900, .2),
-            border-color: var(--ks-border-success)
-        ),
-        metrics: (
-            color: var(--ks-content-warning),
-            background: var(--ks-background-warning),
-            border-color: var(--ks-border-warning)
-        )
-    );
-
     .type-box {
         font-size: 12px !important;
         line-height: 20px;
@@ -155,15 +137,5 @@
         padding: 0 !important;
         align-items: unset !important;
     }
-
-    @each $section, $styles in $section-styles {
-        .section-#{$section} {
-            .type-box {
-                color: map-get($styles, color);
-                background: map-get($styles, background) !important;
-                border-color: map-get($styles, border-color);
-                text-transform: lowercase;
-            }
-        }
-    }
 </style>
+

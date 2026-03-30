@@ -2,6 +2,8 @@ import {HighlighterCore, createHighlighterCore as shikiCreateHighlighterCore} fr
 import {createJavaScriptRegexEngine} from "shiki/engine/javascript";
 import githubLight from "shiki/themes/github-light.mjs";
 import githubDark from "shiki/themes/github-dark.mjs";
+import githubLightDefault from "shiki/themes/github-light-default.mjs";
+import githubDarkDefault from "shiki/themes/github-dark-default.mjs";
 import yaml from "shiki/langs/yaml.mjs";
 import python from "shiki/langs/python.mjs";
 import javascript from "shiki/langs/javascript.mjs";
@@ -15,7 +17,7 @@ export const getHighlighterCore = async () => {
     }
     const highlighterCore = await shikiCreateHighlighterCore({
         themes: [
-            githubDark, githubLight
+            githubDark, githubLight, githubDarkDefault, githubLightDefault
         ],
         langs: [
             yaml,
@@ -27,3 +29,4 @@ export const getHighlighterCore = async () => {
     highlighterCoreCache = highlighterCore;
     return highlighterCore;
 }
+

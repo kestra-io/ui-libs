@@ -58,9 +58,9 @@
             </CollapsibleProperties>
 
             <CollapsibleProperties
-                v-if="schema.outputs?.properties && Object.keys(schema.outputs.properties).length > 0"
+                v-if="hasOutputs"
                 class="plugin-section"
-                :properties="schema.outputs.properties"
+                :properties="schema.outputs!.properties"
                 section-name="Outputs"
                 href="outputs"
                 :show-dynamic="false"
@@ -95,13 +95,12 @@
 </template>
 
 <script setup lang="ts">
-    import {computed, ref} from "vue";
+    import {computed, onMounted, onUnmounted, provide, ref} from "vue";
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "../plugins/SchemaToCode.vue";
     import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
     import Collapsible from "./CollapsibleV2.vue";
     import CollapsibleProperties from "./CollapsiblePropertiesV2.vue";
-    import {provide} from "vue";
 
     const props = withDefaults(defineProps<{
         schema: JSONSchema,
@@ -118,25 +117,43 @@
     });
 
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
-        if (!example?.full) {
-            const fullCode = `id: ${props.pluginType.split(".").reverse()[0]?.toLowerCase()}\ntype: ${props.pluginType}\n`;
-            return fullCode.concat(example.code)
-        }
-
-        return example.code
-    }
+        if (example?.full) return example.code;
+        const pluginId = props.pluginType.split(".").reverse()[0]?.toLowerCase();
+        return `id: ${pluginId}\ntype: ${props.pluginType}\n${example.code}`;
+    };
 
     const highlighter = ref<HighlighterCore | undefined>();
-    const codeTheme = computed(() => "github-" + (props.darkMode ? "dark" : "light"));
+
+    const isDark = ref(props.darkMode);
+    let observer: MutationObserver | undefined;
+
+    onMounted(() => {
+        isDark.value = document.documentElement.classList.contains("dark");
+        observer = new MutationObserver(() => {
+            isDark.value = document.documentElement.classList.contains("dark");
+        });
+        observer.observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
+    });
+
+    onUnmounted(() => {
+        observer?.disconnect();
+    });
+
+    const codeTheme = computed(() => isDark.value ? "github-dark-default" : "github-light-default");
 
     provide("highlighter", highlighter);
     provide("codeTheme", codeTheme);
 
-    const examples = computed(() => props.schema.properties?.["$examples"]);
+    const examples = computed(() => props.schema.properties?.$examples);
+    const hasOutputs = computed(() => !!props.schema.outputs?.properties && Object.keys(props.schema.outputs.properties).length > 0);
 
-    const metrics = computed(() => Object.fromEntries(
-        props.schema.properties?.["$metrics"]?.map(metric => ([metric.name, {...metric, name: undefined}])) as [string, JSONProperty][]
-    ));
+    const metrics = computed((): Record<string, JSONProperty> =>
+        Object.fromEntries(
+            (props.schema.properties?.$metrics ?? []).map(
+                metric => [metric.name, {...metric, name: undefined}] as [string, JSONProperty]
+            )
+        )
+    );
 
     const {getHighlighterCore} = await import("../plugins/shikiToolset");
 
@@ -170,12 +187,6 @@
     :deep(.plugin-section) {
         border-bottom: 1px solid variables.$black-3;
         padding: 2rem 0;
-
-        @media (min-width: 992px) {
-            margin-left: -2rem;
-            margin-right: -2rem;
-            padding: 2rem;
-        }
 
         &:first-child {
             border-top: 1px solid variables.$black-3;
@@ -211,3 +222,4 @@
         }
     }
 </style>
+

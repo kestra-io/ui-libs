@@ -168,11 +168,9 @@
         metrics: color-palette.$base-orange-400
     );
 
-
     @each $section, $color in $section-colors {
         .section-#{$section} {
             :deep(.collapse-button span:not(.type-box)) {
-                color: $color;
                 font-size: 1rem;
                 font-weight: normal;
                 font-family: "source code pro", monospace;
@@ -180,3 +178,4 @@
         }
     }
 </style>
+
