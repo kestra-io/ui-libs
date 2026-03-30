@@ -99,6 +99,11 @@
         overflow: hidden;
     }
 
+    .chevron {
+        position: relative;
+        top: 5px;
+    }
+
     .collapse-button {
         padding: 0;
         border: none;

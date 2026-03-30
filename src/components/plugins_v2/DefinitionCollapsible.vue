@@ -37,7 +37,7 @@
 
                 <div v-for="(prop, propKey) in definition.properties" :key="propKey" class="def-property">
                     <div class="d-flex align-items-center justify-content-between gap-2">
-                        <span>{{ propKey }}</span>
+                        <span class="prop-key">{{ propKey }}</span>
                         <PropertyBadges :property="prop" :show-dynamic="false" section-class="section-properties" />
                     </div>
 
@@ -254,3 +254,4 @@
         }
     }
 </style>
+
