@@ -58,7 +58,8 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-        transition: 0.4s ease-out;
+        // avoid unwanted background color transitions when switching themes
+        transition: border-color 0.4s ease-out, box-shadow 0.4s ease-out, transform 0.4s ease-out;
 
         &:hover {
             border-color: var(--kestra-io-token-color-border-active);
