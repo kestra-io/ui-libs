@@ -108,3 +108,7 @@ updates:
       # Ignore @eslint/js major updates (v10 requires eslint ^10 but project is on eslint ^9)
       - dependency-name: "@eslint/js"
         update-types: ["version-update:semver-major"]
+
+      # Temporarily ignore all axios updates due to recent supply chain vulnerability, see https://github.com/axios/axios/issues/10604
+      - dependency-name: "axios"
+        versions: ["*"]
