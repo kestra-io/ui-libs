@@ -3,7 +3,7 @@
   "version": "0.0.146",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kestra-io/ui-libs"
+    "url": "git+https://github.com/kestra-io/ui-libs.git"
   },
   "type": "module",
   "files": [
@@ -11,33 +11,33 @@
     "src",
     "stub-mdc-imports.js"
   ],
-  "main": "./dist/kestra-index.cjs.js",
-  "module": "./dist/kestra-index.es.js",
+  "main": "./dist/kestra-index.cjs",
+  "module": "./dist/kestra-index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/kestra-index.es.js"
+        "default": "./dist/kestra-index.mjs"
       },
-      "require": "./dist/kestra-index.cjs.js"
+      "require": "./dist/kestra-index.cjs"
     },
     "./flow-yaml-utils": {
       "types": "./dist/utils/FlowYamlUtils.d.ts",
       "import": {
         "types": "./dist/utils/FlowYamlUtils.d.ts",
-        "default": "./dist/kestra-flowyamlutils.es.js"
+        "default": "./dist/kestra-flowyamlutils.mjs"
       },
-      "require": "./dist/kestra-flowyamlutils.cjs.js"
+      "require": "./dist/kestra-flowyamlutils.cjs"
     },
     "./vue-flow-utils": {
       "types": "./dist/utils/VueFlowUtils.d.ts",
       "import": {
         "types": "./dist/utils/VueFlowUtils.d.ts",
-        "default": "./dist/kestra-vueflowutils.es.js"
+        "default": "./dist/kestra-vueflowutils.mjs"
       },
-      "require": "./dist/kestra-vueflowutils.cjs.js"
+      "require": "./dist/kestra-vueflowutils.cjs"
     },
     "./style.css": "./dist/ui-libs.css",
     "./src/*": "./src/*"

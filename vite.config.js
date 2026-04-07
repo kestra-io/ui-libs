@@ -15,7 +15,7 @@ export default defineConfig({
                 path.resolve(__dirname, "src/utils/VueFlowUtils.ts"),
             ],
             name: "KestraUI",
-            fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format}.js`,
+            fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format === "es" ? "mjs" : "cjs"}`,
         },
         rollupOptions: {
             external: (id) => [
