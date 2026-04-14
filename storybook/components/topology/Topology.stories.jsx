@@ -352,7 +352,7 @@ export const CustomAction = lodash.merge({},
             },
         },
         argTypes: {
-            onShowCustomAction: { action: "showCustomAction" },
+            onShowCustomAction: {action: "showCustomAction"},
         },
         loaders: [
             async () => ({
