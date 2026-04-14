@@ -72,6 +72,16 @@
                 </tooltip>
             </span>
             <span
+                v-if="customAction && data.node.task"
+                class="circle-button"
+                :class="[`bg-${color}`]"
+                @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
+            >
+                <tooltip :title="customAction.label">
+                    <Eye class="button-icon" :alt="customAction.label" />
+                </tooltip>
+            </span>
+            <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
                 :class="[`bg-${color}`]"
@@ -131,6 +141,7 @@
     import AlertIcon from "vue-material-design-icons/Alert.vue";
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
+    import Eye from "vue-material-design-icons/Eye.vue";
 
     // Define types
     interface TaskType {
@@ -190,12 +201,14 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
+        customActions?: Record<string, { label: string; taskProp: string; lang: string }>;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined,
+        customActions: () => ({}),
     });
 
     defineOptions({
@@ -217,6 +230,7 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
+        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: { label: string; taskProp: string; lang: string } }) :void;
     }>();
 
     // Inject dependencies
@@ -316,6 +330,12 @@
             };
         }
         return props.data;
+    });
+
+    const customAction = computed(() => {
+        const taskType = props.data.node.task?.type as string | undefined;
+        if (!taskType || !props.customActions) return undefined;
+        return props.customActions[taskType];
     });
 
     const iconAlt = computed(() => {

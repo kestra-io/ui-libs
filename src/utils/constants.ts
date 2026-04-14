@@ -19,6 +19,7 @@ export const EVENTS = {
   EXPAND_DEPENDENCIES: "expandDependencies",
   SHOW_CONDITION: "showCondition",
   RUN_TASK: "runTask",
+  SHOW_CUSTOM_ACTION: "showCustomAction",
 } as const;
 
 export const CLUSTER_PREFIX = "cluster_";
