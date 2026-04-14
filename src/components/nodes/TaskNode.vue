@@ -146,7 +146,7 @@
     // Define types
     interface TaskType {
         id: string;
-        type: object;
+        type: string;
         default: null;
         runIf?: unknown;
         subflowId?: {
