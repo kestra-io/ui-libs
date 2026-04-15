@@ -71,6 +71,18 @@
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
+            <button
+                v-if="customAction && data.node.task"
+                type="button"
+                class="circle-button"
+                :class="[`bg-${color}`]"
+                :aria-label="customAction.label"
+                @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
+            >
+                <tooltip :title="customAction.label">
+                    <Eye class="button-icon" :alt="customAction.label" />
+                </tooltip>
+            </button>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
@@ -110,7 +122,7 @@
     import {computed, inject} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
-    import {EVENTS, SECTIONS} from "../../utils/constants";
+    import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
@@ -131,11 +143,12 @@
     import AlertIcon from "vue-material-design-icons/Alert.vue";
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
+    import Eye from "vue-material-design-icons/Eye.vue";
 
     // Define types
     interface TaskType {
         id: string;
-        type: object;
+        type: string;
         default: null;
         runIf?: unknown;
         subflowId?: {
@@ -190,12 +203,14 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
+        customActions?: Record<string, CustomActionConfig>;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined,
+        customActions: () => ({}),
     });
 
     defineOptions({
@@ -217,6 +232,7 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
+        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
     }>();
 
     // Inject dependencies
@@ -316,6 +332,12 @@
             };
         }
         return props.data;
+    });
+
+    const customAction = computed(() => {
+        const taskType = props.data.node.task?.type as string | undefined;
+        if (!taskType || !props.customActions) return undefined;
+        return props.customActions[taskType];
     });
 
     const iconAlt = computed(() => {
