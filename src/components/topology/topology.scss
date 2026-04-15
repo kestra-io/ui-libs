@@ -1,5 +1,12 @@
 @import "../../scss/color-palette";
 
+button.circle-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+}
+
 .circle-button {
     border-radius: 1rem;
     width: 1rem;

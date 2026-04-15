@@ -23,9 +23,9 @@ export const EVENTS = {
 } as const;
 
 export interface CustomActionConfig {
-    label: string;
-    taskProp: string;
-    lang: string;
+  label: string;
+  taskProp: string;
+  lang: string;
 }
 
 export const CLUSTER_PREFIX = "cluster_";
