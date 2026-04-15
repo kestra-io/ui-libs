@@ -22,6 +22,12 @@ export const EVENTS = {
   SHOW_CUSTOM_ACTION: "showCustomAction",
 } as const;
 
+export interface CustomActionConfig {
+    label: string;
+    taskProp: string;
+    lang: string;
+}
+
 export const CLUSTER_PREFIX = "cluster_";
 
 export const NODE_SIZES = {

@@ -129,7 +129,7 @@
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import Download from "vue-material-design-icons/Download.vue";
     import {cssVariable} from "../../utils/global";
-    import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
+    import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
@@ -156,7 +156,7 @@
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
-        customActions?: Record<string, { label: string; taskProp: string; lang: string }>;
+        customActions?: Record<string, CustomActionConfig>;
     }>(), {
         isHorizontal: true,
         isReadOnly: true,

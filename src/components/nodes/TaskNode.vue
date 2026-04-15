@@ -71,16 +71,18 @@
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
-            <span
+            <button
                 v-if="customAction && data.node.task"
+                type="button"
                 class="circle-button"
                 :class="[`bg-${color}`]"
+                :aria-label="customAction.label"
                 @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
             >
                 <tooltip :title="customAction.label">
                     <Eye class="button-icon" :alt="customAction.label" />
                 </tooltip>
-            </span>
+            </button>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
@@ -120,7 +122,7 @@
     import {computed, inject} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
-    import {EVENTS, SECTIONS} from "../../utils/constants";
+    import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
@@ -201,7 +203,7 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
-        customActions?: Record<string, { label: string; taskProp: string; lang: string }>;
+        customActions?: Record<string, CustomActionConfig>;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
@@ -230,7 +232,7 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
-        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: { label: string; taskProp: string; lang: string } }) :void;
+        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
     }>();
 
     // Inject dependencies
