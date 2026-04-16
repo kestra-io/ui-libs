@@ -334,6 +334,35 @@ export const CustomNodes = lodash.merge({},
 
 import NodeDetailsData from "../../data/graphs/node-details.js";
 
+export const CustomAction = lodash.merge({},
+    base,
+    {
+        args: {
+            customActions: {
+                "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
+                    label: "View SQL Config",
+                    taskProp: "sql",
+                    lang: "sql",
+                },
+                "io.kestra.plugin.azure.datafactory.CreateRun": {
+                    label: "View Pipeline Config",
+                    taskProp: "pipelineName",
+                    lang: "yaml",
+                },
+            },
+        },
+        argTypes: {
+            onShowCustomAction: {action: "showCustomAction"},
+        },
+        loaders: [
+            async () => ({
+                flowGraph: NodeDetailsData,
+                source: "",
+            }),
+        ],
+    }
+)
+
 export const NodeDetails = lodash.merge({},
     base,
     {

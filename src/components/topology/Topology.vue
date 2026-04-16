@@ -30,6 +30,7 @@
                 :icon-component="iconComponent"
                 :playground-enabled="playgroundEnabled"
                 :playground-ready-to-start="playgroundReadyToStart"
+                :custom-actions="customActions"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
                 @run-task="emit(EVENTS.RUN_TASK, $event)"
@@ -38,6 +39,7 @@
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
+                @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
@@ -127,7 +129,7 @@
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import Download from "vue-material-design-icons/Download.vue";
     import {cssVariable} from "../../utils/global";
-    import {CLUSTER_PREFIX, EVENTS} from "../../utils/constants"
+    import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
@@ -154,6 +156,7 @@
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
+        customActions?: Record<string, CustomActionConfig>;
     }>(), {
         isHorizontal: true,
         isReadOnly: true,
@@ -169,7 +172,8 @@
         playgroundEnabled: false,
         playgroundReadyToStart: false,
         subflowsExecutions: () => ({}),
-        getNodeDimensions: undefined
+        getNodeDimensions: undefined,
+        customActions: () => ({})
     });
 
     const dragging = ref(false);
@@ -201,7 +205,8 @@
             "swapped-task",
             "message",
             "expand-subflow",
-            EVENTS.SHOW_CONDITION
+            EVENTS.SHOW_CONDITION,
+            EVENTS.SHOW_CUSTOM_ACTION
         ]
     )
 
