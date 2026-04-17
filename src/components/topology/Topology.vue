@@ -31,6 +31,7 @@
                 :playground-enabled="playgroundEnabled"
                 :playground-ready-to-start="playgroundReadyToStart"
                 :custom-actions="customActions"
+                :show-extra-details="showExtraDetails"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
                 @run-task="emit(EVENTS.RUN_TASK, $event)"
@@ -40,6 +41,7 @@
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
                 @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
+                @toggle-extra-details="showExtraDetails = !showExtraDetails"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
@@ -177,6 +179,7 @@
     });
 
     const dragging = ref(false);
+    const showExtraDetails = ref(true);
     const lastPosition = ref<XYPosition | null>()
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
     const edgeReplacer = ref({});
