@@ -83,7 +83,19 @@
                     <Eye class="button-icon" :alt="customAction.label" />
                 </tooltip>
             </button>
-<span
+            <button
+                type="button"
+                class="circle-button"
+                :class="[`bg-${color}`]"
+                :aria-label="$t(showExtraDetails ? 'hide extra details' : 'show extra details')"
+                @click="emit(EVENTS.TOGGLE_EXTRA_DETAILS)"
+            >
+                <tooltip :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')">
+                    <ChevronDown v-if="showExtraDetails" class="button-icon" alt="Hide extra details" />
+                    <ChevronUp v-else class="button-icon" alt="Show extra details" />
+                </tooltip>
+            </button>
+            <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
                 :class="[`bg-${color}`]"
@@ -144,6 +156,8 @@
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
     import Eye from "vue-material-design-icons/Eye.vue";
+    import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
+    import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
 
     // Define types
     interface TaskType {
@@ -237,6 +251,7 @@
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
         (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
+        (event: typeof EVENTS.TOGGLE_EXTRA_DETAILS): void;
     }>();
 
     // Inject dependencies
