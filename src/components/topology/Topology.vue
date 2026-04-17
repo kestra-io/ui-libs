@@ -89,15 +89,18 @@
             />
         </template>
 
-        <Controls v-if="controlsShown" :show-interactive="false">
+        <Controls v-if="controlsShown" :show-interactive="false" :show-fit-view="false">
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails}">
+                <FitToScreen />
+            </ControlButton>
+            <ControlButton @click="fitView()">
+                <svg viewBox="0 0 32 32" style="width:12px;height:12px"><path d="M3.692 4.63c0-.53.4-.938.939-.938h5.215V0H4.708C2.13 0 0 2.054 0 4.63v5.216h3.692V4.631zM27.354 0h-5.2v3.692h5.17c.53 0 .984.4.984.939v5.215H32V4.631A4.624 4.624 0 0 0 27.354 0zm.954 24.83c0 .532-.4.94-.939.94h-5.215v3.768h5.215c2.577 0 4.631-2.13 4.631-4.707v-5.139h-3.692v5.139zm-23.677.94a.919.919 0 0 1-.939-.94v-5.138H0v5.139c0 2.577 2.13 4.707 4.708 4.707h5.138V25.77H4.631z" fill="currentColor" /></svg>
+            </ControlButton>
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
             <ControlButton @click="toggleDropdown">
                 <Download />
-            </ControlButton>
-            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails, 'extra-details-toggle': true}">
-                <FitToScreen />
             </ControlButton>
             <ul v-if="isDropdownOpen" class="exporting">
                 <li @click="exportAsImage('jpeg')" class="item">
