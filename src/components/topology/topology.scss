@@ -40,6 +40,18 @@ $node-colors: (
     color: var(--bs-black);
     border-bottom-color: var(--bs-border-color);
 
+    .material-design-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+
+        svg {
+            width: 12px;
+            height: 12px;
+        }
+    }
+
     svg {
         fill: var(--bs-black);
     }
