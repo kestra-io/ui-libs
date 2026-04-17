@@ -92,15 +92,14 @@
         </template>
 
         <Controls v-if="controlsShown" :show-interactive="false">
-            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')">
-                <ChevronUp v-if="showExtraDetails" />
-                <ChevronDown v-else />
-            </ControlButton>
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
             <ControlButton @click="toggleDropdown">
                 <Download />
+            </ControlButton>
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails}">
+                <FitToScreen />
             </ControlButton>
             <ul v-if="isDropdownOpen" class="exporting">
                 <li @click="exportAsImage('jpeg')" class="item">
@@ -134,8 +133,7 @@
     // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import Download from "vue-material-design-icons/Download.vue";
-    import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
-    import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
+    import FitToScreen from "vue-material-design-icons/FitToScreen.vue";
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"

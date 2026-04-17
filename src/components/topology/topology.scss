@@ -44,12 +44,20 @@ $node-colors: (
         fill: var(--bs-black);
     }
 
+    &.active svg {
+        fill: var(--ks-content-link);
+    }
+
     html.dark & {
         background: var(--ks-background-card);
         color: var(--bs-white);
 
         svg {
             fill: var(--bs-white);
+        }
+
+        &.active svg {
+            fill: var(--ks-content-link);
         }
     }
 }

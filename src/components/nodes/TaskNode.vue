@@ -13,8 +13,12 @@
         @mouseover="emit(EVENTS.MOUSE_OVER, $event)"
         @mouseleave="emit(EVENTS.MOUSE_LEAVE)"
     >
-        <template v-if="showExtraDetails" #details>
-            <slot name="details" />
+        <template #details>
+            <Transition name="details-slide">
+                <div v-if="showExtraDetails" class="details-wrapper">
+                    <slot name="details" />
+                </div>
+            </Transition>
         </template>
         <template #content>
             <execution-informations 
@@ -399,7 +403,20 @@
 
 button.playground-button,
 .dark button.playground-button {
-    color: _color-palette.$base-white; 
+    color: _color-palette.$base-white;
     background-color: _color-palette.$base-blue-400;
+}
+
+.details-slide-enter-active,
+.details-slide-leave-active {
+    transition: max-height 0.25s ease, opacity 0.25s ease;
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.details-slide-enter-from,
+.details-slide-leave-to {
+    max-height: 0;
+    opacity: 0;
 }
 </style>
