@@ -96,7 +96,7 @@
             <ControlButton @click="toggleDropdown">
                 <Download />
             </ControlButton>
-            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails}">
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails, 'extra-details-toggle': true}">
                 <FitToScreen />
             </ControlButton>
             <ul v-if="isDropdownOpen" class="exporting">

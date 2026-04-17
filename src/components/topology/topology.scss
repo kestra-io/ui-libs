@@ -34,6 +34,13 @@ $node-colors: (
 .vue-flow__controls {
     border: 1px solid var(--ks-border-primary);
     border-radius: var(--bs-border-radius);
+    display: flex;
+    flex-direction: column;
+
+    .vue-flow__controls-zoomin  { order: 1; }
+    .vue-flow__controls-zoomout { order: 2; }
+    .extra-details-toggle       { order: 3; }
+    .vue-flow__controls-fitview { order: 4; }
 }
 
 .vue-flow__controls-button {
