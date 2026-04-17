@@ -13,7 +13,7 @@
             <div class="node-content">
                 <div class="d-flex node-title">
                     <div
-                        class="text-truncate task-title"
+                        class="text-truncate task-title" :title="hoverTooltip"
                     >
                         <tooltip :title="hoverTooltip">
                             {{ displayTitle }}
