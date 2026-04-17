@@ -41,7 +41,6 @@
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
                 @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
-                @toggle-extra-details="showExtraDetails = !showExtraDetails"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
@@ -92,10 +91,14 @@
         </template>
 
         <Controls v-if="controlsShown" :show-interactive="false">
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')">
+                <ChevronUp v-if="showExtraDetails" />
+                <ChevronDown v-else />
+            </ControlButton>
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
-            <ControlButton @click="toggleDropdown"> 
+            <ControlButton @click="toggleDropdown">
                 <Download />
             </ControlButton>
             <ul v-if="isDropdownOpen" class="exporting">
@@ -130,6 +133,8 @@
     // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import Download from "vue-material-design-icons/Download.vue";
+    import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
+    import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
     import {cssVariable} from "../../utils/global";
     import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
     import Utils from "../../utils/Utils"
