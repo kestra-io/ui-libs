@@ -20,7 +20,6 @@ export const EVENTS = {
   SHOW_CONDITION: "showCondition",
   RUN_TASK: "runTask",
   SHOW_CUSTOM_ACTION: "showCustomAction",
-  TOGGLE_EXTRA_DETAILS: "toggleExtraDetails",
 } as const;
 
 export interface CustomActionConfig {

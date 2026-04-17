@@ -92,7 +92,7 @@
                 class="circle-button"
                 :class="[`bg-${color}`]"
                 :aria-label="$t(showExtraDetails ? 'hide extra details' : 'show extra details')"
-                @click="emit(EVENTS.TOGGLE_EXTRA_DETAILS)"
+                @click="showExtraDetails = !showExtraDetails"
             >
                 <tooltip :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')">
                     <ChevronDown v-if="showExtraDetails" class="button-icon" alt="Hide extra details" />
@@ -135,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-    import {computed, inject} from "vue";
+    import {computed, inject, ref, watch} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
     import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
@@ -146,6 +146,7 @@
     import {
         EXECUTION_INJECTION_KEY,
         SUBFLOWS_EXECUTIONS_INJECTION_KEY,
+        SHOW_EXTRA_DETAILS_INJECTION_KEY,
     } from "../topology/injectionKeys";
 
     import Pencil from "vue-material-design-icons/Pencil.vue";
@@ -222,7 +223,6 @@
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
         customActions?: Record<string, CustomActionConfig>;
-        showExtraDetails?: boolean;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
@@ -230,7 +230,6 @@
         icons: undefined,
         iconComponent: undefined,
         customActions: () => ({}),
-        showExtraDetails: true,
     });
 
 
@@ -255,12 +254,16 @@
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
         (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
-        (event: typeof EVENTS.TOGGLE_EXTRA_DETAILS): void;
     }>();
 
     // Inject dependencies
     const execution = inject(EXECUTION_INJECTION_KEY);
     const subflowsExecutions = inject(SUBFLOWS_EXECUTIONS_INJECTION_KEY);
+    const globalShowExtraDetails = inject(SHOW_EXTRA_DETAILS_INJECTION_KEY);
+    const showExtraDetails = ref(globalShowExtraDetails?.value ?? true);
+    watch(() => globalShowExtraDetails?.value, (val) => {
+        if (val !== undefined) showExtraDetails.value = val;
+    });
 
     // Computed properties
     const color = computed(() => props.data.color ?? "primary");
