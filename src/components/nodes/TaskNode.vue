@@ -17,6 +17,16 @@
             <Transition name="details-slide">
                 <div v-if="globalShowExtraDetails" class="details-wrapper">
                     <slot name="details" />
+                    <div v-if="customAction && data.node.task" class="view-details-action">
+                        <button
+                            type="button"
+                            class="view-details-button"
+                            :aria-label="customAction.label"
+                            @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
+                        >
+                            {{ customAction.label }}
+                        </button>
+                    </div>
                 </div>
             </Transition>
         </template>
@@ -75,18 +85,6 @@
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
-            <button
-                v-if="customAction && data.node.task"
-                type="button"
-                class="circle-button"
-                :class="[`bg-${color}`]"
-                :aria-label="customAction.label"
-                @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
-            >
-                <tooltip :title="customAction.label">
-                    <Eye class="button-icon" :alt="customAction.label" />
-                </tooltip>
-            </button>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
@@ -148,7 +146,6 @@
     import AlertIcon from "vue-material-design-icons/Alert.vue";
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
-    import Eye from "vue-material-design-icons/Eye.vue";
 
     // Define types
     interface TaskType {
@@ -389,6 +386,26 @@ button.playground-button,
 .dark button.playground-button {
     color: _color-palette.$base-white;
     background-color: _color-palette.$base-blue-400;
+}
+
+.view-details-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.view-details-button {
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--ks-background-secondary);
+    color: var(--ks-content-primary);
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--ks-background-tertiary);
+    }
 }
 
 .details-slide-enter-active,
