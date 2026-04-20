@@ -91,6 +91,7 @@
                 type="button"
                 class="circle-button"
                 :class="[`bg-${color}`]"
+                v-if="globalShowExtraDetails"
                 :aria-label="$t(showExtraDetails ? 'hide extra details' : 'show extra details')"
                 @click="showExtraDetails = !showExtraDetails"
             >
@@ -260,7 +261,7 @@
     const execution = inject(EXECUTION_INJECTION_KEY);
     const subflowsExecutions = inject(SUBFLOWS_EXECUTIONS_INJECTION_KEY);
     const globalShowExtraDetails = inject(SHOW_EXTRA_DETAILS_INJECTION_KEY);
-    const showExtraDetails = ref(globalShowExtraDetails?.value ?? true);
+    const showExtraDetails = ref(globalShowExtraDetails?.value ?? false);
     watch(() => globalShowExtraDetails?.value, (val) => {
         if (val !== undefined) showExtraDetails.value = val;
     });
