@@ -15,7 +15,7 @@
     >
         <template #details>
             <Transition name="details-slide">
-                <div v-if="showExtraDetails" class="details-wrapper">
+                <div v-if="globalShowExtraDetails" class="details-wrapper">
                     <slot name="details" />
                 </div>
             </Transition>
@@ -87,19 +87,6 @@
                     <Eye class="button-icon" :alt="customAction.label" />
                 </tooltip>
             </button>
-            <button
-                type="button"
-                class="circle-button"
-                :class="[`bg-${color}`]"
-                v-if="globalShowExtraDetails"
-                :aria-label="$t(showExtraDetails ? 'hide extra details' : 'show extra details')"
-                @click="showExtraDetails = !showExtraDetails"
-            >
-                <tooltip :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')">
-                    <ChevronDown v-if="showExtraDetails" class="button-icon" alt="Hide extra details" />
-                    <ChevronUp v-else class="button-icon" alt="Show extra details" />
-                </tooltip>
-            </button>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
@@ -136,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-    import {computed, inject, ref, watch} from "vue";
+    import {computed, inject} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
     import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
@@ -162,8 +149,6 @@
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
     import Eye from "vue-material-design-icons/Eye.vue";
-    import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
-    import ChevronUp from "vue-material-design-icons/ChevronUp.vue";
 
     // Define types
     interface TaskType {
@@ -261,11 +246,6 @@
     const execution = inject(EXECUTION_INJECTION_KEY);
     const subflowsExecutions = inject(SUBFLOWS_EXECUTIONS_INJECTION_KEY);
     const globalShowExtraDetails = inject(SHOW_EXTRA_DETAILS_INJECTION_KEY);
-    const showExtraDetails = ref(globalShowExtraDetails?.value ?? false);
-    watch(() => globalShowExtraDetails?.value, (val) => {
-        if (val !== undefined) showExtraDetails.value = val;
-    });
-
     // Computed properties
     const color = computed(() => props.data.color ?? "primary");
 
