@@ -185,9 +185,25 @@
 
     const dragging = ref(false);
     const showExtraDetails = ref(false);
-    const effectiveGetNodeDimensions = computed(() =>
-        showExtraDetails.value ? props.getNodeDimensions : undefined
-    );
+    const effectiveGetNodeDimensions = computed(() => {
+        return (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => {
+            const dimensions = props.getNodeDimensions
+                ? props.getNodeDimensions(node, getNodeWidth, getNodeHeight)
+                : {
+                    width: getNodeWidth(node),
+                    height: getNodeHeight(node)
+                };
+
+            if (!showExtraDetails.value && VueFlowUtils.isTaskNode(node)) {
+                return {
+                    ...dimensions,
+                    height: getNodeHeight(node)
+                };
+            }
+
+            return dimensions;
+        };
+    });
     const lastPosition = ref<XYPosition | null>()
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
     const edgeReplacer = ref({});

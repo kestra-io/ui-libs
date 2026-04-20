@@ -31,6 +31,10 @@ $node-colors: (
     font-size: 0.66rem;
 }
 
+.vue-flow__panel.vue-flow__controls {
+    z-index: 200001;
+}
+
 .vue-flow__controls {
     border: 1px solid var(--ks-border-primary);
     border-radius: var(--bs-border-radius);

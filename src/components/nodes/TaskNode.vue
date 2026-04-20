@@ -32,7 +32,7 @@
         </template>
         <template #content>
             <execution-informations 
-                v-if="taskExecution"
+                v-if="taskExecution && globalShowExtraDetails"
                 :execution="taskExecution"
                 :task="data.node.task"
                 :color="color"
