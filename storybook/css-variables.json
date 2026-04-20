@@ -1,209 +1,90 @@
 {
-  "background": [
-    "ks-background-additionLine",
-    "ks-background-additionNum",
-    "ks-background-body",
-    "ks-background-box",
-    "ks-background-cancelled",
-    "ks-background-card",
-    "ks-background-card-hover",
-    "ks-background-card-opacity",
-    "ks-background-created",
-    "ks-background-deletionLine",
-    "ks-background-deletionNum",
-    "ks-background-error",
-    "ks-background-failed",
-    "ks-background-info",
-    "ks-background-input",
-    "ks-background-killed",
-    "ks-background-killing",
-    "ks-background-left-menu",
-    "ks-background-logo",
-    "ks-background-panel",
-    "ks-background-paused",
-    "ks-background-queued",
-    "ks-background-restarted",
-    "ks-background-retried",
-    "ks-background-retrying",
-    "ks-background-running",
-    "ks-background-skipped",
-    "ks-background-success",
-    "ks-background-table-header",
-    "ks-background-table-row",
-    "ks-background-table-row-hover",
-    "ks-background-warning"
+  "Color": [
+    "ks-Color-gradient-1-inverse",
+    "ks-Color-gradient-1-inverse 2"
   ],
-  "badge": [
-    "ks-badge-background",
-    "ks-badge-border",
-    "ks-badge-content"
+  "background": [
+    "ks-background-alert-danger",
+    "ks-background-alert-info",
+    "ks-background-alert-success",
+    "ks-background-alert-warning",
+    "ks-background-artwork",
+    "ks-background-blue-light",
+    "ks-background-body",
+    "ks-background-button-primary",
+    "ks-background-button-primary-hover",
+    "ks-background-button-secondary",
+    "ks-background-button-secondary-active",
+    "ks-background-button-secondary-hover",
+    "ks-background-function",
+    "ks-background-header",
+    "ks-background-input",
+    "ks-background-primary",
+    "ks-background-primary-inverse",
+    "ks-background-purple-hover",
+    "ks-background-purple-light",
+    "ks-background-secondary",
+    "ks-background-secondary-inverse",
+    "ks-background-tertiary",
+    "ks-background-tertiary-inverse"
+  ],
+  "backgroung": [
+    "ks-backgroung-tag-category",
+    "ks-backgroung-tag-success"
+  ],
+  "blur": [
+    "ks-blur-effect"
   ],
   "border": [
     "ks-border-active",
-    "ks-border-cancelled",
-    "ks-border-created",
-    "ks-border-error",
-    "ks-border-failed",
-    "ks-border-inactive",
-    "ks-border-info",
-    "ks-border-killed",
-    "ks-border-killing",
-    "ks-border-paused",
+    "ks-border-alert-danger",
+    "ks-border-alert-info",
+    "ks-border-alert-success",
+    "ks-border-alert-warning",
+    "ks-border-button-secondary",
     "ks-border-primary",
-    "ks-border-queued",
-    "ks-border-restarted",
-    "ks-border-retried",
-    "ks-border-retrying",
-    "ks-border-running",
+    "ks-border-primary-inverse",
     "ks-border-secondary",
-    "ks-border-skipped",
-    "ks-border-success",
-    "ks-border-system",
-    "ks-border-warning"
-  ],
-  "button": [
-    "ks-button-background-inactive",
-    "ks-button-background-primary",
-    "ks-button-background-primary-active",
-    "ks-button-background-primary-hover",
-    "ks-button-background-secondary",
-    "ks-button-background-secondary-active",
-    "ks-button-background-secondary-hover",
-    "ks-button-background-success",
-    "ks-button-background-success-active",
-    "ks-button-background-success-hover",
-    "ks-button-content-primary"
-  ],
-  "card": [
-    "ks-card-shadow"
-  ],
-  "chart": [
-    "ks-chart-cancelled",
-    "ks-chart-created",
-    "ks-chart-debug",
-    "ks-chart-error",
-    "ks-chart-failed",
-    "ks-chart-info",
-    "ks-chart-killed",
-    "ks-chart-killing",
-    "ks-chart-paused",
-    "ks-chart-queued",
-    "ks-chart-restarted",
-    "ks-chart-retried",
-    "ks-chart-retrying",
-    "ks-chart-running",
-    "ks-chart-skipped",
-    "ks-chart-success",
-    "ks-chart-trace",
-    "ks-chart-warn",
-    "ks-chart-warning"
+    "ks-border-secondary-inverse"
   ],
   "content": [
-    "ks-content-alert",
-    "ks-content-cancelled",
-    "ks-content-created",
-    "ks-content-error",
-    "ks-content-failed",
-    "ks-content-id",
-    "ks-content-inactive",
-    "ks-content-info",
-    "ks-content-inverse",
-    "ks-content-killed",
-    "ks-content-killing",
+    "ks-content-alert-danger",
+    "ks-content-alert-info",
+    "ks-content-alert-success",
+    "ks-content-alert-warning",
+    "ks-content-btn-secondary-hover",
+    "ks-content-color-highlight",
+    "ks-content-color-highlight-inverse",
     "ks-content-link",
-    "ks-content-link-hover",
-    "ks-content-paused",
+    "ks-content-link-inverse",
+    "ks-content-output",
     "ks-content-primary",
-    "ks-content-queued",
-    "ks-content-restarted",
-    "ks-content-retried",
-    "ks-content-retrying",
-    "ks-content-running",
+    "ks-content-primary-inverse",
+    "ks-content-propertie",
     "ks-content-secondary",
-    "ks-content-skipped",
-    "ks-content-success",
+    "ks-content-secondary-inverse",
+    "ks-content-tag-category",
+    "ks-content-tag-success",
     "ks-content-tertiary",
-    "ks-content-warning"
-  ],
-  "dependencies": [
-    "ks-dependencies-edge-default",
-    "ks-dependencies-edge-faded",
-    "ks-dependencies-edge-hovered",
-    "ks-dependencies-edge-selected",
-    "ks-dependencies-node-background-assets",
-    "ks-dependencies-node-background-default",
-    "ks-dependencies-node-background-faded",
-    "ks-dependencies-node-background-hovered",
-    "ks-dependencies-node-background-selected",
-    "ks-dependencies-node-border-assets",
-    "ks-dependencies-node-border-default",
-    "ks-dependencies-node-border-faded",
-    "ks-dependencies-node-border-hovered",
-    "ks-dependencies-node-border-selected"
-  ],
-  "dialog": [
-    "ks-dialog-background",
-    "ks-dialog-border",
-    "ks-dialog-header",
-    "ks-dialog-headerbtn",
-    "ks-dialog-headerbtn-hover"
-  ],
-  "dots": [
-    "ks-dots-topology"
-  ],
-  "dropdown": [
-    "ks-dropdown-background",
-    "ks-dropdown-background-active",
-    "ks-dropdown-background-hover"
+    "ks-content-tertiary-inverse"
   ],
   "editor": [
-    "ks-editor-number",
-    "ks-editor-pabble",
     "ks-editor-property",
     "ks-editor-punctuation",
     "ks-editor-value"
   ],
-  "log": [
-    "ks-log-background-debug",
-    "ks-log-background-error",
-    "ks-log-background-info",
-    "ks-log-background-trace",
-    "ks-log-background-warn",
-    "ks-log-border-debug",
-    "ks-log-border-error",
-    "ks-log-border-info",
-    "ks-log-border-trace",
-    "ks-log-border-warn",
-    "ks-log-content-debug",
-    "ks-log-content-error",
-    "ks-log-content-info",
-    "ks-log-content-trace",
-    "ks-log-content-warn"
+  "icon": [
+    "ks-icon",
+    "ks-icon-active",
+    "ks-icon-color"
   ],
-  "playground": [
-    "ks-playground-bg-color",
-    "ks-playground-end-gradient",
-    "ks-playground-start-gradient,"
+  "shadows": [
+    "ks-shadows-hight",
+    "ks-shadows-light",
+    "ks-shadows-light-inverse"
   ],
-  "scrollbar": [
-    "ks-scrollbar-background",
-    "ks-scrollbar-content"
-  ],
-  "select": [
-    "ks-select-active",
-    "ks-select-active-icon",
-    "ks-select-background",
-    "ks-select-border",
-    "ks-select-hover"
-  ],
-  "tag": [
-    "ks-tag-background",
-    "ks-tag-background-active",
-    "ks-tag-background-hover",
-    "ks-tag-content"
-  ],
-  "tooltip": [
-    "ks-tooltip-background",
-    "ks-tooltip-border"
+  "special": [
+    "ks-special-green",
+    "ks-special-orange"
   ]
 }
