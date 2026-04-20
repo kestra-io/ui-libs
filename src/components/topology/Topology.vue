@@ -90,7 +90,7 @@
         </template>
 
         <Controls v-if="controlsShown" :show-interactive="false" :show-fit-view="false">
-            <ControlButton @click="showExtraDetails = !showExtraDetails" :title="$t(showExtraDetails ? 'hide extra details' : 'show extra details')" :class="{'active': showExtraDetails}">
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :class="{'active': showExtraDetails}">
                 <Information />
             </ControlButton>
             <ControlButton @click="fitView()">
@@ -185,6 +185,9 @@
 
     const dragging = ref(false);
     const showExtraDetails = ref(false);
+    const effectiveGetNodeDimensions = computed(() =>
+        showExtraDetails.value ? props.getNodeDimensions : undefined
+    );
     const lastPosition = ref<XYPosition | null>()
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
     const edgeReplacer = ref({});
@@ -232,6 +235,10 @@
         generateGraph();
     })
 
+    watch(showExtraDetails, () => {
+        generateGraph();
+    })
+
     const generateGraph = () => {
         VueFlowUtils.cleanGraph(props.id);
 
@@ -259,7 +266,7 @@
                 props.isReadOnly,
                 props.isAllowedEdit,
                 props.enableSubflowInteraction,
-                props.getNodeDimensions
+                effectiveGetNodeDimensions.value
             );
 
             if(elements) {
