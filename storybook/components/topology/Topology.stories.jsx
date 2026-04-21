@@ -335,11 +335,11 @@ export const CustomNodes = lodash.merge({},
 import NodeDetailsData from "../../data/graphs/node-details.js";
 import ExtraDetailsData from "../../data/graphs/extra-details.js";
 
-export const CustomAction = lodash.merge({},
+export const ShowDetails = lodash.merge({},
     base,
     {
         args: {
-            customActions: {
+            showDetails: {
                 "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
                     label: "View SQL Config",
                     taskProp: "sql",
@@ -353,7 +353,7 @@ export const CustomAction = lodash.merge({},
             },
         },
         argTypes: {
-            onShowCustomAction: {action: "showCustomAction"},
+            onShowDetails: {action: "showDetails"},
         },
         loaders: [
             async () => ({
@@ -399,7 +399,7 @@ export const ExtraDetails = lodash.merge({},
                     height: node?.task ? 135 : getNodeHeight(node),
                 };
             },
-            customActions: {
+            showDetails: {
                 "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
                     label: "Show Details",
                     taskProp: "sql",
@@ -418,7 +418,7 @@ export const ExtraDetails = lodash.merge({},
             },
         },
         argTypes: {
-            onShowCustomAction: {action: "showCustomAction"},
+            onShowDetails: {action: "showDetails"},
         },
         loaders: [
             async () => ({
@@ -478,7 +478,6 @@ export const NodeDetails = lodash.merge({},
         ],
     }
 )
-
 
 
 

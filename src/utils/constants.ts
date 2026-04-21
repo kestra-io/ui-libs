@@ -19,10 +19,10 @@ export const EVENTS = {
   EXPAND_DEPENDENCIES: "expandDependencies",
   SHOW_CONDITION: "showCondition",
   RUN_TASK: "runTask",
-  SHOW_CUSTOM_ACTION: "showCustomAction",
+  SHOW_DETAILS: "showDetails",
 } as const;
 
-export interface CustomActionConfig {
+export interface ShowDetailsConfig {
   label: string;
   taskProp: string;
   lang: string;

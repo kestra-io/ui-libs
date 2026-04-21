@@ -17,14 +17,14 @@
             <Transition name="details-slide">
                 <div v-if="globalShowExtraDetails" class="details-wrapper">
                     <slot name="details" />
-                    <div v-if="customAction && data.node.task" class="view-details-action">
+                    <div v-if="showDetailsConfig && data.node.task" class="view-details-action">
                         <button
                             type="button"
                             class="view-details-button"
-                            :aria-label="customAction.label"
-                            @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
+                            :aria-label="showDetailsConfig.label"
+                            @click="emit(EVENTS.SHOW_DETAILS, {task: data.node.task, showDetails: showDetailsConfig})"
                         >
-                            {{ customAction.label }}
+                            {{ showDetailsConfig.label }}
                         </button>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
     import {computed, inject} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
-    import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
+    import {ShowDetailsConfig, EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
@@ -205,14 +205,14 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
-        customActions?: Record<string, CustomActionConfig>;
+        showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined,
-        customActions: () => ({}),
+        showDetails: () => ({}),
     });
 
 
@@ -236,7 +236,7 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
-        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
+        (event: typeof EVENTS.SHOW_DETAILS, data: { task: any; showDetails: ShowDetailsConfig }) :void;
     }>();
 
     // Inject dependencies
@@ -338,10 +338,10 @@
         return props.data;
     });
 
-    const customAction = computed(() => {
+    const showDetailsConfig = computed(() => {
         const taskType = props.data.node.task?.type as string | undefined;
-        if (!taskType || !props.customActions) return undefined;
-        return props.customActions[taskType];
+        if (!taskType || !props.showDetails) return undefined;
+        return props.showDetails[taskType];
     });
 
     const iconAlt = computed(() => {

@@ -30,7 +30,7 @@
                 :icon-component="iconComponent"
                 :playground-enabled="playgroundEnabled"
                 :playground-ready-to-start="playgroundReadyToStart"
-                :custom-actions="customActions"
+                :show-details="showDetails"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
                 @run-task="emit(EVENTS.RUN_TASK, $event)"
@@ -39,7 +39,7 @@
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
-                @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
+                @show-details="emit(EVENTS.SHOW_DETAILS, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
@@ -136,7 +136,7 @@
     import Download from "vue-material-design-icons/Download.vue";
     import Information from "vue-material-design-icons/Information.vue";
     import {cssVariable} from "../../utils/global";
-    import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
+    import {CLUSTER_PREFIX, EVENTS, ShowDetailsConfig} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
@@ -163,7 +163,7 @@
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
-        customActions?: Record<string, CustomActionConfig>;
+        showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         isHorizontal: true,
         isReadOnly: true,
@@ -180,7 +180,7 @@
         playgroundReadyToStart: false,
         subflowsExecutions: () => ({}),
         getNodeDimensions: undefined,
-        customActions: () => ({})
+        showDetails: () => ({})
     });
 
     const dragging = ref(false);
@@ -234,7 +234,7 @@
             "message",
             "expand-subflow",
             EVENTS.SHOW_CONDITION,
-            EVENTS.SHOW_CUSTOM_ACTION
+            EVENTS.SHOW_DETAILS
         ]
     )
 
