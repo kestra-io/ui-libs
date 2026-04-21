@@ -83,6 +83,19 @@ $node-colors: (
 }
 
 .vue-flow__container {
+    .vue-flow__node.topology-node-hovered,
+    .vue-flow__node.topology-node-drop-target {
+        outline: none !important;
+    }
+
+    .vue-flow__node.topology-node-hovered .node-wrapper {
+        border-color: var(--bs-gray-900) !important;
+    }
+
+    .vue-flow__node.topology-node-drop-target .node-wrapper {
+        border-color: var(--bs-primary) !important;
+    }
+
     .top-button-div {
         position: absolute;
         top: -0.5rem;

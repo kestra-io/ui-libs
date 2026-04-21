@@ -17,14 +17,14 @@
             <Transition name="details-slide">
                 <div v-if="globalShowExtraDetails" class="details-wrapper">
                     <slot name="details" />
-                    <div v-if="showDetailsConfig && data.node.task" class="view-details-action">
+                    <div v-if="actionConfig && data.node.task" class="view-details-action">
                         <button
                             type="button"
                             class="view-details-button"
-                            :aria-label="showDetailsConfig.label"
-                            @click="emit(EVENTS.SHOW_DETAILS, {task: data.node.task, showDetails: showDetailsConfig})"
+                            aria-label="Show details"
+                            @click="onShowDetails()"
                         >
-                            {{ showDetailsConfig.label }}
+                            Show details
                         </button>
                     </div>
                 </div>
@@ -205,6 +205,7 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
+        customActions?: Record<string, ShowDetailsConfig>;
         showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         sourcePosition: Position.Right,
@@ -212,6 +213,7 @@
         enableSubflowInteraction: true,
         icons: undefined,
         iconComponent: undefined,
+        customActions: () => ({}),
         showDetails: () => ({}),
     });
 
@@ -236,6 +238,7 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
+        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: ShowDetailsConfig }) :void;
         (event: typeof EVENTS.SHOW_DETAILS, data: { task: any; showDetails: ShowDetailsConfig }) :void;
     }>();
 
@@ -338,11 +341,41 @@
         return props.data;
     });
 
-    const showDetailsConfig = computed(() => {
+    const actionConfig = computed(() => {
         const taskType = props.data.node.task?.type as string | undefined;
-        if (!taskType || !props.showDetails) return undefined;
-        return props.showDetails[taskType];
+        if (!taskType) return undefined;
+
+        const customAction = props.customActions?.[taskType];
+        if (customAction) {
+            return {config: customAction, eventName: EVENTS.SHOW_CUSTOM_ACTION} as const;
+        }
+
+        const showDetails = props.showDetails?.[taskType];
+        if (showDetails) {
+            return {config: showDetails, eventName: EVENTS.SHOW_DETAILS} as const;
+        }
+
+        return undefined;
     });
+
+    function onShowDetails() {
+        if (!actionConfig.value) {
+            return;
+        }
+
+        if (actionConfig.value.eventName === EVENTS.SHOW_CUSTOM_ACTION) {
+            emit(EVENTS.SHOW_CUSTOM_ACTION, {
+                task: props.data.node.task,
+                customAction: actionConfig.value.config
+            });
+            return;
+        }
+
+        emit(EVENTS.SHOW_DETAILS, {
+            task: props.data.node.task,
+            showDetails: actionConfig.value.config
+        });
+    }
 
     const iconAlt = computed(() => {
         if(state.value === State.RUNNING){
@@ -391,21 +424,42 @@ button.playground-button,
 .view-details-action {
     display: flex;
     justify-content: flex-end;
-    margin-top: 4px;
-    padding: 0 6px 6px;
+    margin-top: 6px;
+    padding: 0 8px 8px;
 }
 
 .view-details-button {
-    font-size: 0.625rem;
-    padding: 2px 10px;
-    border-radius: 4px;
-    border: none;
-    background-color: var(--ks-background-secondary);
-    color: var(--ks-content-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    margin: 0;
+    padding: 4px 10px;
+    border: 1px solid var(--ks-border-primary);
+    border-radius: 999px;
+    background-color: var(--ks-background-card);
+    color: var(--ks-content-secondary);
     cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-transform: none;
+    box-shadow: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
     &:hover {
-        background-color: var(--ks-background-tertiary);
+        border-color: var(--ks-content-link);
+        background-color: var(--ks-background-secondary);
+        color: var(--ks-content-link);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ks-content-link);
+        outline-offset: 2px;
     }
 }
 

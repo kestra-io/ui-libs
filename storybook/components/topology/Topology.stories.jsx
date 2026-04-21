@@ -341,12 +341,12 @@ export const ShowDetails = lodash.merge({},
         args: {
             showDetails: {
                 "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
-                    label: "View SQL Config",
+                    label: "Show Details",
                     taskProp: "sql",
                     lang: "sql",
                 },
                 "io.kestra.plugin.azure.datafactory.CreateRun": {
-                    label: "View Pipeline Config",
+                    label: "Show Details",
                     taskProp: "pipelineName",
                     lang: "yaml",
                 },
@@ -478,7 +478,6 @@ export const NodeDetails = lodash.merge({},
         ],
     }
 )
-
 
 
 

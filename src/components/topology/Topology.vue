@@ -30,6 +30,7 @@
                 :icon-component="iconComponent"
                 :playground-enabled="playgroundEnabled"
                 :playground-ready-to-start="playgroundReadyToStart"
+                :custom-actions="customActions"
                 :show-details="showDetails"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
@@ -39,6 +40,7 @@
                 @show-logs="emit(EVENTS.SHOW_LOGS, $event)"
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
+                @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
                 @show-details="emit(EVENTS.SHOW_DETAILS, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
@@ -136,7 +138,7 @@
     import Download from "vue-material-design-icons/Download.vue";
     import Information from "vue-material-design-icons/Information.vue";
     import {cssVariable} from "../../utils/global";
-    import {CLUSTER_PREFIX, EVENTS, ShowDetailsConfig} from "../../utils/constants"
+    import {CLUSTER_PREFIX, EVENTS, NODE_SIZES, ShowDetailsConfig} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
@@ -163,6 +165,7 @@
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
+        customActions?: Record<string, ShowDetailsConfig>;
         showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         isHorizontal: true,
@@ -180,25 +183,47 @@
         playgroundReadyToStart: false,
         subflowsExecutions: () => ({}),
         getNodeDimensions: undefined,
+        customActions: () => ({}),
         showDetails: () => ({})
     });
 
     const dragging = ref(false);
     const showExtraDetails = ref(false);
+    const HOVERED_NODE_CLASS = "topology-node-hovered";
+    const DROP_TARGET_NODE_CLASS = "topology-node-drop-target";
     const effectiveGetNodeDimensions = computed(() => {
         return (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => {
+            const baseHeight = getNodeHeight(node);
             const dimensions = props.getNodeDimensions
                 ? props.getNodeDimensions(node, getNodeWidth, getNodeHeight)
                 : {
                     width: getNodeWidth(node),
-                    height: getNodeHeight(node)
+                    height: baseHeight
                 };
 
             if (!showExtraDetails.value && VueFlowUtils.isTaskNode(node)) {
                 return {
                     ...dimensions,
-                    height: getNodeHeight(node)
+                    height: baseHeight
                 };
+            }
+
+            if (showExtraDetails.value && VueFlowUtils.isTaskNode(node)) {
+                const taskType = node?.task?.type as string | undefined;
+                const hasDetailsAction = Boolean(
+                    (taskType && props.customActions?.[taskType]) ||
+                    (taskType && props.showDetails?.[taskType])
+                );
+
+                if (hasDetailsAction) {
+                    return {
+                        ...dimensions,
+                        height: Math.max(
+                            dimensions.height,
+                            NODE_SIZES.TASK_EXPANDED_FALLBACK_HEIGHT
+                        )
+                    };
+                }
             }
 
             return dimensions;
@@ -234,6 +259,7 @@
             "message",
             "expand-subflow",
             EVENTS.SHOW_CONDITION,
+            EVENTS.SHOW_CUSTOM_ACTION,
             EVENTS.SHOW_DETAILS
         ]
     )
@@ -298,8 +324,8 @@
         if (!dragging.value) {
             VueFlowUtils.linkedElements(props.id, node.uid).forEach((n) => {
                 if (n?.type === "task") {
-                    n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-gray-900")}
-                    n.class = "rounded-3"
+                    n.style = {...n.style, opacity: "1", outline: "none"}
+                    setNodeInteractionClass(n, HOVERED_NODE_CLASS, true);
                 }
             });
         }
@@ -314,7 +340,7 @@
         getNodes.value.filter(n => n.type === "task" || n.type === "trigger")
             .forEach(n => {
                 n.style = {...n.style, opacity: "1", outline: "none"}
-                n.class = ""
+                clearNodeInteractionClasses(n);
             })
     }
 
@@ -384,14 +410,49 @@
         if (e.intersections && !checkIntersections(e.intersections, e.node) && e.intersections.filter((n:any) => n.type === "task").length === 1) {
             e.intersections.forEach((n:any) => {
                 if (n.type === "task") {
-                    n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-primary")}
-                    n.class = "rounded-3"
+                    n.style = {...n.style, outline: "none"}
+                    setNodeInteractionClass(n, DROP_TARGET_NODE_CLASS, true);
                 }
             })
-            e.node.style = {...e.node.style, outline: "0.5px solid " + cssVariable("--bs-primary")}
-            e.node.class = "rounded-3"
+            e.node.style = {...e.node.style, outline: "none"}
+            setNodeInteractionClass(e.node, DROP_TARGET_NODE_CLASS, true);
         }
     })
+
+    const normalizeNodeClasses = (value: unknown): string[] => {
+        if (typeof value === "string") {
+            return value.split(/\s+/).filter(Boolean);
+        }
+
+        if (Array.isArray(value)) {
+            return value.flatMap((entry) => normalizeNodeClasses(entry));
+        }
+
+        if (value && typeof value === "object") {
+            return Object.entries(value as Record<string, boolean>)
+                .filter(([, enabled]) => Boolean(enabled))
+                .map(([className]) => className);
+        }
+
+        return [];
+    };
+
+    const setNodeInteractionClass = (node: any, className: string, enabled: boolean) => {
+        const classes = new Set(normalizeNodeClasses(node.class));
+
+        if (enabled) {
+            classes.add(className);
+        } else {
+            classes.delete(className);
+        }
+
+        node.class = Array.from(classes).join(" ");
+    };
+
+    const clearNodeInteractionClasses = (node: any) => {
+        setNodeInteractionClass(node, HOVERED_NODE_CLASS, false);
+        setNodeInteractionClass(node, DROP_TARGET_NODE_CLASS, false);
+    };
 
     const checkIntersections = (intersections:any, node:any) => {
         const tasksMeet = intersections.filter((n:any) => n.type === "task").map((n:any) => Utils.afterLastDot(n.id));
