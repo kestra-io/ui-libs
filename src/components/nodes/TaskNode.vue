@@ -392,10 +392,11 @@ button.playground-button,
     display: flex;
     justify-content: flex-end;
     margin-top: 4px;
+    padding: 0 6px 6px;
 }
 
 .view-details-button {
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     padding: 2px 10px;
     border-radius: 4px;
     border: none;
