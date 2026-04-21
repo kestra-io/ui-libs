@@ -212,7 +212,7 @@
                 const taskType = node?.task?.type as string | undefined;
                 const hasDetailsAction = Boolean(
                     (taskType && props.customActions?.[taskType]) ||
-                    (taskType && props.showDetails?.[taskType])
+                        (taskType && props.showDetails?.[taskType])
                 );
 
                 if (hasDetailsAction) {
