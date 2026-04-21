@@ -31,6 +31,7 @@
                 :playground-enabled="playgroundEnabled"
                 :playground-ready-to-start="playgroundReadyToStart"
                 :custom-actions="customActions"
+                :show-details="showDetails"
                 @edit="emit(EVENTS.EDIT, $event)"
                 @delete="emit(EVENTS.DELETE, $event)"
                 @run-task="emit(EVENTS.RUN_TASK, $event)"
@@ -40,6 +41,7 @@
                 @show-description="emit(EVENTS.SHOW_DESCRIPTION, $event)"
                 @show-condition="emit(EVENTS.SHOW_CONDITION, $event)"
                 @show-custom-action="emit(EVENTS.SHOW_CUSTOM_ACTION, $event)"
+                @show-details="emit(EVENTS.SHOW_DETAILS, $event)"
                 @mouseover="onMouseOver($event)"
                 @mouseleave="onMouseLeave()"
                 @add-error="emit('on-add-flowable-error', $event)"
@@ -89,11 +91,17 @@
             />
         </template>
 
-        <Controls v-if="controlsShown" :show-interactive="false">
+        <Controls v-if="controlsShown" :show-interactive="false" :show-fit-view="false">
+            <ControlButton @click="showExtraDetails = !showExtraDetails" :class="{'active': showExtraDetails}">
+                <Information />
+            </ControlButton>
+            <ControlButton @click="fitView()">
+                <svg viewBox="0 0 32 32" style="width:12px;height:12px"><path d="M3.692 4.63c0-.53.4-.938.939-.938h5.215V0H4.708C2.13 0 0 2.054 0 4.63v5.216h3.692V4.631zM27.354 0h-5.2v3.692h5.17c.53 0 .984.4.984.939v5.215H32V4.631A4.624 4.624 0 0 0 27.354 0zm.954 24.83c0 .532-.4.94-.939.94h-5.215v3.768h5.215c2.577 0 4.631-2.13 4.631-4.707v-5.139h-3.692v5.139zm-23.677.94a.919.919 0 0 1-.939-.94v-5.138H0v5.139c0 2.577 2.13 4.707 4.708 4.707h5.138V25.77H4.631z" fill="currentColor" /></svg>
+            </ControlButton>
             <ControlButton @click="emit('toggle-orientation', $event)" v-if="toggleOrientationButton">
                 <component :is="isHorizontal ? SplitCellsHorizontal : SplitCellsVertical" />
             </ControlButton>
-            <ControlButton @click="toggleDropdown"> 
+            <ControlButton @click="toggleDropdown">
                 <Download />
             </ControlButton>
             <ul v-if="isDropdownOpen" class="exporting">
@@ -128,13 +136,14 @@
     // @ts-expect-error no types for internals necessary
     import SplitCellsHorizontal from "../../assets/icons/SplitCellsHorizontal.vue";
     import Download from "vue-material-design-icons/Download.vue";
+    import Information from "vue-material-design-icons/Information.vue";
     import {cssVariable} from "../../utils/global";
-    import {CLUSTER_PREFIX, CustomActionConfig, EVENTS} from "../../utils/constants"
+    import {CLUSTER_PREFIX, EVENTS, NODE_SIZES, ShowDetailsConfig} from "../../utils/constants"
     import Utils from "../../utils/Utils"
     import * as VueFlowUtils from "../../utils/VueFlowUtils";
     import {isParentChildrenRelation, swapBlocks} from "../../utils/FlowYamlUtils";
     import {useScreenshot} from "./export/useScreenshot";
-    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY} from "./injectionKeys";
+    import {EXECUTION_INJECTION_KEY, SUBFLOWS_EXECUTIONS_INJECTION_KEY, SHOW_EXTRA_DETAILS_INJECTION_KEY} from "./injectionKeys";
     import BasicNode from "../nodes/BasicNode.vue";
 
     const props = withDefaults(defineProps<{
@@ -156,7 +165,8 @@
         playgroundEnabled?: boolean;
         playgroundReadyToStart?: boolean;
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
-        customActions?: Record<string, CustomActionConfig>;
+        customActions?: Record<string, ShowDetailsConfig>;
+        showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         isHorizontal: true,
         isReadOnly: true,
@@ -173,10 +183,52 @@
         playgroundReadyToStart: false,
         subflowsExecutions: () => ({}),
         getNodeDimensions: undefined,
-        customActions: () => ({})
+        customActions: () => ({}),
+        showDetails: () => ({})
     });
 
     const dragging = ref(false);
+    const showExtraDetails = ref(false);
+    const HOVERED_NODE_CLASS = "topology-node-hovered";
+    const DROP_TARGET_NODE_CLASS = "topology-node-drop-target";
+    const effectiveGetNodeDimensions = computed(() => {
+        return (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => {
+            const baseHeight = getNodeHeight(node);
+            const dimensions = props.getNodeDimensions
+                ? props.getNodeDimensions(node, getNodeWidth, getNodeHeight)
+                : {
+                    width: getNodeWidth(node),
+                    height: baseHeight
+                };
+
+            if (!showExtraDetails.value && VueFlowUtils.isTaskNode(node)) {
+                return {
+                    ...dimensions,
+                    height: baseHeight
+                };
+            }
+
+            if (showExtraDetails.value && VueFlowUtils.isTaskNode(node)) {
+                const taskType = node?.task?.type as string | undefined;
+                const hasDetailsAction = Boolean(
+                    (taskType && props.customActions?.[taskType]) ||
+                        (taskType && props.showDetails?.[taskType])
+                );
+
+                if (hasDetailsAction) {
+                    return {
+                        ...dimensions,
+                        height: Math.max(
+                            dimensions.height,
+                            NODE_SIZES.TASK_EXPANDED_FALLBACK_HEIGHT
+                        )
+                    };
+                }
+            }
+
+            return dimensions;
+        };
+    });
     const lastPosition = ref<XYPosition | null>()
     const {getNodes, onNodeDrag, onNodeDragStart, onNodeDragStop, fitView, setElements, vueFlowRef} = useVueFlow(props.id);
     const edgeReplacer = ref({});
@@ -187,6 +239,7 @@
 
     provide(EXECUTION_INJECTION_KEY, computed(() => props.execution));
     provide(SUBFLOWS_EXECUTIONS_INJECTION_KEY, computed(() => props.subflowsExecutions));
+    provide(SHOW_EXTRA_DETAILS_INJECTION_KEY, showExtraDetails);
 
 
     const emit = defineEmits(
@@ -206,7 +259,8 @@
             "message",
             "expand-subflow",
             EVENTS.SHOW_CONDITION,
-            EVENTS.SHOW_CUSTOM_ACTION
+            EVENTS.SHOW_CUSTOM_ACTION,
+            EVENTS.SHOW_DETAILS
         ]
     )
 
@@ -220,6 +274,10 @@
     })
 
     watch(() => props.isHorizontal, () => {
+        generateGraph();
+    })
+
+    watch(showExtraDetails, () => {
         generateGraph();
     })
 
@@ -250,7 +308,7 @@
                 props.isReadOnly,
                 props.isAllowedEdit,
                 props.enableSubflowInteraction,
-                props.getNodeDimensions
+                effectiveGetNodeDimensions.value
             );
 
             if(elements) {
@@ -266,8 +324,8 @@
         if (!dragging.value) {
             VueFlowUtils.linkedElements(props.id, node.uid).forEach((n) => {
                 if (n?.type === "task") {
-                    n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-gray-900")}
-                    n.class = "rounded-3"
+                    n.style = {...n.style, opacity: "1", outline: "none"}
+                    setNodeInteractionClass(n, HOVERED_NODE_CLASS, true);
                 }
             });
         }
@@ -282,7 +340,7 @@
         getNodes.value.filter(n => n.type === "task" || n.type === "trigger")
             .forEach(n => {
                 n.style = {...n.style, opacity: "1", outline: "none"}
-                n.class = ""
+                clearNodeInteractionClasses(n);
             })
     }
 
@@ -352,14 +410,49 @@
         if (e.intersections && !checkIntersections(e.intersections, e.node) && e.intersections.filter((n:any) => n.type === "task").length === 1) {
             e.intersections.forEach((n:any) => {
                 if (n.type === "task") {
-                    n.style = {...n.style, outline: "0.5px solid " + cssVariable("--bs-primary")}
-                    n.class = "rounded-3"
+                    n.style = {...n.style, outline: "none"}
+                    setNodeInteractionClass(n, DROP_TARGET_NODE_CLASS, true);
                 }
             })
-            e.node.style = {...e.node.style, outline: "0.5px solid " + cssVariable("--bs-primary")}
-            e.node.class = "rounded-3"
+            e.node.style = {...e.node.style, outline: "none"}
+            setNodeInteractionClass(e.node, DROP_TARGET_NODE_CLASS, true);
         }
     })
+
+    const normalizeNodeClasses = (value: unknown): string[] => {
+        if (typeof value === "string") {
+            return value.split(/\s+/).filter(Boolean);
+        }
+
+        if (Array.isArray(value)) {
+            return value.flatMap((entry) => normalizeNodeClasses(entry));
+        }
+
+        if (value && typeof value === "object") {
+            return Object.entries(value as Record<string, boolean>)
+                .filter(([, enabled]) => Boolean(enabled))
+                .map(([className]) => className);
+        }
+
+        return [];
+    };
+
+    const setNodeInteractionClass = (node: any, className: string, enabled: boolean) => {
+        const classes = new Set(normalizeNodeClasses(node.class));
+
+        if (enabled) {
+            classes.add(className);
+        } else {
+            classes.delete(className);
+        }
+
+        node.class = Array.from(classes).join(" ");
+    };
+
+    const clearNodeInteractionClasses = (node: any) => {
+        setNodeInteractionClass(node, HOVERED_NODE_CLASS, false);
+        setNodeInteractionClass(node, DROP_TARGET_NODE_CLASS, false);
+    };
 
     const checkIntersections = (intersections:any, node:any) => {
         const tasksMeet = intersections.filter((n:any) => n.type === "task").map((n:any) => Utils.afterLastDot(n.id));

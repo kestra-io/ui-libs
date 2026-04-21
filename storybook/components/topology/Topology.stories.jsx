@@ -333,30 +333,96 @@ export const CustomNodes = lodash.merge({},
 )
 
 import NodeDetailsData from "../../data/graphs/node-details.js";
+import ExtraDetailsData from "../../data/graphs/extra-details.js";
 
-export const CustomAction = lodash.merge({},
+export const ShowDetails = lodash.merge({},
     base,
     {
         args: {
-            customActions: {
+            showDetails: {
                 "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
-                    label: "View SQL Config",
+                    label: "Show Details",
                     taskProp: "sql",
                     lang: "sql",
                 },
                 "io.kestra.plugin.azure.datafactory.CreateRun": {
-                    label: "View Pipeline Config",
+                    label: "Show Details",
                     taskProp: "pipelineName",
                     lang: "yaml",
                 },
             },
         },
         argTypes: {
-            onShowCustomAction: {action: "showCustomAction"},
+            onShowDetails: {action: "showDetails"},
         },
         loaders: [
             async () => ({
                 flowGraph: NodeDetailsData,
+                source: "",
+            }),
+        ],
+    }
+)
+
+export const ExtraDetails = lodash.merge({},
+    base,
+    {
+        args: {
+            isHorizontal: true,
+            taskDetails: (props) => {
+                const task = props?.data?.node.task || {};
+                const fields = ["project", "location", "namespace"].filter(k => task[k]);
+                if (!fields.length) return null;
+                return (
+                    <ul style={{
+                        textAlign: "left",
+                        padding: "0.5rem 0.75rem",
+                        margin: 0,
+                        listStyleType: "none",
+                        fontSize: "10px",
+                        borderTop: "1px solid var(--ks-border-primary)",
+                        backgroundColor: "var(--ks-background-body)",
+                        borderRadius: "0 0 .5rem .5rem",
+                    }}>
+                        {fields.map(key => (
+                            <li style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}
+                                title={`${key}: ${task[key]}`}>
+                                <strong>{key}:</strong> {task[key]}
+                            </li>
+                        ))}
+                    </ul>
+                );
+            },
+            getNodeDimensions(node, getNodeWidth, getNodeHeight) {
+                return {
+                    width: getNodeWidth(node),
+                    height: node?.task ? 135 : getNodeHeight(node),
+                };
+            },
+            showDetails: {
+                "io.kestra.plugin.jdbc.clickhouse.BulkInsert": {
+                    label: "Show Details",
+                    taskProp: "sql",
+                    lang: "sql",
+                },
+                "io.kestra.plugin.serdes.avro.AvroToIon": {
+                    label: "Show Details",
+                    taskProp: "schema",
+                    lang: "yaml",
+                },
+                "io.kestra.plugin.azure.datafactory.CreateRun": {
+                    label: "Show Details",
+                    taskProp: "pipelineName",
+                    lang: "yaml",
+                },
+            },
+        },
+        argTypes: {
+            onShowDetails: {action: "showDetails"},
+        },
+        loaders: [
+            async () => ({
+                flowGraph: ExtraDetailsData,
                 source: "",
             }),
         ],
@@ -412,8 +478,6 @@ export const NodeDetails = lodash.merge({},
         ],
     }
 )
-
-
 
 
 

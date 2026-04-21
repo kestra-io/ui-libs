@@ -14,11 +14,25 @@
         @mouseleave="emit(EVENTS.MOUSE_LEAVE)"
     >
         <template #details>
-            <slot name="details" />
+            <Transition name="details-slide">
+                <div v-if="globalShowExtraDetails" class="details-wrapper">
+                    <slot name="details" />
+                    <div v-if="actionConfig && data.node.task" class="view-details-action">
+                        <button
+                            type="button"
+                            class="view-details-button"
+                            aria-label="Show details"
+                            @click="onShowDetails()"
+                        >
+                            Show details
+                        </button>
+                    </div>
+                </div>
+            </Transition>
         </template>
         <template #content>
             <execution-informations 
-                v-if="taskExecution"
+                v-if="taskExecution && globalShowExtraDetails"
                 :execution="taskExecution"
                 :task="data.node.task"
                 :color="color"
@@ -71,18 +85,6 @@
                     <TextBoxSearch class="button-icon" alt="Show logs" />
                 </tooltip>
             </span>
-            <button
-                v-if="customAction && data.node.task"
-                type="button"
-                class="circle-button"
-                :class="[`bg-${color}`]"
-                :aria-label="customAction.label"
-                @click="emit(EVENTS.SHOW_CUSTOM_ACTION, {task: data.node.task, customAction: customAction})"
-            >
-                <tooltip :title="customAction.label">
-                    <Eye class="button-icon" :alt="customAction.label" />
-                </tooltip>
-            </button>
             <span
                 v-if="!taskExecution && !data.isReadOnly && data.isFlowable"
                 class="circle-button"
@@ -122,7 +124,7 @@
     import {computed, inject} from "vue";
     import {Handle, Position} from "@vue-flow/core";
     import State from "../../utils/state";
-    import {CustomActionConfig, EVENTS, SECTIONS} from "../../utils/constants";
+    import {ShowDetailsConfig, EVENTS, SECTIONS} from "../../utils/constants";
     import ExecutionInformations from "../misc/ExecutionInformations.vue";
     import Tooltip from "../misc/Tooltip.vue";
     import Utils from "../../utils/Utils";
@@ -130,6 +132,7 @@
     import {
         EXECUTION_INJECTION_KEY,
         SUBFLOWS_EXECUTIONS_INJECTION_KEY,
+        SHOW_EXTRA_DETAILS_INJECTION_KEY,
     } from "../topology/injectionKeys";
 
     import Pencil from "vue-material-design-icons/Pencil.vue";
@@ -143,7 +146,6 @@
     import AlertIcon from "vue-material-design-icons/Alert.vue";
     import SkipForwardIcon from "vue-material-design-icons/SkipForward.vue";
     import RotatingDots from "../../assets/icons/RotatingDots.vue";
-    import Eye from "vue-material-design-icons/Eye.vue";
 
     // Define types
     interface TaskType {
@@ -203,7 +205,8 @@
         enableSubflowInteraction?: boolean;
         playgroundEnabled: boolean;
         playgroundReadyToStart: boolean;
-        customActions?: Record<string, CustomActionConfig>;
+        customActions?: Record<string, ShowDetailsConfig>;
+        showDetails?: Record<string, ShowDetailsConfig>;
     }>(), {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
@@ -211,7 +214,10 @@
         icons: undefined,
         iconComponent: undefined,
         customActions: () => ({}),
+        showDetails: () => ({}),
     });
+
+
 
     defineOptions({
         name: "TaskNode",
@@ -232,13 +238,14 @@
         (event: typeof EVENTS.SHOW_CONDITION, data: any) :void;
         (event: typeof EVENTS.SHOW_DESCRIPTION, data: any) :void;
         (event: typeof EVENTS.RUN_TASK, data: { task: any }) :void;
-        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: CustomActionConfig }) :void;
+        (event: typeof EVENTS.SHOW_CUSTOM_ACTION, data: { task: any; customAction: ShowDetailsConfig }) :void;
+        (event: typeof EVENTS.SHOW_DETAILS, data: { task: any; showDetails: ShowDetailsConfig }) :void;
     }>();
 
     // Inject dependencies
     const execution = inject(EXECUTION_INJECTION_KEY);
     const subflowsExecutions = inject(SUBFLOWS_EXECUTIONS_INJECTION_KEY);
-
+    const globalShowExtraDetails = inject(SHOW_EXTRA_DETAILS_INJECTION_KEY);
     // Computed properties
     const color = computed(() => props.data.color ?? "primary");
 
@@ -334,11 +341,41 @@
         return props.data;
     });
 
-    const customAction = computed(() => {
+    const actionConfig = computed(() => {
         const taskType = props.data.node.task?.type as string | undefined;
-        if (!taskType || !props.customActions) return undefined;
-        return props.customActions[taskType];
+        if (!taskType) return undefined;
+
+        const customAction = props.customActions?.[taskType];
+        if (customAction) {
+            return {config: customAction, eventName: EVENTS.SHOW_CUSTOM_ACTION} as const;
+        }
+
+        const showDetails = props.showDetails?.[taskType];
+        if (showDetails) {
+            return {config: showDetails, eventName: EVENTS.SHOW_DETAILS} as const;
+        }
+
+        return undefined;
     });
+
+    function onShowDetails() {
+        if (!actionConfig.value) {
+            return;
+        }
+
+        if (actionConfig.value.eventName === EVENTS.SHOW_CUSTOM_ACTION) {
+            emit(EVENTS.SHOW_CUSTOM_ACTION, {
+                task: props.data.node.task,
+                customAction: actionConfig.value.config
+            });
+            return;
+        }
+
+        emit(EVENTS.SHOW_DETAILS, {
+            task: props.data.node.task,
+            showDetails: actionConfig.value.config
+        });
+    }
 
     const iconAlt = computed(() => {
         if(state.value === State.RUNNING){
@@ -380,7 +417,62 @@
 
 button.playground-button,
 .dark button.playground-button {
-    color: _color-palette.$base-white; 
+    color: _color-palette.$base-white;
     background-color: _color-palette.$base-blue-400;
+}
+
+.view-details-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+    padding: 0 8px 8px;
+}
+
+.view-details-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    margin: 0;
+    padding: 4px 10px;
+    border: 1px solid var(--ks-border-primary);
+    border-radius: 999px;
+    background-color: var(--ks-background-card);
+    color: var(--ks-content-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-transform: none;
+    box-shadow: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        border-color: var(--ks-content-link);
+        background-color: var(--ks-background-secondary);
+        color: var(--ks-content-link);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ks-content-link);
+        outline-offset: 2px;
+    }
+}
+
+.details-slide-enter-active,
+.details-slide-leave-active {
+    transition: max-height 0.25s ease, opacity 0.25s ease;
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.details-slide-enter-from,
+.details-slide-leave-to {
+    max-height: 0;
+    opacity: 0;
 }
 </style>

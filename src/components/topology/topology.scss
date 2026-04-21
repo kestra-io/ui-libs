@@ -31,6 +31,10 @@ $node-colors: (
     font-size: 0.66rem;
 }
 
+.vue-flow__panel.vue-flow__controls {
+    z-index: 200001;
+}
+
 .vue-flow__controls {
     border: 1px solid var(--ks-border-primary);
     border-radius: var(--bs-border-radius);
@@ -40,8 +44,24 @@ $node-colors: (
     color: var(--bs-black);
     border-bottom-color: var(--bs-border-color);
 
+    .material-design-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+
+        svg {
+            width: 12px;
+            height: 12px;
+        }
+    }
+
     svg {
         fill: var(--bs-black);
+    }
+
+    &.active svg {
+        fill: var(--ks-content-link);
     }
 
     html.dark & {
@@ -51,6 +71,10 @@ $node-colors: (
         svg {
             fill: var(--bs-white);
         }
+
+        &.active svg {
+            fill: var(--ks-content-link);
+        }
     }
 }
 
@@ -59,6 +83,19 @@ $node-colors: (
 }
 
 .vue-flow__container {
+    .vue-flow__node.topology-node-hovered,
+    .vue-flow__node.topology-node-drop-target {
+        outline: none !important;
+    }
+
+    .vue-flow__node.topology-node-hovered .node-wrapper {
+        border-color: var(--bs-gray-900) !important;
+    }
+
+    .vue-flow__node.topology-node-drop-target .node-wrapper {
+        border-color: var(--bs-primary) !important;
+    }
+
     .top-button-div {
         position: absolute;
         top: -0.5rem;
