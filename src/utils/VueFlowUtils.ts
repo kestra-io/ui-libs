@@ -695,6 +695,8 @@ export function generateGraph(
                         edge.source.startsWith(TRIGGERS_NODE_UID),
                     color: edgeColor,
                     unused: (edge as any).unused,
+                    value: (edge as any).relation?.value,
+                    relationType: (edge as any).relation?.relationType,
                 },
                 style: {
                     zIndex: 10,
