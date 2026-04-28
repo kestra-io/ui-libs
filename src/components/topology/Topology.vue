@@ -167,6 +167,7 @@
         getNodeDimensions?: (node: any, getNodeWidth: (node: any) => number, getNodeHeight: (node: any) => number) => { width: number, height: number };
         customActions?: Record<string, ShowDetailsConfig>;
         showDetails?: Record<string, ShowDetailsConfig>;
+        animated?: boolean;
     }>(), {
         isHorizontal: true,
         isReadOnly: true,
@@ -184,7 +185,8 @@
         subflowsExecutions: () => ({}),
         getNodeDimensions: undefined,
         customActions: () => ({}),
-        showDetails: () => ({})
+        showDetails: () => ({}),
+        animated: true
     });
 
     const dragging = ref(false);
@@ -308,7 +310,8 @@
                 props.isReadOnly,
                 props.isAllowedEdit,
                 props.enableSubflowInteraction,
-                effectiveGetNodeDimensions.value
+                effectiveGetNodeDimensions.value,
+                props.animated
             );
 
             if(elements) {
