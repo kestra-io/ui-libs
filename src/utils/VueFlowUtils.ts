@@ -436,7 +436,8 @@ export function generateGraph(
         = (node, getNodeWidth, getNodeHeight) => ({
             width: getNodeWidth(node), 
             height: getNodeHeight(node)
-        })
+        }),
+        animated: boolean = true
 ): Elements | undefined {
     const elements: Elements = [];
 
@@ -701,7 +702,7 @@ export function generateGraph(
                 style: {
                     zIndex: 10,
                 },
-                animated: true,
+                animated: animated,
             });
         }
     }
