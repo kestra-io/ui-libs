@@ -30,6 +30,19 @@
             </tooltip>
         </div>
     </EdgeLabelRenderer>
+
+    <EdgeLabelRenderer style="z-index: 9" v-if="path?.length && showCaseLabel">
+        <div
+            class="edge-case-label"
+            :style="{
+                position: 'absolute',
+                transform: `translate(-50%, -50%) translate(${caseLabelX}px,${caseLabelY}px)`,
+                pointerEvents: 'none',
+            }"
+        >
+            {{ data.value }}
+        </div>
+    </EdgeLabelRenderer>
 </template>
 
 <script lang="ts" setup>
@@ -120,6 +133,24 @@
 
     const labelXOffset = computed(() => 0);
 
+    const showCaseLabel = computed(() =>
+        props.data?.relationType === "CHOICE" && Boolean(props.data?.value)
+    );
+
+    const CASE_LABEL_GAP = 18;
+    const caseLabelX = computed(() => {
+        const tx = props.targetX ?? 0;
+        if (props.targetPosition === "left") return tx - CASE_LABEL_GAP;
+        if (props.targetPosition === "right") return tx + CASE_LABEL_GAP;
+        return tx;
+    });
+    const caseLabelY = computed(() => {
+        const ty = props.targetY ?? 0;
+        if (props.targetPosition === "top") return ty - CASE_LABEL_GAP;
+        if (props.targetPosition === "bottom") return ty + CASE_LABEL_GAP;
+        return ty;
+    });
+
     defineOptions({
         inheritAttrs: false,
     });
@@ -140,5 +171,20 @@
 
     .vue-flow__edge-path {
         stroke-dasharray: 3 5;
+    }
+
+    .edge-case-label {
+        font-size: 11px;
+        line-height: 1;
+        padding: 3px 6px;
+        border-radius: 4px;
+        background: var(--ks-background-card, #ffffff);
+        color: var(--ks-content-primary, #1b1c23);
+        border: 1px solid var(--ks-border-primary, #e1e3e5);
+        white-space: nowrap;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-family: var(--bs-font-monospace, ui-monospace, monospace);
     }
 </style>
