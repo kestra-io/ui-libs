@@ -111,15 +111,15 @@
     "slugify": "^1.6.6"
   },
   "optionalDependencies": {
-    "@esbuild/darwin-arm64": "^0.27.3",
-    "@esbuild/darwin-x64": "^0.27.3",
-    "@esbuild/linux-x64": "^0.27.3",
-    "@rollup/rollup-darwin-arm64": "^4.59.0",
-    "@rollup/rollup-darwin-x64": "^4.59.0",
-    "@rollup/rollup-linux-x64-gnu": "^4.59.0",
-    "@swc/core-darwin-arm64": "^1.15.13",
-    "@swc/core-darwin-x64": "^1.15.13",
-    "@swc/core-linux-x64-gnu": "^1.15.13"
+    "@esbuild/darwin-arm64": "^0.28.0",
+    "@esbuild/darwin-x64": "^0.28.0",
+    "@esbuild/linux-x64": "^0.28.0",
+    "@rollup/rollup-darwin-arm64": "^4.60.2",
+    "@rollup/rollup-darwin-x64": "^4.60.2",
+    "@rollup/rollup-linux-x64-gnu": "^4.60.2",
+    "@swc/core-darwin-arm64": "^1.15.32",
+    "@swc/core-darwin-x64": "^1.15.32",
+    "@swc/core-linux-x64-gnu": "^1.15.32"
   },
   "overrides": {
     "storybook": "$storybook"
