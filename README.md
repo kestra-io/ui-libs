@@ -1,5 +1,7 @@
  > [!WARNING]
 > **This repository is sunsetting.** All components have been moved into the [design system](https://github.com/kestra-io/kestra/tree/develop/ui/packages) of the Kestra OSS repository. No new versions will be released under normal circumstances. The repository will **not** be archived, as new versions may still be published if required to support previous Kestra LTS releases.
+>
+> **We are no longer accepting pull requests from external contributors.** Please open any issues or feature requests in the [main Kestra repository](https://github.com/kestra-io/kestra/issues) instead.
 
 &nbsp;
 
