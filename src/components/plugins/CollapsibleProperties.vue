@@ -1,6 +1,20 @@
 <template>
     <Collapsible class="section-collapsible" :clickable-text="sectionName" :href="href" @expand="emit('expand')" :initially-expanded="initiallyExpanded || autoExpanded" :no-url-change="noUrlChange">
         <template v-if="Object.keys(properties ?? {}).length > 0" #content>
+            <div class="d-flex flex-column gap-3 mb-3 mt-2" v-if="description || (examples && examples.length > 0)">
+                <div v-if="description" class="markdown">
+                    <slot name="markdown" :content="description" />
+                </div>
+                <div v-if="examples && examples.length > 0" class="examples-container">
+                    <h6 class="fw-bold mb-2">
+                        Examples
+                    </h6>
+                    <div v-for="(example, idx) in examples" :key="idx" class="mb-2">
+                        <slot name="example" :example="example" />
+                    </div>
+                </div>
+            </div>
+
             <div class="border overflow-hidden">
                 <Collapsible
                     class="property"
@@ -31,7 +45,7 @@
                                 </Tooltip>
                             </span>
                             <span class="d-flex flex-wrap justify-content-end gap-2">
-                                <template v-for="type in extractTypeInfo(property).types" :key="type">
+                                <template v-for="type in nonDeprecatedTypes(extractTypeInfo(property).types)" :key="type">
                                     <a v-if="type.startsWith('#')" class="d-flex fw-bold ref-type-box rounded fs-7 px-2 py-1" :href="type" @click.stop>
                                         <span class="ref-type">{{ className(type) }}</span><eye-outline />
                                     </a>
@@ -61,8 +75,10 @@
         extractTypeInfo,
         className,
         type JSONProperty,
+        type JSONSchema,
         aggregateAllOf,
-        isDynamic
+        isDynamic,
+        isDeprecated
     } from "../../utils/schemaUtils";
     import ChevronDown from "vue-material-design-icons/ChevronDown.vue";
     import Collapsible from "../misc/Collapsible.vue";
@@ -79,17 +95,23 @@
         href?: string, 
         sectionName: string, 
         properties?: Record<string, JSONProperty>, 
+        definitions?: Record<string, JSONSchema>,
         showDynamic?: boolean, 
         initiallyExpanded?: boolean, 
         forceInclude?: string[],
-        noUrlChange?: boolean
+        noUrlChange?: boolean,
+        description?: string,
+        examples?: any[]
     }>(), {
         properties: undefined,
+        definitions: undefined,
         href: Math.random().toString(36).substring(2, 5),
         showDynamic: true,
         initiallyExpanded: false,
         forceInclude: () => [] as string[],
-        noUrlChange: false
+        noUrlChange: false,
+        description: undefined,
+        examples: undefined
     });
 
     const emit = defineEmits(["expand"]);
@@ -105,9 +127,14 @@
         }
     );
 
-    function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
-        const requiredKeys = [];
-        const nonRequiredKeys = [];
+    const nonDeprecatedTypes = (types: string[]) => types.filter(type =>
+        !type.startsWith("#") || !isDeprecated(props.definitions?.[type.slice(1)])
+    );
+
+    function sortedAndAggregated(schema?: Record<string, JSONProperty>): Record<string, JSONProperty> {
+        schema = schema ?? {};
+        const requiredKeys: string[] = [];
+        const nonRequiredKeys: string[] = [];
 
         for (const key in schema) {
             if (typeof schema[key] === "object") {

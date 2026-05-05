@@ -9,9 +9,35 @@
     >
         <template #content>
             <div class="def-content">
+                <div v-if="definition.description" class="def-description">
+                    <slot :content="codeSanitizer(definition.description)" name="markdown" />
+                </div>
+                <div v-if="definition.$examples && definition.$examples.length" class="def-examples">
+                    <div class="def-examples-header">
+                        Example
+                    </div>
+                    <div class="d-flex flex-column gap-4">
+                        <template v-for="(example, index) in definition.$examples" :key="`${definition.key}-example-${index}`">
+                            <div class="d-flex flex-column">
+                                <div class="markdown">
+                                    <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
+                                </div>
+                                <SchemaToCode
+                                    v-if="example.code"
+                                    :highlighter="highlighter"
+                                    :language="example.lang ?? 'yaml'"
+                                    :theme="codeTheme"
+                                    :code="example.code"
+                                />
+                            </div>
+                            <hr class="w-100 align-self-center" v-if="index < definition.$examples.length - 1">
+                        </template>
+                    </div>
+                </div>
+
                 <div v-for="(prop, propKey) in definition.properties" :key="propKey" class="def-property">
                     <div class="d-flex align-items-center justify-content-between gap-2">
-                        <span>{{ propKey }}</span>
+                        <span class="prop-key">{{ propKey }}</span>
                         <PropertyBadges :property="prop" :show-dynamic="false" section-class="section-properties" />
                     </div>
 
@@ -44,7 +70,9 @@
 </template>
 
 <script setup lang="ts">
-    import {computed} from "vue";
+    import {computed, inject, ref} from "vue";
+    import type {Ref} from "vue";
+    import type {HighlighterCore} from "shiki/core";
     import {
         extractEnumValues,
         extractTypeInfo,
@@ -56,12 +84,20 @@
     import Collapsible from "./CollapsibleV2.vue";
     import PropertyBadges from "./PropertyBadges.vue";
     import PropertyMeta from "./PropertyMeta.vue";
+    import SchemaToCode from "../plugins/SchemaToCode.vue";
 
     const props = withDefaults(defineProps<{
         definition: {
             key: string,
             title: string,
-            properties: Record<string, JSONProperty>
+            description?: string,
+            properties: Record<string, JSONProperty>,
+            $examples?: {
+                title?: string,
+                code: string,
+                lang?: string,
+                full?: boolean
+            }[]
         },
         definitions?: Record<string, JSONSchema>,
         visitedKeys?: Set<string>,
@@ -79,6 +115,9 @@
     defineSlots<{
         markdown: { content: string }
     }>();
+
+    const highlighter = inject<Ref<HighlighterCore | undefined>>("highlighter", ref(undefined));
+    const codeTheme = inject<Ref<string>>("codeTheme", ref("github-dark"));
 
     const codeSanitizer = sanitizeForMarkdown;
 
@@ -204,4 +243,15 @@
             }
         }
     }
+
+    .def-examples, .def-description {
+        padding: 1rem 2rem;
+        .def-examples-header {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: var(--ks-content-primary);
+        }
+    }
 </style>
+

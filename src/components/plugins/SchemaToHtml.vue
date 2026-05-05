@@ -16,7 +16,7 @@
                 <slot name="markdown" :content="schema.properties.description.replace(/ *:(?![ /])/g, ': ')" />
             </div>
 
-            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: &quot;${pluginType}&quot;`" :key="pluginType" />
+            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: ${pluginType}`" :key="pluginType" />
         </div>
 
         <div class="d-flex flex-column gap-3" :key="pluginType">
@@ -29,11 +29,11 @@
                                     <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
+                                    v-if="example.code"
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
                                     :theme="codeTheme"
                                     :code="generateExampleCode(example)"
-                                    v-if="example.code"
                                 />
                             </div>
                             <hr class="w-100 align-self-center" v-if="index < examples.length - 1">
@@ -46,6 +46,7 @@
                 v-if="schema.properties?.properties"
                 class="plugin-section"
                 :properties="schema.properties.properties"
+                :definitions="schema.definitions"
                 section-name="Properties"
                 href="properties"
                 :initially-expanded="propsInitiallyExpanded"
@@ -63,6 +64,7 @@
                 v-if="schema.outputs?.properties && Object.keys(schema.outputs.properties).length > 0"
                 class="plugin-section"
                 :properties="schema.outputs.properties"
+                :definitions="schema.definitions"
                 section-name="Outputs"
                 href="outputs"
                 :show-dynamic="false"
@@ -79,6 +81,7 @@
                 v-if="schema.properties?.$metrics"
                 class="plugin-section"
                 :properties="metrics"
+                :definitions="schema.definitions"
                 section-name="Metrics"
                 href="metrics"
                 :show-dynamic="false"
@@ -92,7 +95,7 @@
             </CollapsibleProperties>
 
             <Collapsible
-                v-if="schema.definitions && Object.keys(schema.definitions).length > 0"
+                v-if="nonDeprecatedDefinitions.length > 0"
                 class="plugin-section"
                 clickable-text="Definitions"
                 href="definitions"
@@ -103,8 +106,9 @@
                 <template #content>
                     <div class="d-flex flex-column gap-7 ps-3">
                         <CollapsibleProperties
-                            v-for="[definitionKey, definitionValue] in Object.entries(schema.definitions)"
+                            v-for="[definitionKey, definitionValue] in nonDeprecatedDefinitions"
                             :properties="definitionValue.properties"
+                            :definitions="schema.definitions"
                             :section-name="definitionValue.title ?? definitionKey.split('_')[0]"
                             :href="definitionKey"
                             :show-dynamic="false"
@@ -113,10 +117,27 @@
                             class="plugin-section nested-button-py-2"
                             @expand="definitionsExpanded = true; expandedDefinitions.add(definitionKey)"
                             :no-url-change
+                            :description="definitionValue.description"
+                            :examples="definitionValue?.$examples"
                         >
                             <template #markdown="{content}">
                                 <div class="markdown">
                                     <slot name="markdown" :content="content" />
+                                </div>
+                            </template>
+                            
+                            <template #example="{example}">
+                                <div class="d-flex flex-column gap-2">
+                                    <div v-if="example.title" class="markdown">
+                                        <slot name="markdown" :content="`**${example.title}**`" />
+                                    </div>
+                                    <SchemaToCode
+                                        :highlighter="highlighter"
+                                        :language="example.lang ?? 'yaml'"
+                                        :theme="codeTheme"
+                                        :code="generateExampleCode(example)"
+                                        v-if="example.code"
+                                    />
                                 </div>
                             </template>
                         </CollapsibleProperties>
@@ -132,6 +153,7 @@
     import type {HighlighterCore} from "shiki/core";
     import SchemaToCode from "./SchemaToCode.vue";
     import type {JSONProperty, JSONSchema} from "../../utils/schemaUtils.ts";
+    import {isDeprecated} from "../../utils/schemaUtils";
     import Collapsible from "../misc/Collapsible.vue";
     import CollapsibleProperties from "./CollapsibleProperties.vue";
 
@@ -152,6 +174,10 @@
     const definitionsExpanded = ref(false);
     const expandedDefinitions = ref<Set<string>>(new Set());
     const forceExpandKey = ref(0);
+
+    const nonDeprecatedDefinitions = computed(() =>
+        Object.entries(props.schema.definitions ?? {}).filter(([, val]) => !isDeprecated(val))
+    );
 
     const checkHashAndExpand = async () => {
         const hash = window.location.hash.slice(1);
@@ -201,10 +227,9 @@
         }
     });
 
-
     const generateExampleCode = (example: NonNullable<NonNullable<JSONSchema["properties"]>["$examples"]>[number]) => {
         if (!example?.full) {
-            const fullCode = `id: "${props.pluginType.split(".").reverse()[0]?.toLowerCase()}"\ntype: "${props.pluginType}"\n`;
+            const fullCode = `id: ${props.pluginType.split(".").reverse()[0]?.toLowerCase()}\ntype: ${props.pluginType}\n`;
             return fullCode.concat(example.code)
         }
 
@@ -242,9 +267,15 @@
         font-size: 1rem;
     }
 
-    :deep(.nested-button-py-2) button {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
+    :deep(.nested-button-py-2) {
+        button {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        p {
+            font-size: 14px;
+        }
     }
 
     :deep(.markdown) {

@@ -26,7 +26,7 @@
             taskRunList: any[];
         };
         task: {
-            type: object;
+            type: string;
             default: null;
         };
         state: string;

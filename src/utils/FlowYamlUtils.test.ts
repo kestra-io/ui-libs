@@ -924,6 +924,43 @@ describe("insertBlockWithPath", () => {
           "
         `)
     })
+
+    test("insert parent when double missing", () => {
+        const srcWithTriggers = `
+        tasks:
+          - id: plugin1
+          - id: for_each
+            type: io.kestra.plugin.core.flow.ForEach
+            tasks:
+              - id: plugin2
+              - id: my_switch
+                type: io.kestra.plugin.core.flow.Switch
+                value: baz
+        `;
+
+        const result = YamlUtils.insertBlockWithPath({
+            source: srcWithTriggers, 
+            parentPath: "tasks[1].tasks[1].cases.12",
+            newBlock: newValue, 
+        });;
+        expect(result).toMatchInlineSnapshot(`
+          "tasks:
+            - id: plugin1
+            - id: for_each
+              type: io.kestra.plugin.core.flow.ForEach
+              tasks:
+                - id: plugin2
+                - id: my_switch
+                  type: io.kestra.plugin.core.flow.Switch
+                  value: baz
+                  cases:
+                    - "12":
+                        - id: plugin3
+                          type: type3
+                          name: Plugin 3
+          "
+        `)
+    })
 })
 
 describe("deleteBlockWithPath", () => {

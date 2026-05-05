@@ -22,7 +22,6 @@
     import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
 
     const props = defineProps<{
-        iconB64Svg: string,
         text: string,
         routePath: string
         pluginClass: string
@@ -59,7 +58,8 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-        transition: 0.4s ease-out;
+        // avoid unwanted background color transitions when switching themes
+        transition: border-color 0.4s ease-out, box-shadow 0.4s ease-out, transform 0.4s ease-out;
 
         &:hover {
             border-color: var(--kestra-io-token-color-border-active);
@@ -84,7 +84,8 @@
             font-size: 1rem;
             font-weight: 700;
             margin: 0;
-            padding-top: 0;
+            line-height: 1.5rem;
+            padding: 0.25rem 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -128,3 +129,4 @@
         }
     }
 </style>
+

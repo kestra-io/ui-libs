@@ -15,14 +15,13 @@ export default defineConfig({
                 path.resolve(__dirname, "src/utils/VueFlowUtils.ts"),
             ],
             name: "KestraUI",
-            fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format}.js`,
+            fileName: (format, entryName) => `kestra-${entryName.toLowerCase()}.${format === "es" ? "mjs" : "cjs"}`,
         },
         rollupOptions: {
             external: (id) => [
                 "@nuxtjs/mdc/runtime",
                 "shiki",
                 "vue",
-                "vue-router",
                 "humanize-duration",
                 "moment",
                 "lodash",
@@ -44,7 +43,6 @@ export default defineConfig({
                 // Add external deps here
                 globals: {
                     vue: "Vue",
-                    "vue-router": "VueRouter",
                     "yaml": "PkgYaml",
                     "js-yaml": "JsYaml",
                     "humanize-duration": "HumanizeDuration",

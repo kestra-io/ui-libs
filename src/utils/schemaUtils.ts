@@ -33,7 +33,14 @@ export interface JSONProperty {
 export interface JSONSchema {
     title?: string
     description?: string
+    $deprecated?: boolean | string
     definitions?: Record<string, JSONSchema>
+    $examples?: {
+        title?: string
+        code: string
+        lang?: string
+        full?: boolean
+    }[]
     outputs?: {
         properties: Record<string, JSONProperty>
     }
@@ -104,7 +111,6 @@ export function aggregateAllOf(property: JSONProperty): JSONProperty {
         delete property.allOf;
     }
 
-
     return property;
 }
 
@@ -145,6 +151,10 @@ export function extractTypeInfo(property: JSONProperty): ExtractedTypes {
     return result;
 }
 
+export function isDeprecated(schema?: JSONSchema): boolean {
+    return schema?.$deprecated === true || schema?.$deprecated === "true";
+}
+
 export function extractReferencedDefinitions(
     property: JSONProperty, 
     definitions: Record<string, JSONSchema> | undefined,
@@ -171,14 +181,21 @@ export function extractReferencedDefinitions(
         }
     }
     
-    return defKeys.map(key => {
-        const def = definitions[key];
-        return {
-            key,
-            title: def?.title ?? key.split("_")[0],
-            properties: def?.properties ?? {}
-        };
-    });
+    return defKeys
+        .filter(key => !isDeprecated(definitions[key]))
+        .map(key => {
+            const def = definitions[key];
+            const properties = def?.properties ? {...def.properties} : {};
+            const examples = def?.["$examples"] || properties["$examples"];
+
+            return {
+                key,
+                title: def?.title ?? key.split("_")[0],
+                description: def?.description,
+                properties: properties,
+                $examples: examples
+            };
+        });
 }
 
 export function isDynamic(property: JSONProperty): boolean {
@@ -186,3 +203,4 @@ export function isDynamic(property: JSONProperty): boolean {
     if (property["$dynamic"] === false) return false;
     return property.anyOf?.some(prop => prop["$dynamic"] === true) ?? false;
 }
+

@@ -5,13 +5,13 @@
             <div class="pb-2">
                 <div class="row g-4 last">
                     <div
-                        class="col-md-4 col-lg-6 col-xl-6 col-xxl-4"
+                        class="col-md-6"
                         v-for="subGroupWrapper in subGroupsWrappers"
                         :key="subGroupName(subGroupWrapper)"
                     >
                         <SubgroupCard
                             :id="slugify(subGroupName(subGroupWrapper))"
-                            :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group])"
+                            :icon-src="icons[subGroupWrapper.subGroup] ?? icons[subGroupWrapper.group]"
                             :text="getSubgroupTitle(subGroupWrapper)"
                             :description="getSubgroupDescription(subGroupWrapper)"
                             :href="`${routePath}/${slugify(subGroupName(subGroupWrapper))}`"
@@ -29,14 +29,13 @@
         </template>
         <template v-else-if="plugin">
             <div class="d-flex flex-column elements-section pb-3" v-for="(elements, elementType) in elementsByType" :key="elementType">
-                <h4 :id="`section-${slugify(elementType)}`" class="text-capitalize">
-                    {{ elementType }}
-                </h4>
+                <h2 :id="`section-${slugify(elementType)}`" class="text-capitalize">
+                    {{ elementType === 'additional Plugins' ? 'Tasks' : elementType }}
+                </h2>
                 <div class="row g-4 last">
-                    <div class="col-md-4 col-lg-6 col-xl-6 col-xxl-4" v-for="element in elements" :key="element">
+                    <div class="col-md-6" v-for="element in elements" :key="element">
                         <ElementCard
                             :id="slugify(element)"
-                            :icon-b64-svg="'data:image/svg+xml;base64,' + (icons[element] ?? icons[plugin.subGroup ?? plugin.group] ?? icons[plugin.group])"
                             :text="elementName(element)"
                             :plugin-class="element"
                             :href="elementHref(element)"
@@ -55,9 +54,9 @@
         </template>
         <template v-if="description !== undefined && plugin?.longDescription">
             <div class="description">
-                <h4 id="how-to-use-this-plugin">
+                <h2 id="how-to-use-this-plugin">
                     How to use this plugin
-                </h4>
+                </h2>
                 <div ref="contentWrap" class="markdown-container" :class="{expanded: isExpanded}">
                     <div ref="contentInner" class="markdown-inner">
                         <slot name="markdown" :content="description.replace(/ *:(?![ /])/g, ': ')" />
@@ -127,7 +126,7 @@
         return split?.[split.length - 1];
     }
 
-    const elementHref = (element: string) => `${props.routePath}/${element}`;
+    const elementHref = (element: string) => `${props.routePath}/${element.toLowerCase()}`;
 
     function getTotalElementCount(plugin: Plugin): number {
         const elements = extractPluginElements(plugin);
@@ -157,11 +156,8 @@
 <style lang="scss" scoped>
     @use "../../scss/variables" as variables;
 
-    h4 {
-        font-size: 20px;
-        font-weight: 600;
-        margin: 0 0 1.5rem;
-        color: var(--ks-content-primary);
+    h2 {
+        margin-top: 0;
     }
 
     .description {
@@ -216,3 +212,4 @@
         }
     }
 </style>
+

@@ -79,9 +79,10 @@
         }
     );
 
-    function sortedAndAggregated(schema: Record<string, JSONProperty>): Record<string, JSONProperty> {
-        const requiredKeys = [];
-        const nonRequiredKeys = [];
+    function sortedAndAggregated(schema?: Record<string, JSONProperty>): Record<string, JSONProperty> {
+        schema = schema ?? {};
+        const requiredKeys: string[] = [];
+        const nonRequiredKeys: string[] = [];
 
         for (const key in schema) {
             if (typeof schema[key] === "object") {
@@ -167,11 +168,9 @@
         metrics: color-palette.$base-orange-400
     );
 
-
     @each $section, $color in $section-colors {
         .section-#{$section} {
             :deep(.collapse-button span:not(.type-box)) {
-                color: $color;
                 font-size: 1rem;
                 font-weight: normal;
                 font-family: "source code pro", monospace;
@@ -179,3 +178,4 @@
         }
     }
 </style>
+
