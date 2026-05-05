@@ -547,7 +547,8 @@
 
 <style lang="scss" src="./topology.scss" />
 <style scoped lang="scss">
-    .material-design-icon.download-icon {
+    .material-design-icon.download-icon,
+    .material-design-icon.information-icon {
         max-width: 12px;
     }
 
