@@ -1,5 +1,5 @@
  > [!WARNING]
-> **This repository is sunsetting.** All components have been moved into the design system of the [Kestra OSS repository](https://github.com/kestra-io/kestra). No new versions will be released under normal circumstances. The repository will **not** be archived, as new versions may still be published if required to support previous Kestra LTS releases.
+> **This repository is sunsetting.** All components have been moved into the [design system](https://github.com/kestra-io/kestra/tree/develop/ui/packages) of the [Kestra OSS repository](https://github.com/kestra-io/kestra). No new versions will be released under normal circumstances. The repository will **not** be archived, as new versions may still be published if required to support previous Kestra LTS releases.
 
 <p align="center">
   <a href="https://www.kestra.io">
