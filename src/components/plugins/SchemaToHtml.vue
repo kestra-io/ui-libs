@@ -16,7 +16,7 @@
                 <slot name="markdown" :content="schema.properties.description.replace(/ *:(?![ /])/g, ': ')" />
             </div>
 
-            <SchemaToCode :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: ${pluginType}`" :key="pluginType" />
+            <SchemaToCode v-if="highlighter" :highlighter="highlighter" language="yaml" :theme="codeTheme" :code="`type: ${pluginType}`" :key="pluginType" />
         </div>
 
         <div class="d-flex flex-column gap-3" :key="pluginType">
@@ -29,7 +29,7 @@
                                     <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
-                                    v-if="example.code"
+                                    v-if="highlighter && example.code"
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
                                     :theme="codeTheme"
@@ -136,7 +136,7 @@
                                         :language="example.lang ?? 'yaml'"
                                         :theme="codeTheme"
                                         :code="generateExampleCode(example)"
-                                        v-if="example.code"
+                                        v-if="highlighter && example.code"
                                     />
                                 </div>
                             </template>

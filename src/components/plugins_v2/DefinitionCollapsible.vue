@@ -23,7 +23,7 @@
                                     <slot v-if="example.title" :content="example.title.replace(/ *:(?![ /])/g, ': ')" name="markdown" />
                                 </div>
                                 <SchemaToCode
-                                    v-if="example.code"
+                                    v-if="highlighter && example.code"
                                     :highlighter="highlighter"
                                     :language="example.lang ?? 'yaml'"
                                     :theme="codeTheme"
