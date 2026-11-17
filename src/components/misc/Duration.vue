@@ -41,7 +41,7 @@
         }
     );
 
-    const duration = ref("");
+    const now = ref(Date.now());
     const refreshHandler = ref();
 
     onMounted(() => {
@@ -63,7 +63,7 @@
     function paint() {
         if (!refreshHandler.value) {
             refreshHandler.value = setInterval(() => {
-                computeDuration();
+                now.value = Date.now();
                 if (lastStep.value && !State.isRunning(lastStep.value.state)) {
                     cancel();
                 }
@@ -88,17 +88,15 @@
 
     function stop() {
         if (!lastStep.value || State.isRunning(lastStep.value.state)) {
-            return +new Date();
+            return now.value;
         }
         return lastStep.value.date.valueOf();
     }
 
-    function computeDuration() {
-        duration.value = Utils.humanDuration(delta() / 1000, {
-            maxDecimalPoints: 2,
-            units: ["h", "m", "s"],
-        });
-    }
+    const duration = computed(() => Utils.humanDuration(delta() / 1000, {
+        maxDecimalPoints: 2,
+        units: ["h", "m", "s"],
+    }));
 
     function squareClass(state: string) {
         const remappedState = state.toLowerCase();
