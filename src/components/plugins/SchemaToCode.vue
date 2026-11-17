@@ -15,13 +15,16 @@
                 <div id="arrow" data-popper-arrow />
             </div>
         </template>
-        <div v-html="codeData" />
+        <div>
+            <pre class="shiki" :class="codeData.themeName" :style="{backgroundColor: codeData.bg, color: codeData.fg}" tabindex="0"><code><span v-for="(line, lineIndex) in codeData.tokens" :key="lineIndex" class="line"><span v-for="token in line" :key="token.offset" :style="getTokenStyleObject(token)">{{ token.content }}</span></span></code></pre>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
     import {computed, nextTick, ref, shallowRef} from "vue";
     import {createPopper} from "@popperjs/core";
+    import {getTokenStyleObject} from "shiki/core";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
 
@@ -54,8 +57,8 @@
     const copyButton = ref<HTMLButtonElement>()
     const copyTooltip = ref<HTMLDivElement>()
 
-    const codeData = computed(() => props.highlighter.codeToHtml(props.code, {
-        lang: props.language,
+    const codeData = computed(() => props.highlighter.codeToTokens(props.code, {
+        lang: props.language ?? "text",
         theme: props.theme,
     }))
 
