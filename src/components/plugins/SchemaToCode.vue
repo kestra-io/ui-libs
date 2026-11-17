@@ -24,7 +24,7 @@
 <script setup lang="ts">
     import {computed, nextTick, ref, shallowRef} from "vue";
     import {createPopper} from "@popperjs/core";
-    import {getTokenStyleObject} from "shiki/core";
+    import {getTokenStyleObject, type HighlighterCore} from "shiki/core";
     import ContentCopy from "vue-material-design-icons/ContentCopy.vue";
     import Check from "vue-material-design-icons/Check.vue";
 
@@ -35,7 +35,7 @@
 
     const props = withDefaults(
         defineProps<{
-            highlighter: any;
+            highlighter: HighlighterCore;
             code?: string;
             language?: string | null
             filename?: string | null
