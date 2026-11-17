@@ -32,14 +32,7 @@
         }[];
     }>();
 
-    watch(
-        () => props.histories,
-        (newValue, oldValue) => {
-            if (newValue?.[0]?.date?.valueOf() !== oldValue?.[0]?.date?.valueOf()) {
-                paint();
-            }
-        }
-    );
+    watch(() => props.histories, () => paint());
 
     const now = ref(Date.now());
     const refreshHandler = ref();
