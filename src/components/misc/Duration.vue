@@ -12,7 +12,8 @@
         </template>
         
         <template #default>
-            <span v-html="duration" />
+            <span v-if="filteredHistories.length">{{ duration }}</span>
+            <span v-else>&nbsp;</span>
         </template>
     </tooltip>
 </template>
@@ -93,13 +94,10 @@
     }
 
     function computeDuration() {
-        duration.value =
-            filteredHistories.value.length === 0
-                ? "&nbsp;"
-                : Utils.humanDuration(delta() / 1000, {
-                    maxDecimalPoints: 2,
-                    units: ["h", "m", "s"],
-                });
+        duration.value = Utils.humanDuration(delta() / 1000, {
+            maxDecimalPoints: 2,
+            units: ["h", "m", "s"],
+        });
     }
 
     function squareClass(state: string) {
