@@ -39,7 +39,7 @@ jobs:
       # Trusted publishing need npm 11.+
       - name: Upgrade npm
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11
           npm version
 
       # enabled registry for https://docs.npmjs.com/trusted-publishers
