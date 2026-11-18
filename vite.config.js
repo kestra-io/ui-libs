@@ -22,6 +22,7 @@ export default defineConfig({
                 "@nuxtjs/mdc/runtime",
                 "shiki",
                 "vue",
+                "vue-i18n",
                 "humanize-duration",
                 "moment",
                 "lodash",
